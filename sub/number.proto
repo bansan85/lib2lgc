@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+option cc_enable_arenas = true;
+
+package msg;
+
+message Number {
+  // id of the number.
+  uint32  id = 1;
+
+  message Unite {
+    float m = 1;
+    float kg = 2;
+    float s = 3;
+    float a = 4;
+    float k = 5;
+    float mol = 6;
+    float cd = 7;
+  }
+
+  enum Operator {
+    PLUS = 0;
+    MOINS = 1;
+    MULTIPLICATION = 2;
+    DIVISION = 3;
+  }
+  message Constant {
+    double  value = 1;
+    Unite unite = 2;
+  }
+
+  message NumberOpNumber {
+    // id of the first number of msg.number.
+    uint32  id1 = 1;
+    // id of the second number of msg.number.
+    uint32  id2 = 2;
+    Operator operator = 3;
+  }
+
+  oneof data {
+    Constant        constant = 2;
+    NumberOpNumber  number_op_number = 3;
+  }
+}

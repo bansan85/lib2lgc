@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option cc_enable_arenas = true;
+
+package msg;
+
+message Area {
+  uint32  id = 1;
+
+  message Rectangular {
+    uint32  height = 1; // id of msg.number. Unite must be METRE.
+    uint32  width = 2; // id of msg.number. Unite must be METRE.
+  }
+
+  message Circle {
+    uint32  radius = 1; // id of msg.number. Unite must be METRE.
+  }
+
+  oneof data {
+    Rectangular rectangular = 2;
+    Circle      circle = 3;
+  }
+}
+
