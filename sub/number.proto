@@ -9,24 +9,25 @@ message Number {
   uint32  id = 1;
 
   message Unite {
-    float m = 1;
-    float kg = 2;
-    float s = 3;
-    float a = 4;
-    float k = 5;
+    float m   = 1;
+    float kg  = 2;
+    float s   = 3;
+    float a   = 4;
+    float k   = 5;
     float mol = 6;
-    float cd = 7;
+    float cd  = 7;
   }
 
   enum Operator {
-    PLUS = 0;
-    MOINS = 1;
+    PLUS           = 0;
+    MOINS          = 1;
     MULTIPLICATION = 2;
-    DIVISION = 3;
+    DIVISION       = 3;
   }
+
   message Constant {
     double  value = 1;
-    Unite unite = 2;
+    Unite unite   = 2;
   }
 
   message NumberOpNumber {

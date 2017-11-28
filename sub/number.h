@@ -46,28 +46,21 @@ class Unite {
                       msg::Number_Unite *return_unite) CHK;
 };
 
-class Number {
+class Number : public InterfaceVisitable<msg::Number> {
  public:
   Number()
-      : message_()
 #ifdef ENABLE_VISITABLE_CACHE
-        ,
-        cache_value_(0.),
+      : cache_value_(0.),
         cache_unite_()
 #endif  // ENABLE_VISITABLE_CACHE
   {
   }
   virtual ~Number() {}
-  const msg::Number &message() const { return message_; }
 
   virtual double GetVal() const = 0;
   virtual msg::Number_Unite GetUnite() const = 0;
 
-  virtual bool Accept(const BaseVisitor &visitor,
-                      std::string *return_value) const CHK = 0;
-
  protected:
-  msg::Number message_;
   static pattern::visitor::NumberVisitorVal visitor_val;
   static pattern::visitor::NumberVisitorUnite visitor_unite;
 
@@ -77,7 +70,8 @@ class Number {
 #endif  // ENABLE_VISITABLE_CACHE
 };
 
-class Number_Constant : public BaseVisitable<Number_Constant>, public Number {
+class Number_Constant : virtual public Number,
+                        virtual public BaseVisitable<Number_Constant, Number> {
  public:
   Number_Constant(const uint32_t id, const double value,
                   msg::Number_Unite *unite);
@@ -86,20 +80,15 @@ class Number_Constant : public BaseVisitable<Number_Constant>, public Number {
   double GetVal() const override;
   msg::Number_Unite GetUnite() const override;
 
-  bool Accept(const BaseVisitor &visitor,
-              std::string *return_value) const override CHK {
-    return dynamic_cast<const Visitor<Number_Constant> &>(visitor).Visit(
-        *this, return_value);
-  }
-
-#ifdef ENABLE_VISITABLE_CACHE
  private:
+#ifdef ENABLE_VISITABLE_CACHE
   mutable unsigned int cache_value_id_;
   mutable unsigned int cache_unite_id_;
 #endif  // ENABLE_VISITABLE_CACHE
 };
 
-class Number_NumOpNum : public BaseVisitable<Number_NumOpNum>, public Number {
+class Number_NumOpNum : virtual public Number,
+                        virtual public BaseVisitable<Number_NumOpNum, Number> {
  public:
   Number_NumOpNum(const uint32_t id, const Number &number1,
                   msg::Number_Operator operator_, const Number &number2);
@@ -107,12 +96,6 @@ class Number_NumOpNum : public BaseVisitable<Number_NumOpNum>, public Number {
 
   double GetVal() const override;
   msg::Number_Unite GetUnite() const override;
-
-  bool Accept(const BaseVisitor &visitor,
-              std::string *return_value) const override CHK {
-    return dynamic_cast<const Visitor<Number_NumOpNum> &>(visitor).Visit(
-        *this, return_value);
-  }
 
   const Number &number1() const { return number1_; }
   const Number &number2() const { return number2_; }
