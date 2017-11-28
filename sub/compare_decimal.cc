@@ -26,6 +26,9 @@
 #include "compare_decimal.h"
 
 // C++ system
+// For int std::abs.
+#include <cstdlib>
+// Pour float std::abs.
 #include <cmath>
 #include <cstdint>
 
