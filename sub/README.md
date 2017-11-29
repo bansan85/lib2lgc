@@ -38,7 +38,8 @@ message Coordonate {
     Cartesien  cartesien = 1;
     Polar      number_op_number = 2;
   }
-}```
+}
+```
 
 <h2>Container / Interface</h2>
 
@@ -75,7 +76,8 @@ a virtual destructor and for each method that will visit the object :
   mutable double cache_x_;
   mutable double cache_y_;
 #endif  // ENABLE_VISITABLE_CACHE
-}```
+}
+```
 
 <h2>Visitors</h2>
 
@@ -104,4 +106,5 @@ class CoordonateVisitorX : public BaseVisitor,
              std::string *return_value) const override CHK;
   bool Visit(const Coordonate_Polar &data,
              std::string *return_value) const override CHK;
-};```
+};
+```
