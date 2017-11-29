@@ -6,12 +6,16 @@ CC_FROM_PROTO	=	cpp/area.pb.cc \
 
 H_FROM_PROTO	=	$(CC_FROM_PROTO:.pb.cc=.pb.h)
 
-EXTRA_DIST		=	$(CC_FROM_PROTO) \
+eEXTRA_DIST		=	$(CC_FROM_PROTO) 2
 								$(H_FROM_PROTO)
 
 CLEANFILES		=	$(EXTRA_DIST)
 
+if HAVE_DOXYGEN
+all-local: cpp doxygen.stamp
+else
 all-local: cpp
+endif
 
 cpp:	$(CC_FROM_PROTO) $(H_FROM_PROTO)
 
@@ -46,7 +50,6 @@ lib2lgcPoco_ladir				= $(includedir)/2lgc
 lib2lgcPoco_la_HEADERS	= $(H_FROM_PROTO)
 
 
-#ifdef ENABLE_VISITABLE_CACH2
 lib2lgcPocoGetSet_la_CXXFLAGS	=	-isystem $(srcdir)/cpp \
 																-isystem $(srcdir)/../pattern/visitor \
 																-isystem $(srcdir)/../macro \
@@ -56,13 +59,13 @@ lib2lgcPocoGetSet_la_CXXFLAGS	=	-isystem $(srcdir)/cpp \
 lib2lgcPocoGetSet_la_LDFLAGS	= $(AM_LDFLAGS) -release $(VERSION)
 
 lib2lgcPocoGetSet_la_SOURCES	= number.cc \
-																number_visitor_unite.cc \
+																number_visitor_unit.cc \
 																number_visitor_value.cc
 
 lib2lgcPocoGetSet_ladir				= $(includedir)/2lgc
 
 lib2lgcPocoGetSet_la_HEADERS	= number.h \
-																number_visitor_unite.h \
+																number_visitor_unit.h \
 																number_visitor_value.h
 
 if HAVE_INTERNAL_DISTCHECK
@@ -77,3 +80,17 @@ check-local :
 	$(foreach file, $(patsubst %,$(srcdir)/%,$(lib2lgcPocoGetSet_la_SOURCES)) $(patsubst %,$(srcdir)/%,$(lib2lgcPocoGetSet_la_HEADERS)), \
 		(clang-format -style=Google $(file) | diff -pu $(file) -) || exit 1;\
 	)
+
+if HAVE_DOXYGEN
+
+doxygen.stamp: $(CC_FROM_PROTO) $(H_FROM_PROTO) $(lib2lgcPocoGetSet_la_SOURCES) $(lib2lgcPocoGetSet_la_HEADERS)
+	mkdir -p ../../doc/poco
+	echo Timestamp > doxygen.stamp
+	$(DOXYGEN) ./Doxyfile
+
+CLEANFILES  += doxygen.stamp
+
+clean-local:
+	rm -Rf ../../doc/poco
+
+endif

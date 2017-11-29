@@ -16,8 +16,8 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NUMBER_VISITOR_UNITE_H_
-#define NUMBER_VISITOR_UNITE_H_
+#ifndef NUMBER_VISITOR_UNIT_H_
+#define NUMBER_VISITOR_UNIT_H_
 
 #include "config.h"
 
@@ -37,11 +37,11 @@ namespace visitor {
 class Number_Constant;
 class Number_NumOpNum;
 
-class NumberVisitorUnite : public BaseVisitor,
-                           public Visitor<Number_Constant>,
-                           public Visitor<Number_NumOpNum> {
+class NumberVisitorUnit : public BaseVisitor,
+                          public Visitor<Number_Constant>,
+                          public Visitor<Number_NumOpNum> {
  public:
-  virtual ~NumberVisitorUnite() {}
+  virtual ~NumberVisitorUnit() {}
   bool Visit(const Number_Constant &data,
              std::string *return_value) const override CHK;
   bool Visit(const Number_NumOpNum &data,
@@ -51,4 +51,4 @@ class NumberVisitorUnite : public BaseVisitor,
 }  // namespace visitor
 }  // namespace pattern
 
-#endif  // NUMBER_VISITOR_UNITE_H_
+#endif  // NUMBER_VISITOR_UNIT_H_

@@ -32,7 +32,7 @@
 
 // Current project
 #include "number.h"
-#include "number_visitor_unite.h"
+#include "number_visitor_unit.h"
 
 bool pattern::visitor::NumberVisitorVal::Visit(
     const Number_Constant &data, std::string *return_value) const {
@@ -58,26 +58,24 @@ bool pattern::visitor::NumberVisitorVal::Visit(
   BUGCONT(data.number2().Accept(*this, &return_accept), false);
   BUGLIB(val2.ParseFromString(return_accept), false, "protobuf");
 
-  NumberVisitorUnite visitor_unite;
-  msg::Number_Unite unite1;
-  msg::Number_Unite unite2;
-  BUGCONT(data.number1().Accept(visitor_unite, &return_accept), false);
-  BUGLIB(unite1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.number2().Accept(visitor_unite, &return_accept), false);
-  BUGLIB(unite2.ParseFromString(return_accept), false, "protobuf");
+  NumberVisitorUnit visitor_unit;
+  msg::Number_Unit unit1;
+  msg::Number_Unit unit2;
+  BUGCONT(data.number1().Accept(visitor_unit, &return_accept), false);
+  BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(data.number2().Accept(visitor_unit, &return_accept), false);
+  BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
 
   switch (data.message().number_op_number().operator_()) {
     case msg::Number_Operator_PLUS: {
-      BUGUSER(
-          google::protobuf::util::MessageDifferencer::Equals(unite1, unite2),
-          false, "Incompatible unit.\n");
+      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+              false, "Incompatible unit.\n");
       val.set_value(val1.value() + val2.value());
       break;
     }
     case msg::Number_Operator_MOINS: {
-      BUGUSER(
-          google::protobuf::util::MessageDifferencer::Equals(unite1, unite2),
-          false, "Incompatible unit.\n");
+      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+              false, "Incompatible unit.\n");
       val.set_value(val1.value() - val2.value());
       break;
     }

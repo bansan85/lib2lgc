@@ -1,3 +1,4 @@
+
 /* Copyright [2017] LE GARREC Vincent
  *
  * This file is part of 2LGC.
@@ -34,39 +35,38 @@
 
 // Static variables
 pattern::visitor::NumberVisitorVal pattern::visitor::Number::visitor_val;
-pattern::visitor::NumberVisitorUnite pattern::visitor::Number::visitor_unite;
+pattern::visitor::NumberVisitorUnit pattern::visitor::Number::visitor_unit;
 
-bool pattern::visitor::Unite::UniteOp(const msg::Number_Unite &unite1,
-                                      const msg::Number_Unite &unite2,
-                                      const msg::Number_Operator operator_,
-                                      msg::Number_Unite *return_unite) {
+bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
+                                    const msg::Number_Unit &unit2,
+                                    const msg::Number_Operator operator_,
+                                    msg::Number_Unit *return_unit) {
   switch (operator_) {
     case msg::Number_Operator_PLUS:
     case msg::Number_Operator_MOINS: {
-      BUGUSER(
-          google::protobuf::util::MessageDifferencer::Equals(unite1, unite2),
-          false, "Incompatible unit.\n");
-      *return_unite = unite1;
+      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+              false, "Incompatible unit.\n");
+      *return_unit = unit1;
       return true;
     }
     case msg::Number_Operator_MULTIPLICATION: {
-      return_unite->set_m(unite1.m() + unite2.m());
-      return_unite->set_kg(unite1.kg() + unite2.kg());
-      return_unite->set_s(unite1.s() + unite2.s());
-      return_unite->set_a(unite1.a() + unite2.a());
-      return_unite->set_k(unite1.k() + unite2.k());
-      return_unite->set_mol(unite1.mol() + unite2.mol());
-      return_unite->set_cd(unite1.cd() + unite2.cd());
+      return_unit->set_m(unit1.m() + unit2.m());
+      return_unit->set_kg(unit1.kg() + unit2.kg());
+      return_unit->set_s(unit1.s() + unit2.s());
+      return_unit->set_a(unit1.a() + unit2.a());
+      return_unit->set_k(unit1.k() + unit2.k());
+      return_unit->set_mol(unit1.mol() + unit2.mol());
+      return_unit->set_cd(unit1.cd() + unit2.cd());
       return true;
     }
     case msg::Number_Operator_DIVISION: {
-      return_unite->set_m(unite1.m() - unite2.m());
-      return_unite->set_kg(unite1.kg() - unite2.kg());
-      return_unite->set_s(unite1.s() - unite2.s());
-      return_unite->set_a(unite1.a() - unite2.a());
-      return_unite->set_k(unite1.k() - unite2.k());
-      return_unite->set_mol(unite1.mol() - unite2.mol());
-      return_unite->set_cd(unite1.cd() - unite2.cd());
+      return_unit->set_m(unit1.m() - unit2.m());
+      return_unit->set_kg(unit1.kg() - unit2.kg());
+      return_unit->set_s(unit1.s() - unit2.s());
+      return_unit->set_a(unit1.a() - unit2.a());
+      return_unit->set_k(unit1.k() - unit2.k());
+      return_unit->set_mol(unit1.mol() - unit2.mol());
+      return_unit->set_cd(unit1.cd() - unit2.cd());
       return true;
     }
     case ::google::protobuf::kint32min:
@@ -77,15 +77,15 @@ bool pattern::visitor::Unite::UniteOp(const msg::Number_Unite &unite1,
 
 pattern::visitor::Number_Constant::Number_Constant(const uint32_t id,
                                                    const double value,
-                                                   msg::Number_Unite *unite)
+                                                   msg::Number_Unit *unit)
 #ifdef ENABLE_VISITABLE_CACHE
     : cache_value_id_(0),
-      cache_unite_id_(0)
+      cache_unit_id_(0)
 #endif  // ENABLE_VISITABLE_CACHE
 {
   msg::Number_Constant *constant = new msg::Number_Constant();
   constant->set_value(value);
-  constant->set_allocated_unite(unite);
+  constant->set_allocated_unit(unit);
 
   message().set_id(id);
   message().set_allocated_constant(constant);
@@ -113,27 +113,27 @@ double pattern::visitor::Number_Constant::GetVal() const {
   return double_value.value();
 }
 
-msg::Number_Unite pattern::visitor::Number_Constant::GetUnite() const {
+msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if (cache_unite_id_ == message().id()) {
-    return cache_unite_;
+  if (cache_unit_id_ == message().id()) {
+    return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
 
-  std::string return_unite;
-  BUGCONT(visitor_unite.Visit(*this, &return_unite), msg::Number_Unite());
+  std::string return_unit;
+  BUGCONT(visitor_unit.Visit(*this, &return_unit), msg::Number_Unit());
 
-  msg::Number_Unite number_unite;
-  BUGLIB(number_unite.ParseFromString(return_unite), msg::Number_Unite(),
+  msg::Number_Unit number_unit;
+  BUGLIB(number_unit.ParseFromString(return_unit), msg::Number_Unit(),
          "protobuf");
 
 #ifdef ENABLE_VISITABLE_CACHE
-  cache_unite_ = number_unite;
-  cache_unite_id_ = message().id();
+  cache_unit_ = number_unit;
+  cache_unit_id_ = message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
-  return number_unite;
+  return number_unit;
 }
 
 pattern::visitor::Number_NumOpNum::Number_NumOpNum(
@@ -145,8 +145,8 @@ pattern::visitor::Number_NumOpNum::Number_NumOpNum(
       ,
       cache_value1_id_(0),
       cache_value2_id_(0),
-      cache_unite1_id_(0),
-      cache_unite2_id_(0)
+      cache_unit1_id_(0),
+      cache_unit2_id_(0)
 #endif  // ENABLE_VISITABLE_CACHE
 {
   msg::Number_NumberOpNumber *number_operator_number =
@@ -183,27 +183,27 @@ double pattern::visitor::Number_NumOpNum::GetVal() const {
   return double_value.value();
 }
 
-msg::Number_Unite pattern::visitor::Number_NumOpNum::GetUnite() const {
+msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if ((cache_unite1_id_ == number1_.message().id()) &&
-      (cache_unite2_id_ == number2_.message().id())) {
-    return cache_unite_;
+  if ((cache_unit1_id_ == number1_.message().id()) &&
+      (cache_unit2_id_ == number2_.message().id())) {
+    return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
 
-  std::string return_unite;
-  BUGCONT(visitor_unite.Visit(*this, &return_unite), msg::Number_Unite());
+  std::string return_unit;
+  BUGCONT(visitor_unit.Visit(*this, &return_unit), msg::Number_Unit());
 
-  msg::Number_Unite number_unite;
-  BUGLIB(number_unite.ParseFromString(return_unite), msg::Number_Unite(),
+  msg::Number_Unit number_unit;
+  BUGLIB(number_unit.ParseFromString(return_unit), msg::Number_Unit(),
          "protobuf");
 
 #ifdef ENABLE_VISITABLE_CACHE
-  cache_unite_ = number_unite;
-  cache_unite1_id_ = number1_.message().id();
-  cache_unite2_id_ = number2_.message().id();
+  cache_unit_ = number_unit;
+  cache_unit1_id_ = number1_.message().id();
+  cache_unit2_id_ = number2_.message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
-  return number_unite;
+  return number_unit;
 }

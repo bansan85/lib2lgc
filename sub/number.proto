@@ -8,7 +8,7 @@ message Number {
   // id of the number.
   uint32  id = 1;
 
-  message Unite {
+  message Unit {
     float m   = 1;
     float kg  = 2;
     float s   = 3;
@@ -26,8 +26,8 @@ message Number {
   }
 
   message Constant {
-    double  value = 1;
-    Unite unite   = 2;
+    double value = 1;
+    Unit   unit  = 2;
   }
 
   message NumberOpNumber {

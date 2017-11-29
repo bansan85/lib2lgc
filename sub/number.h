@@ -32,18 +32,31 @@
 #include <visitor.h>
 
 // Current project
-#include "number_visitor_unite.h"
+#include "number_visitor_unit.h"
 #include "number_visitor_value.h"
 
 namespace pattern {
 namespace visitor {
 
-class Unite {
+/**
+ * @brief Class just to hold the UnitOp method.
+ */
+class Unit {
  public:
-  static bool UniteOp(const msg::Number_Unite &unite1,
-                      const msg::Number_Unite &unite2,
-                      const msg::Number_Operator operator_,
-                      msg::Number_Unite *return_unite) CHK;
+  /**
+   * @brief Get the resulting unit when a operator is applied in two units.
+   *
+   * @param unit1 First unit.
+   * @param unit2 Second unit.
+   * @param operator_ The operator.
+   * @param return_unit The resulting unit. Must be already allocated.
+   *
+   * @return true if the operator is successfully applied in the two units.
+   */
+  static bool UnitOp(const msg::Number_Unit &unit1,
+                     const msg::Number_Unit &unit2,
+                     const msg::Number_Operator operator_,
+                     msg::Number_Unit *return_unit) CHK;
 };
 
 class Number : public InterfaceVisitable<msg::Number> {
@@ -51,22 +64,22 @@ class Number : public InterfaceVisitable<msg::Number> {
   Number()
 #ifdef ENABLE_VISITABLE_CACHE
       : cache_value_(0.),
-        cache_unite_()
+        cache_unit_()
 #endif  // ENABLE_VISITABLE_CACHE
   {
   }
   virtual ~Number() {}
 
   virtual double GetVal() const = 0;
-  virtual msg::Number_Unite GetUnite() const = 0;
+  virtual msg::Number_Unit GetUnit() const = 0;
 
  protected:
   static pattern::visitor::NumberVisitorVal visitor_val;
-  static pattern::visitor::NumberVisitorUnite visitor_unite;
+  static pattern::visitor::NumberVisitorUnit visitor_unit;
 
 #ifdef ENABLE_VISITABLE_CACHE
   mutable double cache_value_;
-  mutable msg::Number_Unite cache_unite_;
+  mutable msg::Number_Unit cache_unit_;
 #endif  // ENABLE_VISITABLE_CACHE
 };
 
@@ -74,16 +87,16 @@ class Number_Constant : virtual public Number,
                         virtual public BaseVisitable<Number_Constant, Number> {
  public:
   Number_Constant(const uint32_t id, const double value,
-                  msg::Number_Unite *unite);
+                  msg::Number_Unit *unit);
   virtual ~Number_Constant() {}
 
   double GetVal() const override;
-  msg::Number_Unite GetUnite() const override;
+  msg::Number_Unit GetUnit() const override;
 
  private:
 #ifdef ENABLE_VISITABLE_CACHE
   mutable unsigned int cache_value_id_;
-  mutable unsigned int cache_unite_id_;
+  mutable unsigned int cache_unit_id_;
 #endif  // ENABLE_VISITABLE_CACHE
 };
 
@@ -95,7 +108,7 @@ class Number_NumOpNum : virtual public Number,
   virtual ~Number_NumOpNum() {}
 
   double GetVal() const override;
-  msg::Number_Unite GetUnite() const override;
+  msg::Number_Unit GetUnit() const override;
 
   const Number &number1() const { return number1_; }
   const Number &number2() const { return number2_; }
@@ -107,8 +120,8 @@ class Number_NumOpNum : virtual public Number,
 #ifdef ENABLE_VISITABLE_CACHE
   mutable unsigned int cache_value1_id_;
   mutable unsigned int cache_value2_id_;
-  mutable unsigned int cache_unite1_id_;
-  mutable unsigned int cache_unite2_id_;
+  mutable unsigned int cache_unit1_id_;
+  mutable unsigned int cache_unit2_id_;
 #endif  // ENABLE_VISITABLE_CACHE
 };
 

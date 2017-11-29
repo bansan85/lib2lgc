@@ -16,7 +16,7 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "number_visitor_unite.h"
+#include "number_visitor_unit.h"
 
 // Google protobuf library
 #include <google/protobuf/util/message_differencer.h>
@@ -34,43 +34,42 @@
 #include "number.h"
 #include "number_visitor_value.h"
 
-bool pattern::visitor::NumberVisitorUnite::Visit(
+bool pattern::visitor::NumberVisitorUnit::Visit(
     const Number_Constant &data, std::string *return_value) const {
   BUGPARAM(return_value, "%p", return_value != nullptr, false);
 
-  BUGLIB(data.message().constant().unite().SerializeToString(return_value),
+  BUGLIB(data.message().constant().unit().SerializeToString(return_value),
          false, "protobuf");
 
   return true;
 }
 
-bool pattern::visitor::NumberVisitorUnite::Visit(
+bool pattern::visitor::NumberVisitorUnit::Visit(
     const Number_NumOpNum &data, std::string *return_value) const {
   BUGPARAM(return_value, "%p", return_value != nullptr, false);
 
-  msg::Number_Unite unite1;
-  msg::Number_Unite unite2;
-  msg::Number_Unite unite;
+  msg::Number_Unit unit1;
+  msg::Number_Unit unit2;
+  msg::Number_Unit unit;
   std::string return_accept;
   BUGCONT(data.number1().Accept(*this, &return_accept), false);
-  BUGLIB(unite1.ParseFromString(return_accept), false, "protobuf");
+  BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
   BUGCONT(data.number2().Accept(*this, &return_accept), false);
-  BUGLIB(unite2.ParseFromString(return_accept), false, "protobuf");
+  BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
 
   switch (data.message().number_op_number().operator_()) {
     case msg::Number_Operator_PLUS:
     case msg::Number_Operator_MOINS: {
-      BUGUSER(
-          google::protobuf::util::MessageDifferencer::Equals(unite1, unite2),
-          false, "Incompatible unit.\n");
-      BUGLIB(unite1.SerializeToString(return_value), false, "protobuf");
+      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+              false, "Incompatible unit.\n");
+      BUGLIB(unit1.SerializeToString(return_value), false, "protobuf");
       return true;
     }
     case msg::Number_Operator_MULTIPLICATION: {
-      BUGCONT(Unite::UniteOp(unite1, unite2,
-                             msg::Number_Operator_MULTIPLICATION, &unite),
+      BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_MULTIPLICATION,
+                           &unit),
               false);
-      BUGLIB(unite.SerializeToString(return_value), false, "protobuf");
+      BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
       return true;
     }
     case msg::Number_Operator_DIVISION: {
@@ -82,10 +81,10 @@ bool pattern::visitor::NumberVisitorUnite::Visit(
       BUGUSER(!math::AlmostEqualRelativeAndAbsD(double_val.value(), 0., 1e-15,
                                                 1e-15),
               false, "Divide by zero.");
-      BUGCONT(Unite::UniteOp(unite1, unite2,
-                             msg::Number_Operator_MULTIPLICATION, &unite),
+      BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_MULTIPLICATION,
+                           &unit),
               false);
-      BUGLIB(unite.SerializeToString(return_value), false, "protobuf");
+      BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
       return true;
     }
     case ::google::protobuf::kint32min:
