@@ -84,7 +84,7 @@ class Coordonate : public InterfaceVisitable<msg::Coordonate> {
 <h2>Visitors</h2>
 
 All visitors must have a virtual destructor and inheritate :
-  - the empty class `BaseVisitor `so all classes will be able to be cast to
+  - the empty class `BaseVisitor ` so all classes will be able to be cast to
 this common class.
   - the class `Visitor<XXX>` for each class in the same `ProtoBuf` message.
 
