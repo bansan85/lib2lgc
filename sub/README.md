@@ -17,7 +17,8 @@ All data are stored in `ProtoBuf`'s Google messages.
 If different data represents the same object (e.g. cartesien / polar
 coordonate), they will be in the same `ProtoBuf` message with a `oneof` data.
 
-```syntax = "proto3";
+```
+syntax = "proto3";
 
 package msg;
 
@@ -54,7 +55,8 @@ a virtual destructor and for each method that will visit the object :
   - a static class that will visit all raw data,
   - eventually a mutable variable that will be used as cache.
 
-```class Coordonate : public InterfaceVisitable<msg::Coordonate> {
+```
+class Coordonate : public InterfaceVisitable<msg::Coordonate> {
  public:
   Coordonate()
 #ifdef ENABLE_VISITABLE_CACHE
@@ -84,7 +86,7 @@ a virtual destructor and for each method that will visit the object :
 All visitors must have a virtual destructor and inheritate :
   - the empty class `BaseVisitor `so all classes will be able to be cast to
 this common class.
-  - the class `Visitor<XXX>` for each class in the same ProtoBuf message.
+  - the class `Visitor<XXX>` for each class in the same `ProtoBuf` message.
 
 The `Visit` method takes two arguments, at first a reference to the data to
 visit, then a pointer to a `string` (the string must be allocated on the stack
@@ -94,7 +96,8 @@ If `Visit` success, the `return_value` will be decoded with `ParseFromString`.
 
 Inside the `Visit` method, the first argument of `Accept` method is `*this`.
 
-```class Coordonate_Coordonate;
+```
+class Coordonate_Coordonate;
 class Coordonate_Polar;
 
 class CoordonateVisitorX : public BaseVisitor,
