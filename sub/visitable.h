@@ -24,6 +24,9 @@
 // C++ system
 #include <string>
 
+// Google protobuf library
+#include <google/protobuf/message.h>
+
 // Current project
 #include "visitor.h"
 
@@ -77,6 +80,9 @@ class BaseVisitable : virtual T {
  */
 template <class M>
 class InterfaceVisitable {
+  static_assert(std::is_base_of<::google::protobuf::Message, M>::value,
+                "M must be a descendant of ::google::protobuf::Message");
+
  public:
   InterfaceVisitable() : message_() {}
   /**
@@ -90,7 +96,8 @@ class InterfaceVisitable {
    * @param visitor The visitor that will used the data of the class that
    *        implement this class.
    * @param return_value The return value from the visitor from
-   *        SerializeToString.
+   *        SerializeToString. The value passed must be allocated on the stack
+   *        or on the pile.
    *
    * @return false if there is a problem or if SerializeToString failed.
    *         true instead.
