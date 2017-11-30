@@ -53,17 +53,17 @@ bool pattern::visitor::NumberVisitorVal::Visit(
   msg::Double val2;
   msg::Double val;
   std::string return_accept;
-  BUGCONT(data.number1().Accept(*this, &return_accept), false);
+  BUGCONT(data.number1()->Accept(*this, &return_accept), false);
   BUGLIB(val1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.number2().Accept(*this, &return_accept), false);
+  BUGCONT(data.number2()->Accept(*this, &return_accept), false);
   BUGLIB(val2.ParseFromString(return_accept), false, "protobuf");
 
   NumberVisitorUnit visitor_unit;
   msg::Number_Unit unit1;
   msg::Number_Unit unit2;
-  BUGCONT(data.number1().Accept(visitor_unit, &return_accept), false);
+  BUGCONT(data.number1()->Accept(visitor_unit, &return_accept), false);
   BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.number2().Accept(visitor_unit, &return_accept), false);
+  BUGCONT(data.number2()->Accept(visitor_unit, &return_accept), false);
   BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
 
   switch (data.message().number_op_number().operator_()) {

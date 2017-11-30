@@ -33,17 +33,39 @@
 namespace pattern {
 namespace visitor {
 
-// We can't include number.h because number.h need number_visitor_val.h.
+// We can't include number.h because number.h need number_visitor_unit.h.
 class Number_Constant;
 class Number_NumOpNum;
 
+/**
+ * @brief The visitor that will return the unit.
+ */
 class NumberVisitorUnit : public BaseVisitor,
                           public Visitor<Number_Constant>,
                           public Visitor<Number_NumOpNum> {
  public:
+  /**
+   * @brief Default destructor.
+   */
   virtual ~NumberVisitorUnit() {}
+  /**
+   * @brief Return the unit of a constant number.
+   *
+   * @param data The constant number.
+   * @param return_value This parameter will be changed only if Visit success.
+   *
+   * @return true if success, false instead.
+   */
   bool Visit(const Number_Constant &data,
              std::string *return_value) const override CHK;
+  /**
+   * @brief Return the unit of a number based on an operation of two numbers.
+   *
+   * @param data The number.
+   * @param return_value This parameter will be changed only if Visit success.
+   *
+   * @return true if success, false instead.
+   */
   bool Visit(const Number_NumOpNum &data,
              std::string *return_value) const override CHK;
 };

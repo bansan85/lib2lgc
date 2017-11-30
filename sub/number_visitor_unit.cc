@@ -52,9 +52,9 @@ bool pattern::visitor::NumberVisitorUnit::Visit(
   msg::Number_Unit unit2;
   msg::Number_Unit unit;
   std::string return_accept;
-  BUGCONT(data.number1().Accept(*this, &return_accept), false);
+  BUGCONT(data.number1()->Accept(*this, &return_accept), false);
   BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.number2().Accept(*this, &return_accept), false);
+  BUGCONT(data.number2()->Accept(*this, &return_accept), false);
   BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
 
   switch (data.message().number_op_number().operator_()) {
@@ -75,7 +75,7 @@ bool pattern::visitor::NumberVisitorUnit::Visit(
     case msg::Number_Operator_DIVISION: {
       NumberVisitorVal visitor_val;
 
-      BUGCONT(data.number2().Accept(visitor_val, &return_accept), false);
+      BUGCONT(data.number2()->Accept(visitor_val, &return_accept), false);
       msg::Double double_val;
       BUGLIB(double_val.ParseFromString(return_accept), false, "protobuf");
       BUGUSER(!math::AlmostEqualRelativeAndAbsD(double_val.value(), 0., 1e-15,

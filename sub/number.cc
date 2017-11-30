@@ -79,8 +79,8 @@ pattern::visitor::Number_Constant::Number_Constant(const uint32_t id,
                                                    const double value,
                                                    msg::Number_Unit *unit)
 #ifdef ENABLE_VISITABLE_CACHE
-    : cache_value_id_(0),
-      cache_unit_id_(0)
+    : cache_value_id_(std::numeric_limits<uint32_t>::max()),
+      cache_unit_id_(std::numeric_limits<uint32_t>::max())
 #endif  // ENABLE_VISITABLE_CACHE
 {
   msg::Number_Constant *constant = new msg::Number_Constant();
@@ -137,23 +137,23 @@ msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const {
 }
 
 pattern::visitor::Number_NumOpNum::Number_NumOpNum(
-    const uint32_t id, const Number &number1, msg::Number_Operator operator_,
-    const Number &number2)
+    const uint32_t id, std::shared_ptr<const Number> number1,
+    msg::Number_Operator operator_, std::shared_ptr<const Number> number2)
     : number1_(number1),
       number2_(number2)
 #ifdef ENABLE_VISITABLE_CACHE
       ,
-      cache_value1_id_(0),
-      cache_value2_id_(0),
-      cache_unit1_id_(0),
-      cache_unit2_id_(0)
+      cache_value1_id_(std::numeric_limits<uint32_t>::max()),
+      cache_value2_id_(std::numeric_limits<uint32_t>::max()),
+      cache_unit1_id_(std::numeric_limits<uint32_t>::max()),
+      cache_unit2_id_(std::numeric_limits<uint32_t>::max())
 #endif  // ENABLE_VISITABLE_CACHE
 {
   msg::Number_NumberOpNumber *number_operator_number =
       new msg::Number_NumberOpNumber();
-  number_operator_number->set_id1(number1_.message().id());
+  number_operator_number->set_id1(number1_->message().id());
   number_operator_number->set_operator_(operator_);
-  number_operator_number->set_id2(number2_.message().id());
+  number_operator_number->set_id2(number2_->message().id());
 
   message().set_id(id);
   message().set_allocated_number_op_number(number_operator_number);
@@ -162,8 +162,8 @@ pattern::visitor::Number_NumOpNum::Number_NumOpNum(
 double pattern::visitor::Number_NumOpNum::GetVal() const {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if ((cache_value1_id_ == number1_.message().id()) &&
-      (cache_value2_id_ == number2_.message().id())) {
+  if ((cache_value1_id_ == number1_->message().id()) &&
+      (cache_value2_id_ == number2_->message().id())) {
     return cache_value_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
@@ -176,8 +176,8 @@ double pattern::visitor::Number_NumOpNum::GetVal() const {
 
 #ifdef ENABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
-  cache_value1_id_ = number1_.message().id();
-  cache_value2_id_ = number2_.message().id();
+  cache_value1_id_ = number1_->message().id();
+  cache_value2_id_ = number2_->message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
   return double_value.value();
@@ -186,8 +186,8 @@ double pattern::visitor::Number_NumOpNum::GetVal() const {
 msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if ((cache_unit1_id_ == number1_.message().id()) &&
-      (cache_unit2_id_ == number2_.message().id())) {
+  if ((cache_unit1_id_ == number1_->message().id()) &&
+      (cache_unit2_id_ == number2_->message().id())) {
     return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
@@ -201,8 +201,8 @@ msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const {
 
 #ifdef ENABLE_VISITABLE_CACHE
   cache_unit_ = number_unit;
-  cache_unit1_id_ = number1_.message().id();
-  cache_unit2_id_ = number2_.message().id();
+  cache_unit1_id_ = number1_->message().id();
+  cache_unit2_id_ = number2_->message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
   return number_unit;
