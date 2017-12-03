@@ -39,7 +39,6 @@ class Math {
                                      int maxUlpsDiff) CHK;
   static bool AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
                                          double maxRelDiff) CHK;
-
 };
 
 #endif  // COMPARE_DECIMAL_H_
