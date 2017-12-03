@@ -137,8 +137,9 @@ msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const {
 }
 
 pattern::visitor::Number_NumOpNum::Number_NumOpNum(
-    const uint32_t id, std::shared_ptr<const Number> number1,
-    msg::Number_Operator operator_, std::shared_ptr<const Number> number2)
+    const uint32_t id, const std::shared_ptr<const Number> &number1,
+    msg::Number_Operator operator_,
+    const std::shared_ptr<const Number> &number2)
     : number1_(number1),
       number2_(number2)
 #ifdef ENABLE_VISITABLE_CACHE

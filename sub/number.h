@@ -176,9 +176,10 @@ class Number_NumOpNum : virtual public Number,
    * @param operator_ The operator.
    * @param number2 The number two.
    */
-  Number_NumOpNum(const uint32_t id, std::shared_ptr<const Number> number1,
+  Number_NumOpNum(const uint32_t id,
+                  const std::shared_ptr<const Number> &number1,
                   msg::Number_Operator operator_,
-                  std::shared_ptr<const Number> number2);
+                  const std::shared_ptr<const Number> &number2);
   /**
    * @brief Default destructor.
    */
@@ -203,23 +204,23 @@ class Number_NumOpNum : virtual public Number,
    *
    * @return The number 1.
    */
-  std::shared_ptr<const Number> number1() const { return number1_; }
+  const std::shared_ptr<const Number> number1() const { return number1_; }
   /**
    * @brief Return the number 2.
    *
    * @return The number 2.
    */
-  std::shared_ptr<const Number> number2() const { return number2_; }
+  const std::shared_ptr<const Number> number2() const { return number2_; }
 
  private:
   /**
    * @brief The number 1.
    */
-  std::shared_ptr<const Number> number1_;
+  const std::shared_ptr<const Number> number1_;
   /**
    * @brief The number 2.
    */
-  std::shared_ptr<const Number> number2_;
+  const std::shared_ptr<const Number> number2_;
 
 #ifdef ENABLE_VISITABLE_CACHE
   /**
