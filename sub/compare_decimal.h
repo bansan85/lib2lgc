@@ -28,6 +28,9 @@
 
 #include "config.h"
 
+/**
+ * @brief Class that extends math functionnality.
+ */
 class Math {
  public:
   static bool AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
