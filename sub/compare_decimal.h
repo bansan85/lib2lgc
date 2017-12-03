@@ -28,18 +28,18 @@
 
 #include "config.h"
 
-namespace math {
+class Math {
+ public:
+  static bool AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
+                                     int maxUlpsDiff) CHK;
+  static bool AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
+                                         float maxRelDiff) CHK;
 
-bool AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
-                            int maxUlpsDiff) CHK;
-bool AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
-                                float maxRelDiff) CHK;
+  static bool AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
+                                     int maxUlpsDiff) CHK;
+  static bool AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
+                                         double maxRelDiff) CHK;
 
-bool AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
-                            int maxUlpsDiff) CHK;
-bool AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
-                                double maxRelDiff) CHK;
-
-}  // namespace math
+};
 
 #endif  // COMPARE_DECIMAL_H_

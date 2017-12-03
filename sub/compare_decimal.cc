@@ -32,8 +32,6 @@
 #include <cmath>
 #include <cstdint>
 
-namespace math {
-
 /**
  * @brief Internal union to convert float to number (4 bytes).
  *
@@ -95,8 +93,6 @@ union Double_t {
    */
   int64_t i;
 };
-
-}  // namespace math
 
 /**
  * @brief Function that compare equality of two decimal number that are not
@@ -189,7 +185,7 @@ static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
+bool Math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
                                   int maxUlpsDiff) {
   return AlmostEqualUlpsAndAbsInternal<float, Float_t, int32_t>(A, B, maxDiff,
                                                                 maxUlpsDiff);
@@ -207,7 +203,7 @@ bool math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
+bool Math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
                                       float maxRelDiff) {
   return AlmostEqualRelativeAndAbsInternal<float>(A, B, maxDiff, maxRelDiff);
 }
@@ -224,7 +220,7 @@ bool math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
+bool Math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
                                   int maxUlpsDiff) {
   return AlmostEqualUlpsAndAbsInternal<double, Double_t, int64_t>(A, B, maxDiff,
                                                                   maxUlpsDiff);
@@ -242,7 +238,7 @@ bool math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool math::AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
+bool Math::AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
                                       double maxRelDiff) {
   return AlmostEqualRelativeAndAbsInternal<double>(A, B, maxDiff, maxRelDiff);
 }
