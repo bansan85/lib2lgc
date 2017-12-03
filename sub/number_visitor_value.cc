@@ -84,7 +84,7 @@ bool pattern::visitor::NumberVisitorVal::Visit(
       break;
     }
     case msg::Number_Operator_DIVISION: {
-      BUGUSER(!math::AlmostEqualRelativeAndAbsD(val2.value(), 0., 1e-15, 1e-15),
+      BUGUSER(!Math::AlmostEqualRelativeAndAbsD(val2.value(), 0., 1e-15, 1e-15),
               false, "Divide by zero.");
       val.set_value(val1.value() / val2.value());
       break;
