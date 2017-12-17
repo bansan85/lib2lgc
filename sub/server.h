@@ -23,45 +23,92 @@
 
 // C++ system
 #include <cstdint>
-#include <functional>
-#include <list>
 #include <map>
+#include <memory>
+#include <queue>
+
+// Current project
+#include "connector_interface.h"
 
 namespace pattern {
 namespace publisher {
 
+/**
+ * @brief Server that will be used to managed subscribers and to keep and send
+ *        messages.
+ */
+template <typename M>
 class Server {
  public:
-  using SubscriberAction = std::function<void(void *)>;
-
+  /**
+   * @brief Options of the server.
+   */
   struct Options {
+    /**
+     * @brief To allow a subscriber to subscribe twice to the same message.
+     *        Default: false.
+     */
     bool add_fail_if_already_subscribed;
 
+    /**
+     * @brief Default constructor.
+     */
     Options() : add_fail_if_already_subscribed(false) {}
   };
 
+  /**
+   * @brief Default constructor.
+   */
   Server();
 
-  bool AddSubscriber(uint32_t id_message, void *subscriber,
-                     SubscriberAction action) CHK;
-  bool RemoveSubscriber(uint32_t id_message, void *subscriber) CHK;
-  void SendMessage(uint32_t id_message, void *message);
+  /**
+   * @brief Add a subscriber to the server.
+   *
+   * @param id_message The message to subscribe.
+   * @param subscriber The subscriber.
+   *
+   i* @return true if success. May failed if add_fail_if_already_subscribed i2
+   * true and the subscriber is already registered.
+   */
+  bool AddSubscriber(uint32_t id_message,
+                     std::shared_ptr<ConnectorInterface> subscriber) CHK;
+
+  /**
+   * @brief Send the message to all subscribers.
+   *
+   * @param id_message The message.
+   * @param message Data of the message in ProtoBuf, SerializeToString.
+   */
+  void Forward(const std::shared_ptr<const std::string> &message);
+
+  /**
+   * @brief Remove a subscriber of the server.
+   *
+   * @param id_message The message to unsubscriber.
+   * @param subscriber The subscriber.
+   *
+   * @return true if subscriber is unsubscribed successfully.
+   *         May failed if suscriber is not subscribe to the specific message.
+   */
+  bool RemoveSubscriber(uint32_t id_message,
+                        std::shared_ptr<ConnectorInterface> subscriber) CHK;
 
  private:
-  // id of the message.
+  /**
+   * @brief Type of the map for subscribers.
+   */
   using SubscriberMap =
-      std::multimap<uint32_t,
-                    // Pointer to the subscriber and function to execute.
-                    std::pair<void *, SubscriberAction>>;
+      std::multimap<uint32_t, std::shared_ptr<ConnectorInterface>>;
 
-  // List of subscriber with id and function to execute.
+  /**
+   * @brief List of subscribers to send message.
+   */
   SubscriberMap subscribers_;
 
-  // Option for the behavious of server.
+  /**
+   * @brief Options for the behavious of server.
+   */
   Options options_;
-
-  // Each SendMessage increments the current value by 1.
-  std::map<uint32_t, uint32_t> version_;
 };
 
 }  // namespace publisher

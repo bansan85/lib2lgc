@@ -18,56 +18,75 @@
 
 #include "server.h"
 
-pattern::publisher::Server::Server() : subscribers_(), options_(), version_() {}
+// C++ system
+#include <memory>
+
+// macros
+#include <handle_error.h>
+
+template <typename M>
+pattern::publisher::Server<M>::Server() : subscribers_(), options_() {}
 
 // Do not fail if subscriber is already subscribed in the same id_message.
-bool pattern::publisher::Server::AddSubscriber(uint32_t id_message,
-                                               void *subscriber,
-                                               SubscriberAction action) {
+template <typename M>
+bool pattern::publisher::Server<M>::AddSubscriber(
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
   if (options_.add_fail_if_already_subscribed) {
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
         iterpair = subscribers_.equal_range(id_message);
 
     SubscriberMap::const_iterator it = iterpair.first;
     for (; it != iterpair.second; ++it) {
-      if (it->second.first == subscriber) {
+      if (it->second->Equals(subscriber.get())) {
         return false;
       }
     }
   }
 
-  version_[id_message] = 0;
-  subscribers_.insert({id_message, {subscriber, action}});
+  subscribers_.insert(std::pair<uint32_t, std::shared_ptr<ConnectorInterface>>(
+      id_message, subscriber));
 
   return true;
 }
 
-bool pattern::publisher::Server::RemoveSubscriber(uint32_t id_message,
-                                                  void *subscriber) {
+template <typename M>
+void pattern::publisher::Server<M>::Forward(
+    const std::shared_ptr<const std::string> &message) {
+  M actions;
+
+  BUGUSER(actions.ParseFromString(*message.get()), ,
+          "Failed to decode message.\n");
+
+  for (int i = 0; i < actions.action_size(); i++) {
+    // Must use auto because we don't know if M is in namespace or not.
+    auto &action = actions.action(i);
+
+    std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
+        iterpair = subscribers_.equal_range(action.data_case());
+
+    SubscriberMap::const_iterator it = iterpair.first;
+    for (; it != iterpair.second; ++it) {
+      it->second->Listen(message);
+    }
+  }
+}
+
+#include <iostream>
+
+template <typename M>
+bool pattern::publisher::Server<M>::RemoveSubscriber(
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
       iterpair = subscribers_.equal_range(id_message);
 
   SubscriberMap::const_iterator it = iterpair.first;
   for (; it != iterpair.second; ++it) {
-    if (it->second.first == subscriber) {
+    if (it->second.get()->Equals(subscriber.get())) {
       subscribers_.erase(it);
       return true;
     }
   }
 
   return false;
-}
-
-void pattern::publisher::Server::SendMessage(uint32_t id_message,
-                                             void *message) {
-  version_[id_message]++;
-
-  std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
-      iterpair = subscribers_.equal_range(id_message);
-
-  SubscriberMap::const_iterator it = iterpair.first;
-  for (; it != iterpair.second; ++it) {
-    it->second.second(message);
-  }
 }
