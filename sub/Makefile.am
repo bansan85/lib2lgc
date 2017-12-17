@@ -6,7 +6,7 @@ CC_FROM_PROTO	=	cpp/area.pb.cc \
 
 H_FROM_PROTO	=	$(CC_FROM_PROTO:.pb.cc=.pb.h)
 
-eEXTRA_DIST		=	$(CC_FROM_PROTO) 2
+EXTRA_DIST		=	$(CC_FROM_PROTO) \
 								$(H_FROM_PROTO)
 
 CLEANFILES		=	$(EXTRA_DIST)
