@@ -16,7 +16,7 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "server.h"
+#include "server_remote.h"
 
 // C++ system
 #include <memory>
@@ -25,11 +25,16 @@
 #include <handle_error.h>
 
 template <typename M>
-pattern::publisher::Server<M>::Server() : subscribers_(), options_() {}
+pattern::publisher::ServerRemote<M>::ServerRemote() : ServerBase<M>() {}
+
+template <typename M>
+bool pattern::publisher::ServerRemote<M>::StartIp(uint16_t port) {
+  
+}
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
-bool pattern::publisher::Server<M>::AddSubscriber(
+bool pattern::publisher::ServerRemote<M>::AddSubscriber(
     uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
   if (options_.add_fail_if_already_subscribed) {
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
@@ -50,31 +55,7 @@ bool pattern::publisher::Server<M>::AddSubscriber(
 }
 
 template <typename M>
-void pattern::publisher::Server<M>::Forward(
-    const std::shared_ptr<const std::string> &message) {
-  M actions;
-
-  BUGUSER(actions.ParseFromString(*message.get()), ,
-          "Failed to decode message.\n");
-
-  for (int i = 0; i < actions.action_size(); i++) {
-    // Must use auto because we don't know if M is in namespace or not.
-    auto &action = actions.action(i);
-
-    std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
-        iterpair = subscribers_.equal_range(action.data_case());
-
-    SubscriberMap::const_iterator it = iterpair.first;
-    for (; it != iterpair.second; ++it) {
-      it->second->Listen(message);
-    }
-  }
-}
-
-#include <iostream>
-
-template <typename M>
-bool pattern::publisher::Server<M>::RemoveSubscriber(
+bool pattern::publisher::ServerRemote<M>::RemoveSubscriber(
     uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>

@@ -1,3 +1,5 @@
+#include <iostream2
+
 lib_LTLIBRARIES	=	lib2lgcPublisher.la
 
 
@@ -6,19 +8,21 @@ lib2lgcPublisher_la_CXXFLAGS	=	-isystem $(srcdir)/../../macro \
 
 lib2lgcPublisher_la_LDFLAGS		= $(AM_LDFLAGS) -release $(VERSION)
 
-lib2lgcPublisher_la_SOURCES		= server.cc \
-																connector_direct.cc \
+lib2lgcPublisher_la_SOURCES		= connector_direct.cc \
 																connector_interface.cc \
-																subscriber_interface.cc \
-																subscriber_direct.cc
+																publisher_base.cc \
+																publisher_remote.cc \
+																subscriber_direct.cc \
+																subscriber_interface.cc
 
 lib2lgcPublisher_ladir				= $(includedir)/2lgc
 
-lib2lgcPublisher_la_HEADERS		= server.h \
-																connector_direct.h \
+lib2lgcPublisher_la_HEADERS		= connector_direct.h \
 																connector_interface.h \
-																subscriber_interface.h \
-																subscriber_direct.h
+																publisher_base.h \
+																publisher_remote.h \
+																subscriber_direct.h \
+																subscriber_interface.h
 
 
 if HAVE_INTERNAL_DISTCHECK

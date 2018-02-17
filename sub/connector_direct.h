@@ -24,7 +24,7 @@
 #include "connector_interface.h"
 
 // Current project
-#include "server.h"
+#include "publisher_base.h"
 
 namespace pattern {
 namespace publisher {
@@ -41,7 +41,7 @@ class ConnectorDirect : public ConnectorInterface {
  public:
   explicit ConnectorDirect(
       const std::shared_ptr<SubscriberInterface> &subscriber,
-      const std::shared_ptr<Server<T>> &server)
+      const std::shared_ptr<PublisherBase<T>> &server)
       : ConnectorInterface(subscriber), server_(server) {}
 
   bool Equals(const ConnectorInterface *connector) const override CHK;
@@ -68,7 +68,7 @@ class ConnectorDirect : public ConnectorInterface {
   virtual ~ConnectorDirect() {}
 
  private:
-  std::shared_ptr<Server<T>> server_;
+  std::shared_ptr<PublisherBase<T>> server_;
 };
 
 }  // namespace publisher

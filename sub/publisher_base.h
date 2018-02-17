@@ -16,8 +16,8 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef SERVER_H_
-#define SERVER_H_
+#ifndef PUBLISHER_BASE_H_
+#define PUBLISHER_BASE_H_
 
 #include "config.h"
 
@@ -38,7 +38,7 @@ namespace publisher {
  *        messages.
  */
 template <typename M>
-class Server {
+class PublisherBase {
  public:
   /**
    * @brief Options of the server.
@@ -59,7 +59,7 @@ class Server {
   /**
    * @brief Default constructor.
    */
-  Server();
+  PublisherBase();
 
   /**
    * @brief Add a subscriber to the server.
@@ -67,11 +67,12 @@ class Server {
    * @param id_message The message to subscribe.
    * @param subscriber The subscriber.
    *
-   i* @return true if success. May failed if add_fail_if_already_subscribed i2
+   * @return true if success. May failed if add_fail_if_already_subscribed is
    * true and the subscriber is already registered.
    */
-  bool AddSubscriber(uint32_t id_message,
-                     std::shared_ptr<ConnectorInterface> subscriber) CHK;
+  virtual bool AddSubscriber(
+      uint32_t id_message,
+      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
 
   /**
    * @brief Send the message to all subscribers.
@@ -90,10 +91,11 @@ class Server {
    * @return true if subscriber is unsubscribed successfully.
    *         May failed if suscriber is not subscribe to the specific message.
    */
-  bool RemoveSubscriber(uint32_t id_message,
-                        std::shared_ptr<ConnectorInterface> subscriber) CHK;
+  virtual bool RemoveSubscriber(
+      uint32_t id_message,
+      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
 
- private:
+ protected:
   /**
    * @brief Type of the map for subscribers.
    */
@@ -114,4 +116,4 @@ class Server {
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // SERVER_H_
+#endif  // PUBLISHER_BASE_H_
