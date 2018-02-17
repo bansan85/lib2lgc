@@ -16,15 +16,14 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef CONNECTOR_DIRECT_H_
-#define CONNECTOR_DIRECT_H_
+#ifndef CONNECTOR_INTERFACE_H_
+#define CONNECTOR_INTERFACE_H_
 
-#include "config.h"
+// C++ system
+#include <memory>
+#include <queue>
 
-#include "connector_interface.h"
-
-// Current project
-#include "publisher_base.h"
+#include "subscriber_interface.h"
 
 namespace pattern {
 namespace publisher {
@@ -36,18 +35,17 @@ namespace publisher {
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
-template <typename T>
-class ConnectorDirect : public ConnectorInterface {
+class ConnectorInterface {
  public:
-  explicit ConnectorDirect(
-      const std::shared_ptr<SubscriberInterface> &subscriber,
-      const std::shared_ptr<PublisherBase<T>> &server)
-      : ConnectorInterface(subscriber), server_(server) {}
+  explicit ConnectorInterface(
+      const std::shared_ptr<SubscriberInterface> &subscriber)
+      : messages_(), next_id_(0), subscriber_(subscriber) {}
 
-  bool Equals(const ConnectorInterface *connector) const override CHK;
+  virtual bool Equals(const ConnectorInterface *connector) const CHK = 0;
 
-  bool AddSubscriber(uint32_t id_message,
-                     std::shared_ptr<ConnectorInterface> subscriber) CHK;
+  virtual bool AddSubscriber(
+      uint32_t id_message,
+      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
 
   /**
    * @brief Send message.
@@ -55,23 +53,30 @@ class ConnectorDirect : public ConnectorInterface {
    * @param id_message The id of the message.
    * @param data Data of the message in ProtoBuf, SerializeToString.
    */
-  void Send(const std::shared_ptr<const std::string> &message) override CHK;
-  void Listen(const std::shared_ptr<const std::string> &message) override CHK;
+  virtual void Send(const std::shared_ptr<const std::string> &message) = 0;
 
-  bool RemoveSubscriber(
+  virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
+
+  virtual bool RemoveSubscriber(
       uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
+      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
+
+  const SubscriberInterface *GetSubscriber() const { return subscriber_.get(); }
 
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorDirect() {}
+  virtual ~ConnectorInterface() {}
 
- private:
-  std::shared_ptr<PublisherBase<T>> server_;
+ protected:
+  // Pair with the id of the event and the arguments.
+  std::queue<std::pair<uint32_t, std::shared_ptr<const std::string>>> messages_;
+  // id of the next message.
+  uint32_t next_id_;
+  std::shared_ptr<SubscriberInterface> subscriber_;
 };
 
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // CONNECTOR_DIRECT_H_
+#endif  // CONNECTOR_INTERFACE_H_

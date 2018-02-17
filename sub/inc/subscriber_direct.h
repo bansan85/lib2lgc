@@ -19,8 +19,6 @@
 #ifndef SUBSCRIBER_DIRECT_H_
 #define SUBSCRIBER_DIRECT_H_
 
-#include "config.h"
-
 #include "subscriber_interface.h"
 
 namespace pattern {

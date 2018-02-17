@@ -16,10 +16,10 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef PUBLISHER_BASE_H_
-#define PUBLISHER_BASE_H_
+#ifndef PUBLISHER_REMOTE_H_
+#define PUBLISHER_REMOTE_H_
 
-#include "config.h"
+#include "publisher_base.h"
 
 // C++ system
 #include <cstdint>
@@ -38,28 +38,14 @@ namespace publisher {
  *        messages.
  */
 template <typename M>
-class PublisherBase {
+class PublisherRemote : public PublisherBase<M> {
  public:
-  /**
-   * @brief Options of the server.
-   */
-  struct Options {
-    /**
-     * @brief To allow a subscriber to subscribe twice to the same message.
-     *        Default: false.
-     */
-    bool add_fail_if_already_subscribed;
-
-    /**
-     * @brief Default constructor.
-     */
-    Options() : add_fail_if_already_subscribed(false) {}
-  };
-
   /**
    * @brief Default constructor.
    */
-  PublisherBase();
+  PublisherRemote();
+
+  bool StartIp(uint16_t port) CHK;
 
   /**
    * @brief Add a subscriber to the server.
@@ -70,17 +56,9 @@ class PublisherBase {
    * @return true if success. May failed if add_fail_if_already_subscribed is
    * true and the subscriber is already registered.
    */
-  virtual bool AddSubscriber(
+  bool AddSubscriber(
       uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
-
-  /**
-   * @brief Send the message to all subscribers.
-   *
-   * @param id_message The message.
-   * @param message Data of the message in ProtoBuf, SerializeToString.
-   */
-  void Forward(const std::shared_ptr<const std::string> &message);
+      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
 
   /**
    * @brief Remove a subscriber of the server.
@@ -91,29 +69,21 @@ class PublisherBase {
    * @return true if subscriber is unsubscribed successfully.
    *         May failed if suscriber is not subscribe to the specific message.
    */
-  virtual bool RemoveSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
+  bool RemoveSubscriber(uint32_t id_message,
+                        std::shared_ptr<ConnectorInterface> subscriber) CHK;
 
  protected:
-  /**
-   * @brief Type of the map for subscribers.
-   */
+  // using needed because of template inheritance.
+  using PublisherBase<M>::options_;
+  using PublisherBase<M>::subscribers_;
   using SubscriberMap =
       std::multimap<uint32_t, std::shared_ptr<ConnectorInterface>>;
 
-  /**
-   * @brief List of subscribers to send message.
-   */
-  SubscriberMap subscribers_;
-
-  /**
-   * @brief Options for the behavious of server.
-   */
-  Options options_;
+ private:
+  uint16_t port_;
 };
 
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // PUBLISHER_BASE_H_
+#endif  // PUBLISHER_REMOTE_H_
