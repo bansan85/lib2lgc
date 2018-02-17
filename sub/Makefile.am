@@ -31,7 +31,7 @@ if HAVE_DOXYGEN
 all-local: doxygen.stamp
 
 doxygen.stamp: $(lib2lgcMath_la_SOURCES) $(lib2lgcMath_la_HEADERS)
-	mkdir -p ../../../doc/math
+	mkdir -p ../../doc/math
 	echo Timestamp > doxygen.stamp
 	$(DOXYGEN) ./Doxyfile
 
