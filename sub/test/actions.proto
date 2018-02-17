@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option cc_enable_arenas = true;
+
+package msg;
+
+message Action {
+  message Test {
+  }
+
+  oneof data {
+    Test test = 1;
+  }
+}
+
+message Actions {
+  repeated Action action = 1;
+}
