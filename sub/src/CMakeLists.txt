@@ -18,6 +18,16 @@ include_directories(${PROTOBUF_INCLUDE_DIR}
         ${CMAKE_CURRENT_BINARY_DIR}/../protobuf
         ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
+if (INCLUDE_VISITOR)
+        include_directories(${INCLUDE_VISITOR})
+endif()
+if (INCLUDE_HEADER)
+        include_directories(${INCLUDE_HEADER})
+endif()
+if (INCLUDE_MATH)
+        include_directories(${INCLUDE_MATH})
+endif()
+
 file(GLOB HEADERS ${PROTO_HEADER} ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
 
 add_library(2lgcpoco SHARED ${PROTO_SRC} number.cc number_visitor_unit.cc number_visitor_value.cc)

@@ -31,6 +31,9 @@
 // lib2lgcVisitor
 #include <visitor.h>
 
+// lib2lgcMath
+#include <compat.h>
+
 namespace pattern {
 namespace visitor {
 
