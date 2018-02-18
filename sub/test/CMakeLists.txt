@@ -10,8 +10,6 @@ include_directories(${PROTOBUF_INCLUDE_DIR}
 
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADER actions.proto)
 
-enable_testing()
-
 add_executable(publisher1 EXCLUDE_FROM_ALL ${PROTO_HEADER} ${PROTO_SRC} publisher1.cc)
 target_link_libraries(publisher1 ${Protobuf_LIBRARIES} 2lgcpublisher)
 add_test(publisher1 publisher1)
