@@ -1,4 +1,11 @@
-cmake_minimum_required (VERSION 2.8.11)
-project (HELLO)
+cmake_minimum_required(VERSION 2.8.11)
 
-add_subdirectory (src)
+project(HELLO)
+
+# For make check
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
+
+add_subdirectory(src)
+
+enable_testing()
+add_subdirectory(test)

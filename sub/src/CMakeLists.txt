@@ -15,8 +15,6 @@ set_target_properties(2lgcpublisher
         PROPERTIES FRAMEWORK TRUE
         PUBLIC_HEADER "${HEADERS}")
 
-#target_include_directories (2lgcpublisher PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
-
 install(TARGETS 2lgcpublisher
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/2lgc)

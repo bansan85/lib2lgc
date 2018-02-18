@@ -28,7 +28,7 @@
 #include <publisher_remote.cc>
 
 // Current project
-#include "cpp/actions.pb.h"
+#include "actions.pb.h"
 
 template class pattern::publisher::PublisherBase<msg::Actions>;
 template class pattern::publisher::PublisherRemote<msg::Actions>;

@@ -56,8 +56,8 @@ class ConnectorDirect : public ConnectorInterface {
    * @param id_message The id of the message.
    * @param data Data of the message in ProtoBuf, SerializeToString.
    */
-  void Send(const std::shared_ptr<const std::string> &message) override CHK;
-  void Listen(const std::shared_ptr<const std::string> &message) override CHK;
+  void Send(const std::shared_ptr<const std::string> &message) override;
+  void Listen(const std::shared_ptr<const std::string> &message) override;
 
   bool RemoveSubscriber(
       uint32_t id_message,
