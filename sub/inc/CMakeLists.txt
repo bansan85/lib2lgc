@@ -1,0 +1,8 @@
+include(GNUInstallDirs)
+
+add_library(2lgcvisitor INTERFACE)
+INSTALL (
+    DIRECTORY ${CMAKE_SOURCE_DIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/2lgc
+    FILES_MATCHING PATTERN "*.h*")
+
