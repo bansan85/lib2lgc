@@ -4,8 +4,8 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
-if (FOLDER_HEADER)
-        include_directories(${FOLDER_HEADER})
+if (INCLUDE_HEADER)
+        include_directories(${INCLUDE_HEADER})
 endif()
 
 add_library(2lgcmath SHARED
