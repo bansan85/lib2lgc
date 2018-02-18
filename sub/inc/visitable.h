@@ -22,8 +22,6 @@
 #ifndef VISITABLE_H_
 #define VISITABLE_H_
 
-#include "config.h"
-
 // C++ system
 #include <string>
 

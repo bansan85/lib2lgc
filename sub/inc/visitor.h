@@ -22,10 +22,11 @@
 #ifndef VISITOR_H_
 #define VISITOR_H_
 
-#include "config.h"
-
 // C++ system
 #include <string>
+
+// lib2lgcMath
+#include <compat.h>
 
 /**
  * @file
