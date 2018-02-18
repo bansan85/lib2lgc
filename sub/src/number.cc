@@ -17,8 +17,6 @@
  * along with 2LGC. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
-
 #include "number.h"
 
 // C++ system

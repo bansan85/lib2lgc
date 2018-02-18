@@ -1,0 +1,29 @@
+include(FindProtobuf)
+include(GNUInstallDirs)
+
+find_package(Protobuf REQUIRED)
+
+include_directories(${Protobuf_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_BINARY_DIR})
+
+protobuf_generate_cpp(PROTO_SRC PROTO_HEADER
+        ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/area.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/load.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/number.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/project.proto
+        ${CMAKE_CURRENT_SOURCE_DIR}/../protobuf/raw.proto)
+
+include_directories(${PROTOBUF_INCLUDE_DIR}
+        # For generated *.pb.h
+        ${CMAKE_CURRENT_BINARY_DIR}/../protobuf
+        ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
+
+file(GLOB HEADERS ${PROTO_HEADER} ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
+
+add_library(2lgcpoco SHARED ${PROTO_SRC} number.cc number_visitor_unit.cc number_visitor_value.cc)
+set_target_properties(2lgcpoco
+        PROPERTIES FRAMEWORK TRUE
+        PUBLIC_HEADER "${HEADERS}")
+install(TARGETS 2lgcpoco
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/2lgc)

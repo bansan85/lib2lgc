@@ -19,8 +19,6 @@
 #ifndef NUMBER_VISITOR_VALUE_H_
 #define NUMBER_VISITOR_VALUE_H_
 
-#include "config.h"
-
 // C++ system
 #include <string>
 

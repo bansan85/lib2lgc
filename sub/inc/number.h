@@ -19,8 +19,6 @@
 #ifndef NUMBER_H_
 #define NUMBER_H_
 
-#include "config.h"
-
 // C++ system
 #include <string>
 
