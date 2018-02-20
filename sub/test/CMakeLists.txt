@@ -8,6 +8,10 @@ include_directories(${PROTOBUF_INCLUDE_DIR}
         ${CMAKE_CURRENT_SOURCE_DIR}/../src
         ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
+if (INCLUDE_HEADER)
+        include_directories(${INCLUDE_HEADER})
+endif()
+
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADER actions.proto)
 
 add_executable(publisher1 EXCLUDE_FROM_ALL ${PROTO_HEADER} ${PROTO_SRC} publisher1.cc)

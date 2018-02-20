@@ -4,6 +4,10 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
+if (INCLUDE_HEADER)
+        include_directories(${INCLUDE_HEADER})
+endif()
+
 add_library(2lgcpublisher SHARED
         publisher_base.cc
         subscriber_direct.cc
