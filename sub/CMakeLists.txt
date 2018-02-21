@@ -9,10 +9,9 @@ set(INCLUDE_HEADER)
 set(INCLUDE_MATH)
 set(LIBRARY_MATH)
 
-add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
-
 add_subdirectory(inc)
 
+add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND})
 enable_testing()
 add_subdirectory(test)
 
