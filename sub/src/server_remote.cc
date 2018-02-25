@@ -31,9 +31,7 @@ template <typename M>
 pattern::publisher::ServerRemote<M>::ServerRemote() : ServerBase<M>() {}
 
 template <typename M>
-bool pattern::publisher::ServerRemote<M>::StartIp(uint16_t port) {
-  
-}
+bool pattern::publisher::ServerRemote<M>::StartIp(uint16_t port) {}
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
