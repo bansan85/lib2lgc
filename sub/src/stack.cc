@@ -21,7 +21,8 @@
 
 #include "stack.h"
 
-Stack::Stack(const std::string_view &filename) : filename_(filename) {}
+Stack::Stack(const std::string_view &filename)
+    : filename_(filename), backtraces_() {}
 
 bool Stack::InterpretLine(const std::string_view &line) {
   try {

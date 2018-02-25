@@ -28,7 +28,8 @@
 #include <thread>
 
 SetStack::SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame)
-    : stack_(Local(with_source_only, top_frame, bottom_frame)) {}
+    : stack_(Local(with_source_only, top_frame, bottom_frame)),
+      mutex_stack_() {}
 
 SetStack::Local::Local(bool with_source_only, size_t top_frame,
                        size_t bottom_frame)
@@ -166,12 +167,12 @@ bool SetStack::AddRecursive(const std::string& folder) {
   std::vector<std::thread> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++) {
     threads[t] = std::thread(std::bind(
-        [&all_files, this](const size_t i_start, const size_t nthreads) {
+        [&all_files, this, nthreads](const size_t i_start) {
           for (size_t i = i_start; i < all_files.size(); i += nthreads) {
             Add(all_files[i]);
           }
         },
-        t, nthreads));
+        t));
   }
   std::for_each(threads.begin(), threads.end(),
                 [](std::thread& x) { x.join(); });

@@ -30,7 +30,7 @@
 #include <vector>
 
 Bt::Bt(const std::string_view& line)
-    : index_(0), address_(0), file_(), line_(0) {
+    : index_(0), address_(0), function_(), file_(), line_(0) {
   std::string_view index, address, function, file;
 
   if (!DecodeBacktrace(line, index, address, function, file)) {
@@ -136,11 +136,11 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
 }
 
 void Bt::ReadIndex(const std::string& number) {
-  index_ = std::stoi(number, nullptr, 10);
+  index_ = static_cast<size_t>(std::stoi(number, nullptr, 10));
 }
 
 void Bt::ReadAddress(const std::string& number) {
-  address_ = std::stol(number, nullptr, 0);
+  address_ = static_cast<uint64_t>(std::stol(number, nullptr, 0));
 }
 
 bool Bt::ReadFunction(const std::string_view& description) {
@@ -208,7 +208,7 @@ bool Bt::ReadSource(const std::string_view& file) {
   }
 
   try {
-    line_ = std::stoi(file.substr(pos + 1).data());
+    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1).data()));
   } catch (const std::invalid_argument&) {
     std::cerr << "Invalid file " << file << std::endl;
     return false;

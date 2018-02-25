@@ -29,6 +29,7 @@
 
 class Function {
  public:
+  Function() : name(), args() {}
   std::string name;
   // Key: arg, Value: value.
   std::vector<std::pair<std::string, std::string> > args;
