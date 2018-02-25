@@ -47,8 +47,9 @@ class ConnectorDirect : public ConnectorInterface {
 
   bool Equals(const ConnectorInterface *connector) const override CHK;
 
-  bool AddSubscriber(uint32_t id_message,
-                     std::shared_ptr<ConnectorInterface> subscriber) CHK;
+  bool AddSubscriber(
+      uint32_t id_message,
+      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
 
   /**
    * @brief Send message.

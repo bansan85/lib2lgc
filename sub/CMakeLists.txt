@@ -5,6 +5,8 @@ project(publisher)
 set(INCLUDE_HEADER)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+include(2lgc)
+
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
 add_custom_target(check
         COMMAND ${CMAKE_CTEST_COMMAND}

@@ -29,7 +29,7 @@
 
 template <typename M>
 pattern::publisher::PublisherRemote<M>::PublisherRemote()
-    : PublisherBase<M>() {}
+    : PublisherBase<M>(), port_(0) {}
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
