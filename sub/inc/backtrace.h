@@ -19,22 +19,38 @@
  * SOFTWARE.
  */
 
+#ifndef BT_H_
+#define BT_H_
+
 // C++ system
-#include <cassert>
-#include <memory>
+#include <string_view>
 
-// lib2lgcgdb
-#include <backtrace.h>
+#include "function.h"
 
-int main(int /* argc */, char* /* argv */ []) {
-  std::string line(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
-  std::unique_ptr<Bt> bt = std::make_unique<Bt>(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
+class Bt {
+ public:
+  Bt(const std::string_view& line);
 
-  return 0;
-}
+  bool DecodeBacktrace(const std::string_view& line, std::string_view& index,
+                       std::string_view& address, std::string_view& function,
+                       std::string_view& file);
+  bool HasSource() const { return file_.length() != 0; }
+  const std::string& GetFile() const { return file_; }
+  size_t GetLine() const { return line_; }
+
+ private:
+  // The nth backtrace of the stack.
+  size_t index_;
+  // Address of the PC.
+  uint64_t address_;
+  Function function_;
+  std::string file_;
+  size_t line_;
+
+  void ReadIndex(const std::string& number);
+  void ReadAddress(const std::string& address);
+  bool ReadFunction(const std::string_view& description);
+  bool ReadSource(const std::string_view& file);
+};
+
+#endif  // BT_H_

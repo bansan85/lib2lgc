@@ -4,8 +4,11 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
+find_package(Threads)
+
 add_library(2lgcgdb SHARED
-        bt.cc)
+        backtrace.cc stack.cc set_stack.cc)
+target_link_libraries(2lgcgdb stdc++fs ${CMAKE_THREAD_LIBS_INIT})
 set_target_properties(2lgcgdb
         PROPERTIES FRAMEWORK TRUE
         PUBLIC_HEADER "${HEADERS}")

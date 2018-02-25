@@ -19,22 +19,16 @@
  * SOFTWARE.
  */
 
-// C++ system
-#include <cassert>
-#include <memory>
+#include "stack.h"
 
-// lib2lgcgdb
-#include <backtrace.h>
+Stack::Stack(const std::string_view &filename) : filename_(filename) {}
 
-int main(int /* argc */, char* /* argv */ []) {
-  std::string line(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
-  std::unique_ptr<Bt> bt = std::make_unique<Bt>(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
-
-  return 0;
+bool Stack::InterpretLine(const std::string_view &line) {
+  try {
+    backtraces_.emplace_back(std::make_unique<Bt>(line));
+  } catch (const std::invalid_argument &) {
+    // It's a local variable.
+    // TODO
+  }
+  return true;
 }

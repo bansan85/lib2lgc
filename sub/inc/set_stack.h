@@ -19,22 +19,41 @@
  * SOFTWARE.
  */
 
+#ifndef SET_STACK_H_
+#define SET_STACK_H_
+
 // C++ system
-#include <cassert>
 #include <memory>
+#include <mutex>
+#include <set>
 
-// lib2lgcgdb
-#include <backtrace.h>
+#include "stack.h"
 
-int main(int /* argc */, char* /* argv */ []) {
-  std::string line(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
-  std::unique_ptr<Bt> bt = std::make_unique<Bt>(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
+class SetStack {
+ public:
+  SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame);
 
-  return 0;
-}
+  bool Add(const std::string& filename);
+  bool AddRecursive(const std::string& folder);
+  void Print();
+
+ private:
+  struct Local {
+    Local(bool with_source_only, size_t top_frame, size_t bottom_frame);
+    bool operator()(const std::unique_ptr<Stack>& i,
+                    const std::unique_ptr<Stack>& j);
+    int CompareFrom(const size_t nb_max_frames,
+                    decltype(&Stack::GetBacktraceFromTop) get_backtraces,
+                    const std::unique_ptr<Stack>& i,
+                    const std::unique_ptr<Stack>& j);
+
+    bool with_source_only_;
+    size_t top_frame_;
+    size_t bottom_frame_;
+  };
+
+  std::multiset<std::unique_ptr<Stack>, Local> stack_;
+  std::mutex mutex_stack_;
+};
+
+#endif  // SET_STACK_H_

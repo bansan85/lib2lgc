@@ -19,22 +19,19 @@
  * SOFTWARE.
  */
 
+#ifndef FUNCTION_H_
+#define FUNCTION_H_
+
 // C++ system
-#include <cassert>
-#include <memory>
+#include <string>
+#include <utility>
+#include <vector>
 
-// lib2lgcgdb
-#include <backtrace.h>
+class Function {
+ public:
+  std::string name;
+  // Key: arg, Value: value.
+  std::vector<std::pair<std::string, std::string> > args;
+};
 
-int main(int /* argc */, char* /* argv */ []) {
-  std::string line(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
-  std::unique_ptr<Bt> bt = std::make_unique<Bt>(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
-
-  return 0;
-}
+#endif  // FUNCTION_H_

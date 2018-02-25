@@ -19,36 +19,34 @@
  * SOFTWARE.
  */
 
-#ifndef BT_H_
-#define BT_H_
+#ifndef STACK_H_
+#define STACK_H_
 
 // C++ system
-#include <string_view>
 #include <memory>
+#include <string_view>
 #include <vector>
 
-class Bt {
+#include "backtrace.h"
+
+class Stack {
  public:
-  Bt();
+  Stack(const std::string_view& filename);
 
-  static std::unique_ptr<Bt> Factory(const std::string_view &line);
+  bool InterpretLine(const std::string_view& line);
+  const std::string& GetFilename() const { return filename_; }
 
-  struct Function
-  {
-    std::string name;
-    std::vector<std::string> args;
-  };
+  size_t NumberOfBacktraces() const { return backtraces_.size(); }
+
+  const Bt* GetBacktraceFromTop(size_t i) const { return backtraces_[i].get(); }
+
+  const Bt* GetBacktraceFromBottom(size_t i) const {
+    return backtraces_[backtraces_.size() - 1 - i].get();
+  }
 
  private:
-  // The n backtrace of the stack.
-  uint32_t index;
-  // Address of the PC.
-  uint64_t address;
-  Function function;
-
-  void ReadIndex(const std::string& number);
-  void ReadAddress(const std::string& number);
-  bool ReadFunction(const std::string& description);
+  std::string filename_;
+  std::vector<std::unique_ptr<Bt>> backtraces_;
 };
 
-#endif  // BT_H_
+#endif  // STACK_H_
