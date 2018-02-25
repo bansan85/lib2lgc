@@ -10,6 +10,8 @@ set(INCLUDE_MATH)
 set(LIBRARY_MATH)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+include(2lgc)
+
 add_subdirectory(inc)
 
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
