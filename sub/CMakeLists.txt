@@ -8,3 +8,5 @@ INSTALL (
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/2lgc
     FILES_MATCHING PATTERN "*.h*")
 
+file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
+add_custom_target(check COMMAND clang-format -style=Google -i ${ALL_SOURCE_FILES})

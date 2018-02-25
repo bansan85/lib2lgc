@@ -28,19 +28,19 @@
 #ifndef ssize_t
 #include <BaseTsd.h>
 typedef SSIZE_T ssize_t;
-#endif // !ssize_t
+#endif  // !ssize_t
 
-#else // !_MSC_VER
-#define CHK __attribute__ ((__warn_unused_result__))
-#endif // _MSC_VER
+#else  // !_MSC_VER
+#define CHK __attribute__((__warn_unused_result__))
+#endif  // _MSC_VER
 
 #if defined(_MSC_VER)
 #define SSCANF sscanf_s
 #define DllExport __declspec(dllexport)
-#else // !defined(_MSC_VER)
+#else  // !defined(_MSC_VER)
 #define SSCANF sscanf
 #define DllExport
-#endif // defined(_MSC_VER)
+#endif  // defined(_MSC_VER)
 
 #endif
 
