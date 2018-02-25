@@ -37,18 +37,24 @@ Bt::Bt(const std::string_view& line)
     throw std::invalid_argument("Invalid line");
   }
 
-  ReadIndex(std::string(index));
-
-  if (address.length() != 0) {
-    ReadAddress(std::string(address));
+  if (!ReadIndex(std::string(index)))
+  {
+    throw std::invalid_argument("Invalid line");
   }
 
-  if (function.length() != 0) {
-    ReadFunction(function);
+  if (address.length() != 0 && !ReadAddress(std::string(address)))
+  {
+    throw std::invalid_argument("Invalid line");
   }
 
-  if (file.length() != 0) {
-    ReadSource(file);
+  if (function.length() != 0 && !ReadFunction(function))
+  {
+    throw std::invalid_argument("Invalid line");
+  }
+
+  if (file.length() != 0 && !ReadSource(file))
+  {
+    throw std::invalid_argument("Invalid line");
   }
 }
 
@@ -114,16 +120,16 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
   }
 
   // " at " state.
-  const size_t inas = line.find(" at ", i);
+  const size_t inas = line.find(") at ", i);
   if (inas != std::string::npos) {
-    function = line.substr(i, inas - i);
-    i = inas + 4;
+    function = line.substr(i, inas - i + 1);
+    i = inas + 5;
     file = line.substr(i);
   } else {
-    const size_t infrom = line.find(" from ", i);
+    const size_t infrom = line.find(") from ", i);
     if (infrom != std::string::npos) {
-      function = line.substr(i, infrom - i);
-      i = infrom + 4;
+      function = line.substr(i, infrom - i + 1);
+      i = infrom + 5;
       file = line.substr(i);
     }
     // No as or from.
@@ -132,15 +138,35 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
     }
   }
 
+  // A function must have a '(' before ')'.
+  if (function.find('(') == std::string::npos)
+  {
+    return false;
+  }
+
   return true;
 }
 
-void Bt::ReadIndex(const std::string& number) {
-  index_ = static_cast<size_t>(std::stoi(number, nullptr, 10));
+bool Bt::ReadIndex(const std::string& number) {
+  try {
+    index_ = static_cast<size_t>(std::stoi(number, nullptr, 10));
+  }
+  catch (const std::out_of_range&)
+  {
+    return false;
+  }
+  return true;
 }
 
-void Bt::ReadAddress(const std::string& number) {
-  address_ = static_cast<uint64_t>(std::stol(number, nullptr, 0));
+bool Bt::ReadAddress(const std::string& number) {
+  try {
+    address_ = std::stoull(number, nullptr, 0);
+  }
+  catch (const std::out_of_range&)
+  {
+    return false;
+  }
+  return true;
 }
 
 bool Bt::ReadFunction(const std::string_view& description) {
@@ -210,6 +236,9 @@ bool Bt::ReadSource(const std::string_view& file) {
   try {
     line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1).data()));
   } catch (const std::invalid_argument&) {
+    std::cerr << "Invalid file " << file << std::endl;
+    return false;
+  } catch (const std::out_of_range&) {
     std::cerr << "Invalid file " << file << std::endl;
     return false;
   }

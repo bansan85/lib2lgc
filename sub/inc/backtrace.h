@@ -47,8 +47,8 @@ class Bt {
   std::string file_;
   size_t line_;
 
-  void ReadIndex(const std::string& number);
-  void ReadAddress(const std::string& address);
+  bool ReadIndex(const std::string& number);
+  bool ReadAddress(const std::string& address);
   bool ReadFunction(const std::string_view& description);
   bool ReadSource(const std::string_view& file);
 };
