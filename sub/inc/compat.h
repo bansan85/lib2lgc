@@ -42,6 +42,6 @@ typedef SSIZE_T ssize_t;
 #define DllExport
 #endif  // defined(_MSC_VER)
 
-#endif
+#endif  // COMPAT_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

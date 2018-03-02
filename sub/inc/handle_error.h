@@ -81,6 +81,6 @@
 
 #define BUGCONT(X, Y) BUG(X, Y, "Propagation de l'erreur.\n", "BLA")
 
-#endif
+#endif  // HANDLE_ERROR_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
