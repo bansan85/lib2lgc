@@ -19,6 +19,11 @@
  * SOFTWARE.
  */
 
+/**
+ * @file function.h
+ * @brief Store all informations about functions.
+ */
+
 #ifndef FUNCTION_H_
 #define FUNCTION_H_
 
@@ -27,12 +32,30 @@
 #include <utility>
 #include <vector>
 
+// Compatibility
+#include <compat.h>
+
+/**
+ * @brief Store all informations about a function.
+ *
+ * @details Contains the name of the function, the arguments and their value.
+ */
 class Function {
  public:
+  /**
+   * @brief Default constructor.
+   */
   Function() : name(), args() {}
+
+  /**
+   * @brief Name of the function.
+   */
   std::string name;
-  // Key: arg, Value: value.
-  std::vector<std::pair<std::string, std::string> > args;
+
+  /**
+   * @brief All the arguments. Key is the name of the arg, value is the value.
+   */
+  std::vector<std::pair<std::string, std::string>> args;
 };
 
 #endif  // FUNCTION_H_

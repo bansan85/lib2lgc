@@ -19,6 +19,12 @@
  * SOFTWARE.
  */
 
+/**
+ * @file set_stack.h
+ * @brief Store and sort all stacks. Criterea of sort must be defined on
+ * creation.
+ */
+
 #ifndef SET_STACK_H_
 #define SET_STACK_H_
 
@@ -27,14 +33,41 @@
 #include <mutex>
 #include <set>
 
+// Compatibility
+#include <compat.h>
+
 #include "stack.h"
 
+/**
+ * @brief Store and sort all stacks.
+ *
+ * @details Criterea of sort must be defined on creation.
+ */
 class SetStack {
  public:
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in] with_source_only Ignore backtrace where source file is unknown.
+   * @param[in] top_frame Number of frames from the top that must be identical
+   * so two stacks are the same. Internally, this number can not exceeded the
+   * number of frames.
+   * @param[in] bottom_frame Number of frames from the bottom that must be
+   * identical so two stacks are the same. Internally, this number can not
+   * exceeded the number of frames.
+   */
   SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame);
 
-  bool Add(const std::string& filename);
-  bool AddRecursive(const std::string& folder);
+  /**
+   * @brief Add a new stack. The file must contains only the full backtrace from
+   * GDB.
+   *
+   * @param[in] filename The file to add.
+   *
+   * @return True if the file is a valid backtrace.
+   */
+  bool Add(const std::string& filename) CHK;
+  bool AddRecursive(const std::string& folder, unsigned int nthread) CHK;
   void Print();
 
  private:

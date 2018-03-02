@@ -19,24 +19,56 @@
  * SOFTWARE.
  */
 
+/**
+ * @file backtrace.h
+ * @brief Store all informations about one backtrace.
+ */
+
 #ifndef BT_H_
 #define BT_H_
 
 // C++ system
 #include <string_view>
 
+// Compatibility
+#include <compat.h>
+
 #include "function.h"
 
+/**
+ * @brief Store all informations about one backtrace.
+ */
 class Bt {
  public:
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in] line The line in format
+   *   "#d  0xDEADBEEF in Function (args="") at filename:1234" or
+   *   "#d  0xDEADBEEF in Function (args="") from library"
+   */
   Bt(const std::string_view& line);
 
+  /**
+   * @brief From a line, decode and extract the index, the address, the
+   * function and the filename.
+   *
+   * @param[in] line The line from gdb in format
+   *   "#d  0xDEADBEEF in Function (args="") at filename:1234"
+   * @param[out] index The index extracted (d).
+   * @param[out] address The address extracted (0xDEADBEEF).
+   * @param[out] function The function extracted (Function (args="")).
+   * @param[out] file The file extracted (filename:1234).
+   *
+   * @return true if no error.
+   */
   bool DecodeBacktrace(const std::string_view& line, std::string_view& index,
                        std::string_view& address, std::string_view& function,
-                       std::string_view& file);
-  bool HasSource() const { return file_.length() != 0; }
-  const std::string& GetFile() const { return file_; }
-  size_t GetLine() const { return line_; }
+                       std::string_view& file) CHK;
+
+  bool HasSource() const CHK { return file_.length() != 0; }
+  const std::string& GetFile() const CHK { return file_; }
+  size_t GetLine() const CHK { return line_; }
 
  private:
   // The nth backtrace of the stack.
@@ -47,10 +79,10 @@ class Bt {
   std::string file_;
   size_t line_;
 
-  bool ReadIndex(const std::string& number);
-  bool ReadAddress(const std::string& address);
-  bool ReadFunction(const std::string_view& description);
-  bool ReadSource(const std::string_view& file);
+  bool ReadIndex(const std::string& number) CHK;
+  bool ReadAddress(const std::string& address) CHK;
+  bool ReadFunction(const std::string_view& description) CHK;
+  bool ReadSource(const std::string_view& file) CHK;
 };
 
 #endif  // BT_H_

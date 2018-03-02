@@ -6,6 +6,10 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
 find_package(Threads)
 
+if (INCLUDE_HEADER)
+        include_directories(${INCLUDE_HEADER})
+endif()
+
 add_library(2lgcgdb SHARED
         backtrace.cc stack.cc set_stack.cc)
 target_link_libraries(2lgcgdb stdc++fs ${CMAKE_THREAD_LIBS_INIT})
