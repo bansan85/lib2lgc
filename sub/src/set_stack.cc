@@ -144,8 +144,7 @@ bool SetStack::Add(const std::string& filename) {
   std::string line;
 
   while (getline(file, line)) {
-    if (!stack_gdb->InterpretLine(line))
-    {
+    if (!stack_gdb->InterpretLine(line)) {
       return false;
     }
   }
