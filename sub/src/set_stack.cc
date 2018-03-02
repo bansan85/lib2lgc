@@ -144,7 +144,10 @@ bool SetStack::Add(const std::string& filename) {
   std::string line;
 
   while (getline(file, line)) {
-    stack_gdb->InterpretLine(line);
+    if (!stack_gdb->InterpretLine(line))
+    {
+      return false;
+    }
   }
 
   mutex_stack_.lock();
@@ -154,7 +157,7 @@ bool SetStack::Add(const std::string& filename) {
   return true;
 }
 
-bool SetStack::AddRecursive(const std::string& folder) {
+bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread) {
   std::vector<std::string> all_files;
   for (auto& p :
        std::experimental::filesystem::recursive_directory_iterator(folder)) {
@@ -163,7 +166,8 @@ bool SetStack::AddRecursive(const std::string& folder) {
     }
   }
 
-  const size_t nthreads = std::thread::hardware_concurrency();
+  const unsigned int nthreads =
+      std::min(nthread, std::thread::hardware_concurrency());
   std::vector<std::thread> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++) {
     threads[t] = std::thread(std::bind(
