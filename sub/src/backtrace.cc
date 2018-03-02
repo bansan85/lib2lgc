@@ -37,23 +37,19 @@ Bt::Bt(const std::string_view& line)
     throw std::invalid_argument("Invalid line");
   }
 
-  if (!ReadIndex(std::string(index)))
-  {
+  if (!ReadIndex(std::string(index))) {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (address.length() != 0 && !ReadAddress(std::string(address)))
-  {
+  if (address.length() != 0 && !ReadAddress(std::string(address))) {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (function.length() != 0 && !ReadFunction(function))
-  {
+  if (function.length() != 0 && !ReadFunction(function)) {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (file.length() != 0 && !ReadSource(file))
-  {
+  if (file.length() != 0 && !ReadSource(file)) {
     throw std::invalid_argument("Invalid line");
   }
 }
@@ -139,8 +135,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
   }
 
   // A function must have a '(' before ')'.
-  if (function.find('(') == std::string::npos)
-  {
+  if (function.find('(') == std::string::npos) {
     return false;
   }
 
@@ -150,9 +145,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
 bool Bt::ReadIndex(const std::string& number) {
   try {
     index_ = static_cast<size_t>(std::stoi(number, nullptr, 10));
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     return false;
   }
   return true;
@@ -161,9 +154,7 @@ bool Bt::ReadIndex(const std::string& number) {
 bool Bt::ReadAddress(const std::string& number) {
   try {
     address_ = std::stoull(number, nullptr, 0);
-  }
-  catch (const std::out_of_range&)
-  {
+  } catch (const std::out_of_range&) {
     return false;
   }
   return true;
