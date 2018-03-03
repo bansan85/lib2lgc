@@ -40,7 +40,8 @@
  *
  * Help to count diff ULP between two float.
  */
-union Float_t {
+union Float_t
+{
   /**
    * @brief Constructor to initialize the default float.
    *
@@ -71,7 +72,8 @@ union Float_t {
  *
  * Help to count diff ULP between two double.
  */
-union Double_t {
+union Double_t
+{
   /**
    * @brief Constructor to initialize the default double.
    *
@@ -116,12 +118,13 @@ union Double_t {
  * @return true is both numbers are equals.
  */
 template <typename T, typename U, typename V>
-static bool AlmostEqualUlpsAndAbsInternal(T A, T B, T maxDiff,
-                                          int maxUlpsDiff) {
+static bool AlmostEqualUlpsAndAbsInternal(T A, T B, T maxDiff, int maxUlpsDiff)
+{
   // Check if the numbers are really close -- needed
   // when comparing numbers near zero.
   T absDiff = std::abs(A - B);
-  if (absDiff <= maxDiff) {
+  if (absDiff <= maxDiff)
+  {
     return true;
   }
 
@@ -129,13 +132,15 @@ static bool AlmostEqualUlpsAndAbsInternal(T A, T B, T maxDiff,
   U uB(B);
 
   // Different signs means they do not match.
-  if (uA.Negative() != uB.Negative()) {
+  if (uA.Negative() != uB.Negative())
+  {
     return false;
   }
 
   // Find the difference in ULPs.
   V ulpsDiff = std::abs(uA.i - uB.i);
-  if (ulpsDiff <= maxUlpsDiff) {
+  if (ulpsDiff <= maxUlpsDiff)
+  {
     return true;
   }
 
@@ -157,12 +162,13 @@ static bool AlmostEqualUlpsAndAbsInternal(T A, T B, T maxDiff,
  * @return true is both numbers are equals.
  */
 template <typename T>
-static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff,
-                                              T maxRelDiff) {
+static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff, T maxRelDiff)
+{
   // Check if the numbers are really close -- needed
   // when comparing numbers near zero.
   T diff = std::abs(A - B);
-  if (diff <= maxDiff) {
+  if (diff <= maxDiff)
+  {
     return true;
   }
 
@@ -170,7 +176,8 @@ static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff,
   B = std::abs(B);
   T largest = (B > A) ? B : A;
 
-  if (diff <= largest * maxRelDiff) {
+  if (diff <= largest * maxRelDiff)
+  {
     return true;
   }
   return false;
@@ -189,7 +196,8 @@ static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff,
  * @return true is both numbers are equals.
  */
 bool Math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
-                                  int maxUlpsDiff) {
+                                  int maxUlpsDiff)
+{
   return AlmostEqualUlpsAndAbsInternal<float, Float_t, int32_t>(A, B, maxDiff,
                                                                 maxUlpsDiff);
 }
@@ -207,7 +215,8 @@ bool Math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
  * @return true is both numbers are equals.
  */
 bool Math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
-                                      float maxRelDiff) {
+                                      float maxRelDiff)
+{
   return AlmostEqualRelativeAndAbsInternal<float>(A, B, maxDiff, maxRelDiff);
 }
 
@@ -224,7 +233,8 @@ bool Math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
  * @return true is both numbers are equals.
  */
 bool Math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
-                                  int maxUlpsDiff) {
+                                  int maxUlpsDiff)
+{
   return AlmostEqualUlpsAndAbsInternal<double, Double_t, int64_t>(A, B, maxDiff,
                                                                   maxUlpsDiff);
 }
@@ -242,6 +252,7 @@ bool Math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
  * @return true is both numbers are equals.
  */
 bool Math::AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
-                                      double maxRelDiff) {
+                                      double maxRelDiff)
+{
   return AlmostEqualRelativeAndAbsInternal<double>(A, B, maxDiff, maxRelDiff);
 }

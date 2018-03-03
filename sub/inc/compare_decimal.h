@@ -34,7 +34,8 @@
 /**
  * @brief Class that extends math functionnality.
  */
-class Math {
+class Math
+{
  public:
   static bool AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
                                      int maxUlpsDiff) CHK;
