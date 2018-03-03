@@ -22,12 +22,18 @@
 #include "stack.h"
 
 Stack::Stack(const std::string_view &filename)
-    : filename_(filename), backtraces_() {}
+    : filename_(filename), backtraces_()
+{
+}
 
-bool Stack::InterpretLine(const std::string_view &line) {
-  try {
+bool Stack::InterpretLine(const std::string_view &line)
+{
+  try
+  {
     backtraces_.emplace_back(std::make_unique<Bt>(line));
-  } catch (const std::invalid_argument &) {
+  }
+  catch (const std::invalid_argument &)
+  {
     // It's a local variable.
     // TODO
   }

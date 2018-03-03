@@ -43,7 +43,8 @@
  *
  * @details Criterea of sort must be defined on creation.
  */
-class SetStack {
+class SetStack
+{
  public:
   /**
    * @brief Default constructor.
@@ -91,7 +92,8 @@ class SetStack {
    * @brief A local class that compare to stack and says if two stack looks to
    * be the same.
    */
-  struct Local {
+  struct Local
+  {
     /**
      * @brief Constructor with parameter of comparaison.
      *

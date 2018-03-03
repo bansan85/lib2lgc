@@ -30,83 +30,103 @@
 #include <vector>
 
 Bt::Bt(const std::string_view& line)
-    : index_(0), address_(0), function_(), file_(), line_(0) {
+    : index_(0), address_(0), function_(), file_(), line_(0)
+{
   std::string_view index, address, function, file;
 
-  if (!DecodeBacktrace(line, index, address, function, file)) {
+  if (!DecodeBacktrace(line, index, address, function, file))
+  {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (!ReadIndex(std::string(index))) {
+  if (!ReadIndex(std::string(index)))
+  {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (address.length() != 0 && !ReadAddress(std::string(address))) {
+  if (address.length() != 0 && !ReadAddress(std::string(address)))
+  {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (function.length() != 0 && !ReadFunction(function)) {
+  if (function.length() != 0 && !ReadFunction(function))
+  {
     throw std::invalid_argument("Invalid line");
   }
 
-  if (file.length() != 0 && !ReadSource(file)) {
+  if (file.length() != 0 && !ReadSource(file))
+  {
     throw std::invalid_argument("Invalid line");
   }
 }
 
 bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
                          std::string_view& address, std::string_view& function,
-                         std::string_view& file) {
+                         std::string_view& file)
+{
   std::string line_it(line);
   // Regex: "^#(\\d+) *((0x.*) in )?((.*\\)) at )?(.*)$"
   // Size for the beginning #\d
   size_t line_length = line.length();
-  if (line_length < 2) {
+  if (line_length < 2)
+  {
     return false;
   }
 
   // First char: '#'
-  if (line[0] != '#') {
+  if (line[0] != '#')
+  {
     return false;
   }
 
   // Next chars: decimal until space.
   size_t i = 1;
-  while (i < line_length) {
-    if (line[i] == ' ') {
+  while (i < line_length)
+  {
+    if (line[i] == ' ')
+    {
       // No decimal.
-      if (i == 1) {
+      if (i == 1)
+      {
         return false;
       }
       break;
-    } else if ('0' > line[i] || line[i] > '9') {
+    }
+    else if ('0' > line[i] || line[i] > '9')
+    {
       return false;
     }
     i++;
   }
 
-  if (i == line_length) {
+  if (i == line_length)
+  {
     return false;
   }
 
   index = line.substr(1, i - 1);
 
-  while (i < line_length && line[i] == ' ') {
+  while (i < line_length && line[i] == ' ')
+  {
     i++;
   }
 
   // If " in " is there, following chars must be 0xhhhhhh…
   const size_t inpos = line.find(" in ");
-  if (inpos != std::string::npos && line[i] == '0' && line[i + 1] == 'x') {
+  if (inpos != std::string::npos && line[i] == '0' && line[i + 1] == 'x')
+  {
     // We have the good pattern.
     size_t ibis;
-    for (ibis = i + 2; ibis < inpos; ibis++) {
+    for (ibis = i + 2; ibis < inpos; ibis++)
+    {
       if (('0' > line[ibis] || line[ibis] > '9') &&
-          ('a' > line[ibis] || line[ibis] > 'f')) {
+          ('a' > line[ibis] || line[ibis] > 'f'))
+      {
         break;
       }
     }
-    if (ibis != inpos) {
+    if (ibis != inpos)
+    {
       return false;
     }
 
@@ -117,53 +137,69 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
 
   // " at " state.
   const size_t inas = line.find(") at ", i);
-  if (inas != std::string::npos) {
+  if (inas != std::string::npos)
+  {
     function = line.substr(i, inas - i + 1);
     i = inas + 5;
     file = line.substr(i);
-  } else {
+  }
+  else
+  {
     const size_t infrom = line.find(") from ", i);
-    if (infrom != std::string::npos) {
+    if (infrom != std::string::npos)
+    {
       function = line.substr(i, infrom - i + 1);
       i = infrom + 5;
       file = line.substr(i);
     }
     // No as or from.
-    else {
+    else
+    {
       return false;
     }
   }
 
   // A function must have a '(' before ')'.
-  if (function.find('(') == std::string::npos) {
+  if (function.find('(') == std::string::npos)
+  {
     return false;
   }
 
   return true;
 }
 
-bool Bt::ReadIndex(const std::string& number) {
-  try {
+bool Bt::ReadIndex(const std::string& number)
+{
+  try
+  {
     index_ = static_cast<size_t>(std::stoi(number, nullptr, 10));
-  } catch (const std::out_of_range&) {
+  }
+  catch (const std::out_of_range&)
+  {
     return false;
   }
   return true;
 }
 
-bool Bt::ReadAddress(const std::string& number) {
-  try {
+bool Bt::ReadAddress(const std::string& number)
+{
+  try
+  {
     address_ = std::stoull(number, nullptr, 0);
-  } catch (const std::out_of_range&) {
+  }
+  catch (const std::out_of_range&)
+  {
     return false;
   }
   return true;
 }
 
-bool Bt::ReadFunction(const std::string_view& description) {
+bool Bt::ReadFunction(const std::string_view& description)
+{
   size_t pos_space = description.find(' ');
 
-  if (pos_space == std::string::npos) {
+  if (pos_space == std::string::npos)
+  {
     return false;
   }
 
@@ -176,23 +212,28 @@ bool Bt::ReadFunction(const std::string_view& description) {
                          description.length() - pos_space - 3);
 
   // No argument.
-  if (str.length() == 0) {
+  if (str.length() == 0)
+  {
     return true;
   }
 
   // Split with delimiter ", "
   size_t pos_comma = str.find(", ");
-  if (pos_comma == std::string::npos) {
+  if (pos_comma == std::string::npos)
+  {
     pos_comma = str.length();
   }
-  while (pos_comma != std::string::npos) {
+  while (pos_comma != std::string::npos)
+  {
     std::string_view strcomma = str.substr(0, pos_comma);
     size_t pos_last_equal = strcomma.find_last_of('=');
-    if (pos_last_equal == std::string::npos) {
+    if (pos_last_equal == std::string::npos)
+    {
       return false;
     }
     size_t pos_equal = strcomma.find('=');
-    while (pos_equal != pos_last_equal) {
+    while (pos_equal != pos_last_equal)
+    {
       function_.args.push_back(std::pair<std::string, std::string>(
           std::string(strcomma.substr(0, pos_equal)),
           std::string(strcomma.substr(pos_last_equal + 1))));
@@ -204,13 +245,17 @@ bool Bt::ReadFunction(const std::string_view& description) {
         std::string(strcomma.substr(0, pos_equal)),
         std::string(strcomma.substr(pos_last_equal + 1))));
 
-    if (pos_comma != str.length()) {
+    if (pos_comma != str.length())
+    {
       str = str.substr(pos_comma + 2);
       pos_comma = str.find(", ");
-      if (pos_comma == std::string::npos) {
+      if (pos_comma == std::string::npos)
+      {
         pos_comma = str.length();
       }
-    } else {
+    }
+    else
+    {
       pos_comma = std::string::npos;
     }
   }
@@ -218,18 +263,25 @@ bool Bt::ReadFunction(const std::string_view& description) {
   return true;
 }
 
-bool Bt::ReadSource(const std::string_view& file) {
+bool Bt::ReadSource(const std::string_view& file)
+{
   size_t pos = file.find_last_of(':');
-  if (pos == std::string::npos) {
+  if (pos == std::string::npos)
+  {
     return false;
   }
 
-  try {
+  try
+  {
     line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1).data()));
-  } catch (const std::invalid_argument&) {
+  }
+  catch (const std::invalid_argument&)
+  {
     std::cerr << "Invalid file " << file << std::endl;
     return false;
-  } catch (const std::out_of_range&) {
+  }
+  catch (const std::out_of_range&)
+  {
     std::cerr << "Invalid file " << file << std::endl;
     return false;
   }

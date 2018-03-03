@@ -42,7 +42,8 @@
  *
  * @details Contains all the backtrace of a dump.
  */
-class Stack {
+class Stack
+{
  public:
   /**
    * @brief Default constructor.
@@ -82,7 +83,8 @@ class Stack {
    *
    * @return A const pointer of the backtrace.
    */
-  const Bt* GetBacktraceFromTop(size_t i) const CHK {
+  const Bt* GetBacktraceFromTop(size_t i) const CHK
+  {
     return backtraces_[i].get();
   }
 
@@ -93,7 +95,8 @@ class Stack {
    *
    * @return A const pointer of the backtrace.
    */
-  const Bt* GetBacktraceFromBottom(size_t i) const CHK {
+  const Bt* GetBacktraceFromBottom(size_t i) const CHK
+  {
     return backtraces_[backtraces_.size() - 1 - i].get();
   }
 

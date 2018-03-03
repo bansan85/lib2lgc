@@ -40,7 +40,8 @@
  *
  * @details Contains the name of the function, the arguments and their value.
  */
-class Function {
+class Function
+{
  public:
   /**
    * @brief Default constructor.

@@ -38,7 +38,8 @@
 /**
  * @brief Store all informations about one backtrace.
  */
-class Bt {
+class Bt
+{
  public:
   /**
    * @brief Default constructor.

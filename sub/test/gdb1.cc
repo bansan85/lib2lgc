@@ -26,7 +26,8 @@
 // lib2lgcgdb
 #include <backtrace.h>
 
-int main(int /* argc */, char* /* argv */ []) {
+int main(int /* argc */, char* /* argv */ [])
+{
   std::string line(
       "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
       "interface_=<optimized out>, ext=<optimized out>) at "
