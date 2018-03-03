@@ -21,9 +21,6 @@
 
 #include "number.h"
 
-// C++ system
-#include <cmath>
-
 // Google protobuf library
 #include <google/protobuf/util/message_differencer.h>
 
@@ -32,6 +29,9 @@
 
 // macros
 #include <handle_error.h>
+
+// C++ system
+#include <cmath>
 
 // Static variables
 pattern::visitor::NumberVisitorVal pattern::visitor::Number::visitor_val;

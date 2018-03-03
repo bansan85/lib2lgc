@@ -24,15 +24,16 @@
 
 #include <compat.h>
 
-// C++ system
-#include <string>
-
 // lib2lgcPoco
 #include <number.pb.h>
 
 // lib2lgcVisitor
 #include <visitable.h>
 #include <visitor.h>
+
+// C++ system
+#include <memory>
+#include <string>
 
 // Current project
 #include "number_visitor_unit.h"

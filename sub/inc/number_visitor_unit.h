@@ -22,9 +22,6 @@
 #ifndef NUMBER_VISITOR_UNIT_H_
 #define NUMBER_VISITOR_UNIT_H_
 
-// C++ system
-#include <string>
-
 // lib2lgcPoco
 #include <number.pb.h>
 
@@ -33,6 +30,9 @@
 
 // lib2lgcMath
 #include <compat.h>
+
+// C++ system
+#include <string>
 
 namespace pattern
 {
