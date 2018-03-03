@@ -109,8 +109,6 @@ int SetStack::Local::CompareFrom(
 
 bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
                                  const std::unique_ptr<Stack>& j) {
-  // return i->GetFilename().compare(j->GetFilename()) < 0;
-
   // If it's the same file.
   if (i->GetFilename().compare(j->GetFilename()) == 0) {
     return false;

@@ -66,22 +66,83 @@ class Bt {
                        std::string_view& address, std::string_view& function,
                        std::string_view& file) CHK;
 
+  /**
+   * @brief Check if the source file exists.
+   *
+   * @return true if the source file is known.
+   */
   bool HasSource() const CHK { return file_.length() != 0; }
+
+  /**
+   * @brief Get the file where the function of the backtrace is.
+   *
+   * @return The filename.
+   */
   const std::string& GetFile() const CHK { return file_; }
+
+  /**
+   * @brief Get the line of the function. This number is available only if
+   * HasSource() is true.
+   *
+   * @return The number of the line in the file.
+   */
   size_t GetLine() const CHK { return line_; }
 
  private:
-  // The nth backtrace of the stack.
+  /**
+   * @brief The nth backtrace of the stack.
+   */
   size_t index_;
-  // Address of the PC.
+  /**
+   * @brief Address in memory of the backtrace.
+   */
   uint64_t address_;
+  /**
+   * @brief Store all informations about the function of the backtrace.
+   */
   Function function_;
+  /**
+   * @brief The source filename.
+   */
   std::string file_;
+  /**
+   * @brief The line in the source filename.
+   */
   size_t line_;
 
+  /**
+   * @brief Convert the index of the backtrace in index_.
+   *
+   * @param[in] number The number in format "0".
+   *
+   * @return true if the parameter number has the right format.
+   */
   bool ReadIndex(const std::string& number) CHK;
+  /**
+   * @brief Convert the adress number of the backtrace in address_.
+   *
+   * @param[in] address The address in format "0xDEADBEEF" or
+   * "0xDEADBEEFDEADBEEF".
+   *
+   * @return true if parameter address has the right format.
+   */
   bool ReadAddress(const std::string& address) CHK;
+  /**
+   * @brief Convert the function of the backtrace in function_.
+   *
+   * @param[in] description The function in format "function (arg1=X, arg2=y)".
+   *
+   * @return true if parameter description has the right format.
+   */
   bool ReadFunction(const std::string_view& description) CHK;
+  /**
+   * @brief Convert the filename and the number of the line of the backtrace in
+   * file_ and line_.
+   *
+   * @param[in] file The file in format "filename.cpp:1234".
+   *
+   * @return true if parameter file has the right format.
+   */
   bool ReadSource(const std::string_view& file) CHK;
 };
 
