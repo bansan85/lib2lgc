@@ -37,7 +37,8 @@
 // lib2lgcMath
 #include <compare_decimal.h>
 
-int main(int /* argc */, char * /* argv */ []) {
+int main(int /* argc */, char * /* argv */ [])
+{
   google::protobuf::Arena arena;
 
   // Defining number 5 meters.

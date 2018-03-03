@@ -33,13 +33,15 @@
  *
  * This header is used has base for visitors in the pattern visitor.
  */
-namespace pattern {
-namespace visitor {
-
+namespace pattern
+{
+namespace visitor
+{
 /**
  * @brief Common class for all visitors.
  */
-class BaseVisitor {
+class BaseVisitor
+{
  public:
   /**
    * @brief In case of some class based on it need a virtual destructor.
@@ -54,7 +56,8 @@ class BaseVisitor {
  * @tparam T The class that the visiting must be implement.
  */
 template <class T>
-class Visitor {
+class Visitor
+{
  public:
   /**
    * @brief In case of some class based on it need a virtual destructor.

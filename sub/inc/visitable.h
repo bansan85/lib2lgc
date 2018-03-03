@@ -37,9 +37,10 @@
  * This header is used has base for every class that a visitor would like to
  * visit.
  */
-namespace pattern {
-namespace visitor {
-
+namespace pattern
+{
+namespace visitor
+{
 /**
  * @brief Common class to allow a class to be visited. This class is used to
  *        force the implementation of the Accept method with the right
@@ -48,7 +49,8 @@ namespace visitor {
  * @tparam Visitable The same name of the class that is visitable.
  */
 template <class Visitable, class T>
-class BaseVisitable : virtual T {
+class BaseVisitable : virtual T
+{
  public:
   /**
    * @brief In case of some class based on it need a virtual destructor.
@@ -67,7 +69,8 @@ class BaseVisitable : virtual T {
    *         true instead.
    */
   bool Accept(const BaseVisitor &visitor,
-              std::string *return_value) const override CHK {
+              std::string *return_value) const override CHK
+  {
     return dynamic_cast<const Visitor<Visitable> &>(visitor).Visit(
         dynamic_cast<const Visitable &>(*this), return_value);
   }
@@ -80,7 +83,8 @@ class BaseVisitable : virtual T {
  * @tparam M The class that contains the data. It must be a ProtoBuf message.
  */
 template <class M>
-class InterfaceVisitable {
+class InterfaceVisitable
+{
   static_assert(std::is_base_of<::google::protobuf::Message, M>::value,
                 "M must be a descendant of ::google::protobuf::Message");
 
