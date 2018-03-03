@@ -28,22 +28,30 @@
 #include <handle_error.h>
 
 template <typename M>
-pattern::publisher::ServerRemote<M>::ServerRemote() : ServerBase<M>() {}
+pattern::publisher::ServerRemote<M>::ServerRemote() : ServerBase<M>()
+{
+}
 
 template <typename M>
-bool pattern::publisher::ServerRemote<M>::StartIp(uint16_t port) {}
+bool pattern::publisher::ServerRemote<M>::StartIp(uint16_t port)
+{
+}
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
 bool pattern::publisher::ServerRemote<M>::AddSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
-  if (options_.add_fail_if_already_subscribed) {
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+{
+  if (options_.add_fail_if_already_subscribed)
+  {
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
         iterpair = subscribers_.equal_range(id_message);
 
     SubscriberMap::const_iterator it = iterpair.first;
-    for (; it != iterpair.second; ++it) {
-      if (it->second->Equals(subscriber.get())) {
+    for (; it != iterpair.second; ++it)
+    {
+      if (it->second->Equals(subscriber.get()))
+      {
         return false;
       }
     }
@@ -57,14 +65,17 @@ bool pattern::publisher::ServerRemote<M>::AddSubscriber(
 
 template <typename M>
 bool pattern::publisher::ServerRemote<M>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+{
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
       iterpair = subscribers_.equal_range(id_message);
 
   SubscriberMap::const_iterator it = iterpair.first;
-  for (; it != iterpair.second; ++it) {
-    if (it->second.get()->Equals(subscriber.get())) {
+  for (; it != iterpair.second; ++it)
+  {
+    if (it->second.get()->Equals(subscriber.get()))
+    {
       subscribers_.erase(it);
       return true;
     }

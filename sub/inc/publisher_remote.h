@@ -33,15 +33,17 @@
 // Current project
 #include "connector_interface.h"
 
-namespace pattern {
-namespace publisher {
-
+namespace pattern
+{
+namespace publisher
+{
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
  */
 template <typename M>
-class PublisherRemote : public PublisherBase<M> {
+class PublisherRemote : public PublisherBase<M>
+{
  public:
   /**
    * @brief Default constructor.

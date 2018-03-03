@@ -28,9 +28,10 @@
 
 #include "subscriber_interface.h"
 
-namespace pattern {
-namespace publisher {
-
+namespace pattern
+{
+namespace publisher
+{
 /**
  * @brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
@@ -38,11 +39,14 @@ namespace publisher {
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
-class ConnectorInterface {
+class ConnectorInterface
+{
  public:
   explicit ConnectorInterface(
       const std::shared_ptr<SubscriberInterface> &subscriber)
-      : messages_(), next_id_(0), subscriber_(subscriber) {}
+      : messages_(), next_id_(0), subscriber_(subscriber)
+  {
+  }
 
   virtual bool Equals(const ConnectorInterface *connector) const CHK = 0;
 

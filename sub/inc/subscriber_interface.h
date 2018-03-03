@@ -29,9 +29,10 @@
 
 #include <compat.h>
 
-namespace pattern {
-namespace publisher {
-
+namespace pattern
+{
+namespace publisher
+{
 class ConnectorInterface;
 
 /**
@@ -41,7 +42,8 @@ class ConnectorInterface;
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
-class SubscriberInterface {
+class SubscriberInterface
+{
  public:
   /**
    * @brief Send message.

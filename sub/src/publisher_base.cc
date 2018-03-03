@@ -29,17 +29,21 @@
 
 template <typename M>
 pattern::publisher::PublisherBase<M>::PublisherBase()
-    : subscribers_(), options_() {}
+    : subscribers_(), options_()
+{
+}
 
 template <typename M>
 void pattern::publisher::PublisherBase<M>::Forward(
-    const std::shared_ptr<const std::string> &message) {
+    const std::shared_ptr<const std::string> &message)
+{
   M actions;
 
   BUGUSER(actions.ParseFromString(*message.get()), ,
           "Failed to decode message.\n");
 
-  for (int i = 0; i < actions.action_size(); i++) {
+  for (int i = 0; i < actions.action_size(); i++)
+  {
     // Must use auto because we don't know if M is in namespace or not.
     auto &action = actions.action(i);
 
@@ -47,7 +51,8 @@ void pattern::publisher::PublisherBase<M>::Forward(
         iterpair = subscribers_.equal_range(action.data_case());
 
     SubscriberMap::const_iterator it = iterpair.first;
-    for (; it != iterpair.second; ++it) {
+    for (; it != iterpair.second; ++it)
+    {
       it->second->Listen(message);
     }
   }
@@ -55,14 +60,17 @@ void pattern::publisher::PublisherBase<M>::Forward(
 
 template <typename M>
 bool pattern::publisher::PublisherBase<M>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+{
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
       iterpair = subscribers_.equal_range(id_message);
 
   SubscriberMap::const_iterator it = iterpair.first;
-  for (; it != iterpair.second; ++it) {
-    if (it->second.get()->Equals(subscriber.get())) {
+  for (; it != iterpair.second; ++it)
+  {
+    if (it->second.get()->Equals(subscriber.get()))
+    {
       subscribers_.erase(it);
       return true;
     }

@@ -37,11 +37,13 @@ template class pattern::publisher::PublisherBase<msg::Actions>;
 template class pattern::publisher::PublisherRemote<msg::Actions>;
 template class pattern::publisher::ConnectorDirect<msg::Actions>;
 
-class SubscriberBase final : public pattern::publisher::SubscriberDirect {
+class SubscriberBase final : public pattern::publisher::SubscriberDirect
+{
  public:
   explicit SubscriberBase(uint32_t id) : SubscriberDirect(id), value(0) {}
 
-  void Listen(const std::shared_ptr<const std::string> &message) override {
+  void Listen(const std::shared_ptr<const std::string> &message) override
+  {
     msg::Actions actions;
     assert(actions.ParseFromString(*message.get()));
     value = 3;
@@ -50,7 +52,8 @@ class SubscriberBase final : public pattern::publisher::SubscriberDirect {
   int value;
 };
 
-int main(int /* argc */, char * /* argv */ []) {
+int main(int /* argc */, char * /* argv */ [])
+{
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   std::shared_ptr<pattern::publisher::PublisherRemote<msg::Actions>> server =

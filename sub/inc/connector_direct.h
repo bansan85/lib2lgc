@@ -27,9 +27,10 @@
 // Current project
 #include "publisher_base.h"
 
-namespace pattern {
-namespace publisher {
-
+namespace pattern
+{
+namespace publisher
+{
 /**
  * @brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
@@ -38,12 +39,15 @@ namespace publisher {
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class ConnectorDirect : public ConnectorInterface {
+class ConnectorDirect : public ConnectorInterface
+{
  public:
   explicit ConnectorDirect(
       const std::shared_ptr<SubscriberInterface> &subscriber,
       const std::shared_ptr<PublisherBase<T>> &server)
-      : ConnectorInterface(subscriber), server_(server) {}
+      : ConnectorInterface(subscriber), server_(server)
+  {
+  }
 
   bool Equals(const ConnectorInterface *connector) const override CHK;
 

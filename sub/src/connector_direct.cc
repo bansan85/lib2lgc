@@ -23,11 +23,13 @@
 
 template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::Equals(
-    const ConnectorInterface *connector) const {
+    const ConnectorInterface *connector) const
+{
   const ConnectorDirect<T> *connector_direct =
       dynamic_cast<const ConnectorDirect<T> *>(connector);
 
-  if (connector_direct == nullptr) {
+  if (connector_direct == nullptr)
+  {
     return false;
   }
 
@@ -36,24 +38,28 @@ bool pattern::publisher::ConnectorDirect<T>::Equals(
 
 template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::AddSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+{
   return server_->AddSubscriber(id_message, subscriber);
 }
 
 template <typename T>
 void pattern::publisher::ConnectorDirect<T>::Send(
-    const std::shared_ptr<const std::string> &message) {
+    const std::shared_ptr<const std::string> &message)
+{
   server_->Forward(message);
 }
 
 template <typename T>
 void pattern::publisher::ConnectorDirect<T>::Listen(
-    const std::shared_ptr<const std::string> &message) {
+    const std::shared_ptr<const std::string> &message)
+{
   subscriber_->Listen(message);
 }
 
 template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) {
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+{
   return server_->RemoveSubscriber(id_message, subscriber);
 }

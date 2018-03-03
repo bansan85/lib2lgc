@@ -22,12 +22,14 @@
 #include "subscriber_direct.h"
 
 bool pattern::publisher::SubscriberDirect::Equals(
-    const SubscriberInterface *connector) const {
+    const SubscriberInterface *connector) const
+{
   const SubscriberDirect *subscriber_direct_cast =
       dynamic_cast<const SubscriberDirect *>(connector);
 
   // Not the same type.
-  if (subscriber_direct_cast == nullptr) {
+  if (subscriber_direct_cast == nullptr)
+  {
     return false;
   }
 
