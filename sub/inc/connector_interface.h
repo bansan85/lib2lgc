@@ -25,6 +25,8 @@
 // C++ system
 #include <memory>
 #include <queue>
+#include <string>
+#include <utility>
 
 #include "subscriber_interface.h"
 

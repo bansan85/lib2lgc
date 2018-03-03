@@ -27,6 +27,7 @@
 #include <map>
 #include <memory>
 #include <queue>
+#include <string>
 
 // Current project
 #include "connector_interface.h"

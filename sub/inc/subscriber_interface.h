@@ -22,12 +22,12 @@
 #ifndef SUBSCRIBER_INTERFACE_H_
 #define SUBSCRIBER_INTERFACE_H_
 
+#include <compat.h>
+
 // C++ system
 #include <cstdint>
 #include <memory>
 #include <string>
-
-#include <compat.h>
 
 namespace pattern
 {

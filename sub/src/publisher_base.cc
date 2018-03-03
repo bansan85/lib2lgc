@@ -21,11 +21,11 @@
 
 #include "publisher_base.h"
 
-// C++ system
-#include <memory>
-
 // macros
 #include <handle_error.h>
+
+// C++ system
+#include <memory>
 
 template <typename M>
 pattern::publisher::PublisherBase<M>::PublisherBase()

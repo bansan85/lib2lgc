@@ -19,9 +19,6 @@
  * SOFTWARE.
  */
 
-// C++ system
-#include <cassert>
-
 // lib2lgcPublisher
 #include <connector_direct.h>
 #include <publisher_remote.h>
@@ -29,6 +26,9 @@
 #include <connector_direct.cc>
 #include <publisher_base.cc>
 #include <publisher_remote.cc>
+
+// C++ system
+#include <cassert>
 
 // Current project
 #include "actions.pb.h"

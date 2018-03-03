@@ -24,6 +24,10 @@
 
 #include "connector_interface.h"
 
+// C++ system
+#include <memory>
+#include <string>
+
 // Current project
 #include "publisher_base.h"
 

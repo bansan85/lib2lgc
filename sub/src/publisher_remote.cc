@@ -21,11 +21,11 @@
 
 #include "publisher_remote.h"
 
-// C++ system
-#include <memory>
-
 // macros
 #include <handle_error.h>
+
+// C++ system
+#include <memory>
 
 template <typename M>
 pattern::publisher::PublisherRemote<M>::PublisherRemote()
