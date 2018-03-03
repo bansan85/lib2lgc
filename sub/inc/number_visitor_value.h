@@ -31,9 +31,10 @@
 // lib2lgcVisitor
 #include <visitor.h>
 
-namespace pattern {
-namespace visitor {
-
+namespace pattern
+{
+namespace visitor
+{
 // We can't include number.h because number.h need number_visitor_value.h.
 class Number_Constant;
 class Number_NumOpNum;
@@ -43,7 +44,8 @@ class Number_NumOpNum;
  */
 class NumberVisitorVal : public BaseVisitor,
                          public Visitor<Number_Constant>,
-                         public Visitor<Number_NumOpNum> {
+                         public Visitor<Number_NumOpNum>
+{
  public:
   /**
    * @brief Default destructor.

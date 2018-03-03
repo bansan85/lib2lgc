@@ -37,8 +37,9 @@
 #include "number.h"
 #include "number_visitor_unit.h"
 
-bool pattern::visitor::NumberVisitorVal::Visit(
-    const Number_Constant &data, std::string *return_value) const {
+bool pattern::visitor::NumberVisitorVal::Visit(const Number_Constant &data,
+                                               std::string *return_value) const
+{
   BUGPARAM(return_value, "%p", return_value != nullptr, false);
 
   msg::Double val;
@@ -48,8 +49,9 @@ bool pattern::visitor::NumberVisitorVal::Visit(
   return true;
 }
 
-bool pattern::visitor::NumberVisitorVal::Visit(
-    const Number_NumOpNum &data, std::string *return_value) const {
+bool pattern::visitor::NumberVisitorVal::Visit(const Number_NumOpNum &data,
+                                               std::string *return_value) const
+{
   BUGPARAM(return_value, "%p", return_value != nullptr, false);
 
   msg::Double val1;
@@ -69,24 +71,29 @@ bool pattern::visitor::NumberVisitorVal::Visit(
   BUGCONT(data.number2()->Accept(visitor_unit, &return_accept), false);
   BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
 
-  switch (data.message().number_op_number().operator_()) {
-    case msg::Number_Operator_PLUS: {
+  switch (data.message().number_op_number().operator_())
+  {
+    case msg::Number_Operator_PLUS:
+    {
       BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       val.set_value(val1.value() + val2.value());
       break;
     }
-    case msg::Number_Operator_MOINS: {
+    case msg::Number_Operator_MOINS:
+    {
       BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       val.set_value(val1.value() - val2.value());
       break;
     }
-    case msg::Number_Operator_MULTIPLICATION: {
+    case msg::Number_Operator_MULTIPLICATION:
+    {
       val.set_value(val1.value() * val2.value());
       break;
     }
-    case msg::Number_Operator_DIVISION: {
+    case msg::Number_Operator_DIVISION:
+    {
       BUGUSER(!Math::AlmostEqualRelativeAndAbsD(val2.value(), 0., 1e-15, 1e-15),
               false, "Divide by zero.");
       val.set_value(val1.value() / val2.value());
@@ -94,7 +101,10 @@ bool pattern::visitor::NumberVisitorVal::Visit(
     }
     case ::google::protobuf::kint32min:
     case ::google::protobuf::kint32max:
-    default: { return false; }
+    default:
+    {
+      return false;
+    }
   }
 
   BUGLIB(val.SerializeToString(return_value), false, "protobuf");

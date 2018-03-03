@@ -38,13 +38,15 @@
 #include "number_visitor_unit.h"
 #include "number_visitor_value.h"
 
-namespace pattern {
-namespace visitor {
-
+namespace pattern
+{
+namespace visitor
+{
 /**
  * @brief Class just to hold the UnitOp method.
  */
-class Unit {
+class Unit
+{
  public:
   /**
    * @brief Get the resulting unit when a operator is applied in two units.
@@ -65,15 +67,15 @@ class Unit {
 /**
  * @brief Abstract class that represent a read-only number and it's unit.
  */
-class Number : public InterfaceVisitable<msg::Number> {
+class Number : public InterfaceVisitable<msg::Number>
+{
  public:
   /**
    * @brief Default constructor.
    */
   Number()
 #ifdef ENABLE_VISITABLE_CACHE
-      : cache_value_(0.),
-        cache_unit_()
+      : cache_value_(0.), cache_unit_()
 #endif  // ENABLE_VISITABLE_CACHE
   {
   }
@@ -121,7 +123,8 @@ class Number : public InterfaceVisitable<msg::Number> {
  * @brief A const number.
  */
 class Number_Constant : virtual public Number,
-                        virtual public BaseVisitable<Number_Constant, Number> {
+                        virtual public BaseVisitable<Number_Constant, Number>
+{
  public:
   /**
    * @brief Constructor to initialize the value and the unit.
@@ -169,7 +172,8 @@ class Number_Constant : virtual public Number,
  * @brief A const number based on an operation of two numbers.
  */
 class Number_NumOpNum : virtual public Number,
-                        virtual public BaseVisitable<Number_NumOpNum, Number> {
+                        virtual public BaseVisitable<Number_NumOpNum, Number>
+{
  public:
   /**
    * @brief Constructor to initialize the value and the unit.

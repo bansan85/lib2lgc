@@ -40,16 +40,20 @@ pattern::visitor::NumberVisitorUnit pattern::visitor::Number::visitor_unit;
 bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
                                     const msg::Number_Unit &unit2,
                                     const msg::Number_Operator operator_,
-                                    msg::Number_Unit *return_unit) {
-  switch (operator_) {
+                                    msg::Number_Unit *return_unit)
+{
+  switch (operator_)
+  {
     case msg::Number_Operator_PLUS:
-    case msg::Number_Operator_MOINS: {
+    case msg::Number_Operator_MOINS:
+    {
       BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       *return_unit = unit1;
       return true;
     }
-    case msg::Number_Operator_MULTIPLICATION: {
+    case msg::Number_Operator_MULTIPLICATION:
+    {
       return_unit->set_m(unit1.m() + unit2.m());
       return_unit->set_kg(unit1.kg() + unit2.kg());
       return_unit->set_s(unit1.s() + unit2.s());
@@ -59,7 +63,8 @@ bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
       return_unit->set_cd(unit1.cd() + unit2.cd());
       return true;
     }
-    case msg::Number_Operator_DIVISION: {
+    case msg::Number_Operator_DIVISION:
+    {
       return_unit->set_m(unit1.m() - unit2.m());
       return_unit->set_kg(unit1.kg() - unit2.kg());
       return_unit->set_s(unit1.s() - unit2.s());
@@ -71,7 +76,10 @@ bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
     }
     case ::google::protobuf::kint32min:
     case ::google::protobuf::kint32max:
-    default: { BUGPROG(false, false, "switch.\n"); }
+    default:
+    {
+      BUGPROG(false, false, "switch.\n");
+    }
   }
 }
 
@@ -91,10 +99,12 @@ pattern::visitor::Number_Constant::Number_Constant(const uint32_t id,
   message().set_allocated_constant(constant);
 }
 
-double pattern::visitor::Number_Constant::GetVal() const {
+double pattern::visitor::Number_Constant::GetVal() const
+{
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if (cache_value_id_ == message().id()) {
+  if (cache_value_id_ == message().id())
+  {
     return cache_value_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
@@ -113,10 +123,12 @@ double pattern::visitor::Number_Constant::GetVal() const {
   return double_value.value();
 }
 
-msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const {
+msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const
+{
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if (cache_unit_id_ == message().id()) {
+  if (cache_unit_id_ == message().id())
+  {
     return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
@@ -160,11 +172,13 @@ pattern::visitor::Number_NumOpNum::Number_NumOpNum(
   message().set_allocated_number_op_number(number_operator_number);
 }
 
-double pattern::visitor::Number_NumOpNum::GetVal() const {
+double pattern::visitor::Number_NumOpNum::GetVal() const
+{
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
   if ((cache_value1_id_ == number1_->message().id()) &&
-      (cache_value2_id_ == number2_->message().id())) {
+      (cache_value2_id_ == number2_->message().id()))
+  {
     return cache_value_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
@@ -184,11 +198,13 @@ double pattern::visitor::Number_NumOpNum::GetVal() const {
   return double_value.value();
 }
 
-msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const {
+msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const
+{
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
   if ((cache_unit1_id_ == number1_->message().id()) &&
-      (cache_unit2_id_ == number2_->message().id())) {
+      (cache_unit2_id_ == number2_->message().id()))
+  {
     return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
