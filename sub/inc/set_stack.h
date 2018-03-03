@@ -74,10 +74,12 @@ class SetStack {
    *
    * @param[in] folder The folder where all *.btfull files are.
    * @param[in] nthread The number of threads if parallel is allowed.
+   * @param[in] regex Regex that match file to read.
    *
    * @return Always true even if a file is corrupted.
    */
-  bool AddRecursive(const std::string& folder, unsigned int nthread) CHK;
+  bool AddRecursive(const std::string& folder, unsigned int nthread,
+                    const std::string& regex) CHK;
 
   /**
    * @brief Show all stacks grouped by condition passed with the constructor.

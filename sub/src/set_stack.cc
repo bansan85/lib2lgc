@@ -25,6 +25,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <regex>
 #include <thread>
 
 SetStack::SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame)
@@ -154,11 +155,15 @@ bool SetStack::Add(const std::string& filename) {
   return true;
 }
 
-bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread) {
+bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
+                            const std::string& regex) {
   std::vector<std::string> all_files;
+  std::regex reg(regex);
   for (auto& p :
        std::experimental::filesystem::recursive_directory_iterator(folder)) {
-    if (p.path().extension().string().compare(".btfull") == 0) {
+    std::string filename(p.path().filename().string());
+
+    if (regex.length() == 0 || std::regex_match(filename, reg)) {
       all_files.push_back(p.path().string());
     }
   }
