@@ -28,8 +28,10 @@
 
 // BUG: for internal use only.
 #define BUG(X, Y, MSG, ...)                                                   \
-  do {                                                                        \
-    if (!(X)) {                                                               \
+  do                                                                          \
+  {                                                                           \
+    if (!(X))                                                                 \
+    {                                                                         \
       PRINTF("file %s, function %s, line %d, text: ", __FILE__, __FUNCTION__, \
              __LINE__);                                                       \
       PRINTF(MSG);                                                            \
