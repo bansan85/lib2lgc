@@ -85,7 +85,7 @@ class SetStack
   /**
    * @brief Show all stacks grouped by condition passed with the constructor.
    */
-  void Print();
+  void Print(bool print_one_by_group);
 
  private:
   /**

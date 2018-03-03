@@ -223,7 +223,7 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
   return true;
 }
 
-void SetStack::Print()
+void SetStack::Print(bool print_one_by_group)
 {
   std::multiset<std::unique_ptr<Stack>, Local>::const_iterator m_it, s_it;
 
@@ -236,9 +236,20 @@ void SetStack::Print()
 
     std::cout << "Groupe " << num << std::endl;
 
-    for (s_it = keyRange.first; s_it != keyRange.second; ++s_it)
+    if (print_one_by_group)
     {
-      std::cout << "  " << (*s_it)->GetFilename() << std::endl;
+      if (keyRange.first != keyRange.second)
+      {
+        std::cout << "  " << (*keyRange.first)->GetFilename() << std::endl;
+      }
+      s_it = keyRange.second;
+    }
+    else
+    {
+      for (s_it = keyRange.first; s_it != keyRange.second; ++s_it)
+      {
+        std::cout << "  " << (*s_it)->GetFilename() << std::endl;
+      }
     }
     num++;
   }
