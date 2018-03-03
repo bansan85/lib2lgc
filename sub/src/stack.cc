@@ -34,8 +34,8 @@ bool Stack::InterpretLine(const std::string_view &line)
   }
   catch (const std::invalid_argument &)
   {
-    // It's a local variable.
-    // TODO
+  // It's a local variable.
+#warning Local variable
   }
   return true;
 }

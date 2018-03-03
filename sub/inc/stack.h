@@ -50,7 +50,7 @@ class Stack
    *
    * @param[in] filename Filename that contains all backtraces.
    */
-  Stack(const std::string_view& filename);
+  explicit Stack(const std::string_view& filename);
 
   /**
    * @brief Abstract factory that convert a line into a backtrace.

@@ -34,7 +34,7 @@ Bt::Bt(const std::string_view& line)
 {
   std::string_view index, address, function, file;
 
-  if (!DecodeBacktrace(line, index, address, function, file))
+  if (!DecodeBacktrace(line, &index, &address, &function, &file))
   {
     throw std::invalid_argument("Invalid line");
   }
@@ -60,10 +60,15 @@ Bt::Bt(const std::string_view& line)
   }
 }
 
-bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
-                         std::string_view& address, std::string_view& function,
-                         std::string_view& file)
+bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view* index,
+                         std::string_view* address, std::string_view* function,
+                         std::string_view* file)
 {
+  assert(index);
+  assert(address);
+  assert(function);
+  assert(file);
+
   std::string line_it(line);
   // Regex: "^#(\\d+) *((0x.*) in )?((.*\\)) at )?(.*)$"
   // Size for the beginning #\d
@@ -104,7 +109,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
     return false;
   }
 
-  index = line.substr(1, i - 1);
+  *index = line.substr(1, i - 1);
 
   while (i < line_length && line[i] == ' ')
   {
@@ -130,7 +135,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
       return false;
     }
 
-    address = line.substr(i, inpos - i);
+    *address = line.substr(i, inpos - i);
 
     i = inpos + 4;
   }
@@ -139,18 +144,18 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
   const size_t inas = line.find(") at ", i);
   if (inas != std::string::npos)
   {
-    function = line.substr(i, inas - i + 1);
+    *function = line.substr(i, inas - i + 1);
     i = inas + 5;
-    file = line.substr(i);
+    *file = line.substr(i);
   }
   else
   {
     const size_t infrom = line.find(") from ", i);
     if (infrom != std::string::npos)
     {
-      function = line.substr(i, infrom - i + 1);
+      *function = line.substr(i, infrom - i + 1);
       i = infrom + 5;
-      file = line.substr(i);
+      *file = line.substr(i);
     }
     // No as or from.
     else
@@ -160,7 +165,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view& index,
   }
 
   // A function must have a '(' before ')'.
-  if (function.find('(') == std::string::npos)
+  if (function->find('(') == std::string::npos)
   {
     return false;
   }

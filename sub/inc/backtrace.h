@@ -24,8 +24,8 @@
  * @brief Store all informations about one backtrace.
  */
 
-#ifndef BT_H_
-#define BT_H_
+#ifndef BACKTRACE_H_
+#define BACKTRACE_H_
 
 // C++ system
 #include <string_view>
@@ -48,7 +48,7 @@ class Bt
    *   "#d  0xDEADBEEF in Function (args="") at filename:1234" or
    *   "#d  0xDEADBEEF in Function (args="") from library"
    */
-  Bt(const std::string_view& line);
+  explicit Bt(const std::string_view& line);
 
   /**
    * @brief From a line, decode and extract the index, the address, the
@@ -63,9 +63,9 @@ class Bt
    *
    * @return true if no error.
    */
-  bool DecodeBacktrace(const std::string_view& line, std::string_view& index,
-                       std::string_view& address, std::string_view& function,
-                       std::string_view& file) CHK;
+  bool DecodeBacktrace(const std::string_view& line, std::string_view* index,
+                       std::string_view* address, std::string_view* function,
+                       std::string_view* file) CHK;
 
   /**
    * @brief Check if the source file exists.
@@ -147,4 +147,4 @@ class Bt
   bool ReadSource(const std::string_view& file) CHK;
 };
 
-#endif  // BT_H_
+#endif  // BACKTRACE_H_
