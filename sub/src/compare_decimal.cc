@@ -27,13 +27,8 @@
  */
 
 #include "compare_decimal.h"
-
-// C++ system
-// For int std::abs.
+#include <bits/stdint-intn.h>
 #include <cstdlib>
-// Pour float std::abs.
-#include <cmath>
-#include <cstdint>
 
 /**
  * @brief Internal union to convert float to number (4 bytes).
