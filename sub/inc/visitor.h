@@ -22,11 +22,8 @@
 #ifndef VISITOR_H_
 #define VISITOR_H_
 
-// C++ system
-#include <string>
-
-// lib2lgcMath
 #include <compat.h>
+#include <string>
 
 /**
  * @file

@@ -22,13 +22,8 @@
 #ifndef VISITABLE_H_
 #define VISITABLE_H_
 
-// C++ system
-#include <string>
-
-// Google protobuf library
 #include <google/protobuf/message.h>
-
-// Current project
+#include <string>
 #include "visitor.h"
 
 /**

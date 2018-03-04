@@ -19,23 +19,17 @@
  * SOFTWARE.
  */
 
-// C++ system
-#include <fstream>
-#include <iostream>
-#include <string>
-
-// Google protobuf library
-#include <google/protobuf/arena.h>
-
-// lib2lgcPocoGetSet
-#include <number.h>
-#include <number_visitor_value.h>
-
-// lib2lgcPoco
-#include <raw.pb.h>
-
-// lib2lgcMath
+#include <assert.h>
 #include <compare_decimal.h>
+#include <google/protobuf/arena.h>
+#include <google/protobuf/stubs/common.h>
+#include <number.h>
+#include <number.pb.h>
+#include <number_visitor_value.h>
+#include <raw.pb.h>
+#include <algorithm>
+#include <memory>
+#include <string>
 
 int main(int /* argc */, char * /* argv */ [])
 {
