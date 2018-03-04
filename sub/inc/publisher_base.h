@@ -22,15 +22,19 @@
 #ifndef PUBLISHER_BASE_H_
 #define PUBLISHER_BASE_H_
 
-// C++ system
-#include <cstdint>
+#include <bits/stdint-uintn.h>
+#include <compat.h>
 #include <map>
 #include <memory>
-#include <queue>
 #include <string>
 
-// Current project
-#include "connector_interface.h"
+namespace pattern
+{
+namespace publisher
+{
+class ConnectorInterface;
+}
+}
 
 namespace pattern
 {
@@ -65,6 +69,10 @@ class PublisherBase
    * @brief Default constructor.
    */
   PublisherBase();
+  /**
+   * @brief Default destructor.
+   */
+  virtual ~PublisherBase();
 
   /**
    * @brief Add a subscriber to the server.

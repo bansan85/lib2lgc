@@ -19,19 +19,20 @@
  * SOFTWARE.
  */
 
-// lib2lgcPublisher
+#include <bits/stdint-uintn.h>
 #include <connector_direct.h>
+#include <google/protobuf/stubs/common.h>
 #include <publisher_remote.h>
 #include <subscriber_direct.h>
+#include <algorithm>
+#include <cassert>
 #include <connector_direct.cc>
+#include <memory>
 #include <publisher_base.cc>
 #include <publisher_remote.cc>
-
-// C++ system
-#include <cassert>
-
-// Current project
+#include <string>
 #include "actions.pb.h"
+#include "publisher_base.h"
 
 template class pattern::publisher::PublisherBase<msg::Actions>;
 template class pattern::publisher::PublisherRemote<msg::Actions>;

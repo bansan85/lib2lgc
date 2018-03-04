@@ -20,11 +20,7 @@
  */
 
 #include "server_remote.h"
-
-// macros
 #include <handle_error.h>
-
-// C++ system
 #include <memory>
 
 template <typename M>

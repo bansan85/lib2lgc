@@ -20,16 +20,20 @@
  */
 
 #include "publisher_remote.h"
-
-// macros
-#include <handle_error.h>
-
-// C++ system
+#include <cstdint>
 #include <memory>
+#include <type_traits>
+#include <utility>
+#include "connector_interface.h"
 
 template <typename M>
 pattern::publisher::PublisherRemote<M>::PublisherRemote()
     : PublisherBase<M>(), port_(0)
+{
+}
+
+template <typename M>
+pattern::publisher::PublisherRemote<M>::~PublisherRemote()
 {
 }
 

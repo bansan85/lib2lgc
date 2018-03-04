@@ -23,8 +23,6 @@
 #define SUBSCRIBER_INTERFACE_H_
 
 #include <compat.h>
-
-// C++ system
 #include <cstdint>
 #include <memory>
 #include <string>

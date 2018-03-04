@@ -20,16 +20,20 @@
  */
 
 #include "publisher_base.h"
-
-// macros
 #include <handle_error.h>
-
-// C++ system
 #include <memory>
+#include <type_traits>
+#include <utility>
+#include "connector_interface.h"
 
 template <typename M>
 pattern::publisher::PublisherBase<M>::PublisherBase()
     : subscribers_(), options_()
+{
+}
+
+template <typename M>
+pattern::publisher::PublisherBase<M>::~PublisherBase()
 {
 }
 

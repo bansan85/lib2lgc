@@ -19,18 +19,13 @@
  * SOFTWARE.
  */
 
-// lib2lgcPublisher
 #include <connector_direct.h>
 #include <server_remote.h>
 #include <subscriber_direct.h>
+#include <cassert>
 #include <connector_direct.cc>
 #include <server_base.cc>
 #include <server_remote.cc>
-
-// C++ system
-#include <cassert>
-
-// Current project
 #include "cpp/actions.pb.h"
 
 template class pattern::publisher::ServerBase<msg::Actions>;

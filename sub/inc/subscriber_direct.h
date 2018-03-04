@@ -22,6 +22,7 @@
 #ifndef SUBSCRIBER_DIRECT_H_
 #define SUBSCRIBER_DIRECT_H_
 
+#include <bits/stdint-uintn.h>
 #include "subscriber_interface.h"
 
 namespace pattern

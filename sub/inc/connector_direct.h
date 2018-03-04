@@ -22,14 +22,28 @@
 #ifndef CONNECTOR_DIRECT_H_
 #define CONNECTOR_DIRECT_H_
 
-#include "connector_interface.h"
-
-// C++ system
+#include <bits/stdint-uintn.h>
 #include <memory>
 #include <string>
+#include "compat.h"
+#include "connector_interface.h"
 
-// Current project
-#include "publisher_base.h"
+namespace pattern
+{
+namespace publisher
+{
+class SubscriberInterface;
+}
+}
+
+namespace pattern
+{
+namespace publisher
+{
+template <typename M>
+class PublisherBase;
+}
+}
 
 namespace pattern
 {

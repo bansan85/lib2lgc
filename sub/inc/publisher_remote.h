@@ -22,16 +22,19 @@
 #ifndef PUBLISHER_REMOTE_H_
 #define PUBLISHER_REMOTE_H_
 
-#include "publisher_base.h"
-
-// C++ system
-#include <cstdint>
+#include <bits/stdint-uintn.h>
 #include <map>
 #include <memory>
-#include <queue>
+#include "compat.h"
+#include "publisher_base.h"
 
-// Current project
-#include "connector_interface.h"
+namespace pattern
+{
+namespace publisher
+{
+class ConnectorInterface;
+}
+}
 
 namespace pattern
 {
@@ -49,6 +52,10 @@ class PublisherRemote : public PublisherBase<M>
    * @brief Default constructor.
    */
   PublisherRemote();
+  /**
+   * @brief Default destructor.
+   */
+  virtual ~PublisherRemote();
 
   bool StartIp(uint16_t port) CHK;
 
@@ -74,8 +81,9 @@ class PublisherRemote : public PublisherBase<M>
    * @return true if subscriber is unsubscribed successfully.
    *         May failed if suscriber is not subscribe to the specific message.
    */
-  bool RemoveSubscriber(uint32_t id_message,
-                        std::shared_ptr<ConnectorInterface> subscriber) CHK;
+  bool RemoveSubscriber(
+      uint32_t id_message,
+      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
 
  protected:
   // using needed because of template inheritance.

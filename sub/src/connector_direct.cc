@@ -20,6 +20,8 @@
  */
 
 #include "connector_direct.h"
+#include <memory>
+#include "subscriber_interface.h"
 
 template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::Equals(
