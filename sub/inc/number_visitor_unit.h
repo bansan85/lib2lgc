@@ -22,16 +22,8 @@
 #ifndef NUMBER_VISITOR_UNIT_H_
 #define NUMBER_VISITOR_UNIT_H_
 
-// lib2lgcPoco
-#include <number.pb.h>
-
-// lib2lgcVisitor
-#include <visitor.h>
-
-// lib2lgcMath
 #include <compat.h>
-
-// C++ system
+#include <visitor.h>
 #include <string>
 
 namespace pattern

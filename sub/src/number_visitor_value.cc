@@ -20,27 +20,21 @@
  */
 
 #include "number_visitor_value.h"
-
-// Google protobuf library
-#include <google/protobuf/util/message_differencer.h>
-
-// lib2lgcPoco
-#include <raw.pb.h>
-
-// lib2lgcMath
 #include <compare_decimal.h>
-
-// macro
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/util/message_differencer.h>
 #include <handle_error.h>
-
-// Current project
+#include <raw.pb.h>
+#include <memory>
 #include "number.h"
+#include "number.pb.h"
 #include "number_visitor_unit.h"
 
 bool pattern::visitor::NumberVisitorVal::Visit(const Number_Constant &data,
                                                std::string *return_value) const
 {
-  BUGPARAM(return_value, "%p", return_value != nullptr, false);
+  BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
+           false);
 
   msg::Double val;
   val.set_value(data.message().constant().value());
@@ -52,7 +46,8 @@ bool pattern::visitor::NumberVisitorVal::Visit(const Number_Constant &data,
 bool pattern::visitor::NumberVisitorVal::Visit(const Number_NumOpNum &data,
                                                std::string *return_value) const
 {
-  BUGPARAM(return_value, "%p", return_value != nullptr, false);
+  BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
+           false);
 
   msg::Double val1;
   msg::Double val2;

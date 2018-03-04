@@ -22,14 +22,9 @@
 #ifndef NUMBER_VISITOR_VALUE_H_
 #define NUMBER_VISITOR_VALUE_H_
 
-// lib2lgcPoco
-#include <number.pb.h>
-
-// lib2lgcVisitor
 #include <visitor.h>
-
-// C++ system
 #include <string>
+#include "compat.h"
 
 namespace pattern
 {

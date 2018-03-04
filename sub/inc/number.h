@@ -22,20 +22,11 @@
 #ifndef NUMBER_H_
 #define NUMBER_H_
 
-#include <compat.h>
-
-// lib2lgcPoco
-#include <number.pb.h>
-
-// lib2lgcVisitor
-#include <visitable.h>
-#include <visitor.h>
-
-// C++ system
 #include <memory>
-#include <string>
-
-// Current project
+#include <bits/stdint-uintn.h>
+#include <compat.h>
+#include <number.pb.h>
+#include <visitable.h>
 #include "number_visitor_unit.h"
 #include "number_visitor_value.h"
 
