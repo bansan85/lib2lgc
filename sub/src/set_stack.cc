@@ -20,13 +20,19 @@
  */
 
 #include "set_stack.h"
-
+#include <bits/stdint-uintn.h>
+#include <ext/alloc_traits.h>
+#include <algorithm>
 #include <experimental/filesystem>
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <memory>
 #include <regex>
 #include <thread>
+#include <utility>
+#include <vector>
+#include "backtrace.h"
 
 SetStack::SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame)
     : stack_(Local(with_source_only, top_frame, bottom_frame)), mutex_stack_()

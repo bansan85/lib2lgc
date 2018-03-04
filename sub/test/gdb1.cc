@@ -19,11 +19,9 @@
  * SOFTWARE.
  */
 
-// C++ system
-#include <cassert>
 #include <memory>
+#include <string>
 
-// lib2lgcgdb
 #include <backtrace.h>
 
 int main(int /* argc */, char* /* argv */ [])

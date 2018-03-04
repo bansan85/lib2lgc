@@ -28,14 +28,12 @@
 #ifndef SET_STACK_H_
 #define SET_STACK_H_
 
-// C++ system
+#include <compat.h>
+#include <stddef.h>
 #include <memory>
 #include <mutex>
 #include <set>
-
-// Compatibility
-#include <compat.h>
-
+#include <string>
 #include "stack.h"
 
 /**

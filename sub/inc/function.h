@@ -27,13 +27,10 @@
 #ifndef FUNCTION_H_
 #define FUNCTION_H_
 
-// C++ system
+#include <compat.h>
 #include <string>
 #include <utility>
 #include <vector>
-
-// Compatibility
-#include <compat.h>
 
 /**
  * @brief Store all informations about a function.

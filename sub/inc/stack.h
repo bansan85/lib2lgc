@@ -27,14 +27,12 @@
 #ifndef STACK_H_
 #define STACK_H_
 
-// C++ system
+#include <compat.h>
+#include <stddef.h>
 #include <memory>
+#include <string>
 #include <string_view>
 #include <vector>
-
-// Compatibility
-#include <compat.h>
-
 #include "backtrace.h"
 
 /**

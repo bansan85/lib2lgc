@@ -20,13 +20,11 @@
  */
 
 #include "backtrace.h"
-
-// C++ system
 #include <cassert>
-#include <experimental/filesystem>
 #include <iostream>
-#include <regex>
+#include <stdexcept>
 #include <string>
+#include <utility>
 #include <vector>
 
 Bt::Bt(const std::string_view& line)

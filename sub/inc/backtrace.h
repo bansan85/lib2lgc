@@ -27,12 +27,11 @@
 #ifndef BACKTRACE_H_
 #define BACKTRACE_H_
 
-// C++ system
-#include <string_view>
-
-// Compatibility
+#include <bits/stdint-uintn.h>
 #include <compat.h>
-
+#include <stddef.h>
+#include <string>
+#include <string_view>
 #include "function.h"
 
 /**

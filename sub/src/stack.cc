@@ -20,6 +20,7 @@
  */
 
 #include "stack.h"
+#include <stdexcept>
 
 Stack::Stack(const std::string_view &filename)
     : filename_(filename), backtraces_()
