@@ -4,8 +4,8 @@ file(GLOB HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
-if (INCLUDE_HEADER)
-  include_directories(${INCLUDE_HEADER})
+if (LIB2LGC)
+  include_directories(${LIB2LGC}/libheader/inc)
 endif()
 
 add_library(2lgcmath SHARED
@@ -15,7 +15,7 @@ set_target_properties(2lgcmath
   PUBLIC_HEADER "${HEADERS}")
 
 if (CHECK_CODE)
-  set_target_properties(2lgcmath PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(2lgcmath PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 install(TARGETS 2lgcmath

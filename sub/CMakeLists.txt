@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 2.8.11)
 
 project(math)
 
-set(INCLUDE_HEADER)
+set(LIB2LGC)
 set(CHECK_CODE)
+set(iwyu_path_and_options)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS})
+if (LIB2LGC)
+  set(CMAKE_MODULE_PATH "${LIB2LGC}/utils/cmake;${CMAKE_MODULE_PATH}")
+endif()
 
 include(2lgc)
 
@@ -14,6 +18,9 @@ if (CHECK_CODE)
   find_program(iwyu_path NAMES include-what-you-use iwyu)
   if(NOT iwyu_path)
     message(FATAL_ERROR "Could not find the program include-what-you-use")
+  endif()
+  if (LIB2LGC)
+    set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE "${iwyu_path};-Xiwyu;--mapping_file=${LIB2LGC}/utils/iwyu/mapping.imp")
   endif()
 endif()
 
