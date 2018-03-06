@@ -6,8 +6,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
 find_package(Threads)
 
-if (INCLUDE_HEADER)
-  include_directories(${INCLUDE_HEADER})
+if (LIB2LGC)
+  include_directories(${LIB2LGC}/libheader/inc)
 endif()
 
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cc)
@@ -17,7 +17,7 @@ set_target_properties(2lgcgdb
   PROPERTIES FRAMEWORK TRUE
   PUBLIC_HEADER "${HEADERS}")
 if (CHECK_CODE)
-  set_target_properties(2lgcgdb PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(2lgcgdb PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 install(TARGETS 2lgcgdb
