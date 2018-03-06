@@ -27,7 +27,6 @@
 #include <number.pb.h>
 #include <number_visitor_value.h>
 #include <raw.pb.h>
-#include <algorithm>
 #include <memory>
 #include <string>
 
