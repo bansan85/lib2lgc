@@ -15,14 +15,8 @@ protobuf_generate_cpp(PROTO_SRC PROTO_HEADER
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 
-if (INCLUDE_VISITOR)
-  include_directories(${INCLUDE_VISITOR})
-endif()
-if (INCLUDE_HEADER)
-  include_directories(${INCLUDE_HEADER})
-endif()
-if (INCLUDE_MATH)
-  include_directories(${INCLUDE_MATH})
+if (LIB2LGC)
+  include_directories(${LIB2LGC}/libvisitor/inc ${LIB2LGC}/libheader/inc ${LIB2LGC}/libmath/inc)
 endif()
 
 file(GLOB HEADERS ${PROTO_HEADER} ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
@@ -34,7 +28,7 @@ set_target_properties(2lgcpoco
   PROPERTIES FRAMEWORK TRUE
   PUBLIC_HEADER "${HEADERS}")
 if (CHECK_CODE)
-  set_target_properties(2lgcpoco PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(2lgcpoco PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 install(TARGETS 2lgcpoco

@@ -22,13 +22,20 @@
 #ifndef NUMBER_H_
 #define NUMBER_H_
 
-#include <memory>
 #include <bits/stdint-uintn.h>
 #include <compat.h>
 #include <number.pb.h>
 #include <visitable.h>
-#include "number_visitor_unit.h"
-#include "number_visitor_value.h"
+#include <memory>
+
+namespace pattern
+{
+namespace visitor
+{
+class NumberVisitorUnit;
+class NumberVisitorVal;
+}
+}
 
 namespace pattern
 {
