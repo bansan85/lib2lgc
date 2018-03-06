@@ -6,8 +6,8 @@ include_directories(${PROTOBUF_INCLUDE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../inc)
 include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR})
 
-if (INCLUDE_HEADER)
-  include_directories(${INCLUDE_HEADER})
+if (LIB2LGC)
+  include_directories(${LIB2LGC}/libheader/inc)
 endif()
 
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADER actions.proto)
@@ -18,7 +18,7 @@ add_executable(publisher1 EXCLUDE_FROM_ALL ${PROTO_HEADER} ${PROTO_SRC} publishe
 target_link_libraries(publisher1 ${Protobuf_LIBRARIES} 2lgcpublisher)
 add_test(publisher1 publisher1)
 if (CHECK_CODE)
-  set_target_properties(publisher1 PROPERTIES CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(publisher1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 add_dependencies(check publisher1)

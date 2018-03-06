@@ -24,7 +24,6 @@
 #include <google/protobuf/stubs/common.h>
 #include <publisher_remote.h>
 #include <subscriber_direct.h>
-#include <algorithm>
 #include <cassert>
 #include <connector_direct.cc>
 #include <memory>
