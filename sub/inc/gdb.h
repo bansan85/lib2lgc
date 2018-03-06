@@ -19,25 +19,28 @@
  * SOFTWARE.
  */
 
-#include "stack.h"
-#include <memory>
-#include <stdexcept>
+/**
+ * @file gdb.h
+ * @brief Class that run gdb for various purpose.
+ */
 
-Stack::Stack(const std::string_view &filename)
-    : filename_(filename), backtraces_()
-{
-}
+#ifndef GDB_H_
+#define GDB_H_
 
-bool Stack::InterpretLine(const std::string_view &line)
+#include <compat.h>
+#include <string>
+
+/**
+ * @brief Class to run gdb for various purpose.
+ */
+class Gdb
 {
-  try
-  {
-    backtraces_.emplace_back(std::make_unique<Bt>(line));
-  }
-  catch (const std::invalid_argument &)
-  {
-  // It's a local variable.
-#warning Local variable
-  }
-  return true;
-}
+ public:
+  static bool RunBtFull(const std::string& filename, unsigned int argc,
+                        char* const argv[]) CHK;
+  static bool RunBtFullRecursive(const std::string& folder,
+                                 unsigned int nthread, const std::string& regex,
+                                 unsigned int argc, char* const argv[]) CHK;
+};
+
+#endif  // GDB_H_

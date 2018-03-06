@@ -21,7 +21,6 @@
 
 #include "set_stack.h"
 #include <bits/stdint-uintn.h>
-#include <ext/alloc_traits.h>
 #include <algorithm>
 #include <experimental/filesystem>
 #include <fstream>
@@ -166,7 +165,7 @@ bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
   return false;
 }
 
-bool SetStack::Add(const std::string& filename)
+bool SetStack::Add(const std::string& filename, bool print_one_by_group)
 {
   std::ifstream file(filename);
 
@@ -187,14 +186,17 @@ bool SetStack::Add(const std::string& filename)
   }
 
   mutex_stack_.lock();
-  stack_.insert(std::move(stack_gdb));
+  if (!print_one_by_group || stack_.find(stack_gdb) == stack_.end())
+  {
+    stack_.insert(std::move(stack_gdb));
+  }
   mutex_stack_.unlock();
 
   return true;
 }
 
 bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
-                            const std::string& regex)
+                            const std::string& regex, bool print_one_by_group)
 {
   std::vector<std::string> all_files;
   std::regex reg(regex);
@@ -215,10 +217,10 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
   for (size_t t = 0; t < nthreads; t++)
   {
     threads[t] = std::thread(std::bind(
-        [&all_files, this, nthreads](const size_t i_start) {
+        [&all_files, this, nthreads, print_one_by_group](const size_t i_start) {
           for (size_t i = i_start; i < all_files.size(); i += nthreads)
           {
-            Add(all_files[i]);
+            Add(all_files[i], print_one_by_group);
           }
         },
         t));
@@ -229,7 +231,7 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
   return true;
 }
 
-void SetStack::Print(bool print_one_by_group)
+void SetStack::Print()
 {
   std::multiset<std::unique_ptr<Stack>, Local>::const_iterator m_it, s_it;
 
@@ -242,20 +244,9 @@ void SetStack::Print(bool print_one_by_group)
 
     std::cout << "Groupe " << num << std::endl;
 
-    if (print_one_by_group)
+    for (s_it = keyRange.first; s_it != keyRange.second; ++s_it)
     {
-      if (keyRange.first != keyRange.second)
-      {
-        std::cout << "  " << (*keyRange.first)->GetFilename() << std::endl;
-      }
-      s_it = keyRange.second;
-    }
-    else
-    {
-      for (s_it = keyRange.first; s_it != keyRange.second; ++s_it)
-      {
-        std::cout << "  " << (*s_it)->GetFilename() << std::endl;
-      }
+      std::cout << "  " << (*s_it)->GetFilename() << std::endl;
     }
     num++;
   }

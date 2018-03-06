@@ -62,10 +62,12 @@ class SetStack
    * GDB.
    *
    * @param[in] filename The file to add.
+   * @param[in] print_one_by_group Add the file only if no equivalent already
+   * added.
    *
    * @return True if the file is a valid backtrace.
    */
-  bool Add(const std::string& filename) CHK;
+  bool Add(const std::string& filename, bool print_one_by_group) CHK;
 
   /**
    * @brief Add new stacks based on all files that end with .btfull. All files
@@ -74,16 +76,18 @@ class SetStack
    * @param[in] folder The folder where all *.btfull files are.
    * @param[in] nthread The number of threads if parallel is allowed.
    * @param[in] regex Regex that match file to read.
+   * @param[in] print_one_by_group Add the file only if no equivalent already
+   * added.
    *
    * @return Always true even if a file is corrupted.
    */
   bool AddRecursive(const std::string& folder, unsigned int nthread,
-                    const std::string& regex) CHK;
+                    const std::string& regex, bool print_one_by_group) CHK;
 
   /**
    * @brief Show all stacks grouped by condition passed with the constructor.
    */
-  void Print(bool print_one_by_group);
+  void Print();
 
  private:
   /**
