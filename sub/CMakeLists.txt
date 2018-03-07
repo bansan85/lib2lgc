@@ -28,7 +28,13 @@ add_subdirectory(src)
 file(GLOB_RECURSE ALL_SOURCE_FILES src/*.cc inc/*.h)
 add_custom_target(check)
 if (CHECK_CODE)
+  if (LIB2LGC)
+    set(INCLUDE_CPPCHECK "-I${LIB2LGC}/libvisitor/inc;-I${LIB2LGC}/libheader/inc;-I${LIB2LGC}/libmath/inc;-I${CMAKE_CURRENT_SOURCE_DIR}/inc;-I${CMAKE_CURRENT_BINARY_DIR}/src")
+  else()
+    set(INCLUDE_CPPCHECK "")
+  endif()
   add_custom_command(TARGET check
     COMMAND clang-format -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES}
-    COMMAND cpplint.py --root=../inc --filter=-whitespace/braces,-build/include ${ALL_SOURCE_FILES})
+    COMMAND cpplint.py --root=../inc --filter=-whitespace/braces,-build/include ${ALL_SOURCE_FILES}
+    COMMAND cppcheck --check-config --language=c++ --std=c++14 --inconclusive --enable=all ${INCLUDE_CPPCHECK} ${ALL_SOURCE_FILES})
 endif()
