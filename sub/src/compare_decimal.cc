@@ -60,7 +60,7 @@ union Float_t
    * @brief The int representation of the float number.
    */
   int32_t i;
-};
+} __attribute__((packed));
 
 /**
  * @brief Internal union to convert double to number (8 bytes).
@@ -92,7 +92,7 @@ union Double_t
    * @brief The int representation of the double number.
    */
   int64_t i;
-};
+} __attribute__((packed));
 
 /**
  * @brief Function that compare equality of two decimal number that are not
