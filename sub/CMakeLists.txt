@@ -35,6 +35,6 @@ if (CHECK_CODE)
   endif()
   add_custom_command(TARGET check
     COMMAND clang-format -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES}
-    COMMAND cpplint.py --root=../inc --filter=-whitespace/braces,-build/include ${ALL_SOURCE_FILES}
+    COMMAND cpplint.py --root=${CMAKE_SOURCE_DIR}/inc --filter=-whitespace/braces,-build/include ${ALL_SOURCE_FILES}
     COMMAND cppcheck --check-config --language=c++ --std=c++14 --inconclusive --enable=all ${INCLUDE_CPPCHECK} ${ALL_SOURCE_FILES})
 endif()
