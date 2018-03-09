@@ -28,7 +28,7 @@
 #define STACK_H_
 
 #include <compat.h>
-#include <stddef.h>
+#include <cstddef>
 #include <memory>
 #include <string>
 #include <string_view>

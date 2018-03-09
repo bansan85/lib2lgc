@@ -21,6 +21,7 @@
 
 #include "set_stack.h"
 #include <bits/stdint-uintn.h>
+#include <ext/alloc_traits.h>
 #include <algorithm>
 #include <experimental/filesystem>
 #include <fstream>

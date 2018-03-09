@@ -29,7 +29,7 @@
 #define SET_STACK_H_
 
 #include <compat.h>
-#include <stddef.h>
+#include <cstddef>
 #include <memory>
 #include <mutex>
 #include <set>

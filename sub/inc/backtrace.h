@@ -29,7 +29,7 @@
 
 #include <bits/stdint-uintn.h>
 #include <compat.h>
-#include <stddef.h>
+#include <cstddef>
 #include <string>
 #include <string_view>
 #include "function.h"

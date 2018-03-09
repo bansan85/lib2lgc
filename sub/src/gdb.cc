@@ -21,13 +21,14 @@
 
 #include "gdb.h"
 #include <bits/stdint-intn.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include <ext/alloc_traits.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <algorithm>
 #include <chrono>
+#include <csignal>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
 #include <experimental/filesystem>
 #include <functional>
