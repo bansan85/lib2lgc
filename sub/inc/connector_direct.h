@@ -60,6 +60,12 @@ template <typename T>
 class ConnectorDirect : public ConnectorInterface
 {
  public:
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in,out] subscriber The subscriber.
+   * @param[in,out] server The server.
+   */
   explicit ConnectorDirect(
       const std::shared_ptr<SubscriberInterface> &subscriber,
       const std::shared_ptr<PublisherBase<T>> &server)
@@ -67,8 +73,23 @@ class ConnectorDirect : public ConnectorInterface
   {
   }
 
+  /**
+   * @brief Compare two connectors.
+   *
+   * @param[in,out] connector The connector to compare with this.
+   *
+   * @return true if same connector.
+   */
   bool Equals(const ConnectorInterface *connector) const override CHK;
 
+  /**
+   * @brief Add a subscriber.
+   *
+   * @param[in] id_message The id of the message.
+   * @param[in] subscriber
+   *
+   * @return true if no problem.
+   */
   bool AddSubscriber(
       uint32_t id_message,
       std::shared_ptr<ConnectorInterface> subscriber) override CHK;
@@ -76,12 +97,24 @@ class ConnectorDirect : public ConnectorInterface
   /**
    * @brief Send message.
    *
-   * @param id_message The id of the message.
-   * @param data Data of the message in ProtoBuf, SerializeToString.
+   * @param message Data of the message in ProtoBuf, SerializeToString.
    */
   void Send(const std::shared_ptr<const std::string> &message) override;
+  /**
+   * @brief Listen message.
+   *
+   * @param message Data of the message in ProtoBuf, SerializeToString.
+   */
   void Listen(const std::shared_ptr<const std::string> &message) override;
 
+  /**
+   * @brief Remove a subscriber.
+   *
+   * @param[in] id_message The id of the message.
+   * @param[in] subscriber The subscriber.
+   *
+   * @return true if no problem.
+   */
   bool RemoveSubscriber(
       uint32_t id_message,
       std::shared_ptr<ConnectorInterface> subscriber) override CHK;
@@ -92,6 +125,9 @@ class ConnectorDirect : public ConnectorInterface
   virtual ~ConnectorDirect() {}
 
  private:
+  /**
+   * @brief The server.
+   */
   std::shared_ptr<PublisherBase<T>> server_;
 };
 

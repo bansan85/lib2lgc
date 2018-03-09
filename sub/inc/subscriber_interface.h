@@ -46,10 +46,17 @@ class SubscriberInterface
   /**
    * @brief Send message.
    *
-   * @param data Data of the message in ProtoBuf, SerializeToString.
+   * @param message Data of the message in ProtoBuf, SerializeToString.
    */
   virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
 
+  /**
+   * @brief Compare in connector is the same than the object.
+   *
+   * @param[in] connector The connector to compare with.
+   *
+   * @return true if the same.
+   */
   virtual bool Equals(const SubscriberInterface *connector) const = 0;
 
   /**

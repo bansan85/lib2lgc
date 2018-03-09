@@ -42,32 +42,69 @@ namespace publisher
 class ConnectorInterface
 {
  public:
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in,out] subscriber Subscriber.
+   */
   explicit ConnectorInterface(
       const std::shared_ptr<SubscriberInterface> &subscriber)
       : messages_(), next_id_(0), subscriber_(subscriber)
   {
   }
 
+  /**
+   * @brief Compare in connector is the same than the object.
+   *
+   * @param[in] connector The connector to compare with.
+   *
+   * @return true if the same.
+   */
   virtual bool Equals(const ConnectorInterface *connector) const CHK = 0;
 
+  /**
+   * @brief Send message.
+   *
+   * @param message Data of the message in ProtoBuf, SerializeToString.
+   */
+  virtual void Send(const std::shared_ptr<const std::string> &message) = 0;
+
+  /**
+   * @brief Send message.
+   *
+   * @param[in] message Data of the message in ProtoBuf, SerializeToString.
+   */
+  virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
+
+  /**
+   * @brief Add a new subscriber.
+   *
+   * @param[in] id_message The add of the message.
+   * @param[in] subscriber The new subscriber.
+   *
+   * @return true if no problem.
+   */
   virtual bool AddSubscriber(
       uint32_t id_message,
       std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
 
   /**
-   * @brief Send message.
+   * @brief Remove a subscriber.
    *
-   * @param id_message The id of the message.
-   * @param data Data of the message in ProtoBuf, SerializeToString.
+   * @param[in] id_message id of the message.
+   * @param[in] subscriber The subscriber.
+   *
+   * @return true if no problem.
    */
-  virtual void Send(const std::shared_ptr<const std::string> &message) = 0;
-
-  virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
-
   virtual bool RemoveSubscriber(
       uint32_t id_message,
       std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
 
+  /**
+   * @brief Get the subscriber that manager this interface.
+   *
+   * @return return the subscriber.
+   */
   const SubscriberInterface *GetSubscriber() const { return subscriber_.get(); }
 
   /**
@@ -76,10 +113,17 @@ class ConnectorInterface
   virtual ~ConnectorInterface() {}
 
  protected:
-  // Pair with the id of the event and the arguments.
+  /**
+   * @brief Pair with the id of the event and the arguments.
+   */
   std::queue<std::pair<uint32_t, std::shared_ptr<const std::string>>> messages_;
-  // id of the next message.
+  /**
+   * @brief id of the next message.
+   */
   uint32_t next_id_;
+  /**
+   * @brief The subsriber.
+   */
   std::shared_ptr<SubscriberInterface> subscriber_;
 };
 

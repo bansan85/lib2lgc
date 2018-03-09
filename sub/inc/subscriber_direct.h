@@ -39,8 +39,20 @@ namespace publisher
 class SubscriberDirect : public SubscriberInterface
 {
  public:
+  /**
+   * @brief Default constructor
+   *
+   * @param[in] id The id of the constructor.
+   */
   explicit SubscriberDirect(uint32_t id) : id_(id) {}
 
+  /**
+   * @brief Compare in connector is the same than the object.
+   *
+   * @param[in,out] connector The connector to compare with.
+   *
+   * @return true if the same.
+   */
   bool Equals(const SubscriberInterface *connector) const override
       __attribute__((pure));
 
@@ -50,6 +62,9 @@ class SubscriberDirect : public SubscriberInterface
   virtual ~SubscriberDirect() {}
 
  private:
+  /**
+   * @brief The id of the connector.
+   */
   const uint32_t id_;
 };
 

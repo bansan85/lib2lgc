@@ -57,6 +57,13 @@ class PublisherRemote : public PublisherBase<M>
    */
   virtual ~PublisherRemote();
 
+  /**
+   * @brief TODO
+   *
+   * @param[in,out] port TODO
+   *
+   * @return TODO
+   */
   bool StartIp(uint16_t port) CHK;
 
   /**
@@ -89,10 +96,16 @@ class PublisherRemote : public PublisherBase<M>
   // using needed because of template inheritance.
   using PublisherBase<M>::options_;
   using PublisherBase<M>::subscribers_;
+  /**
+   * @brief definition of the multimap.
+   */
   using SubscriberMap =
       std::multimap<uint32_t, std::shared_ptr<ConnectorInterface>>;
 
  private:
+  /**
+   * @brief Port to communicate with.
+   */
   uint16_t port_;
 };
 

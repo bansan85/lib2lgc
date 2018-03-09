@@ -90,7 +90,6 @@ class PublisherBase
   /**
    * @brief Send the message to all subscribers.
    *
-   * @param id_message The message.
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
   void Forward(const std::shared_ptr<const std::string> &message);
