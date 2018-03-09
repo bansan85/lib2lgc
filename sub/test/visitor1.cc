@@ -19,7 +19,6 @@
  * SOFTWARE.
  */
 
-#include <assert.h>
 #include <compare_decimal.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/stubs/common.h>
@@ -27,6 +26,7 @@
 #include <number.pb.h>
 #include <number_visitor_value.h>
 #include <raw.pb.h>
+#include <cassert>
 #include <memory>
 #include <string>
 
