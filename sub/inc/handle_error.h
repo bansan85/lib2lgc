@@ -22,7 +22,7 @@
 #ifndef HANDLE_ERROR_H_
 #define HANDLE_ERROR_H_
 
-#include <stdio.h>
+#include <cstdio>
 
 #define PRINTF(...) printf(__VA_ARGS__)
 
