@@ -126,8 +126,7 @@ class SetStack
      * bottom.
      *
      * @param[in] nb_max_frames Number maximum of backtraces to compare.
-     * @param[in] &Stack::GetBacktraceFromTop Compare from the top or from the
-     * bottom.
+     * @param[in] get_backtraces Compare from the top or from the bottom.
      * @param[in] i The first stack.
      * @param[in] j The second stack.
      *

@@ -53,7 +53,7 @@ class Stack
   /**
    * @brief Abstract factory that convert a line into a backtrace.
    *
-   * @param line[i] The line that contains the description of the current
+   * @param[in] line The line that contains the description of the current
    * backtrace.
    *
    * @return true if convertion is successfull.
@@ -77,7 +77,7 @@ class Stack
   /**
    * @brief Get the backtrace from the top. Exception if out of the range.
    *
-   * @param i[in] The nth backtrace. 0 is the top of the stack.
+   * @param[in] i The nth backtrace. 0 is the top of the stack.
    *
    * @return A const pointer of the backtrace.
    */
@@ -89,7 +89,7 @@ class Stack
   /**
    * @brief Get the backtrace from the bottom. Exception if out of the range.
    *
-   * @param i[in] The nth backtrace. 0 is the bottom of the stack.
+   * @param[in] i The nth backtrace. 0 is the bottom of the stack.
    *
    * @return A const pointer of the backtrace.
    */
