@@ -1,5 +1,6 @@
 [
   # C++ alternatives to C standard headers
+  # Not working
   { include: [ "<assert.h>", public, "<cassert>", public ] },
   { include: [ "<complex.h>", public, "<ccomplex>", public ] },
   { include: [ "<ctype.h>", public, "<cctype>", public ] },
@@ -20,30 +21,9 @@
   { include: [ "<wchar.h>", public, "<cwchar>", public ] },
   { include: [ "<wctype.h>", public, "<cwctype>", public ] },
 
-  # HACK: check whether this can be removed with next iwyu release.
+  # Work
   { include: [ "<bits/shared_ptr.h>", private, "<memory>", public ] },
-  { include: [ "<bits/std_function.h>", private, "<functional>", public ] },
-  { include: [ "<bits/time.h>", private, "<time.h>", public ] },
-  { include: [ "<bits/types/clock_t.h>", private, "<time.h>", public ] },
-  { include: [ "<bits/types/struct_timespec.h>", private, "<time.h>", public ] },
-  { include: [ "<bits/types/struct_timeval.h>", private, "<time.h>", public ] },
-  { include: [ "<bits/types/struct_tm.h>", private, "<time.h>", public ] },
-  { include: [ "<bits/types/time_t.h>", private, "<time.h>", public ] },
-
-  # HACK: iwyu wrongly thinks that including <iosfwd> is sufficient.
   { symbol: [ "std::ifstream", private, "<fstream>", public ] },
-  { symbol: [ "std::stringstream", private, "<sstream>", public ] },
-  { symbol: [ "std::istringstream", private, "<sstream>", public ] },
-  { symbol: [ "std::ostringstream", private, "<sstream>", public ] },
-
-  # HACK: iwyu suggests those two files each time vector[] is used.
-  # https://github.com/include-what-you-use/include-what-you-use/issues/166
-  { include: [ "<ext/alloc_traits.h>", private, "<vector>", public ] },
-
-  # TODO: enable this block and remove some <utility> includes?
-  #{ symbol: [ "std::pair", private, "<utility>", public ] },
-  #{ symbol: [ "std::pair", private, "<map>", public ] },
-  #{ symbol: [ "std::pair", private, "<set>", public ] },
 
 ]
 
