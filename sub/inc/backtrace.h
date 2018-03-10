@@ -88,6 +88,13 @@ class Bt
    */
   size_t GetLine() const CHK { return line_; }
 
+  /**
+   * @brief Get the index of the backtrace.
+   *
+   * @return The indef of the backtrace.
+   */
+  size_t GetIndex() const CHK { return index_; }
+
  private:
   /**
    * @brief The nth backtrace of the stack.

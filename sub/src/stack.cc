@@ -33,6 +33,10 @@ bool Stack::InterpretLine(const std::string_view &line)
   try
   {
     backtraces_.emplace_back(std::make_unique<Bt>(line));
+    if (backtraces_.back()->GetIndex() + 1 != backtraces_.size())
+    {
+      return false;
+    }
   }
   catch (const std::invalid_argument &)
   {
