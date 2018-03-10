@@ -42,7 +42,7 @@ class Gdb
    *
    * @param[in,out] filename The file that make application crashes.
    * @param[in,out] argc Number of the arguments
-   * @param[in,out] argv[] Argument to run the program with the filename
+   * @param[in,out] argv Argument to run the program with the filename
    * replaced by @@. For example: /bin/prog @@
    *
    * @return true if no problem.
@@ -56,7 +56,7 @@ class Gdb
    * @param[in,out] nthread Number of parallel of gdb instance.
    * @param[in,out] regex Regex of the filename.
    * @param[in,out] argc Number of the arguments
-   * @param[in,out] argv[] Argument to run the program with the filename
+   * @param[in,out] argv Argument to run the program with the filename
    * replaced by @@. For example: /bin/prog @@
    *
    * @return true if no problem.
