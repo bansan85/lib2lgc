@@ -27,35 +27,42 @@
 #include <utility>
 #include <vector>
 
-Bt::Bt(const std::string_view& line)
-    : index_(0), address_(0), function_(), file_(), line_(0)
+Bt::Bt() : index_(0), address_(0), function_(), file_(), line_(0)
+{
+}
+
+std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
 {
   std::string_view index, address, function, file;
 
-  if (!DecodeBacktrace(line, &index, &address, &function, &file))
+  std::unique_ptr<Bt> retval = std::make_unique<Bt>();
+
+  if (!retval->DecodeBacktrace(line, &index, &address, &function, &file))
   {
-    throw std::invalid_argument("Invalid line");
+    return std::unique_ptr<Bt>(nullptr);
   }
 
-  if (!ReadIndex(std::string(index)))
+  if (!retval->ReadIndex(std::string(index)))
   {
-    throw std::invalid_argument("Invalid line");
+    return std::unique_ptr<Bt>(nullptr);
   }
 
-  if (address.length() != 0 && !ReadAddress(std::string(address)))
+  if (address.length() != 0 && !retval->ReadAddress(std::string(address)))
   {
-    throw std::invalid_argument("Invalid line");
+    return std::unique_ptr<Bt>(nullptr);
   }
 
-  if (function.length() != 0 && !ReadFunction(function))
+  if (function.length() != 0 && !retval->ReadFunction(function))
   {
-    throw std::invalid_argument("Invalid line");
+    return std::unique_ptr<Bt>(nullptr);
   }
 
-  if (file.length() != 0 && !ReadSource(file))
+  if (file.length() != 0 && !retval->ReadSource(file))
   {
-    throw std::invalid_argument("Invalid line");
+    return std::unique_ptr<Bt>(nullptr);
   }
+
+  return retval;
 }
 
 bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view* index,

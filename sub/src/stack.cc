@@ -30,18 +30,16 @@ Stack::Stack(const std::string_view &filename)
 
 bool Stack::InterpretLine(const std::string_view &line)
 {
-  try
+  std::unique_ptr<Bt> bt = Bt::Factory(line);
+
+  if (bt.get() != nullptr)
   {
-    backtraces_.emplace_back(std::make_unique<Bt>(line));
+    backtraces_.emplace_back(bt.release());
     if (backtraces_.back()->GetIndex() + 1 != backtraces_.size())
     {
       return false;
     }
   }
-  catch (const std::invalid_argument &)
-  {
-  // It's a local variable.
-#warning Local variable
-  }
+
   return true;
 }

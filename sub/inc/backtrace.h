@@ -31,6 +31,7 @@
 #include <compat.h>
 #include <cstddef>
 #include <string>
+#include <memory>
 #include <string_view>
 #include "function.h"
 
@@ -47,7 +48,9 @@ class Bt
    *   "#d  0xDEADBEEF in Function (args="") at filename:1234" or
    *   "#d  0xDEADBEEF in Function (args="") from library"
    */
-  explicit Bt(const std::string_view& line);
+  explicit Bt();
+
+  static std::unique_ptr<Bt> Factory(const std::string_view& line);
 
   /**
    * @brief From a line, decode and extract the index, the address, the
