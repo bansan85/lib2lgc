@@ -26,6 +26,7 @@
 #include <experimental/filesystem>
 #include <fstream>
 #include <functional>
+#include <future>
 #include <iostream>
 #include <memory>
 #include <regex>
@@ -212,24 +213,29 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
     }
   }
 
+  bool retval = true;
   const unsigned int nthreads =
       std::min(nthread, std::thread::hardware_concurrency());
-  std::vector<std::thread> threads(nthreads);
+  std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
   {
-    threads[t] = std::thread(std::bind(
+    threads[t] = std::async(std::launch::async, std::bind(
         [&all_files, this, nthreads, print_one_by_group](const size_t i_start) {
+          bool retval = true;
           for (size_t i = i_start; i < all_files.size(); i += nthreads)
           {
-            Add(all_files[i], print_one_by_group);
+            retval &= Add(all_files[i], print_one_by_group);
           }
+          return retval;
         },
         t));
   }
-  std::for_each(threads.begin(), threads.end(),
-                [](std::thread& x) { x.join(); });
+  for (std::future<bool> & t : threads)
+  {
+    retval &= t.get();
+  }
 
-  return true;
+  return retval;
 }
 
 void SetStack::Print()

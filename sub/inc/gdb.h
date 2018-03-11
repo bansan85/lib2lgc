@@ -40,30 +40,33 @@ class Gdb
    * @brief Run gdb to get the backtrace full. The output will be saved to
    * filename.btfull.
    *
-   * @param[in,out] filename The file that make application crashes.
-   * @param[in,out] argc Number of the arguments
-   * @param[in,out] argv Argument to run the program with the filename
+   * @param[in] filename The file that make application crashes.
+   * @param[in] argc Number of the arguments.
+   * @param[in] argv Argument to run the program with the filename.
+   * @param[in] timeout Timeout for the run of gdb.
    * replaced by @@. For example: /bin/prog @@
    *
    * @return true if no problem.
    */
   static bool RunBtFull(const std::string& filename, unsigned int argc,
-                        char* const argv[]) CHK;
+                        char* const argv[], int64_t timeout) CHK;
   /**
    * @brief Run gdb to get the backtrace full and find recursively all files.
    *
-   * @param[in,out] folder The root folder.
-   * @param[in,out] nthread Number of parallel of gdb instance.
-   * @param[in,out] regex Regex of the filename.
-   * @param[in,out] argc Number of the arguments
-   * @param[in,out] argv Argument to run the program with the filename
+   * @param[in] folder The root folder.
+   * @param[in] nthread Number of parallel of gdb instance.
+   * @param[in] regex Regex of the filename.
+   * @param[in] argc Number of the arguments
+   * @param[in] argv Argument to run the program with the filename
+   * @param[in] timeout Timeout for the run of gdb.
    * replaced by @@. For example: /bin/prog @@
    *
    * @return true if no problem.
    */
   static bool RunBtFullRecursive(const std::string& folder,
                                  unsigned int nthread, const std::string& regex,
-                                 unsigned int argc, char* const argv[]) CHK;
+                                 unsigned int argc, char* const argv[],
+                                 int64_t timeout) CHK;
 };
 
 #endif  // GDB_H_

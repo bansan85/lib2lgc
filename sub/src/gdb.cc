@@ -30,6 +30,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <future>
 #include <experimental/filesystem>
 #include <functional>
 #include <iostream>
@@ -39,13 +40,14 @@
 #include <vector>
 
 bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
-                    char* const argv[])
+                    char* const argv[], int64_t timeout)
 {
   const char** argvbis =
       static_cast<const char**>(malloc(sizeof(char*) * (argc + 22)));
   size_t len =
       sizeof(char) * (sizeof("set logging file .btfull") + filename.length());
   char* btfullfile = static_cast<char*>(malloc(len));
+  bool retval = true;
   snprintf(btfullfile, len, "%s%s%s", "set logging file ", filename.c_str(),
            ".btfull");
   argvbis[0] = "/usr/bin/gdb";
@@ -97,17 +99,19 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
           std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
       if (wait_pid == 0)
       {
-        if (elapsed_seconds <= 40)
+        if (elapsed_seconds <= timeout)
         {
           sleep(1);
         }
         else
         {
           kill(child_pid, SIGKILL);
-          std::cout << "OUPS..." << filename << std::endl;
+          std::cout << "Timeout: " << filename << std::endl;
+          retval = false;
+          break;
         }
       }
-    } while (wait_pid == 0 && elapsed_seconds <= 40);
+    } while (wait_pid == 0 && elapsed_seconds <= timeout);
     free(argvbis);
     free(btfullfile);
   }
@@ -115,12 +119,12 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   {
     execvp(argvbis[0], const_cast<char* const*>(argvbis));
   }
-  return true;
+  return retval;
 }
 
 bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
                              const std::string& regex, unsigned int argc,
-                             char* const argv[])
+                             char* const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
   std::regex reg(regex);
@@ -135,22 +139,27 @@ bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
     }
   }
 
+  bool retval = true;
   const unsigned int nthreads =
       std::min(nthread, std::thread::hardware_concurrency());
-  std::vector<std::thread> threads(nthreads);
+  std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
   {
-    threads[t] = std::thread(std::bind(
-        [&all_files, nthreads, argc, &argv](const size_t i_start) {
+    threads[t] = std::async(std::launch::async, std::bind(
+        [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
+          bool retval = true;
           for (size_t i = i_start; i < all_files.size(); i += nthreads)
           {
-            RunBtFull(all_files[i], argc, argv);
+            retval &= RunBtFull(all_files[i], argc, argv, timeout);
           }
+          return retval;
         },
         t));
   }
-  std::for_each(threads.begin(), threads.end(),
-                [](std::thread& x) { x.join(); });
+  for (std::future<bool> & t : threads)
+  {
+    retval &= t.get();
+  }
 
-  return true;
+  return retval;
 }
