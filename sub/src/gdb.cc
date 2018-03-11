@@ -43,7 +43,7 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
                     char* const argv[], int64_t timeout)
 {
   const char** argvbis =
-      static_cast<const char**>(malloc(sizeof(char*) * (argc + 22)));
+      static_cast<const char**>(malloc(sizeof(char*) * (argc + 24)));
   size_t len =
       sizeof(char) * (sizeof("set logging file .btfull") + filename.length());
   char* btfullfile = static_cast<char*>(malloc(len));
@@ -52,37 +52,41 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
            ".btfull");
   argvbis[0] = "/usr/bin/gdb";
   argvbis[1] = "-batch-silent";
+  // See https://sourceware.org/ml/gdb/2018-03/msg00029.html for tty /dev/null.
+  // and https://www.cs.ait.ac.th/~on/O/oreilly/unix/upt/ch12_07.htm
   argvbis[2] = "-ex";
-  argvbis[3] = "run";
+  argvbis[3] = "tty /dev/null";
   argvbis[4] = "-ex";
-  argvbis[5] = "set logging overwrite on";
+  argvbis[5] = "run";
   argvbis[6] = "-ex";
-  argvbis[7] = btfullfile;
+  argvbis[7] = "set logging overwrite on";
   argvbis[8] = "-ex";
-  argvbis[9] = "set logging on";
+  argvbis[9] = btfullfile;
   argvbis[10] = "-ex";
-  argvbis[11] = "set pagination off";
+  argvbis[11] = "set logging on";
   argvbis[12] = "-ex";
-  argvbis[13] = "handle SIG33 pass nostop noprint";
+  argvbis[13] = "set pagination off";
   argvbis[14] = "-ex";
-  argvbis[15] = "backtrace full";
+  argvbis[15] = "handle SIG33 pass nostop noprint";
   argvbis[16] = "-ex";
-  argvbis[17] = "set logging off";
+  argvbis[17] = "backtrace full";
   argvbis[18] = "-ex";
-  argvbis[19] = "quit";
-  argvbis[20] = "--args";
+  argvbis[19] = "set logging off";
+  argvbis[20] = "-ex";
+  argvbis[21] = "quit";
+  argvbis[22] = "--args";
   for (unsigned int i = 0; i < argc; i++)
   {
     if (strcmp("@@", argv[i]) == 0)
     {
-      argvbis[21 + i] = const_cast<char*>(filename.c_str());
+      argvbis[23 + i] = const_cast<char*>(filename.c_str());
     }
     else
     {
-      argvbis[21 + i] = argv[i];
+      argvbis[23 + i] = argv[i];
     }
   }
-  argvbis[21 + argc] = nullptr;
+  argvbis[23 + argc] = nullptr;
   pid_t child_pid = fork();
   if (child_pid != 0)
   {
