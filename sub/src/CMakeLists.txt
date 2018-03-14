@@ -21,7 +21,7 @@ endif()
 
 file(GLOB HEADERS ${PROTO_HEADER} ${CMAKE_CURRENT_SOURCE_DIR}/../inc/*.h)
 
-set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal")
+set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof")
 
 add_library(2lgcpoco SHARED ${PROTO_SRC} number.cc number_visitor_unit.cc number_visitor_value.cc)
 set_target_properties(2lgcpoco
