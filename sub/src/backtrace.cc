@@ -25,7 +25,8 @@
 #include <stdexcept>
 #include <string>
 
-Bt::Bt() : index_(0), address_(0), function_(), file_(), line_(0) {}
+Bt::Bt() : index_(0), address_(0), function_(), file_(),
+           line_(std::numeric_limits<size_t>::max()) {}
 
 std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
 {

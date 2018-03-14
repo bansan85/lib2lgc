@@ -104,6 +104,7 @@ int SetStack::Local::CompareFrom(
       return 1;
     }
 
+    // First compare the line.
     if (bti->GetLine() < btj->GetLine())
     {
       return -1;
@@ -111,6 +112,18 @@ int SetStack::Local::CompareFrom(
     else if (bti->GetLine() > btj->GetLine())
     {
       return 1;
+    }
+    // If both lines are unknown, compare the name of the function.
+    else if (bti->GetLine() == std::numeric_limits<size_t>::max())
+    {
+      if (bti->GetName().compare(btj->GetName()) < 0)
+      {
+        return -1;
+      }
+      else if (bti->GetName().compare(btj->GetName()) > 0)
+      {
+        return 1;
+      }
     }
 
     nb++;
