@@ -12,7 +12,7 @@ endif()
 
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADER actions.proto)
 
-set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal")
+set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof")
 
 add_executable(publisher1 EXCLUDE_FROM_ALL ${PROTO_HEADER} ${PROTO_SRC} publisher1.cc)
 target_link_libraries(publisher1 ${Protobuf_LIBRARIES} 2lgcpublisher)
