@@ -185,7 +185,9 @@ bool SetStack::Add(const std::string& filename, bool print_one_by_group)
   {
     if (!stack_gdb->InterpretLine(line))
     {
-      return false;
+      // It's not the backtrace. It can be a "No locals." translation or
+      // a local variable value or an invalid line.
+      // Finally, I don't know if it's a valid or not file.
     }
   }
 
