@@ -19,6 +19,7 @@
  * SOFTWARE.
  */
 
+#include <cassert>
 #include <memory>
 #include <string>
 
@@ -26,14 +27,15 @@
 
 int main(int /* argc */, char* /* argv */ [])
 {
-  std::string line(
+  std::unique_ptr<Bt> bt = Bt::Factory(
       "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
       "interface_=<optimized out>, ext=<optimized out>) at "
       "libraries/libdxfrw/src/libdxfrw.cpp:99");
-  std::unique_ptr<Bt> bt = std::make_unique<Bt>(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
+  assert(bt->HasSource());
+  assert(bt->GetName().compare("dxfRW::read") == 0);
+  assert(bt->GetFile().compare("libraries/libdxfrw/src/libdxfrw.cpp") == 0);
+  assert(bt->GetIndex() == 4);
+  assert(bt->GetLine() == 99);
 
   return 0;
 }

@@ -21,6 +21,7 @@
 
 #include "gdb.h"
 #include <bits/stdint-intn.h>
+#include <cxxabi.h>
 #include <ext/alloc_traits.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -30,11 +31,12 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <future>
 #include <experimental/filesystem>
 #include <functional>
+#include <future>
 #include <iostream>
 #include <regex>
+#include <system_error>
 #include <thread>
 #include <type_traits>
 #include <vector>
@@ -149,18 +151,20 @@ bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
   std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
   {
-    threads[t] = std::async(std::launch::async, std::bind(
-        [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
-          bool retval = true;
-          for (size_t i = i_start; i < all_files.size(); i += nthreads)
-          {
-            retval &= RunBtFull(all_files[i], argc, argv, timeout);
-          }
-          return retval;
-        },
-        t));
+    threads[t] = std::async(
+        std::launch::async,
+        std::bind(
+            [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
+              bool retval2 = true;
+              for (size_t i = i_start; i < all_files.size(); i += nthreads)
+              {
+                retval2 &= RunBtFull(all_files[i], argc, argv, timeout);
+              }
+              return retval2;
+            },
+            t));
   }
-  for (std::future<bool> & t : threads)
+  for (std::future<bool>& t : threads)
   {
     retval &= t.get();
   }

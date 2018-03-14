@@ -27,6 +27,7 @@
 #ifndef GDB_H_
 #define GDB_H_
 
+#include <bits/stdint-intn.h>
 #include <compat.h>
 #include <string>
 

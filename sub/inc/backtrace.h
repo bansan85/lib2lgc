@@ -30,8 +30,8 @@
 #include <bits/stdint-uintn.h>
 #include <compat.h>
 #include <cstddef>
-#include <string>
 #include <memory>
+#include <string>
 #include <string_view>
 #include "function.h"
 
@@ -43,13 +43,18 @@ class Bt
  public:
   /**
    * @brief Default constructor.
+   */
+  Bt();
+
+  /**
+   * @brief Create a Backtrace based on the line.
    *
    * @param[in] line The line in format
    *   "#d  0xDEADBEEF in Function (args="") at filename:1234" or
    *   "#d  0xDEADBEEF in Function (args="") from library"
+   *
+   * @return The new backtrace and null in failed.
    */
-  explicit Bt();
-
   static std::unique_ptr<Bt> Factory(const std::string_view& line);
 
   /**
@@ -82,6 +87,13 @@ class Bt
    * @return The filename.
    */
   const std::string& GetFile() const CHK { return file_; }
+
+  /**
+   * @brief Get the name of the function.
+   *
+   * @return The name of the function.
+   */
+  const std::string& GetName() const CHK { return function_.GetName(); }
 
   /**
    * @brief Get the line of the function. This number is available only if

@@ -43,17 +43,43 @@ class Function
   /**
    * @brief Default constructor.
    */
-  Function() : name(), args() {}
+  Function() : name_(), args_() {}
 
+  /**
+   * @brief Get the name of a function.
+   *
+   * @return The name of the function.
+   */
+  const std::string& GetName() const CHK { return name_; }
+
+  /**
+   * @brief Setter for the name of a function.
+   *
+   * @param[in] name The new name of a function.
+   */
+  void SetName(const std::string_view& name) { name_.assign(name); }
+
+  /**
+   * @brief Add argument of the function.
+   *
+   * @param[in] name Name of the argument.
+   * @param[in] value Value of the argument.
+   */
+  void AddArgs(const std::string_view& name, const std::string_view& value)
+  {
+    args_.push_back(std::pair<std::string, std::string>(name, value));
+  }
+
+ private:
   /**
    * @brief Name of the function.
    */
-  std::string name;
+  std::string name_;
 
   /**
    * @brief All the arguments. Key is the name of the arg, value is the value.
    */
-  std::vector<std::pair<std::string, std::string>> args;
+  std::vector<std::pair<std::string, std::string>> args_;
 };
 
 #endif  // FUNCTION_H_

@@ -24,12 +24,8 @@
 #include <iostream>
 #include <stdexcept>
 #include <string>
-#include <utility>
-#include <vector>
 
-Bt::Bt() : index_(0), address_(0), function_(), file_(), line_(0)
-{
-}
+Bt::Bt() : index_(0), address_(0), function_(), file_(), line_(0) {}
 
 std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
 {
@@ -213,7 +209,7 @@ bool Bt::ReadFunction(const std::string_view& description)
     return false;
   }
 
-  function_.name = description.substr(0, pos_space);
+  function_.SetName(description.substr(0, pos_space));
 
   // + 2 to remove " ("
   std::string_view str =
@@ -244,16 +240,14 @@ bool Bt::ReadFunction(const std::string_view& description)
     size_t pos_equal = strcomma.find('=');
     while (pos_equal != pos_last_equal)
     {
-      function_.args.push_back(std::pair<std::string, std::string>(
-          std::string(strcomma.substr(0, pos_equal)),
-          std::string(strcomma.substr(pos_last_equal + 1))));
+      function_.AddArgs(strcomma.substr(0, pos_equal),
+                        strcomma.substr(pos_last_equal + 1));
       strcomma = strcomma.substr(pos_equal + 1);
       pos_last_equal -= pos_equal + 1;
       pos_equal = strcomma.find('=');
     }
-    function_.args.push_back(std::pair<std::string, std::string>(
-        std::string(strcomma.substr(0, pos_equal)),
-        std::string(strcomma.substr(pos_last_equal + 1))));
+    function_.AddArgs(strcomma.substr(0, pos_equal),
+                      strcomma.substr(pos_last_equal + 1));
 
     if (pos_comma != str.length())
     {
