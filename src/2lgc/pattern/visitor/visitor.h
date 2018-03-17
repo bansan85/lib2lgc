@@ -19,10 +19,10 @@
  * SOFTWARE.
  */
 
-#ifndef VISITOR_H_
-#define VISITOR_H_
+#ifndef PATTERN_VISITOR_VISITOR_H_
+#define PATTERN_VISITOR_VISITOR_H_
 
-#include <compat.h>
+#include <2lgc/compatibility/visual_studio.h>
 #include <string>
 
 /**
@@ -76,4 +76,6 @@ class Visitor
 }  // namespace visitor
 }  // namespace pattern
 
-#endif  // VISITOR_H_
+#endif  // PATTERN_VISITOR_VISITOR_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

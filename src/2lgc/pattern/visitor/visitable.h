@@ -19,12 +19,12 @@
  * SOFTWARE.
  */
 
-#ifndef VISITABLE_H_
-#define VISITABLE_H_
+#ifndef PATTERN_VISITOR_VISITABLE_H_
+#define PATTERN_VISITOR_VISITABLE_H_
 
+#include <2lgc/pattern/visitor/visitor.h>
 #include <google/protobuf/message.h>
 #include <string>
-#include "visitor.h"
 
 /**
  * @file
@@ -131,4 +131,6 @@ class InterfaceVisitable
 }  // namespace visitor
 }  // namespace pattern
 
-#endif  // VISITABLE_H_
+#endif  // PATTERN_VISITOR_VISITABLE_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */
