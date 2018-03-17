@@ -19,35 +19,35 @@
  * SOFTWARE.
  */
 
-#ifndef NUMBER_VISITOR_UNIT_H_
-#define NUMBER_VISITOR_UNIT_H_
+#ifndef NUMBER_VISITOR_VALUE_H_
+#define NUMBER_VISITOR_VALUE_H_
 
-#include <compat.h>
-#include <visitor.h>
+#include <2lgc/pattern/visitor/visitor.h>
 #include <string>
+#include <2lgc/compatibility.h>
 
 namespace pattern
 {
 namespace visitor
 {
-// We can't include number.h because number.h need number_visitor_unit.h.
+// We can't include number.h because number.h need number_visitor_value.h.
 class Number_Constant;
 class Number_NumOpNum;
 
 /**
- * @brief The visitor that will return the unit.
+ * @brief The visitor that will return the floating value.
  */
-class NumberVisitorUnit : public BaseVisitor,
-                          public Visitor<Number_Constant>,
-                          public Visitor<Number_NumOpNum>
+class NumberVisitorVal : public BaseVisitor,
+                         public Visitor<Number_Constant>,
+                         public Visitor<Number_NumOpNum>
 {
  public:
   /**
    * @brief Default destructor.
    */
-  virtual ~NumberVisitorUnit() {}
+  virtual ~NumberVisitorVal() {}
   /**
-   * @brief Return the unit of a constant number.
+   * @brief Return the floating value of a constant number.
    *
    * @param data The constant number.
    * @param return_value This parameter will be changed only if Visit success.
@@ -57,7 +57,8 @@ class NumberVisitorUnit : public BaseVisitor,
   bool Visit(const Number_Constant &data,
              std::string *return_value) const override CHK;
   /**
-   * @brief Return the unit of a number based on an operation of two numbers.
+   * @brief Return the floating value of a number based on an operation of two
+   *        numbers.
    *
    * @param data The number.
    * @param return_value This parameter will be changed only if Visit success.
@@ -71,4 +72,4 @@ class NumberVisitorUnit : public BaseVisitor,
 }  // namespace visitor
 }  // namespace pattern
 
-#endif  // NUMBER_VISITOR_UNIT_H_
+#endif  // NUMBER_VISITOR_VALUE_H_

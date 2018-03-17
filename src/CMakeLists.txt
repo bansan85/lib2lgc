@@ -1,17 +1,29 @@
-add_custom_target(check)
+add_subdirectory(2lgc/poco)
+set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof")
 
-# Install all .h to /usr/include/2lgc/...
-install(
-  DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/2lgc
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  FILES_MATCHING PATTERN "*.h")
+file(GLOB HEADERS
+  ${PROTO_HEADER}
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/visitor/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/error/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/compatibility/*.h)
 
-file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
+add_library(2lgc SHARED ${PROTO_SRC}
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_unit.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_value.cc
+  )
+
+set_target_properties(2lgc
+  PROPERTIES FRAMEWORK TRUE
+  PUBLIC_HEADER "${HEADERS}")
 
 if (CHECK_CODE)
-  add_custom_command(TARGET check
-    COMMAND clang-format -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES}
-#-readability/braces: disabled false positive because the brace of the macro in the line after the if.
-    COMMAND cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces ${ALL_SOURCE_FILES}
-    COMMAND cppcheck --check-config -I${CMAKE_CURRENT_SOURCE_DIR} --language=c++ --std=c++14 --inconclusive --enable=all ${ALL_SOURCE_FILES})
+  set_target_properties(2lgc PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
+
+# Install all .h to /usr/include/2lgc/...
+install(TARGETS 2lgc
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/2lgc)

@@ -23,9 +23,9 @@
 #define NUMBER_H_
 
 #include <bits/stdint-uintn.h>
-#include <compat.h>
-#include <number.pb.h>
-#include <visitable.h>
+#include <2lgc/compatibility.h>
+#include <2lgc/pattern/visitor/number.pb.h>
+#include <2lgc/pattern/visitor/visitable.h>
 #include <memory>
 
 namespace pattern

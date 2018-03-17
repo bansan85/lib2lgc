@@ -23,14 +23,14 @@
 #include <bits/stdint-uintn.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
-#include <handle_error.h>
-#include <raw.pb.h>
+#include <2lgc/error/show.h>
+#include <2lgc/poco/raw.pb.h>
 #include <cmath>
 #include <memory>
 #include <string>
-#include "number.pb.h"
-#include "number_visitor_unit.h"
-#include "number_visitor_value.h"
+#include <2lgc/poco/number.pb.h>
+#include <2lgc/poco/number_visitor_unit.h>
+#include <2lgc/poco/number_visitor_value.h>
 
 // Static variables
 pattern::visitor::NumberVisitorVal pattern::visitor::Number::visitor_val;
