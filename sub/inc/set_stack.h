@@ -36,6 +36,8 @@
 #include <string>
 #include "stack.h"
 
+class Bt;
+
 /**
  * @brief Store and sort all stacks.
  *
@@ -132,8 +134,9 @@ class SetStack
      *
      * @return -1 if i < j, 0 if i == j and -1 if i > j.
      */
+    typedef const Bt* (Stack::*FunctionGetBacktrace)(size_t) const;
     int CompareFrom(const size_t nb_max_frames,
-                    decltype(&Stack::GetBacktraceFromTop) get_backtraces,
+                    FunctionGetBacktrace get_backtraces,
                     const std::unique_ptr<Stack>& i,
                     const std::unique_ptr<Stack>& j);
 
