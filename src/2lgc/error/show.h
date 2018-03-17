@@ -19,8 +19,8 @@
  * SOFTWARE.
  */
 
-#ifndef HANDLE_ERROR_H_
-#define HANDLE_ERROR_H_
+#ifndef ERROR_SHOW_H_
+#define ERROR_SHOW_H_
 
 #include <cstdio>
 
@@ -83,6 +83,6 @@
 
 #define BUGCONT(X, Y) BUG(X, Y, "Propagation de l'erreur.\n", "BLA")
 
-#endif  // HANDLE_ERROR_H_
+#endif  // ERROR_SHOW_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
