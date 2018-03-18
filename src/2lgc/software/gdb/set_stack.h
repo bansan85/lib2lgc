@@ -176,7 +176,7 @@ class SetStack
     size_t bottom_frame_;
   };
 
-  bool ParallelAdd(const std::vector<std::string> &all_files,
+  bool ParallelAdd(const std::vector<std::string>& all_files,
                    unsigned int nthread, bool print_one_by_group) CHK;
 
   /**

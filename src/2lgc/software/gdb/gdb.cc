@@ -32,9 +32,9 @@
 #include <cstring>
 #include <experimental/filesystem>
 #include <ext/alloc_traits.h>
+#include <fstream>
 #include <functional>
 #include <future>
-#include <fstream>
 #include <iostream>
 #include <regex>
 #include <system_error>
@@ -129,7 +129,7 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   return retval;
 }
 
-static bool ParallelRun(const std::vector<std::string> &all_files,
+static bool ParallelRun(const std::vector<std::string>& all_files,
                         unsigned int nthread, unsigned int argc,
                         char* const argv[], int64_t timeout)
 {

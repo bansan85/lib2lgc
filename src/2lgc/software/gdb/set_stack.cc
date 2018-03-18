@@ -217,7 +217,7 @@ bool SetStack::Add(const std::string& filename, bool print_one_by_group)
   return true;
 }
 
-bool SetStack::ParallelAdd(const std::vector<std::string> &all_files,
+bool SetStack::ParallelAdd(const std::vector<std::string>& all_files,
                            unsigned int nthread, bool print_one_by_group)
 {
   bool retval = true;
