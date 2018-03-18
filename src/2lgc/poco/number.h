@@ -24,7 +24,7 @@
 
 #include <bits/stdint-uintn.h>
 #include <2lgc/compatibility.h>
-#include <2lgc/pattern/visitor/number.pb.h>
+#include <2lgc/poco/number.pb.h>
 #include <2lgc/pattern/visitor/visitable.h>
 #include <memory>
 

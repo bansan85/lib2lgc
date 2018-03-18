@@ -20,7 +20,7 @@
  */
 
 #include "number_visitor_unit.h"
-#include <compare_decimal.h>
+#include <2lgc/math/compare_decimal.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
 #include <2lgc/error/show.h>

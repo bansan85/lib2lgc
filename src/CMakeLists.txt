@@ -1,4 +1,5 @@
 add_subdirectory(2lgc/poco)
+
 set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof")
 
 file(GLOB HEADERS
@@ -17,6 +18,7 @@ add_library(2lgc SHARED ${PROTO_SRC}
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_unit.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_value.cc
   )
+add_dependencies(2lgc 2lgcpoco)
 
 set_target_properties(2lgc
   PROPERTIES FRAMEWORK TRUE
