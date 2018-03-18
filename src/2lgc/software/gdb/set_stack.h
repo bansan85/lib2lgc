@@ -25,16 +25,16 @@
  * creation.
  */
 
-#ifndef SET_STACK_H_
-#define SET_STACK_H_
+#ifndef SOFTWARE_GDB_SET_STACK_H_
+#define SOFTWARE_GDB_SET_STACK_H_
 
-#include <compat.h>
+#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/software/gdb/stack.h>
 #include <cstddef>
 #include <memory>
 #include <mutex>
 #include <set>
 #include <string>
-#include "stack.h"
 
 class Bt;
 
@@ -172,4 +172,4 @@ class SetStack
   std::mutex mutex_stack_;
 };
 
-#endif  // SET_STACK_H_
+#endif  // SOFTWARE_GDB_SET_STACK_H_

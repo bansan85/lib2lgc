@@ -24,16 +24,16 @@
  * @brief Store all informations about a whole stack.
  */
 
-#ifndef STACK_H_
-#define STACK_H_
+#ifndef SOFTWARE_GDB_STACK_H_
+#define SOFTWARE_GDB_STACK_H_
 
-#include <compat.h>
+#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/software/gdb/backtrace.h>
 #include <cstddef>
 #include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
-#include "backtrace.h"
 
 /**
  * @brief Store all informations about a stack.
@@ -109,4 +109,4 @@ class Stack
   std::vector<std::unique_ptr<Bt>> backtraces_;
 };
 
-#endif  // STACK_H_
+#endif  // SOFTWARE_GDB_STACK_H_

@@ -24,16 +24,16 @@
  * @brief Store all informations about one backtrace.
  */
 
-#ifndef BACKTRACE_H_
-#define BACKTRACE_H_
+#ifndef SOFTWARE_GDB_BACKTRACE_H_
+#define SOFTWARE_GDB_BACKTRACE_H_
 
+#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/software/gdb/function.h>
 #include <bits/stdint-uintn.h>
-#include <compat.h>
 #include <cstddef>
 #include <memory>
 #include <string>
 #include <string_view>
-#include "function.h"
 
 /**
  * @brief Store all informations about one backtrace.
@@ -168,4 +168,4 @@ class Bt
   bool ReadSource(const std::string_view& file) CHK;
 };
 
-#endif  // BACKTRACE_H_
+#endif  // SOFTWARE_GDB_BACKTRACE_H_

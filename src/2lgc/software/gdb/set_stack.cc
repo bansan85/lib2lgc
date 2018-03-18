@@ -19,12 +19,14 @@
  * SOFTWARE.
  */
 
-#include "set_stack.h"
+#include <2lgc/software/gdb/backtrace.h>
+#include <2lgc/software/gdb/set_stack.h>
+#include <2lgc/software/gdb/stack.h>
 #include <bits/stdint-uintn.h>
 #include <cxxabi.h>
-#include <ext/alloc_traits.h>
 #include <algorithm>
 #include <experimental/filesystem>
+#include <ext/alloc_traits.h>
 #include <fstream>
 #include <functional>
 #include <future>
@@ -36,8 +38,6 @@
 #include <thread>
 #include <utility>
 #include <vector>
-#include "backtrace.h"
-#include "stack.h"
 
 SetStack::SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame)
     : stack_(Local(with_source_only, top_frame, bottom_frame)), mutex_stack_()

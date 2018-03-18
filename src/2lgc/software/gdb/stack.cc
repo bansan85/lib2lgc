@@ -19,9 +19,9 @@
  * SOFTWARE.
  */
 
-#include "stack.h"
+#include <2lgc/software/gdb/backtrace.h>
+#include <2lgc/software/gdb/stack.h>
 #include <memory>
-#include "backtrace.h"
 
 Stack::Stack(const std::string_view &filename)
     : filename_(filename), backtraces_()

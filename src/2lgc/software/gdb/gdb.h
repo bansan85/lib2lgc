@@ -24,11 +24,11 @@
  * @brief Class that run gdb for various purpose.
  */
 
-#ifndef GDB_H_
-#define GDB_H_
+#ifndef SOFTWARE_GDB_GDB_H_
+#define SOFTWARE_GDB_GDB_H_
 
+#include <2lgc/compatibility/visual_studio.h>
 #include <bits/stdint-intn.h>
-#include <compat.h>
 #include <string>
 
 /**
@@ -70,4 +70,4 @@ class Gdb
                                  int64_t timeout) CHK;
 };
 
-#endif  // GDB_H_
+#endif  // SOFTWARE_GDB_GDB_H_

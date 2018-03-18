@@ -8,6 +8,7 @@ file(GLOB HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/visitor/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/*.h
   )
 
 add_library(2lgc SHARED ${PROTO_SRC}
@@ -15,8 +16,15 @@ add_library(2lgc SHARED ${PROTO_SRC}
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_unit.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_value.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/backtrace.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/gdb.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/set_stack.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/stack.cc
   )
-target_link_libraries(2lgc -Wl,--whole-archive 2lgcpoco -Wl,--no-whole-archive)
+target_link_libraries(2lgc
+  -Wl,--whole-archive 2lgcpoco -Wl,--no-whole-archive
+  stdc++fs
+  )
 
 set_target_properties(2lgc
   PROPERTIES FRAMEWORK TRUE

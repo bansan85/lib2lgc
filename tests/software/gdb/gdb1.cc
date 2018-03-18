@@ -19,11 +19,10 @@
  * SOFTWARE.
  */
 
+#include <2lgc/software/gdb/backtrace.h>
 #include <cassert>
 #include <memory>
 #include <string>
-
-#include <backtrace.h>
 
 int main(int /* argc */, char* /* argv */ [])
 {

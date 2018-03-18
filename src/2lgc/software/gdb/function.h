@@ -24,10 +24,10 @@
  * @brief Store all informations about functions.
  */
 
-#ifndef FUNCTION_H_
-#define FUNCTION_H_
+#ifndef SOFTWARE_GDB_FUNCTION_H_
+#define SOFTWARE_GDB_FUNCTION_H_
 
-#include <compat.h>
+#include <2lgc/compatibility/visual_studio.h>
 #include <string>
 #include <utility>
 #include <vector>
@@ -82,4 +82,4 @@ class Function
   std::vector<std::pair<std::string, std::string>> args_;
 };
 
-#endif  // FUNCTION_H_
+#endif  // SOFTWARE_GDB_FUNCTION_H_

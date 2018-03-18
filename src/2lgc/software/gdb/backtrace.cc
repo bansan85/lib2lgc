@@ -19,7 +19,8 @@
  * SOFTWARE.
  */
 
-#include "backtrace.h"
+#include <2lgc/software/gdb/backtrace.h>
+#include <2lgc/software/gdb/function.h>
 #include <cassert>
 #include <iostream>
 #include <limits>

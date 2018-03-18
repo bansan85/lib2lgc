@@ -36,7 +36,9 @@ if (CHECK_CODE)
     COMMAND clang-format -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES}
 #-readability/braces: disabled false positive because the brace of the macro in the line after the if.
 #-build/include_what_you_use: cpplint.py and iwyu have sometimes differents issues.
-    COMMAND cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use ${ALL_SOURCE_FILES}
+#-build/c++11: is for chrome project.
+#-build/include_order: cpplint.py and iwyu have sometimes differents issues.
+    COMMAND cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order ${ALL_SOURCE_FILES}
     COMMAND cppcheck --check-config -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inconclusive --enable=all ${ALL_SOURCE_FILES})
 endif()
 
