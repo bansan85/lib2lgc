@@ -23,7 +23,7 @@ if (CHECK_CODE)
 endif()
 
 include_directories(${Protobuf_INCLUDE_DIRS})
-include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR})
+include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_custom_target(check)
 

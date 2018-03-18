@@ -29,7 +29,7 @@
 #ifndef COMPARE_DECIMAL_H_
 #define COMPARE_DECIMAL_H_
 
-#include <compat.h>
+#include <2lgc/compatibility.h>
 
 /**
  * @brief Class that extends math functionnality.
