@@ -190,6 +190,7 @@ bool SetStack::Add(const std::string& filename, bool print_one_by_group)
 
   if (!file.is_open())
   {
+    std::cout << "SetStack::Add" << filename << std::endl;
     return false;
   }
 
@@ -216,22 +217,9 @@ bool SetStack::Add(const std::string& filename, bool print_one_by_group)
   return true;
 }
 
-bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
-                            const std::string& regex, bool print_one_by_group)
+bool SetStack::ParallelAdd(const std::vector<std::string> &all_files,
+                           unsigned int nthread, bool print_one_by_group)
 {
-  std::vector<std::string> all_files;
-  std::regex reg(regex);
-  for (auto& p :
-       std::experimental::filesystem::recursive_directory_iterator(folder))
-  {
-    std::string filename(p.path().filename().string());
-
-    if (regex.length() == 0 || std::regex_match(filename, reg))
-    {
-      all_files.push_back(p.path().string());
-    }
-  }
-
   bool retval = true;
   const unsigned int nthreads =
       std::min(nthread, std::thread::hardware_concurrency());
@@ -257,7 +245,47 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
     retval &= t.get();
   }
 
+  std::cout << "ParallelAdd" << retval << std::endl;
   return retval;
+}
+
+bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
+                            const std::string& regex, bool print_one_by_group)
+{
+  std::vector<std::string> all_files;
+  std::regex reg(regex);
+  for (auto& p :
+       std::experimental::filesystem::recursive_directory_iterator(folder))
+  {
+    std::string filename(p.path().filename().string());
+
+    if (regex.length() == 0 || std::regex_match(filename, reg))
+    {
+      all_files.push_back(p.path().string());
+    }
+  }
+
+  return ParallelAdd(all_files, nthread, print_one_by_group);
+}
+
+bool SetStack::AddList(const std::string& list, unsigned int nthread,
+                       bool print_one_by_group)
+{
+  std::vector<std::string> all_files;
+  std::string line;
+  std::ifstream f(list);
+  if (!f.is_open())
+  {
+    std::cout << "SetStack::AddList" << std::endl;
+    return false;
+  }
+
+  while (std::getline(f, line))
+  {
+    all_files.push_back(line);
+  }
+
+  return ParallelAdd(all_files, nthread, print_one_by_group);
 }
 
 void SetStack::Print()

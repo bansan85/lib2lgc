@@ -51,8 +51,9 @@ class Gdb
    */
   static bool RunBtFull(const std::string& filename, unsigned int argc,
                         char* const argv[], int64_t timeout) CHK;
+
   /**
-   * @brief Run gdb to get the backtrace full and find recursively all files.
+   * @brief Find recursively all files and run gdb to get the backtrace full.
    *
    * @param[in] folder The root folder.
    * @param[in] nthread Number of parallel of gdb instance.
@@ -64,10 +65,26 @@ class Gdb
    *
    * @return true if no problem.
    */
+
   static bool RunBtFullRecursive(const std::string& folder,
                                  unsigned int nthread, const std::string& regex,
                                  unsigned int argc, char* const argv[],
                                  int64_t timeout) CHK;
+  /**
+   * @brief Get files from a list and run gdb to get the backtrace full.
+   *
+   * @param[in] file The file that have the list of files.
+   * @param[in] nthread Number of parallel of gdb instance.
+   * @param[in] argc Number of the arguments
+   * @param[in] argv Argument to run the program with the filename
+   * @param[in] timeout Timeout for the run of gdb.
+   * replaced by @@. For example: /bin/prog @@
+   *
+   * @return true if no problem.
+   */
+  static bool RunBtFullList(const std::string& list, unsigned int nthread,
+                            unsigned int argc, char* const argv[],
+                            int64_t timeout) CHK;
 };
 
 #endif  // SOFTWARE_GDB_GDB_H_

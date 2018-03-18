@@ -35,6 +35,7 @@
 #include <mutex>
 #include <set>
 #include <string>
+#include <vector>
 
 class Bt;
 
@@ -72,19 +73,34 @@ class SetStack
   bool Add(const std::string& filename, bool print_one_by_group) CHK;
 
   /**
-   * @brief Add new stacks based on all files that end with .btfull. All files
-   * must contains only the full backtrace from GDB.
+   * @brief Add new stacks based on files from a folder. All files must contains
+   * only the full backtrace from GDB.
    *
    * @param[in] folder The folder where all *.btfull files are.
    * @param[in] nthread The number of threads if parallel is allowed.
-   * @param[in] regex Regex that match file to read.
+   * @param[in] regex Regex that match file to read. If empty, all files will be
+   * read.
    * @param[in] print_one_by_group Add the file only if no equivalent already
    * added.
    *
-   * @return Always true even if a file is corrupted.
+   * @return true if no problem.
    */
   bool AddRecursive(const std::string& folder, unsigned int nthread,
                     const std::string& regex, bool print_one_by_group) CHK;
+
+  /**
+   * @brief Add new stacks based on files from a list. All files must contains
+   * only the full backtrace from GDB.
+   *
+   * @param[in] list The folder where all *.btfull files are.
+   * @param[in] nthread The number of threads if parallel is allowed.
+   * @param[in] print_one_by_group Add the file only if no equivalent already
+   * added.
+   *
+   * @return true if no problem.
+   */
+  bool AddList(const std::string& list, unsigned int nthread,
+               bool print_one_by_group) CHK;
 
   /**
    * @brief Show all stacks grouped by condition passed with the constructor.
@@ -159,6 +175,9 @@ class SetStack
      */
     size_t bottom_frame_;
   };
+
+  bool ParallelAdd(const std::vector<std::string> &all_files,
+                   unsigned int nthread, bool print_one_by_group) CHK;
 
   /**
    * @brief Storage of all stacks sorted with parameter given by the

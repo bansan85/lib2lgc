@@ -34,6 +34,7 @@
 #include <ext/alloc_traits.h>
 #include <functional>
 #include <future>
+#include <fstream>
 #include <iostream>
 #include <regex>
 #include <system_error>
@@ -128,6 +129,37 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   return retval;
 }
 
+static bool ParallelRun(const std::vector<std::string> &all_files,
+                        unsigned int nthread, unsigned int argc,
+                        char* const argv[], int64_t timeout)
+{
+  bool retval = true;
+  const unsigned int nthreads =
+      std::min(nthread, std::thread::hardware_concurrency());
+  std::vector<std::future<bool>> threads(nthreads);
+  for (size_t t = 0; t < nthreads; t++)
+  {
+    threads[t] = std::async(
+        std::launch::async,
+        std::bind(
+            [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
+              bool retval2 = true;
+              for (size_t i = i_start; i < all_files.size(); i += nthreads)
+              {
+                retval2 &= Gdb::RunBtFull(all_files[i], argc, argv, timeout);
+              }
+              return retval2;
+            },
+            t));
+  }
+  for (std::future<bool>& t : threads)
+  {
+    retval &= t.get();
+  }
+
+  return retval;
+}
+
 bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
                              const std::string& regex, unsigned int argc,
                              char* const argv[], int64_t timeout)
@@ -145,29 +177,24 @@ bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
     }
   }
 
-  bool retval = true;
-  const unsigned int nthreads =
-      std::min(nthread, std::thread::hardware_concurrency());
-  std::vector<std::future<bool>> threads(nthreads);
-  for (size_t t = 0; t < nthreads; t++)
+  return ParallelRun(all_files, nthread, argc, argv, timeout);
+}
+
+bool Gdb::RunBtFullList(const std::string& list, unsigned int nthread,
+                        unsigned int argc, char* const argv[], int64_t timeout)
+{
+  std::vector<std::string> all_files;
+  std::string line;
+  std::ifstream f(list);
+  if (!f.is_open())
   {
-    threads[t] = std::async(
-        std::launch::async,
-        std::bind(
-            [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
-              bool retval2 = true;
-              for (size_t i = i_start; i < all_files.size(); i += nthreads)
-              {
-                retval2 &= RunBtFull(all_files[i], argc, argv, timeout);
-              }
-              return retval2;
-            },
-            t));
-  }
-  for (std::future<bool>& t : threads)
-  {
-    retval &= t.get();
+    return false;
   }
 
-  return retval;
+  while (std::getline(f, line))
+  {
+    all_files.push_back(line);
+  }
+
+  return ParallelRun(all_files, nthread, argc, argv, timeout);
 }
