@@ -26,10 +26,10 @@
  * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/.
  */
 
-#ifndef COMPARE_DECIMAL_H_
-#define COMPARE_DECIMAL_H_
+#ifndef MATH_COMPARE_DECIMAL_H_
+#define MATH_COMPARE_DECIMAL_H_
 
-#include <2lgc/compatibility.h>
+#include <2lgc/compatibility/visual_studio.h>
 
 /**
  * @brief Class that extends math functionnality.
@@ -48,4 +48,4 @@ class Math
                                          double maxRelDiff) CHK;
 };
 
-#endif  // COMPARE_DECIMAL_H_
+#endif  // MATH_COMPARE_DECIMAL_H_

@@ -19,18 +19,18 @@
  * SOFTWARE.
  */
 
-#include "number.h"
-#include <bits/stdint-uintn.h>
-#include <google/protobuf/stubs/port.h>
-#include <google/protobuf/util/message_differencer.h>
 #include <2lgc/error/show.h>
-#include <2lgc/poco/raw.pb.h>
-#include <cmath>
-#include <memory>
-#include <string>
+#include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
 #include <2lgc/poco/number_visitor_unit.h>
 #include <2lgc/poco/number_visitor_value.h>
+#include <2lgc/poco/raw.pb.h>
+#include <bits/stdint-uintn.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/util/message_differencer.h>
+#include <cmath>
+#include <memory>
+#include <string>
 
 // Static variables
 pattern::visitor::NumberVisitorVal pattern::visitor::Number::visitor_val;

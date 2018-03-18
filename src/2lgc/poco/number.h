@@ -19,13 +19,13 @@
  * SOFTWARE.
  */
 
-#ifndef NUMBER_H_
-#define NUMBER_H_
+#ifndef POCO_NUMBER_H_
+#define POCO_NUMBER_H_
 
-#include <bits/stdint-uintn.h>
-#include <2lgc/compatibility.h>
-#include <2lgc/poco/number.pb.h>
+#include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/visitor/visitable.h>
+#include <2lgc/poco/number.pb.h>
+#include <bits/stdint-uintn.h>
 #include <memory>
 
 namespace pattern
@@ -34,8 +34,8 @@ namespace visitor
 {
 class NumberVisitorUnit;
 class NumberVisitorVal;
-}
-}
+}  // namespace visitor
+}  // namespace pattern
 
 namespace pattern
 {
@@ -251,4 +251,4 @@ class Number_NumOpNum : virtual public Number,
 }  // namespace visitor
 }  // namespace pattern
 
-#endif  // NUMBER_H_
+#endif  // POCO_NUMBER_H_

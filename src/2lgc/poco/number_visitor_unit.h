@@ -19,10 +19,10 @@
  * SOFTWARE.
  */
 
-#ifndef NUMBER_VISITOR_UNIT_H_
-#define NUMBER_VISITOR_UNIT_H_
+#ifndef POCO_NUMBER_VISITOR_UNIT_H_
+#define POCO_NUMBER_VISITOR_UNIT_H_
 
-#include <2lgc/compatibility.h>
+#include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/visitor/visitor.h>
 #include <string>
 
@@ -71,4 +71,4 @@ class NumberVisitorUnit : public BaseVisitor,
 }  // namespace visitor
 }  // namespace pattern
 
-#endif  // NUMBER_VISITOR_UNIT_H_
+#endif  // POCO_NUMBER_VISITOR_UNIT_H_

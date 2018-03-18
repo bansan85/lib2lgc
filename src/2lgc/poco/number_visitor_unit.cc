@@ -19,16 +19,16 @@
  * SOFTWARE.
  */
 
-#include "number_visitor_unit.h"
-#include <2lgc/math/compare_decimal.h>
-#include <google/protobuf/stubs/port.h>
-#include <google/protobuf/util/message_differencer.h>
 #include <2lgc/error/show.h>
-#include <memory>
+#include <2lgc/math/compare_decimal.h>
 #include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
+#include <2lgc/poco/number_visitor_unit.h>
 #include <2lgc/poco/number_visitor_value.h>
 #include <2lgc/poco/raw.pb.h>
+#include <google/protobuf/stubs/port.h>
+#include <google/protobuf/util/message_differencer.h>
+#include <memory>
 
 bool pattern::visitor::NumberVisitorUnit::Visit(const Number_Constant &data,
                                                 std::string *return_value) const

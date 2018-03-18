@@ -1,4 +1,4 @@
-add_executable(visitor1 EXCLUDE_FROM_ALL ${PROTO_HEADER} ${PROTO_SRC} visitor1.cc)
+add_executable(visitor1 EXCLUDE_FROM_ALL pattern/visitor/visitor1.cc)
 target_link_libraries(visitor1 ${Protobuf_LIBRARIES} 2lgc)
 add_test(visitor1 visitor1)
 

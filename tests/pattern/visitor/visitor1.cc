@@ -19,13 +19,13 @@
  * SOFTWARE.
  */
 
-#include <compare_decimal.h>
+#include <2lgc/math/compare_decimal.h>
+#include <2lgc/poco/number.h>
+#include <2lgc/poco/number.pb.h>
+#include <2lgc/poco/number_visitor_value.h>
+#include <2lgc/poco/raw.pb.h>
 #include <google/protobuf/arena.h>
 #include <google/protobuf/stubs/common.h>
-#include <number.h>
-#include <number.pb.h>
-#include <number_visitor_value.h>
-#include <raw.pb.h>
 #include <cassert>
 #include <memory>
 #include <string>

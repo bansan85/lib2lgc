@@ -26,7 +26,7 @@
  * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/.
  */
 
-#include "compare_decimal.h"
+#include <2lgc/math/compare_decimal.h>
 #include <bits/stdint-intn.h>
 #include <cstdlib>
 
