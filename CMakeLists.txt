@@ -28,6 +28,7 @@ include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/src)
 add_custom_target(check)
 
 add_subdirectory(src)
+add_subdirectory(tests)
 
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
 
@@ -39,7 +40,8 @@ if (CHECK_CODE)
 #-build/c++11: is for chrome project.
 #-build/include_order: cpplint.py and iwyu have sometimes differents issues.
     COMMAND cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order ${ALL_SOURCE_FILES}
-    COMMAND cppcheck --check-config -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inconclusive --enable=all ${ALL_SOURCE_FILES})
+    COMMAND cppcheck -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inconclusive --enable=all ${ALL_SOURCE_FILES}
+    COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --capture --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
+    COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
+  )
 endif()
-
-add_subdirectory(tests)
