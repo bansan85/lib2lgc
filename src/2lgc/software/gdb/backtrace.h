@@ -70,9 +70,11 @@ class Bt
    *
    * @return true if no error.
    */
-  bool DecodeBacktrace(const std::string_view& line, std::string_view* index,
-                       std::string_view* address, std::string_view* function,
-                       std::string_view* file) CHK;
+  static bool DecodeBacktrace(const std::string_view& line,
+                              std::string_view* index,
+                              std::string_view* address,
+                              std::string_view* function,
+                              std::string_view* file) CHK;
 
   /**
    * @brief Check if the source file exists.

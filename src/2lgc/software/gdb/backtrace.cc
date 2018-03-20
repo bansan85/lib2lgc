@@ -196,11 +196,11 @@ bool Bt::ReadIndex(const std::string& number)
   return true;
 }
 
-bool Bt::ReadAddress(const std::string& number)
+bool Bt::ReadAddress(const std::string& address)
 {
   try
   {
-    address_ = std::stoull(number, nullptr, 0);
+    address_ = std::stoull(address, nullptr, 0);
   }
   catch (const std::out_of_range&)
   {
