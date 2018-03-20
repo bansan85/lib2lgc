@@ -99,3 +99,5 @@ bool pattern::visitor::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
     }
   }
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

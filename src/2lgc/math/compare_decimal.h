@@ -49,3 +49,5 @@ class Math
 };
 
 #endif  // MATH_COMPARE_DECIMAL_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

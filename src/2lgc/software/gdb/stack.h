@@ -110,3 +110,5 @@ class Stack
 };
 
 #endif  // SOFTWARE_GDB_STACK_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

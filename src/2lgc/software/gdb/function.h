@@ -83,3 +83,5 @@ class Function
 };
 
 #endif  // SOFTWARE_GDB_FUNCTION_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

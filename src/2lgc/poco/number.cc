@@ -223,3 +223,5 @@ msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const
 
   return number_unit;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

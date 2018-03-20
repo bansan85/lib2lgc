@@ -73,3 +73,5 @@ class NumberVisitorVal : public BaseVisitor,
 }  // namespace pattern
 
 #endif  // POCO_NUMBER_VISITOR_VALUE_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

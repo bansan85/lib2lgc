@@ -303,3 +303,5 @@ bool Bt::ReadSource(const std::string_view& file)
 
   return true;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

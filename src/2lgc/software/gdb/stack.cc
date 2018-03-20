@@ -43,3 +43,5 @@ bool Stack::InterpretLine(const std::string_view &line)
 
   return true;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

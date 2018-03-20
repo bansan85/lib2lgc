@@ -251,3 +251,5 @@ bool Math::AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
 {
   return AlmostEqualRelativeAndAbsInternal<double>(A, B, maxDiff, maxRelDiff);
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

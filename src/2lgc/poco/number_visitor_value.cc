@@ -105,3 +105,5 @@ bool pattern::visitor::NumberVisitorVal::Visit(const Number_NumOpNum &data,
   BUGLIB(val.SerializeToString(return_value), false, "protobuf");
   return true;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

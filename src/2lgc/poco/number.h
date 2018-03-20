@@ -252,3 +252,5 @@ class Number_NumOpNum : virtual public Number,
 }  // namespace pattern
 
 #endif  // POCO_NUMBER_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

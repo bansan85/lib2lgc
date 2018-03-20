@@ -198,3 +198,5 @@ bool Gdb::RunBtFullList(const std::string& list, unsigned int nthread,
 
   return ParallelRun(all_files, nthread, argc, argv, timeout);
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

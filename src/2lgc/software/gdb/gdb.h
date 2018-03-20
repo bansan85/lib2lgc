@@ -88,3 +88,5 @@ class Gdb
 };
 
 #endif  // SOFTWARE_GDB_GDB_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */
