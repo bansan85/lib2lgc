@@ -28,7 +28,6 @@
 #include <chrono>
 #include <csignal>
 #include <cstdio>
-#include <cstdlib>
 #include <cstring>
 #include <experimental/filesystem>
 #include <ext/alloc_traits.h>
@@ -47,12 +46,11 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
                     char* const argv[], int64_t timeout)
 {
   auto argvbis = std::make_unique<const char* []>(argc + 24);
-  size_t len =
-      sizeof(char) * (sizeof("set logging file .btfull") + filename.length());
-  char* btfullfile = static_cast<char*>(malloc(len));
+  std::string btfullfile;
   bool retval = true;
-  snprintf(btfullfile, len, "%s%s%s", "set logging file ", filename.c_str(),
-           ".btfull");
+  btfullfile.assign("set logging file ");
+  btfullfile.append(filename);
+  btfullfile.append(".btfull");
   argvbis[0] = "/usr/bin/gdb";
   argvbis[1] = "-batch-silent";
   // See https://sourceware.org/ml/gdb/2018-03/msg00029.html for tty /dev/null.
@@ -64,7 +62,7 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   argvbis[6] = "-ex";
   argvbis[7] = "set logging overwrite on";
   argvbis[8] = "-ex";
-  argvbis[9] = btfullfile;
+  argvbis[9] = btfullfile.c_str();
   argvbis[10] = "-ex";
   argvbis[11] = "set logging on";
   argvbis[12] = "-ex";
@@ -80,14 +78,16 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   argvbis[22] = "--args";
   for (unsigned int i = 0; i < argc; i++)
   {
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     if (strcmp("@@", argv[i]) == 0)
     {
       // a const_cast is necessary. argvbis must be not const.
-      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast, cppcoreguidelines-pro-bounds-pointer-arithmetic)
       argvbis[23 + i] = const_cast<char*>(filename.c_str());
     }
     else
     {
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       argvbis[23 + i] = argv[i];
     }
   }
@@ -128,7 +128,6 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     execvp(argvbis[0], const_cast<char* const*>(argvbis.get()));
   }
-  free(btfullfile);
   return retval;
 }
 
