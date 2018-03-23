@@ -1,5 +1,5 @@
 language: cpp
-sudo: false
+sudo: required
 
 compiler :
   - gcc
@@ -7,15 +7,17 @@ compiler :
 
 addons:
   apt:
-    sources:
-      - sourceline: 'deb http://fr.archive.ubuntu.com/ubuntu/ artful main'
     packages:
       - cppcheck
-      - clang
-      - libprotobuf-dev
       - iwyu
 
 script:
+  - mkdir protobuf
+  - cd protobuf
+  - wget https://github.com/google/protobuf/archive/v3.5.2.tar.gz
+  - tar -xzvf v3.5.2.tar.gz
+  - cd protobuf-3.5.2 && ./configure && make && sudo make install
+  - cd ..
   - mkdir build
   - cd build
   - cmake -DCHECK_CODE=1 ..
