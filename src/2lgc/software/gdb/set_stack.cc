@@ -40,7 +40,7 @@
 #include <vector>
 
 SetStack::SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame)
-    : stack_(Local(with_source_only, top_frame, bottom_frame)), mutex_stack_()
+    : stack_(Local(with_source_only, top_frame, bottom_frame))
 {
 }
 
@@ -83,12 +83,12 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
       return 0;
     }
     // i stack too short.
-    else if (ii == icount)
+    if (ii == icount)
     {
       return -1;
     }
     // j stack too short.
-    else if (jj == jcount)
+    if (jj == jcount)
     {
       return 1;
     }
@@ -101,7 +101,7 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
     {
       return -1;
     }
-    else if (compare > 0)
+    if (compare > 0)
     {
       return 1;
     }
@@ -111,18 +111,18 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
     {
       return -1;
     }
-    else if (bti->GetLine() > btj->GetLine())
+    if (bti->GetLine() > btj->GetLine())
     {
       return 1;
     }
     // If both lines are unknown, compare the name of the function.
-    else if (bti->GetLine() == std::numeric_limits<size_t>::max())
+    if (bti->GetLine() == std::numeric_limits<size_t>::max())
     {
       if (bti->GetName().compare(btj->GetName()) < 0)
       {
         return -1;
       }
-      else if (bti->GetName().compare(btj->GetName()) > 0)
+      if (bti->GetName().compare(btj->GetName()) > 0)
       {
         return 1;
       }
@@ -139,12 +139,12 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
     return 0;
   }
   // i stack too short.
-  else if (ii == icount)
+  if (ii == icount)
   {
     return -1;
   }
   // j stack too short.
-  else if (jj == jcount)
+  if (jj == jcount)
   {
     return 1;
   }
@@ -152,11 +152,12 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
   return 0;
 }
 
+// NOLINTNEXTLINE(fuchsia-overloaded-operator)
 bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
                                  const std::unique_ptr<Stack>& j)
 {
   // If it's the same file.
-  if (i->GetFilename().compare(j->GetFilename()) == 0)
+  if (i->GetFilename() == j->GetFilename())
   {
     return false;
   }
@@ -166,7 +167,7 @@ bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
   {
     return true;
   }
-  else if (val > 0)
+  if (val > 0)
   {
     return false;
   }
@@ -176,7 +177,7 @@ bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
   {
     return true;
   }
-  else if (val > 0)
+  if (val > 0)
   {
     return false;
   }

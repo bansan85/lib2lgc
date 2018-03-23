@@ -45,7 +45,7 @@ class NumberVisitorVal : public BaseVisitor,
   /**
    * @brief Default destructor.
    */
-  virtual ~NumberVisitorVal() {}
+  ~NumberVisitorVal() override {}
   /**
    * @brief Return the floating value of a constant number.
    *

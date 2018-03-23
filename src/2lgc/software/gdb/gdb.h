@@ -73,7 +73,7 @@ class Gdb
   /**
    * @brief Get files from a list and run gdb to get the backtrace full.
    *
-   * @param[in] file The file that have the list of files.
+   * @param[in] list The file that have the list of files.
    * @param[in] nthread Number of parallel of gdb instance.
    * @param[in] argc Number of the arguments
    * @param[in] argv Argument to run the program with the filename

@@ -45,7 +45,7 @@ class NumberVisitorUnit : public BaseVisitor,
   /**
    * @brief Default destructor.
    */
-  virtual ~NumberVisitorUnit() {}
+  ~NumberVisitorUnit() override {}
   /**
    * @brief Return the unit of a constant number.
    *

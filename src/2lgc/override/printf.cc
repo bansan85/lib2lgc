@@ -19,26 +19,35 @@
  * SOFTWARE.
  */
 
-#include <2lgc/software/gdb/backtrace.h>
-#include <2lgc/software/gdb/stack.h>
-#include <memory>
+/**
+ * @file compare_decimal.cc
+ * @brief Compare diff of two decimal number base on their int representation.
+ * Base on idea from
+ * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/.
+ */
 
-Stack::Stack(const std::string_view &filename) : filename_(filename) {}
+#include <2lgc/override/printf.h>
+#include <cstddef>
 
-bool Stack::InterpretLine(const std::string_view &line)
+void Override::SafePrintf(std::ostream &out_stream, const std::string &s)
 {
-  std::unique_ptr<Bt> bt = Bt::Factory(line);
-
-  if (bt != nullptr)
+  size_t i = 0;
+  while (s[i] != 0)
   {
-    backtraces_.emplace_back(bt.release());
-    if (backtraces_.back()->GetIndex() + 1 != backtraces_.size())
+    if (s[i] == '%')
     {
-      return false;
+      if (s[i + 1] == '%')
+      {
+        ++i;
+      }
+      else
+      {
+        throw std::runtime_error("invalid format string: missing arguments");
+      }
     }
+    out_stream << s[i];
+    i++;
   }
-
-  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -36,6 +36,7 @@
 #include <functional>
 #include <future>
 #include <iostream>
+#include <memory>
 #include <regex>
 #include <system_error>
 #include <thread>
@@ -45,8 +46,7 @@
 bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
                     char* const argv[], int64_t timeout)
 {
-  const char** argvbis =
-      static_cast<const char**>(malloc(sizeof(char*) * (argc + 24)));
+  auto argvbis = std::make_unique<const char* []>(argc + 24);
   size_t len =
       sizeof(char) * (sizeof("set logging file .btfull") + filename.length());
   char* btfullfile = static_cast<char*>(malloc(len));
@@ -82,6 +82,8 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   {
     if (strcmp("@@", argv[i]) == 0)
     {
+      // a const_cast is necessary. argvbis must be not const.
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
       argvbis[23 + i] = const_cast<char*>(filename.c_str());
     }
     else
@@ -119,13 +121,14 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
         }
       }
     } while (wait_pid == 0 && elapsed_seconds <= timeout);
-    free(argvbis);
-    free(btfullfile);
   }
   else
   {
-    execvp(argvbis[0], const_cast<char* const*>(argvbis));
+    // a const_cast is necessary.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+    execvp(argvbis[0], const_cast<char* const*>(argvbis.get()));
   }
+  free(btfullfile);
   return retval;
 }
 

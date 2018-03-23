@@ -140,6 +140,15 @@ class SetStack
                     const std::unique_ptr<Stack>& j);
 
     /**
+     * @brief Prototype to get the backtrace from the top or from the bottom.
+     *
+     * @param[in] i The n-th backtrace.
+     *
+     * @return The backtrace. Throw an exception if out of boundary.
+     */
+    typedef const Bt* (Stack::*FunctionGetBacktrace)(size_t i) const;
+
+    /**
      * @brief Helper to operator(). Compare two stacks from the top or from the
      * bottom.
      *
@@ -150,7 +159,6 @@ class SetStack
      *
      * @return -1 if i < j, 0 if i == j and -1 if i > j.
      */
-    typedef const Bt* (Stack::*FunctionGetBacktrace)(size_t) const;
     int CompareFrom(const size_t nb_max_frames,
                     FunctionGetBacktrace get_backtraces,
                     const std::unique_ptr<Stack>& i,

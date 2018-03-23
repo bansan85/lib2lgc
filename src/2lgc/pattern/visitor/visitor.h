@@ -26,7 +26,7 @@
 #include <string>
 
 /**
- * @file
+ * @file visitor.h
  *
  * This header is used has base for visitors in the pattern visitor.
  */

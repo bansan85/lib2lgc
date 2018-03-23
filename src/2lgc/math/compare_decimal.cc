@@ -42,7 +42,7 @@ union Float_t
    *
    * @param num The number. By default 0.0f.
    */
-  Float_t(float num = 0.0f) : f(num) {}
+  explicit Float_t(float num) : f(num) {}
 
   /**
    * @brief Is the float number negative ?
@@ -74,7 +74,7 @@ union Double_t
    *
    * @param num The number. By default 0.0.
    */
-  Double_t(double num = 0.0) : d(num) {}
+  explicit Double_t(double num) : d(num) {}
 
   /**
    * @brief Is the double number negative ?
@@ -127,19 +127,16 @@ static bool AlmostEqualUlpsAndAbsInternal(T A, T B, T maxDiff, int maxUlpsDiff)
   U uB(B);
 
   // Different signs means they do not match.
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
   if (uA.Negative() != uB.Negative())
   {
     return false;
   }
 
   // Find the difference in ULPs.
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
   V ulpsDiff = std::abs(uA.i - uB.i);
-  if (ulpsDiff <= maxUlpsDiff)
-  {
-    return true;
-  }
-
-  return false;
+  return ulpsDiff <= maxUlpsDiff;
 }
 
 /**
@@ -171,11 +168,7 @@ static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff, T maxRelDiff)
   B = std::abs(B);
   T largest = (B > A) ? B : A;
 
-  if (diff <= largest * maxRelDiff)
-  {
-    return true;
-  }
-  return false;
+  return diff <= largest * maxRelDiff;
 }
 
 /**

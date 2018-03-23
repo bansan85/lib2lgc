@@ -22,9 +22,7 @@
 #ifndef ERROR_SHOW_H_
 #define ERROR_SHOW_H_
 
-#include <cstdio>
-
-#define PRINTF(...) printf(__VA_ARGS__)
+#include <2lgc/override/printf.h>
 
 // BUG: for internal use only.
 #define BUG(X, Y, MSG, ...)                                                   \
@@ -32,10 +30,10 @@
   {                                                                           \
     if (!(X))                                                                 \
     {                                                                         \
-      PRINTF("file %s, function %s, line %d, text: ", __FILE__, __FUNCTION__, \
-             __LINE__);                                                       \
-      PRINTF(MSG);                                                            \
-      PRINTF(__VA_ARGS__);                                                    \
+      Override::SafePrintf(std::cout,                                         \
+                           "file %, function %, line %, text: ", __FILE__,    \
+                           static_cast<const char*>(__FUNCTION__), __LINE__); \
+      Override::SafePrintf(std::cout, MSG, __VA_ARGS__);                      \
       return Y;                                                               \
     }                                                                         \
   } while (0)
@@ -50,8 +48,8 @@
  * \param ... : Message complémentaire sous une forme compatible avec fprintf.
  */
 
-#define BUGPARAM(PARAM, TYPE, X, Y)                                   \
-  BUG(X, Y, "Erreur de programmation.", "%s" #PARAM " = " TYPE ".\n", \
+#define BUGPARAM(PARAM, TYPE, X, Y)                                  \
+  BUG(X, Y, "Erreur de programmation.", "%" #PARAM " = " TYPE ".\n", \
       "Paramètre incorrect: ", PARAM)
 /**
  * \def BUGPARAM(PARAM, TYPE, X, Y, MANAGER)
@@ -63,8 +61,7 @@
  * \param MANAGER : Le gestionnaire d'annulation. Peut être NULL,
  */
 
-#define BUGLIB(X, Y, LIB) \
-  BUG(X, Y, "Erreur depuis la librairie.\n", "%s\n", LIB)
+#define BUGLIB(X, Y, LIB) BUG(X, Y, "Erreur depuis la librairie.\n", "%\n", LIB)
 
 #define BUGCRIT(X, Y, ...) BUG(X, Y, "Erreur de type critique.\n", __VA_ARGS__)
 /**

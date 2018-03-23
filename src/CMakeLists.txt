@@ -6,6 +6,7 @@ file(GLOB HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/compatibility/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/error/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/override/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/visitor/*.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/*.h
@@ -13,6 +14,7 @@ file(GLOB HEADERS
 
 add_library(2lgc SHARED ${PROTO_SRC}
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/compare_decimal.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/override/printf.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_unit.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_value.cc

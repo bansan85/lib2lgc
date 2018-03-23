@@ -27,14 +27,7 @@
 #include <stdexcept>
 #include <string>
 
-Bt::Bt()
-    : index_(0),
-      address_(0),
-      function_(),
-      file_(),
-      line_(std::numeric_limits<size_t>::max())
-{
-}
+Bt::Bt() : index_(0), address_(0), line_(std::numeric_limits<size_t>::max()) {}
 
 std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
 {
@@ -107,7 +100,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view* index,
       }
       break;
     }
-    else if ('0' > line[i] || line[i] > '9')
+    if ('0' > line[i] || line[i] > '9')
     {
       return false;
     }
@@ -175,12 +168,7 @@ bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view* index,
   }
 
   // A function must have a '(' before ')'.
-  if (function->find('(') == std::string::npos)
-  {
-    return false;
-  }
-
-  return true;
+  return function->find('(') != std::string::npos;
 }
 
 bool Bt::ReadIndex(const std::string& number)

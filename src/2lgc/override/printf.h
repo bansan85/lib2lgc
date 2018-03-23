@@ -19,26 +19,46 @@
  * SOFTWARE.
  */
 
-#include <2lgc/software/gdb/backtrace.h>
-#include <2lgc/software/gdb/stack.h>
-#include <memory>
+#ifndef OVERRIDE_PRINTF_H_
+#define OVERRIDE_PRINTF_H_
 
-Stack::Stack(const std::string_view &filename) : filename_(filename) {}
+#include <ostream>
+#include <stdexcept>
+#include <string>
 
-bool Stack::InterpretLine(const std::string_view &line)
+// Stolen from
+// https://www.codeproject.com/Articles/514443/Debug-Print-in-Variadic-Template-Style#printf
+
+class Override
 {
-  std::unique_ptr<Bt> bt = Bt::Factory(line);
+ public:
+  static void SafePrintf(std::ostream &out_stream, const std::string &s);
 
-  if (bt != nullptr)
+  template <typename T, typename... Args>
+  static void SafePrintf(std::ostream &out_stream, const char *s, T value,
+                         Args... args)
   {
-    backtraces_.emplace_back(bt.release());
-    if (backtraces_.back()->GetIndex() + 1 != backtraces_.size())
+    while (*s)
     {
-      return false;
+      if (*s == '%')
+      {
+        if (*(s + 1) == '%')
+        {
+          ++s;
+        }
+        else
+        {
+          out_stream << value;
+          SafePrintf(out_stream, s + 1, args...);
+          return;
+        }
+      }
+      out_stream << *s++;
     }
+    throw std::logic_error("extra arguments provided to printf");
   }
+};
 
-  return true;
-}
+#endif  // OVERRIDE_PRINTF_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

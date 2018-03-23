@@ -50,7 +50,7 @@ class BaseVisitable : virtual T
   /**
    * @brief In case of some class based on it need a virtual destructor.
    */
-  virtual ~BaseVisitable() {}
+  ~BaseVisitable() override {}
 
   /**
    * @brief This method is used to call the right Visit method on the visitor.

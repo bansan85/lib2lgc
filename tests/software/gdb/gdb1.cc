@@ -31,8 +31,8 @@ int main(int /* argc */, char* /* argv */ [])
       "interface_=<optimized out>, ext=<optimized out>) at "
       "libraries/libdxfrw/src/libdxfrw.cpp:99");
   assert(bt->HasSource());
-  assert(bt->GetName().compare("dxfRW::read") == 0);
-  assert(bt->GetFile().compare("libraries/libdxfrw/src/libdxfrw.cpp") == 0);
+  assert(bt->GetName() == "dxfRW::read");
+  assert(bt->GetFile() == "libraries/libdxfrw/src/libdxfrw.cpp");
   assert(bt->GetIndex() == 4);
   assert(bt->GetLine() == 99);
 

@@ -139,7 +139,7 @@ class Number_Constant : virtual public Number,
    * @brief Default destructor. No need to delete unit. It will be free
    * automatically.
    */
-  virtual ~Number_Constant() {}
+  ~Number_Constant() override {}
 
   /**
    * @brief Get the value of the number.
@@ -182,14 +182,13 @@ class Number_NumOpNum : virtual public Number,
    * @param operator_ The operator.
    * @param number2 The number two.
    */
-  Number_NumOpNum(const uint32_t id,
-                  const std::shared_ptr<const Number> &number1,
+  Number_NumOpNum(const uint32_t id, std::shared_ptr<const Number> number1,
                   msg::Number_Operator operator_,
-                  const std::shared_ptr<const Number> &number2);
+                  std::shared_ptr<const Number> number2);
   /**
    * @brief Default destructor.
    */
-  virtual ~Number_NumOpNum() {}
+  ~Number_NumOpNum() override {}
 
   /**
    * @brief Get the value of the number.
