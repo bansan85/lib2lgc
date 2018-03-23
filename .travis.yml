@@ -8,7 +8,7 @@ compiler :
 addons:
   apt:
     sources:
-      - sourceline: 'deb http://fr.archive.ubuntu.com/ubuntu/ trusty main'
+      - sourceline: 'deb http://fr.archive.ubuntu.com/ubuntu/ artful main'
     packages:
       - cppcheck
       - clang
