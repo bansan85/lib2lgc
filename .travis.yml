@@ -17,7 +17,7 @@ script:
   - wget https://github.com/google/protobuf/archive/v3.5.2.tar.gz
   - tar -xzvf v3.5.2.tar.gz
   - cd protobuf-3.5.2 && ./autogen.sh && ./configure && make && sudo make install
-  - cd ..
+  - cd ../..
   - mkdir build
   - cd build
   - cmake -DCHECK_CODE=1 ..
