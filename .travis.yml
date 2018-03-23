@@ -14,7 +14,6 @@ addons:
       - cppcheck
       - clang
       - libprotobuf-dev
-      - binutils
       - iwyu
 
 script:
