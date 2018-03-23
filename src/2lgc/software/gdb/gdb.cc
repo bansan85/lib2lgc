@@ -27,7 +27,6 @@
 #include <algorithm>
 #include <chrono>
 #include <csignal>
-#include <cstdio>
 #include <cstring>
 #include <experimental/filesystem>
 #include <ext/alloc_traits.h>
@@ -82,8 +81,10 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
     if (strcmp("@@", argv[i]) == 0)
     {
       // a const_cast is necessary. argvbis must be not const.
-      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast, cppcoreguidelines-pro-bounds-pointer-arithmetic)
-      argvbis[23 + i] = const_cast<char*>(filename.c_str());
+      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+      argvbis[23 + i] = const_cast<char*>(
+          filename
+              .c_str());  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     }
     else
     {

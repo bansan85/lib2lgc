@@ -13,6 +13,12 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+# analyzer-constraints=z3 is totally instlable.
+#if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+#  if (CHECK_CODE)
+#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --analyze -Xanalyzer -analyzer-constraints=z3")
+#  endif()
+#endif()
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake;${CMAKE_MODULE_PATH}")
 
 include(2lgc)
@@ -35,12 +41,12 @@ add_subdirectory(tests)
 
 file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-  set(GCOV_BIN ${CMAKE_CURRENT_SOURCE_DIR}/util/llvm/llvm-gcov)
-else()
-  set(GCOV_BIN gcov)
-endif()
 if (CHECK_CODE)
+  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+    set(GCOV_BIN ${CMAKE_CURRENT_SOURCE_DIR}/util/llvm/llvm-gcov)
+  else()
+    set(GCOV_BIN gcov)
+  endif()
   add_custom_command(TARGET check
     COMMAND clang-format -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES}
     #-readability/braces: disabled false positive because the brace of the macro in the line after the if.
@@ -48,7 +54,8 @@ if (CHECK_CODE)
     #-build/c++11: is for chrome project.
     #-build/include_order: cpplint.py and iwyu have sometimes differents rules.
     #-readability/nolint: clang -Weverything has more nolint that cpplint.
-    COMMAND cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint ${ALL_SOURCE_FILES}
+    #-whitespace/line_length: clang-format do what he can.
+    COMMAND cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length ${ALL_SOURCE_FILES}
     COMMAND cppcheck -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inconclusive --enable=all ${ALL_SOURCE_FILES}
     COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --gcov-tool ${GCOV_BIN} --capture --rc lcov_branch_coverage=1 --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
     COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info

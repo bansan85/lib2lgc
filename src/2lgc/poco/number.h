@@ -32,15 +32,6 @@ namespace pattern
 {
 namespace visitor
 {
-class NumberVisitorUnit;
-class NumberVisitorVal;
-}  // namespace visitor
-}  // namespace pattern
-
-namespace pattern
-{
-namespace visitor
-{
 /**
  * @brief Class just to hold the UnitOp method.
  */
@@ -96,17 +87,8 @@ class Number : public InterfaceVisitable<msg::Number>
    */
   virtual msg::Number_Unit GetUnit() const = 0;
 
- protected:
-  /**
-   * @brief The visitor to get the value.
-   */
-  static pattern::visitor::NumberVisitorVal visitor_val;
-  /**
-   * @brief The visitor to get the unit.
-   */
-  static pattern::visitor::NumberVisitorUnit visitor_unit;
-
 #ifdef ENABLE_VISITABLE_CACHE
+ protected:
   /**
    * @brief If cache enabled, the value.
    */

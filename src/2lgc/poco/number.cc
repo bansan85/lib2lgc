@@ -33,10 +33,6 @@
 #include <memory>
 #include <string>
 
-// Static variables
-pattern::visitor::NumberVisitorVal pattern::visitor::Number::visitor_val;
-pattern::visitor::NumberVisitorUnit pattern::visitor::Number::visitor_unit;
-
 bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
                                     const msg::Number_Unit &unit2,
                                     const msg::Number_Operator operator_,
@@ -110,6 +106,7 @@ double pattern::visitor::Number_Constant::GetVal() const
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_value;
+  pattern::visitor::NumberVisitorVal visitor_val;
   BUGCONT(visitor_val.Visit(*this, &return_value), std::nan(""));
 
   msg::Double double_value;
@@ -134,6 +131,7 @@ msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_unit;
+  pattern::visitor::NumberVisitorUnit visitor_unit;
   BUGCONT(visitor_unit.Visit(*this, &return_unit), msg::Number_Unit());
 
   msg::Number_Unit number_unit;
@@ -182,6 +180,7 @@ double pattern::visitor::Number_NumOpNum::GetVal() const
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_value;
+  pattern::visitor::NumberVisitorVal visitor_val;
   BUGCONT(visitor_val.Visit(*this, &return_value), std::nan(""));
 
   msg::Double double_value;
@@ -208,6 +207,7 @@ msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_unit;
+  pattern::visitor::NumberVisitorUnit visitor_unit;
   BUGCONT(visitor_unit.Visit(*this, &return_unit), msg::Number_Unit());
 
   msg::Number_Unit number_unit;
