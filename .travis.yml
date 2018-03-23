@@ -8,11 +8,12 @@ compiler :
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
+      - debian-sid
     packages:
       - cppcheck
       - clang
       - libprotobuf-dev
+      - iwyu
 
 script:
   - mkdir build
