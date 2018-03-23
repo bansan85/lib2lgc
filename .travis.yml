@@ -10,7 +10,7 @@ addons:
     packages:
       - cppcheck
       - clang
-      - protobuf
+      - libprotobuf-dev
 
 script:
   - mkdir build
