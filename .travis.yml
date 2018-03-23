@@ -20,6 +20,7 @@ script:
   - cd ../..
   - mkdir build
   - cd build
+  - export LD_LIBRARY_PATH=/usr/local/lib
   - cmake -DCHECK_CODE=1 ..
   - make
   - make check
