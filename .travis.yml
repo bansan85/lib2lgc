@@ -8,7 +8,6 @@ compiler :
 addons:
   apt:
     sources:
-      - alias: debian-stretch
       - sourceline: 'deb http://ftp.us.debian.org/debian stretch main'
     packages:
       - cppcheck
