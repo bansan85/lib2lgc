@@ -8,13 +8,12 @@ compiler :
 addons:
   apt:
     sources:
-      - sourceline: 'deb http://ftp.us.debian.org/debian stretch main'
+      - sourceline: 'deb http://fr.archive.ubuntu.com/ubuntu/ trusty main'
     packages:
       - cppcheck
       - clang
       - libprotobuf-dev
       - iwyu
-      - libc-bin
 
 script:
   - mkdir build
