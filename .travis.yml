@@ -1,0 +1,26 @@
+language: cpp
+sudo: false
+
+compiler :
+  - gcc
+  - clang
+
+addons:
+  apt:
+    packages:
+      - cppcheck
+      - clang
+
+script:
+  - mkdir build
+  - cd build
+  - cmake -DCHECK_CODE=1 ..
+  - make
+  - make check
+
+branches:
+  only:
+    - master
+
+os:
+  - linux
