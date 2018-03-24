@@ -19,23 +19,18 @@
  * SOFTWARE.
  */
 
-#include "publisher_base.h"
-#include <handle_error.h>
+#include <2lgc/error/show.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher_base.h>
 #include <memory>
 #include <type_traits>
 #include <utility>
-#include "connector_interface.h"
 
 template <typename M>
-pattern::publisher::PublisherBase<M>::PublisherBase()
-    : subscribers_(), options_()
-{
-}
+pattern::publisher::PublisherBase<M>::PublisherBase() = default;
 
 template <typename M>
-pattern::publisher::PublisherBase<M>::~PublisherBase()
-{
-}
+pattern::publisher::PublisherBase<M>::~PublisherBase() = default;
 
 template <typename M>
 void pattern::publisher::PublisherBase<M>::Forward(
@@ -54,7 +49,7 @@ void pattern::publisher::PublisherBase<M>::Forward(
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
         iterpair = subscribers_.equal_range(action.data_case());
 
-    SubscriberMap::const_iterator it = iterpair.first;
+    auto it = iterpair.first;
     for (; it != iterpair.second; ++it)
     {
       it->second->Listen(message);
@@ -64,13 +59,13 @@ void pattern::publisher::PublisherBase<M>::Forward(
 
 template <typename M>
 bool pattern::publisher::PublisherBase<M>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+    uint32_t id_message, const std::shared_ptr<ConnectorInterface> &subscriber)
 {
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
       iterpair = subscribers_.equal_range(id_message);
 
-  SubscriberMap::const_iterator it = iterpair.first;
+  auto it = iterpair.first;
   for (; it != iterpair.second; ++it)
   {
     if (it->second.get()->Equals(subscriber.get()))
@@ -82,3 +77,5 @@ bool pattern::publisher::PublisherBase<M>::RemoveSubscriber(
 
   return false;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

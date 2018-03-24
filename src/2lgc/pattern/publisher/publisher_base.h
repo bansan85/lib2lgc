@@ -19,11 +19,11 @@
  * SOFTWARE.
  */
 
-#ifndef PUBLISHER_BASE_H_
-#define PUBLISHER_BASE_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_BASE_H_
+#define PATTERN_PUBLISHER_PUBLISHER_BASE_H_
 
+#include <2lgc/compatibility/visual_studio.h>
 #include <bits/stdint-uintn.h>
-#include <compat.h>
 #include <map>
 #include <memory>
 #include <string>
@@ -34,7 +34,7 @@ namespace publisher
 {
 class ConnectorInterface;
 }
-}
+}  // namespace pattern
 
 namespace pattern
 {
@@ -105,7 +105,7 @@ class PublisherBase
    */
   virtual bool RemoveSubscriber(
       uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
+      const std::shared_ptr<ConnectorInterface> &subscriber) CHK = 0;
 
  protected:
   /**
@@ -128,4 +128,6 @@ class PublisherBase
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // PUBLISHER_BASE_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_BASE_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

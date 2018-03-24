@@ -19,19 +19,19 @@
  * SOFTWARE.
  */
 
+#include <2lgc/pattern/publisher/connector_direct.h>
+#include <2lgc/pattern/publisher/publisher_base.h>
+#include <2lgc/pattern/publisher/publisher_remote.h>
+#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <actions.pb.h>
 #include <bits/stdint-uintn.h>
-#include <connector_direct.h>
 #include <google/protobuf/stubs/common.h>
-#include <publisher_remote.h>
-#include <subscriber_direct.h>
+#include <2lgc/pattern/publisher/connector_direct.cc>
+#include <2lgc/pattern/publisher/publisher_base.cc>
+#include <2lgc/pattern/publisher/publisher_remote.cc>
 #include <cassert>
-#include <connector_direct.cc>
 #include <memory>
-#include <publisher_base.cc>
-#include <publisher_remote.cc>
 #include <string>
-#include "actions.pb.h"
-#include "publisher_base.h"
 
 template class pattern::publisher::PublisherBase<msg::Actions>;
 template class pattern::publisher::PublisherRemote<msg::Actions>;
@@ -75,7 +75,9 @@ int main(int /* argc */, char * /* argv */ [])
   // Check first message.
   msg::Actions actions = msg::Actions();
   msg::Action *action = actions.add_action();
-  action->set_allocated_test(new msg::Action_Test());
+  std::unique_ptr<msg::Action_Test> action_test =
+      std::make_unique<msg::Action_Test>();
+  action->set_allocated_test(action_test.release());
   std::shared_ptr<std::string> action_in_string =
       std::make_shared<std::string>();
   actions.SerializeToString(action_in_string.get());

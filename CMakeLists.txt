@@ -36,10 +36,10 @@ include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_custom_target(check)
 
+file(GLOB_RECURSE ALL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
+
 add_subdirectory(src)
 add_subdirectory(tests)
-
-file(GLOB_RECURSE ALL_SOURCE_FILES *.cc *.h)
 
 if (CHECK_CODE)
   if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
@@ -58,10 +58,11 @@ if (CHECK_CODE)
   #-build/include_order: cpplint.py and iwyu have sometimes differents rules.
   #-readability/nolint: clang -Weverything has more nolint that cpplint.
   #-whitespace/line_length: clang-format do what he can.
+  #-build/include: implementation of template with template class in source instead of header needs include .cc.
   find_program(CPPLINT cpplint.py)
   if (CPPLINT)
     add_custom_command(TARGET check
-      COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length ${ALL_SOURCE_FILES})
+      COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include ${ALL_SOURCE_FILES})
   endif()
   find_program(CPPCHECK cppcheck)
   if (CPPCHECK)
@@ -84,11 +85,11 @@ if (CHECK_CODE)
     add_custom_command(TARGET check
       COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay')
   endif()
-  find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
-  if (COVERITY_BUILD)
-    add_custom_command(TARGET check
-      COMMAND make clean
-      COMMAND ${COVERITY_BUILD} --dir cov-int make -j9 check
-      COMMAND tar caf lib2lgc.lzma cov-int)
-  endif()
+  #find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
+  #if (COVERITY_BUILD)
+  #  add_custom_command(TARGET check
+  #    COMMAND make clean
+  #    COMMAND ${COVERITY_BUILD} --dir cov-int make -j9 check
+  #    COMMAND tar caf lib2lgc.lzma cov-int)
+  #endif()
 endif()

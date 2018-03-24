@@ -19,12 +19,13 @@
  * SOFTWARE.
  */
 
-#include "publisher_remote.h"
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher_base.h>
+#include <2lgc/pattern/publisher/publisher_remote.h>
 #include <cstdint>
 #include <memory>
 #include <type_traits>
 #include <utility>
-#include "connector_interface.h"
 
 template <typename M>
 pattern::publisher::PublisherRemote<M>::PublisherRemote()
@@ -33,9 +34,7 @@ pattern::publisher::PublisherRemote<M>::PublisherRemote()
 }
 
 template <typename M>
-pattern::publisher::PublisherRemote<M>::~PublisherRemote()
-{
-}
+pattern::publisher::PublisherRemote<M>::~PublisherRemote() = default;
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
@@ -47,7 +46,7 @@ bool pattern::publisher::PublisherRemote<M>::AddSubscriber(
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
         iterpair = subscribers_.equal_range(id_message);
 
-    SubscriberMap::const_iterator it = iterpair.first;
+    auto it = iterpair.first;
     for (; it != iterpair.second; ++it)
     {
       if (it->second->Equals(subscriber.get()))
@@ -65,13 +64,13 @@ bool pattern::publisher::PublisherRemote<M>::AddSubscriber(
 
 template <typename M>
 bool pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+    uint32_t id_message, const std::shared_ptr<ConnectorInterface> &subscriber)
 {
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
       iterpair = subscribers_.equal_range(id_message);
 
-  SubscriberMap::const_iterator it = iterpair.first;
+  auto it = iterpair.first;
   for (; it != iterpair.second; ++it)
   {
     if (it->second.get()->Equals(subscriber.get()))
@@ -83,3 +82,5 @@ bool pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
 
   return false;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

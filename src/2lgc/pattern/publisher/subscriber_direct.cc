@@ -19,53 +19,22 @@
  * SOFTWARE.
  */
 
-#ifndef SUBSCRIBER_INTERFACE_H_
-#define SUBSCRIBER_INTERFACE_H_
+#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/pattern/publisher/subscriber_interface.h>
 
-#include <compat.h>
-#include <cstdint>
-#include <memory>
-#include <string>
-
-namespace pattern
+bool pattern::publisher::SubscriberDirect::Equals(
+    const SubscriberInterface *connector) const
 {
-namespace publisher
-{
-class ConnectorInterface;
+  auto subscriber_direct_cast =
+      dynamic_cast<const SubscriberDirect *>(connector);
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
-class SubscriberInterface
-{
- public:
-  /**
-   * @brief Send message.
-   *
-   * @param message Data of the message in ProtoBuf, SerializeToString.
-   */
-  virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
+  // Not the same type.
+  if (subscriber_direct_cast == nullptr)
+  {
+    return false;
+  }
 
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
-  virtual bool Equals(const SubscriberInterface *connector) const = 0;
+  return subscriber_direct_cast->id_ == id_;
+}
 
-  /**
-   * @brief Default virtual destructor.
-   */
-  virtual ~SubscriberInterface() {}
-};
-
-}  // namespace publisher
-}  // namespace pattern
-
-#endif  // SUBSCRIBER_INTERFACE_H_
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

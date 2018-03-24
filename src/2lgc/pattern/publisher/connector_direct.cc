@@ -19,16 +19,16 @@
  * SOFTWARE.
  */
 
-#include "connector_direct.h"
+#include <2lgc/pattern/publisher/connector_direct.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <memory>
-#include "subscriber_interface.h"
 
 template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::Equals(
     const ConnectorInterface *connector) const
 {
-  const ConnectorDirect<T> *connector_direct =
-      dynamic_cast<const ConnectorDirect<T> *>(connector);
+  auto connector_direct = dynamic_cast<const ConnectorDirect<T> *>(connector);
 
   if (connector_direct == nullptr)
   {
@@ -65,3 +65,5 @@ bool pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
 {
   return server_->RemoveSubscriber(id_message, subscriber);
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

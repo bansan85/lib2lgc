@@ -19,14 +19,14 @@
  * SOFTWARE.
  */
 
-#ifndef CONNECTOR_DIRECT_H_
-#define CONNECTOR_DIRECT_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
+#define PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
 
+#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
 #include <bits/stdint-uintn.h>
 #include <memory>
 #include <string>
-#include "compat.h"
-#include "connector_interface.h"
 
 namespace pattern
 {
@@ -34,7 +34,7 @@ namespace publisher
 {
 class SubscriberInterface;
 }
-}
+}  // namespace pattern
 
 namespace pattern
 {
@@ -43,7 +43,7 @@ namespace publisher
 template <typename M>
 class PublisherBase;
 }
-}
+}  // namespace pattern
 
 namespace pattern
 {
@@ -134,4 +134,6 @@ class ConnectorDirect : public ConnectorInterface
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // CONNECTOR_DIRECT_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

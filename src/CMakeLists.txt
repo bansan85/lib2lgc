@@ -1,28 +1,15 @@
 add_subdirectory(2lgc/poco)
 
-file(GLOB HEADERS
-  ${CMAKE_CURRENT_BINARY_DIR}/2lgc/poco/*.pb.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/compatibility/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/error/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/override/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/visitor/*.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/*.h
-  )
+file(GLOB_RECURSE 2LGC_HEADERS
+  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+  *.h)
 
-add_library(2lgc SHARED ${PROTO_SRC}
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/compare_decimal.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/override/printf.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_unit.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_value.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/backtrace.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/gdb.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/set_stack.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/software/gdb/stack.cc
-  )
+file(GLOB_RECURSE 2LGC_SOURCES
+  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
+  *.cc)
+
+add_library(2lgc SHARED ${2LGC_SOURCES})
+
 target_link_libraries(2lgc
   -Wl,--whole-archive 2lgcpoco -Wl,--no-whole-archive
   stdc++fs
@@ -30,7 +17,7 @@ target_link_libraries(2lgc
 
 set_target_properties(2lgc
   PROPERTIES FRAMEWORK TRUE
-  PUBLIC_HEADER "${HEADERS}")
+  PUBLIC_HEADER "${2LGC_HEADERS} ${PROTO_HEADERS}")
 
 if (CHECK_CODE)
   set_target_properties(2lgc PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})

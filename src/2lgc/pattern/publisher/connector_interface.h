@@ -19,14 +19,14 @@
  * SOFTWARE.
  */
 
-#ifndef CONNECTOR_INTERFACE_H_
-#define CONNECTOR_INTERFACE_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
+#define PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 
+#include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <memory>
 #include <queue>
 #include <string>
 #include <utility>
-#include "subscriber_interface.h"
 
 namespace pattern
 {
@@ -130,4 +130,6 @@ class ConnectorInterface
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // CONNECTOR_INTERFACE_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

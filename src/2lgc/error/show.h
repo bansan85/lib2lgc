@@ -23,6 +23,7 @@
 #define ERROR_SHOW_H_
 
 #include <2lgc/override/printf.h>
+#include <iostream>
 
 // BUG: for internal use only.
 #define BUG(X, Y, MSG, ...)                                                   \

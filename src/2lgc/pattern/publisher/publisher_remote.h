@@ -19,14 +19,14 @@
  * SOFTWARE.
  */
 
-#ifndef PUBLISHER_REMOTE_H_
-#define PUBLISHER_REMOTE_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_REMOTE_H_
+#define PATTERN_PUBLISHER_PUBLISHER_REMOTE_H_
 
+#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/pattern/publisher/publisher_base.h>
 #include <bits/stdint-uintn.h>
 #include <map>
 #include <memory>
-#include "compat.h"
-#include "publisher_base.h"
 
 namespace pattern
 {
@@ -34,7 +34,7 @@ namespace publisher
 {
 class ConnectorInterface;
 }
-}
+}  // namespace pattern
 
 namespace pattern
 {
@@ -90,7 +90,7 @@ class PublisherRemote : public PublisherBase<M>
    */
   bool RemoveSubscriber(
       uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
+      const std::shared_ptr<ConnectorInterface> &subscriber) override CHK;
 
  protected:
   // using needed because of template inheritance.
@@ -112,4 +112,6 @@ class PublisherRemote : public PublisherBase<M>
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // PUBLISHER_REMOTE_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_REMOTE_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

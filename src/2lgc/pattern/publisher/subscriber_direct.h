@@ -19,11 +19,11 @@
  * SOFTWARE.
  */
 
-#ifndef SUBSCRIBER_DIRECT_H_
-#define SUBSCRIBER_DIRECT_H_
+#ifndef PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#define PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 
+#include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <bits/stdint-uintn.h>
-#include "subscriber_interface.h"
 
 namespace pattern
 {
@@ -71,4 +71,6 @@ class SubscriberDirect : public SubscriberInterface
 }  // namespace publisher
 }  // namespace pattern
 
-#endif  // SUBSCRIBER_DIRECT_H_
+#endif  // PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */
