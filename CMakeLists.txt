@@ -87,7 +87,7 @@ if (CHECK_CODE)
   find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
   if (COVERITY_BUILD)
     add_custom_command(TARGET check
-      COMMAND ${MAKE} clean
+      COMMAND make clean
       COMMAND ${COVERITY_BUILD} --dir cov-int make -j9 check
       COMMAND tar caf lib2lgc.lzma cov-int)
   endif()

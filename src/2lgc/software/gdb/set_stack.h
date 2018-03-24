@@ -184,6 +184,16 @@ class SetStack
     size_t bottom_frame_;
   };
 
+  /**
+   * @brief Read in parallel a list of files that contains gdb backtraces.
+   *
+   * @param[in] all_files The list of files that contains gdb backtraces.
+   * @param[in] nthread The number of threads with a maximum of
+   * std::thread::hardware_concurrency()
+   * @param[in] print_one_by_group Add the file only if no equivalent already
+   *
+   * @return true if no problem.
+   */
   bool ParallelAdd(const std::vector<std::string>& all_files,
                    unsigned int nthread, bool print_one_by_group) CHK;
 

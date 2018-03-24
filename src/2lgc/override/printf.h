@@ -29,11 +29,25 @@
 // Stolen from
 // https://www.codeproject.com/Articles/514443/Debug-Print-in-Variadic-Template-Style#printf
 
+/**
+ * @brief This class allow use of a safe printf.
+ */
 class Override
 {
  public:
-  static void SafePrintf(std::ostream &out_stream, const std::string &s);
-
+  /**
+   * @brief This function override the less safe printf.
+   *
+   * It's safer because you don't have to know if it's %d %zu …. Just a % is
+   * enough.
+   *
+   * @tparam T Type of the next variable to print.
+   * @tparam Args Type of the others variables.
+   * @param[out] out_stream The output stream.
+   * @param[in] s The message to show with % to show the next variable.
+   * @param[in] value The next variable to print.
+   * @param[in] args The others variables.
+   */
   template <typename T, typename... Args>
   static void SafePrintf(std::ostream &out_stream, const char *s, T value,
                          Args... args)
@@ -57,6 +71,15 @@ class Override
     }
     throw std::logic_error("extra arguments provided to printf");
   }
+
+ private:
+  /**
+   * @brief Print a message to an ouput stream.
+   *
+   * @param[out] out_stream The output stream (std::cout, …).
+   * @param[in] s The string message.
+   */
+  static void SafePrintf(std::ostream &out_stream, const std::string &s);
 };
 
 #endif  // OVERRIDE_PRINTF_H_
