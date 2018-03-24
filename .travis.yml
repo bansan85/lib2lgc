@@ -12,6 +12,8 @@ addons:
     packages:
       - cppcheck
       - iwyu
+      - binutils
+      - gcc
 
 script:
   - mkdir protobuf
