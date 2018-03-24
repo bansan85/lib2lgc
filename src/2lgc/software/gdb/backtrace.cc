@@ -272,7 +272,7 @@ bool Bt::ReadSource(const std::string& file)
 
   try
   {
-    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1).c_str()));
+    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1)));
   }
   catch (const std::invalid_argument&)
   {

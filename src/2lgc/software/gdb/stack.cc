@@ -21,8 +21,10 @@
 
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/stack.h>
+#include <algorithm>
 #include <memory>
 
+// cppcheck-suppress *
 Stack::Stack(std::string filename) : filename_(std::move(filename)) {}
 
 bool Stack::InterpretLine(const std::string &line)

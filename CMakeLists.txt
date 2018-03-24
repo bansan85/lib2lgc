@@ -66,7 +66,7 @@ if (CHECK_CODE)
   find_program(CPPCHECK cppcheck)
   if (CPPCHECK)
     add_custom_command(TARGET check
-      COMMAND ${CPPCHECK} -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inconclusive --enable=all ${ALL_SOURCE_FILES})
+      COMMAND ${CPPCHECK} -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inline-suppr --inconclusive --enable=all ${ALL_SOURCE_FILES})
   endif()
   add_custom_command(TARGET check
     COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --gcov-tool ${GCOV_BIN} --capture --rc lcov_branch_coverage=1 --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
@@ -83,5 +83,12 @@ if (CHECK_CODE)
     string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
     add_custom_command(TARGET check
       COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay')
+  endif()
+  find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
+  if (COVERITY_BUILD)
+    add_custom_command(TARGET check
+      COMMAND ${MAKE} clean
+      COMMAND ${COVERITY_BUILD} --dir cov-int make -j9 check
+      COMMAND tar caf lib2lgc.lzma cov-int)
   endif()
 endif()
