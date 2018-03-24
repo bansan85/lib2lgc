@@ -22,8 +22,11 @@
 %include "../2lgc/error/show.h"
 %include "../2lgc/math/compare_decimal.h"
 %include "../2lgc/pattern/visitor/visitable.h"
+%template(interface_visitable_number) pattern::visitor::InterfaceVisitable<msg::Number>;
 %include "../2lgc/pattern/visitor/visitor.h"
 %include "../2lgc/poco/number.h"
+%template(visitor_number_constant) pattern::visitor::Visitor<pattern::visitor::Number_Constant>;
+%template(visitor_number_num_op_num) pattern::visitor::Visitor<pattern::visitor::Number_NumOpNum>;
 %include "../2lgc/poco/number_visitor_unit.h"
 %include "../2lgc/poco/number_visitor_value.h"
 %include "../2lgc/software/gdb/backtrace.h"
