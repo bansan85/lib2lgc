@@ -37,11 +37,24 @@ template class pattern::publisher::PublisherBase<msg::Actions>;
 template class pattern::publisher::PublisherRemote<msg::Actions>;
 template class pattern::publisher::ConnectorDirect<msg::Actions>;
 
+/**
+ * @brief Simple implementation of a direct subscriber.
+ */
 class SubscriberBase final : public pattern::publisher::SubscriberDirect
 {
  public:
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in] id id of the subscriber.
+   */
   explicit SubscriberBase(uint32_t id) : SubscriberDirect(id), value(0) {}
 
+  /**
+   * @brief Receive message from publisher.
+   *
+   * @param[in] message message from the publisher in protobuf format.
+   */
   void Listen(const std::shared_ptr<const std::string> &message) override
   {
     msg::Actions actions;
@@ -49,6 +62,9 @@ class SubscriberBase final : public pattern::publisher::SubscriberDirect
     value = 3;
   }
 
+  /**
+   * @brief value for test.
+   */
   int value;
 };
 
