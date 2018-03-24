@@ -22,6 +22,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
+#include <2lgc/poco/number_impl.h>
 #include <2lgc/poco/number_visitor_unit.h>
 #include <2lgc/poco/number_visitor_value.h>
 #include <2lgc/poco/raw.pb.h>

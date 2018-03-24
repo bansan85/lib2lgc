@@ -44,7 +44,7 @@ namespace visitor
  * @tparam Visitable The same name of the class that is visitable.
  */
 template <class Visitable, class T>
-class BaseVisitable : virtual T
+class BaseVisitable : virtual public T
 {
  public:
   /**

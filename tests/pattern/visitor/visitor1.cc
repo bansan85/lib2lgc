@@ -21,8 +21,8 @@
  */
 
 #include <2lgc/math/compare_decimal.h>
-#include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
+#include <2lgc/poco/number_impl.h>
 #include <2lgc/poco/number_visitor_value.h>
 #include <2lgc/poco/raw.pb.h>
 #include <google/protobuf/arena.h>
