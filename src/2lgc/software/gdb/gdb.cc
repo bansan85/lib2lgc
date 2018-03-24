@@ -19,23 +19,22 @@
  * SOFTWARE.
  */
 
+#include <2lgc/filesystem/files.h>
 #include <2lgc/software/gdb/gdb.h>
 #include <bits/stdint-intn.h>
 #include <cxxabi.h>
-#include <ext/alloc_traits.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <algorithm>
 #include <chrono>
 #include <csignal>
 #include <cstring>
-#include <experimental/filesystem>
+#include <ext/alloc_traits.h>
 #include <fstream>
 #include <functional>
 #include <future>
 #include <iostream>
 #include <memory>
-#include <regex>
 #include <system_error>
 #include <thread>
 #include <type_traits>
@@ -168,16 +167,9 @@ bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
                              char* const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
-  std::regex reg(regex);
-  for (auto& p :
-       std::experimental::filesystem::recursive_directory_iterator(folder))
+  if (!Files::SearchRecursive(folder, regex, &all_files))
   {
-    std::string filename(p.path().filename().string());
-
-    if (regex.length() == 0 || std::regex_match(filename, reg))
-    {
-      all_files.push_back(p.path().string());
-    }
+    return false;
   }
 
   return ParallelRun(all_files, nthread, argc, argv, timeout);

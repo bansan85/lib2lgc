@@ -19,21 +19,20 @@
  * SOFTWARE.
  */
 
+#include <2lgc/filesystem/files.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
 #include <bits/stdint-uintn.h>
 #include <cxxabi.h>
-#include <ext/alloc_traits.h>
 #include <algorithm>
-#include <experimental/filesystem>
+#include <ext/alloc_traits.h>
 #include <fstream>
 #include <functional>
 #include <future>
 #include <iostream>
 #include <limits>
 #include <memory>
-#include <regex>
 #include <system_error>
 #include <thread>
 #include <utility>
@@ -254,16 +253,9 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
                             const std::string& regex, bool print_one_by_group)
 {
   std::vector<std::string> all_files;
-  std::regex reg(regex);
-  for (auto& p :
-       std::experimental::filesystem::recursive_directory_iterator(folder))
+  if (!Files::SearchRecursive(folder, regex, &all_files))
   {
-    std::string filename(p.path().filename().string());
-
-    if (regex.length() == 0 || std::regex_match(filename, reg))
-    {
-      all_files.push_back(p.path().string());
-    }
+    return false;
   }
 
   return ParallelAdd(all_files, nthread, print_one_by_group);
