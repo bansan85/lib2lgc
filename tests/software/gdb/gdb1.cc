@@ -20,6 +20,7 @@
  */
 
 #include <2lgc/software/gdb/backtrace.h>
+#include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <memory>
 #include <string>
@@ -35,6 +36,8 @@ int main(int /* argc */, char* /* argv */ [])
   assert(bt->GetFile() == "libraries/libdxfrw/src/libdxfrw.cpp");
   assert(bt->GetIndex() == 4);
   assert(bt->GetLine() == 99);
+
+  google::protobuf::ShutdownProtobufLibrary();
 
   return 0;
 }

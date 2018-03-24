@@ -20,6 +20,7 @@
  */
 
 #include <2lgc/math/compare_decimal.h>
+#include <google/protobuf/stubs/common.h>
 #include <cassert>
 
 int main(int /* argc */, char* /* argv */ [])
@@ -45,6 +46,9 @@ int main(int /* argc */, char* /* argv */ [])
   assert(!Math::AlmostEqualRelativeAndAbsD(0.5, -0.5, 1.e-15, 1.e-15));
   assert(!Math::AlmostEqualRelativeAndAbsD(-0.5, 0.5, 1.e-15, 1.e-15));
   assert(Math::AlmostEqualRelativeAndAbsD(0.5, 0.5000001, 1e-9, 1.e-5));
+
+  google::protobuf::ShutdownProtobufLibrary();
+
   return 0;
 }
 
