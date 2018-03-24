@@ -33,7 +33,6 @@
 #include <cstddef>
 #include <memory>
 #include <string>
-#include <string_view>
 
 /**
  * @brief Store all informations about one backtrace.
@@ -55,7 +54,7 @@ class Bt
    *
    * @return The new backtrace and null in failed.
    */
-  static std::unique_ptr<Bt> Factory(const std::string_view& line);
+  static std::unique_ptr<Bt> Factory(const std::string& line);
 
   /**
    * @brief From a line, decode and extract the index, the address, the
@@ -70,11 +69,9 @@ class Bt
    *
    * @return true if no error.
    */
-  static bool DecodeBacktrace(const std::string_view& line,
-                              std::string_view* index,
-                              std::string_view* address,
-                              std::string_view* function,
-                              std::string_view* file) CHK;
+  static bool DecodeBacktrace(const std::string& line, std::string* index,
+                              std::string* address, std::string* function,
+                              std::string* file) CHK;
 
   /**
    * @brief Check if the source file exists.
@@ -158,7 +155,7 @@ class Bt
    *
    * @return true if parameter description has the right format.
    */
-  bool ReadFunction(const std::string_view& description) CHK;
+  bool ReadFunction(const std::string& description) CHK;
   /**
    * @brief Convert the filename and the number of the line of the backtrace in
    * file_ and line_.
@@ -167,7 +164,7 @@ class Bt
    *
    * @return true if parameter file has the right format.
    */
-  bool ReadSource(const std::string_view& file) CHK;
+  bool ReadSource(const std::string& file) CHK;
 };
 
 #endif  // SOFTWARE_GDB_BACKTRACE_H_

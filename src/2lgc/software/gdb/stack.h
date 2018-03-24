@@ -32,7 +32,6 @@
 #include <cstddef>
 #include <memory>
 #include <string>
-#include <string_view>
 #include <vector>
 
 /**
@@ -48,7 +47,7 @@ class Stack
    *
    * @param[in] filename Filename that contains all backtraces.
    */
-  explicit Stack(const std::string_view& filename);
+  explicit Stack(std::string filename);
 
   /**
    * @brief Abstract factory that convert a line into a backtrace.
@@ -58,7 +57,7 @@ class Stack
    *
    * @return true if convertion is successfull.
    */
-  bool InterpretLine(const std::string_view& line) CHK;
+  bool InterpretLine(const std::string& line) CHK;
 
   /**
    * @brief Get the name of the file from where the stack is stored.

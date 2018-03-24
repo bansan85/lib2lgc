@@ -23,9 +23,9 @@
 #include <2lgc/software/gdb/stack.h>
 #include <memory>
 
-Stack::Stack(const std::string_view &filename) : filename_(filename) {}
+Stack::Stack(std::string filename) : filename_(std::move(filename)) {}
 
-bool Stack::InterpretLine(const std::string_view &line)
+bool Stack::InterpretLine(const std::string &line)
 {
   std::unique_ptr<Bt> bt = Bt::Factory(line);
 

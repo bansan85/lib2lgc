@@ -57,7 +57,7 @@ class Function
    *
    * @param[in] name The new name of a function.
    */
-  void SetName(const std::string_view& name) { name_.assign(name); }
+  void SetName(const std::string& name) { name_.assign(name); }
 
   /**
    * @brief Add argument of the function.
@@ -65,7 +65,7 @@ class Function
    * @param[in] name Name of the argument.
    * @param[in] value Value of the argument.
    */
-  void AddArgs(const std::string_view& name, const std::string_view& value)
+  void AddArgs(const std::string& name, const std::string& value)
   {
     args_.push_back(std::pair<std::string, std::string>(name, value));
   }

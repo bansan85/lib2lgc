@@ -29,9 +29,9 @@
 
 Bt::Bt() : index_(0), address_(0), line_(std::numeric_limits<size_t>::max()) {}
 
-std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
+std::unique_ptr<Bt> Bt::Factory(const std::string& line)
 {
-  std::string_view index, address, function, file;
+  std::string index, address, function, file;
 
   std::unique_ptr<Bt> retval = std::make_unique<Bt>();
 
@@ -40,12 +40,12 @@ std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
     return std::unique_ptr<Bt>(nullptr);
   }
 
-  if (!retval->ReadIndex(std::string(index)))
+  if (!retval->ReadIndex(index))
   {
     return std::unique_ptr<Bt>(nullptr);
   }
 
-  if (address.length() != 0 && !retval->ReadAddress(std::string(address)))
+  if (address.length() != 0 && !retval->ReadAddress(address))
   {
     return std::unique_ptr<Bt>(nullptr);
   }
@@ -63,16 +63,15 @@ std::unique_ptr<Bt> Bt::Factory(const std::string_view& line)
   return retval;
 }
 
-bool Bt::DecodeBacktrace(const std::string_view& line, std::string_view* index,
-                         std::string_view* address, std::string_view* function,
-                         std::string_view* file)
+bool Bt::DecodeBacktrace(const std::string& line, std::string* index,
+                         std::string* address, std::string* function,
+                         std::string* file)
 {
   assert(index);
   assert(address);
   assert(function);
   assert(file);
 
-  std::string line_it(line);
   // Regex: "^#(\\d+) *((0x.*) in )?((.*\\)) at )?(.*)$"
   // Size for the beginning #\d
   size_t line_length = line.length();
@@ -197,7 +196,7 @@ bool Bt::ReadAddress(const std::string& address)
   return true;
 }
 
-bool Bt::ReadFunction(const std::string_view& description)
+bool Bt::ReadFunction(const std::string& description)
 {
   size_t pos_space = description.find(' ');
 
@@ -209,10 +208,9 @@ bool Bt::ReadFunction(const std::string_view& description)
   function_.SetName(description.substr(0, pos_space));
 
   // + 2 to remove " ("
-  std::string_view str =
-      description.substr(pos_space + 2,
-                         // - 3 to remove " (" and ")"
-                         description.length() - pos_space - 3);
+  std::string str = description.substr(pos_space + 2,
+                                       // - 3 to remove " (" and ")"
+                                       description.length() - pos_space - 3);
 
   // No argument.
   if (str.length() == 0)
@@ -228,7 +226,7 @@ bool Bt::ReadFunction(const std::string_view& description)
   }
   while (pos_comma != std::string::npos)
   {
-    std::string_view strcomma = str.substr(0, pos_comma);
+    std::string strcomma = str.substr(0, pos_comma);
     size_t pos_last_equal = strcomma.find_last_of('=');
     if (pos_last_equal == std::string::npos)
     {
@@ -264,7 +262,7 @@ bool Bt::ReadFunction(const std::string_view& description)
   return true;
 }
 
-bool Bt::ReadSource(const std::string_view& file)
+bool Bt::ReadSource(const std::string& file)
 {
   size_t pos = file.find_last_of(':');
   if (pos == std::string::npos)
@@ -274,7 +272,7 @@ bool Bt::ReadSource(const std::string_view& file)
 
   try
   {
-    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1).data()));
+    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1).c_str()));
   }
   catch (const std::invalid_argument&)
   {
