@@ -72,7 +72,8 @@ if (CHECK_CODE)
   endif()
   add_custom_command(TARGET check
     COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --gcov-tool ${GCOV_BIN} --capture --rc lcov_branch_coverage=1 --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
-    COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info)
+    COMMAND lcov --remove ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info '${CMAKE_CURRENT_SOURCE_DIR}/tests/*' '${CMAKE_CURRENT_BINARY_DIR}/*' '/usr/include/*' '*/include/g++*' -o ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info
+    COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info)
   #-llvm-include-order: Google and LLVM have differents rules.
   #-llvm-header-guard: cpplint do the work well.
   #-fuchsia-default-arguments: don't always write default boring arguments.
