@@ -1,3 +1,4 @@
+#disable for now. travis' image are too old. :(
 language: cpp
 sudo: required
 
@@ -12,8 +13,6 @@ addons:
     packages:
       - cppcheck
       - iwyu
-      - binutils
-      - gcc
 
 script:
   - mkdir protobuf
