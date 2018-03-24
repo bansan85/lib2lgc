@@ -1,6 +1,7 @@
 #define CHK
 
 %module libgdb
+
 %{
 // Do not include compatibility.
 // %include "../2lgc/compatibility.h"
@@ -10,6 +11,7 @@
 #include "../2lgc/pattern/visitor/visitable.h"
 #include "../2lgc/pattern/visitor/visitor.h"
 #include "../2lgc/poco/number.h"
+#include "../2lgc/poco/number_impl.h"
 #include "../2lgc/poco/number_visitor_unit.h"
 #include "../2lgc/poco/number_visitor_value.h"
 #include "../2lgc/software/gdb/backtrace.h"
