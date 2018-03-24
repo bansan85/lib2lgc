@@ -3,6 +3,7 @@ cmake_minimum_required (VERSION 3.8.0)
 include(GNUInstallDirs)
 include(FindProtobuf)
 find_package(Protobuf REQUIRED)
+find_package(Doxygen)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
@@ -84,6 +85,10 @@ if (CHECK_CODE)
     string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
     add_custom_command(TARGET check
       COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay')
+  endif()
+  if (DOXYGEN_FOUND)
+    add_custom_command(TARGET check
+      COMMAND make doc)
   endif()
   #find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
   #if (COVERITY_BUILD)
