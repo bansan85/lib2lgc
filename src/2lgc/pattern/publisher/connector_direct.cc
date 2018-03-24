@@ -25,6 +25,17 @@
 #include <memory>
 
 template <typename T>
+pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
+    const std::shared_ptr<SubscriberInterface> &subscriber,
+    const std::shared_ptr<PublisherBase<T>> &server)
+    : ConnectorInterface(subscriber), server_(server)
+{
+}
+
+template <typename T>
+pattern::publisher::ConnectorDirect<T>::~ConnectorDirect() = default;
+
+template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::Equals(
     const ConnectorInterface *connector) const
 {
@@ -39,10 +50,9 @@ bool pattern::publisher::ConnectorDirect<T>::Equals(
 }
 
 template <typename T>
-bool pattern::publisher::ConnectorDirect<T>::AddSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+bool pattern::publisher::ConnectorDirect<T>::AddSubscriber(uint32_t id_message)
 {
-  return server_->AddSubscriber(id_message, subscriber);
+  return server_->AddSubscriber(id_message, this->shared_from_this());
 }
 
 template <typename T>
@@ -61,9 +71,9 @@ void pattern::publisher::ConnectorDirect<T>::Listen(
 
 template <typename T>
 bool pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+    uint32_t id_message)
 {
-  return server_->RemoveSubscriber(id_message, subscriber);
+  return server_->RemoveSubscriber(id_message, this->shared_from_this());
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

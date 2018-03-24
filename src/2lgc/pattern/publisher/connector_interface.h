@@ -77,35 +77,29 @@ class ConnectorInterface
   virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
 
   /**
-   * @brief Add a new subscriber.
-   *
-   * @param[in] id_message The add of the message.
-   * @param[in] subscriber The new subscriber.
-   *
-   * @return true if no problem.
-   */
-  virtual bool AddSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message id of the message.
-   * @param[in] subscriber The subscriber.
-   *
-   * @return true if no problem.
-   */
-  virtual bool RemoveSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
-
-  /**
    * @brief Get the subscriber that manager this interface.
    *
    * @return return the subscriber.
    */
   const SubscriberInterface *GetSubscriber() const { return subscriber_.get(); }
+
+  /**
+   * @brief Add a new subscriber.
+   *
+   * @param[in] id_message The add of the message.
+   *
+   * @return true if no problem.
+   */
+  virtual bool AddSubscriber(uint32_t id_message) CHK = 0;
+
+  /**
+   * @brief Remove a subscriber.
+   *
+   * @param[in] id_message id of the message.
+   *
+   * @return true if no problem.
+   */
+  virtual bool RemoveSubscriber(uint32_t id_message) CHK = 0;
 
   /**
    * @brief Default virtual destructor.
@@ -117,10 +111,12 @@ class ConnectorInterface
    * @brief Pair with the id of the event and the arguments.
    */
   std::queue<std::pair<uint32_t, std::shared_ptr<const std::string>>> messages_;
+
   /**
    * @brief id of the next message.
    */
   uint32_t next_id_;
+
   /**
    * @brief The subsriber.
    */

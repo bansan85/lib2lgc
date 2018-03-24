@@ -57,7 +57,8 @@ namespace publisher
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class ConnectorDirect : public ConnectorInterface
+class ConnectorDirect : public ConnectorInterface,
+                        public std::enable_shared_from_this<ConnectorDirect<T>>
 {
  public:
   /**
@@ -68,10 +69,7 @@ class ConnectorDirect : public ConnectorInterface
    */
   explicit ConnectorDirect(
       const std::shared_ptr<SubscriberInterface> &subscriber,
-      const std::shared_ptr<PublisherBase<T>> &server)
-      : ConnectorInterface(subscriber), server_(server)
-  {
-  }
+      const std::shared_ptr<PublisherBase<T>> &server);
 
   /**
    * @brief Compare two connectors.
@@ -81,18 +79,6 @@ class ConnectorDirect : public ConnectorInterface
    * @return true if same connector.
    */
   bool Equals(const ConnectorInterface *connector) const override CHK;
-
-  /**
-   * @brief Add a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   * @param[in] subscriber
-   *
-   * @return true if no problem.
-   */
-  bool AddSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
 
   /**
    * @brief Send message.
@@ -108,21 +94,27 @@ class ConnectorDirect : public ConnectorInterface
   void Listen(const std::shared_ptr<const std::string> &message) override;
 
   /**
-   * @brief Remove a subscriber.
+   * @brief Add a subscriber.
    *
    * @param[in] id_message The id of the message.
-   * @param[in] subscriber The subscriber.
    *
    * @return true if no problem.
    */
-  bool RemoveSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
+  bool AddSubscriber(uint32_t id_message) override CHK;
+
+  /**
+   * @brief Remove a subscriber.
+   *
+   * @param[in] id_message The id of the message.
+   *
+   * @return true if no problem.
+   */
+  bool RemoveSubscriber(uint32_t id_message) override CHK;
 
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorDirect() {}
+  virtual ~ConnectorDirect();
 
  private:
   /**

@@ -83,7 +83,7 @@ int main(int /* argc */, char * /* argv */ [])
           subscriber, server);
 
   // Add them to the server.
-  assert(connector->AddSubscriber(1, connector));
+  assert(connector->AddSubscriber(1));
 
   // Base test case.
   assert(subscriber->value == 0);
@@ -105,7 +105,7 @@ int main(int /* argc */, char * /* argv */ [])
   subscriber->value = 0;
 
   // Remove the first subscriber.
-  assert(connector->RemoveSubscriber(1, connector));
+  assert(connector->RemoveSubscriber(1));
   connector->Send(action_in_string);
   assert(subscriber->value == 0);
 
