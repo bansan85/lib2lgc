@@ -91,6 +91,11 @@ if (CHECK_CODE)
     add_custom_command(TARGET check
       COMMAND make doc)
   endif()
+  find_program(PMD_BIN run.sh PATHS /opt/pmd/bin)
+  if (PMD_BIN)
+    add_custom_command(TARGET check
+      COMMAND ${PMD_BIN} cpd --minimum-tokens 100 --language cpp --files ${CMAKE_CURRENT_SOURCE_DIR})
+  endif()
   #find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
   #if (COVERITY_BUILD)
   #  add_custom_command(TARGET check

@@ -245,7 +245,6 @@ bool SetStack::ParallelAdd(const std::vector<std::string>& all_files,
     retval &= t.get();
   }
 
-  std::cout << "ParallelAdd" << retval << std::endl;
   return retval;
 }
 

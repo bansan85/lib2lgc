@@ -19,42 +19,59 @@
  * SOFTWARE.
  */
 
-#include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_base.h>
+#ifndef PATTERN_SINGLETON_SINGLETON_H_
+#define PATTERN_SINGLETON_SINGLETON_H_
+
+#include <atomic>
 #include <memory>
-#include <type_traits>
-#include <utility>
+#include <mutex>
 
-template <typename M>
-pattern::publisher::PublisherBase<M>::PublisherBase() = default;
-
-template <typename M>
-pattern::publisher::PublisherBase<M>::~PublisherBase() = default;
-
-template <typename M>
-void pattern::publisher::PublisherBase<M>::Forward(
-    const std::shared_ptr<const std::string> &message)
+/**
+ * @file singleton.h
+ *
+ * Helper to simply add a singleton to a class.
+ */
+namespace pattern
 {
-  M actions;
+namespace singleton
+{
+/**
+ * @brief Class that contains the getInstance for the static singleton.
+ *
+ * @tparam T Type of the singleton.
+ */
+template <class T>
+class SingletonStatic
+{
+ public:
+  static T* getInstanceStatic();
+  static bool isInstanceStatic();
 
-  BUGUSER(actions.ParseFromString(*message.get()), ,
-          "Failed to decode message.\n");
+ private:
+  static std::atomic<std::unique_ptr<T>> m_instance_static_;
+  static std::mutex m_mutex_static_;
+};
 
-  for (int i = 0; i < actions.action_size(); i++)
-  {
-    // Must use auto because we don't know if M is in namespace or not.
-    auto &action = actions.action(i);
+/**
+ * @brief Class that contains the getInstance for a local singleton.
+ *
+ * @tparam T Type of the singleton.
+ */
+template <class T>
+class SingletonLocal
+{
+ public:
+  T* getInstanceLocal();
+  bool isInstanceLocal();
 
-    std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
-        iterpair = subscribers_.equal_range(action.data_case());
+ private:
+  std::atomic<std::unique_ptr<T>> m_instance_local_;
+  std::mutex m_mutex_local_;
+};
 
-    auto it = iterpair.first;
-    for (; it != iterpair.second; ++it)
-    {
-      it->second->Listen(message);
-    }
-  }
-}
+}  // namespace singleton
+}  // namespace pattern
+
+#endif  // PATTERN_SINGLETON_SINGLETON_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
