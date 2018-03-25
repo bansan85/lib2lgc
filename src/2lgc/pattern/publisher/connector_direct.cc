@@ -25,7 +25,7 @@
 #include <memory>
 
 template <typename T>
-pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
+llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
     const std::shared_ptr<SubscriberInterface> &subscriber,
     const std::shared_ptr<PublisherBase<T>> &server)
     : ConnectorInterface(subscriber), server_(server)
@@ -33,10 +33,10 @@ pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
 }
 
 template <typename T>
-pattern::publisher::ConnectorDirect<T>::~ConnectorDirect() = default;
+llgc::pattern::publisher::ConnectorDirect<T>::~ConnectorDirect() = default;
 
 template <typename T>
-bool pattern::publisher::ConnectorDirect<T>::Equals(
+bool llgc::pattern::publisher::ConnectorDirect<T>::Equals(
     const ConnectorInterface *connector) const
 {
   auto connector_direct = dynamic_cast<const ConnectorDirect<T> *>(connector);
@@ -50,27 +50,28 @@ bool pattern::publisher::ConnectorDirect<T>::Equals(
 }
 
 template <typename T>
-bool pattern::publisher::ConnectorDirect<T>::AddSubscriber(uint32_t id_message)
+bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
+    uint32_t id_message)
 {
   return server_->AddSubscriber(id_message, this->shared_from_this());
 }
 
 template <typename T>
-void pattern::publisher::ConnectorDirect<T>::Send(
+void llgc::pattern::publisher::ConnectorDirect<T>::Send(
     const std::shared_ptr<const std::string> &message)
 {
   server_->Forward(message);
 }
 
 template <typename T>
-void pattern::publisher::ConnectorDirect<T>::Listen(
+void llgc::pattern::publisher::ConnectorDirect<T>::Listen(
     const std::shared_ptr<const std::string> &message)
 {
   subscriber_->Listen(message);
 }
 
 template <typename T>
-bool pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
+bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
     uint32_t id_message)
 {
   return server_->RemoveSubscriber(id_message, this->shared_from_this());

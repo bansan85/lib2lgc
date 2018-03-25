@@ -28,17 +28,17 @@
 #include <utility>
 
 template <typename M>
-pattern::publisher::PublisherRemote<M>::PublisherRemote()
+llgc::pattern::publisher::PublisherRemote<M>::PublisherRemote()
     : PublisherBase<M>(), port_(0)
 {
 }
 
 template <typename M>
-pattern::publisher::PublisherRemote<M>::~PublisherRemote() = default;
+llgc::pattern::publisher::PublisherRemote<M>::~PublisherRemote() = default;
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
-bool pattern::publisher::PublisherRemote<M>::AddSubscriber(
+bool llgc::pattern::publisher::PublisherRemote<M>::AddSubscriber(
     uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
 {
   if (options_.add_fail_if_already_subscribed)
@@ -63,7 +63,7 @@ bool pattern::publisher::PublisherRemote<M>::AddSubscriber(
 }
 
 template <typename M>
-bool pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
+bool llgc::pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
     uint32_t id_message, const std::shared_ptr<ConnectorInterface> &subscriber)
 {
   // Check if Subscriber is already subscribed.

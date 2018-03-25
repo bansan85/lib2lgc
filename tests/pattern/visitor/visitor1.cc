@@ -1,4 +1,3 @@
-// NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access2
 /* Copyright 2018 LE GARREC Vincent
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -31,47 +30,46 @@
 #include <memory>
 #include <string>
 
-int main(int /* argc */, char* /* argv */ [])
+int main(int /* argc */, char* /* argv */ [])  // NS
 {
   google::protobuf::Arena arena;
 
   // Defining number 5 meters.
   auto unit = std::make_unique<msg::Number_Unit>();
   unit->set_m(1.);
-  std::shared_ptr<pattern::visitor::Number_Constant> nombre =
-      std::make_shared<pattern::visitor::Number_Constant>(1, 5.0,
-                                                          unit.release());
-  pattern::visitor::NumberVisitorVal visitor;
+  std::shared_ptr<llgc::poco::Number_Constant> nombre =
+      std::make_shared<llgc::poco::Number_Constant>(1, 5.0, unit.release());
+  llgc::poco::NumberVisitorVal visitor;
 
   // Check Serialization.
   std::string return_value;
   assert(nombre->Accept(visitor, &return_value));
   msg::Double double_value;
   assert(double_value.ParseFromString(return_value));
-  assert(Math::AlmostEqualUlpsAndAbsD(double_value.value(), 5., 1.e-10, 1));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(double_value.value(), 5.,
+                                                     1.e-10, 1));
 
   // Check 5 meters * 10.
   unit = std::make_unique<msg::Number_Unit>();
-  std::shared_ptr<pattern::visitor::Number_Constant> nombre2 =
-      std::make_shared<pattern::visitor::Number_Constant>(2, 10.0,
-                                                          unit.release());
-  pattern::visitor::Number_NumOpNum nombre3(
+  std::shared_ptr<llgc::poco::Number_Constant> nombre2 =
+      std::make_shared<llgc::poco::Number_Constant>(2, 10.0, unit.release());
+  llgc::poco::Number_NumOpNum nombre3(
       3, nombre, msg::Number_Operator_MULTIPLICATION, nombre2);
   assert(nombre3.Accept(visitor, &return_value));
   assert(double_value.ParseFromString(return_value));
-  assert(Math::AlmostEqualUlpsAndAbsD(double_value.value(), 50., 1.e-10, 1));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(double_value.value(), 50.,
+                                                     1.e-10, 1));
 
   // Check 5 meters / 3.
   unit = std::make_unique<msg::Number_Unit>();
-  std::shared_ptr<pattern::visitor::Number_Constant> nombre4 =
-      std::make_shared<pattern::visitor::Number_Constant>(4, 3.0,
-                                                          unit.release());
-  pattern::visitor::Number_NumOpNum nombre5(
-      5, nombre, msg::Number_Operator_DIVISION, nombre4);
+  std::shared_ptr<llgc::poco::Number_Constant> nombre4 =
+      std::make_shared<llgc::poco::Number_Constant>(4, 3.0, unit.release());
+  llgc::poco::Number_NumOpNum nombre5(5, nombre, msg::Number_Operator_DIVISION,
+                                      nombre4);
   assert(nombre5.Accept(visitor, &return_value));
   assert(double_value.ParseFromString(return_value));
-  assert(
-      Math::AlmostEqualUlpsAndAbsD(double_value.value(), 5. / 3., 1.e-10, 1));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(double_value.value(),
+                                                     5. / 3., 1.e-10, 1));
 
   /*
   msg::Double dd;

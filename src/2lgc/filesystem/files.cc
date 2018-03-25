@@ -23,8 +23,9 @@
 #include <experimental/filesystem>
 #include <regex>
 
-bool Files::SearchRecursive(const std::string& folder, const std::string& regex,
-                            std::vector<std::string>* files)
+bool llgc::filesystem::Files::SearchRecursive(const std::string& folder,
+                                              const std::string& regex,
+                                              std::vector<std::string>* files)
 {
   std::regex reg(regex);
   for (auto& p :

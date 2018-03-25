@@ -32,9 +32,7 @@
  * This header is used has base for every class that a visitor would like to
  * visit.
  */
-namespace pattern
-{
-namespace visitor
+namespace llgc::pattern::visitor
 {
 /**
  * @brief Common class to allow a class to be visited. This class is used to
@@ -80,10 +78,13 @@ class BaseVisitable : virtual public T
 template <class M>
 class InterfaceVisitable
 {
-  static_assert(std::is_base_of<::google::protobuf::Message, M>::value,
+  static_assert(std::is_base_of<::google::protobuf::Message, M>::value,  // NS
                 "M must be a descendant of ::google::protobuf::Message");
 
  public:
+  /**
+   * @brief Default constructor.
+   */
   InterfaceVisitable() : message_() {}
   /**
    * @brief In case of some class based on it need a virtual destructor.
@@ -110,7 +111,7 @@ class InterfaceVisitable
    *
    * @return The message in read-only format.
    */
-  const M &message() const { return message_; }
+  const M &Message() const { return message_; }
 
  protected:
   /**
@@ -119,7 +120,7 @@ class InterfaceVisitable
    *
    * @return The message in read-write format.
    */
-  M &message() { return message_; }
+  M &Message() { return message_; }
 
  private:
   /**
@@ -128,8 +129,7 @@ class InterfaceVisitable
   M message_;
 };
 
-}  // namespace visitor
-}  // namespace pattern
+}  // namespace llgc::pattern::visitor
 
 #endif  // PATTERN_VISITOR_VISITABLE_H_
 

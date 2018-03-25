@@ -183,8 +183,8 @@ static bool AlmostEqualRelativeAndAbsInternal(T A, T B, T maxDiff, T maxRelDiff)
  *
  * @return true is both numbers are equals.
  */
-bool Math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
-                                  int maxUlpsDiff)
+bool llgc::math::Compare::AlmostEqualUlpsAndAbsF(float A, float B,
+                                                 float maxDiff, int maxUlpsDiff)
 {
   return AlmostEqualUlpsAndAbsInternal<float, Float_t, int32_t>(A, B, maxDiff,
                                                                 maxUlpsDiff);
@@ -202,8 +202,9 @@ bool Math::AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool Math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
-                                      float maxRelDiff)
+bool llgc::math::Compare::AlmostEqualRelativeAndAbsF(float A, float B,
+                                                     float maxDiff,
+                                                     float maxRelDiff)
 {
   return AlmostEqualRelativeAndAbsInternal<float>(A, B, maxDiff, maxRelDiff);
 }
@@ -220,8 +221,9 @@ bool Math::AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool Math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
-                                  int maxUlpsDiff)
+bool llgc::math::Compare::AlmostEqualUlpsAndAbsD(double A, double B,
+                                                 double maxDiff,
+                                                 int maxUlpsDiff)
 {
   return AlmostEqualUlpsAndAbsInternal<double, Double_t, int64_t>(A, B, maxDiff,
                                                                   maxUlpsDiff);
@@ -239,8 +241,9 @@ bool Math::AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
  *
  * @return true is both numbers are equals.
  */
-bool Math::AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
-                                      double maxRelDiff)
+bool llgc::math::Compare::AlmostEqualRelativeAndAbsD(double A, double B,
+                                                     double maxDiff,
+                                                     double maxRelDiff)
 {
   return AlmostEqualRelativeAndAbsInternal<double>(A, B, maxDiff, maxRelDiff);
 }

@@ -31,6 +31,8 @@
 #include <bits/stdint-intn.h>
 #include <string>
 
+namespace llgc::software::gdb
+{
 /**
  * @brief Class to run gdb for various purpose.
  */
@@ -86,6 +88,8 @@ class Gdb
                             unsigned int argc, char* const argv[],
                             int64_t timeout) CHK;
 };
+
+}  // namespace llgc::software::gdb
 
 #endif  // SOFTWARE_GDB_GDB_H_
 

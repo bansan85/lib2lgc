@@ -23,17 +23,16 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_base.h>
 #include <memory>
-#include <type_traits>
 #include <utility>
 
 template <typename M>
-pattern::publisher::PublisherBase<M>::PublisherBase() = default;
+llgc::pattern::publisher::PublisherBase<M>::PublisherBase() = default;
 
 template <typename M>
-pattern::publisher::PublisherBase<M>::~PublisherBase() = default;
+llgc::pattern::publisher::PublisherBase<M>::~PublisherBase() = default;
 
 template <typename M>
-void pattern::publisher::PublisherBase<M>::Forward(
+void llgc::pattern::publisher::PublisherBase<M>::Forward(
     const std::shared_ptr<const std::string> &message)
 {
   M actions;

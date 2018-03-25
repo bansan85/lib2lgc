@@ -34,10 +34,10 @@
 #include <memory>
 #include <string>
 
-bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
-                                    const msg::Number_Unit &unit2,
-                                    const msg::Number_Operator operator_,
-                                    msg::Number_Unit *return_unit)
+bool llgc::poco::Unit::UnitOp(const msg::Number_Unit &unit1,
+                              const msg::Number_Unit &unit2,
+                              const msg::Number_Operator operator_,
+                              msg::Number_Unit *return_unit)
 {
   switch (operator_)
   {
@@ -80,9 +80,9 @@ bool pattern::visitor::Unit::UnitOp(const msg::Number_Unit &unit1,
   }
 }
 
-pattern::visitor::Number_Constant::Number_Constant(const uint32_t id,
-                                                   const double value,
-                                                   msg::Number_Unit *unit)
+llgc::poco::Number_Constant::Number_Constant(const uint32_t id,
+                                             const double value,
+                                             msg::Number_Unit *unit)
 #ifdef ENABLE_VISITABLE_CACHE
     : cache_value_id_(std::numeric_limits<uint32_t>::max()),
       cache_unit_id_(std::numeric_limits<uint32_t>::max())
@@ -92,22 +92,22 @@ pattern::visitor::Number_Constant::Number_Constant(const uint32_t id,
   constant->set_value(value);
   constant->set_allocated_unit(unit);
 
-  message().set_id(id);
-  message().set_allocated_constant(constant.release());
+  Message().set_id(id);
+  Message().set_allocated_constant(constant.release());
 }
 
-double pattern::visitor::Number_Constant::GetVal() const
+double llgc::poco::Number_Constant::GetVal() const
 {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if (cache_value_id_ == message().id())
+  if (cache_value_id_ == Message().id())
   {
     return cache_value_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_value;
-  pattern::visitor::NumberVisitorVal visitor_val;
+  llgc::poco::NumberVisitorVal visitor_val;
   BUGCONT(visitor_val.Visit(*this, &return_value), std::nan(""));
 
   msg::Double double_value;
@@ -115,24 +115,24 @@ double pattern::visitor::Number_Constant::GetVal() const
 
 #ifdef ENABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
-  cache_value_id_ = message().id();
+  cache_value_id_ = Message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
   return double_value.value();
 }
 
-msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const
+msg::Number_Unit llgc::poco::Number_Constant::GetUnit() const
 {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if (cache_unit_id_ == message().id())
+  if (cache_unit_id_ == Message().id())
   {
     return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_unit;
-  pattern::visitor::NumberVisitorUnit visitor_unit;
+  llgc::poco::NumberVisitorUnit visitor_unit;
   BUGCONT(visitor_unit.Visit(*this, &return_unit), msg::Number_Unit());
 
   msg::Number_Unit number_unit;
@@ -141,13 +141,13 @@ msg::Number_Unit pattern::visitor::Number_Constant::GetUnit() const
 
 #ifdef ENABLE_VISITABLE_CACHE
   cache_unit_ = number_unit;
-  cache_unit_id_ = message().id();
+  cache_unit_id_ = Message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
   return number_unit;
 }
 
-pattern::visitor::Number_NumOpNum::Number_NumOpNum(
+llgc::poco::Number_NumOpNum::Number_NumOpNum(
     const uint32_t id, std::shared_ptr<const Number> number1,
     msg::Number_Operator operator_, std::shared_ptr<const Number> number2)
     : number1_(std::move(number1)),
@@ -161,27 +161,27 @@ pattern::visitor::Number_NumOpNum::Number_NumOpNum(
 #endif  // ENABLE_VISITABLE_CACHE
 {
   auto number_operator_number = std::make_unique<msg::Number_NumberOpNumber>();
-  number_operator_number->set_id1(number1_->message().id());
+  number_operator_number->set_id1(number1_->Message().id());
   number_operator_number->set_operator_(operator_);
-  number_operator_number->set_id2(number2_->message().id());
+  number_operator_number->set_id2(number2_->Message().id());
 
-  message().set_id(id);
-  message().set_allocated_number_op_number(number_operator_number.release());
+  Message().set_id(id);
+  Message().set_allocated_number_op_number(number_operator_number.release());
 }
 
-double pattern::visitor::Number_NumOpNum::GetVal() const
+double llgc::poco::Number_NumOpNum::GetVal() const
 {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if ((cache_value1_id_ == number1_->message().id()) &&
-      (cache_value2_id_ == number2_->message().id()))
+  if ((cache_value1_id_ == number1_->Message().id()) &&
+      (cache_value2_id_ == number2_->Message().id()))
   {
     return cache_value_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_value;
-  pattern::visitor::NumberVisitorVal visitor_val;
+  llgc::poco::NumberVisitorVal visitor_val;
   BUGCONT(visitor_val.Visit(*this, &return_value), std::nan(""));
 
   msg::Double double_value;
@@ -189,26 +189,26 @@ double pattern::visitor::Number_NumOpNum::GetVal() const
 
 #ifdef ENABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
-  cache_value1_id_ = number1_->message().id();
-  cache_value2_id_ = number2_->message().id();
+  cache_value1_id_ = number1_->Message().id();
+  cache_value2_id_ = number2_->Message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
   return double_value.value();
 }
 
-msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const
+msg::Number_Unit llgc::poco::Number_NumOpNum::GetUnit() const
 {
 #ifdef ENABLE_VISITABLE_CACHE
   // Check cache.
-  if ((cache_unit1_id_ == number1_->message().id()) &&
-      (cache_unit2_id_ == number2_->message().id()))
+  if ((cache_unit1_id_ == number1_->Message().id()) &&
+      (cache_unit2_id_ == number2_->Message().id()))
   {
     return cache_unit_;
   }
 #endif  // ENABLE_VISITABLE_CACHE
 
   std::string return_unit;
-  pattern::visitor::NumberVisitorUnit visitor_unit;
+  llgc::poco::NumberVisitorUnit visitor_unit;
   BUGCONT(visitor_unit.Visit(*this, &return_unit), msg::Number_Unit());
 
   msg::Number_Unit number_unit;
@@ -217,8 +217,8 @@ msg::Number_Unit pattern::visitor::Number_NumOpNum::GetUnit() const
 
 #ifdef ENABLE_VISITABLE_CACHE
   cache_unit_ = number_unit;
-  cache_unit1_id_ = number1_->message().id();
-  cache_unit2_id_ = number2_->message().id();
+  cache_unit1_id_ = number1_->Message().id();
+  cache_unit2_id_ = number2_->Message().id();
 #endif  // ENABLE_VISITABLE_CACHE
 
   return number_unit;

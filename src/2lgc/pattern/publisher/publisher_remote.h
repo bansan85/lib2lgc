@@ -28,18 +28,13 @@
 #include <map>
 #include <memory>
 
-namespace pattern
-{
-namespace publisher
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
 {
 class ConnectorInterface;
-}
-}  // namespace pattern
 
-namespace pattern
-{
-namespace publisher
-{
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
@@ -109,8 +104,7 @@ class PublisherRemote : public PublisherBase<M>
   uint16_t port_;
 };
 
-}  // namespace publisher
-}  // namespace pattern
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_REMOTE_H_
 

@@ -27,9 +27,10 @@
 #include <memory>
 #include <string>
 
-namespace pattern
-{
-namespace publisher
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
 {
 class ConnectorInterface;
 
@@ -65,8 +66,7 @@ class SubscriberInterface
   virtual ~SubscriberInterface() {}
 };
 
-}  // namespace publisher
-}  // namespace pattern
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_INTERFACE_H_
 

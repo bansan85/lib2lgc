@@ -25,12 +25,13 @@
 #include <memory>
 #include <string>
 
-int main(int /* argc */, char* /* argv */ [])
+int main(int /* argc */, char* /* argv */ [])  // NS
 {
-  std::unique_ptr<Bt> bt = Bt::Factory(
-      "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
-      "interface_=<optimized out>, ext=<optimized out>) at "
-      "libraries/libdxfrw/src/libdxfrw.cpp:99");
+  std::unique_ptr<llgc::software::gdb::Backtrace> bt =
+      llgc::software::gdb::Backtrace::Factory(
+          "#4  0x000055555571cb4c in dxfRW::read (this=0x7fffffffd4f0, "
+          "interface_=<optimized out>, ext=<optimized out>) at "
+          "libraries/libdxfrw/src/libdxfrw.cpp:99");
   assert(bt->HasSource());
   assert(bt->GetName() == "dxfRW::read");
   assert(bt->GetFile() == "libraries/libdxfrw/src/libdxfrw.cpp");

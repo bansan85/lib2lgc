@@ -24,12 +24,14 @@
 #include <algorithm>
 #include <memory>
 
-// cppcheck-suppress *
-Stack::Stack(std::string filename) : filename_(std::move(filename)) {}
-
-bool Stack::InterpretLine(const std::string &line)
+llgc::software::gdb::Stack::Stack(std::string filename)
+    : filename_(std::move(filename))
 {
-  std::unique_ptr<Bt> bt = Bt::Factory(line);
+}
+
+bool llgc::software::gdb::Stack::InterpretLine(const std::string &line)
+{
+  std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
 
   if (bt != nullptr)
   {

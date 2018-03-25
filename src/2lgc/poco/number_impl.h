@@ -29,15 +29,18 @@
 #include <bits/stdint-uintn.h>
 #include <memory>
 
-namespace pattern
-{
-namespace visitor
+/**
+ * @brief Namespace that contains all classes to manipulate protobuf.
+ */
+namespace llgc::poco
 {
 /**
  * @brief A const number.
  */
-class Number_Constant : virtual public Number,
-                        virtual public BaseVisitable<Number_Constant, Number>
+class Number_Constant
+    : virtual public Number,
+      virtual public llgc::pattern::visitor::BaseVisitable<Number_Constant,
+                                                           Number>
 {
  public:
   /**
@@ -85,8 +88,10 @@ class Number_Constant : virtual public Number,
 /**
  * @brief A const number based on an operation of two numbers.
  */
-class Number_NumOpNum : virtual public Number,
-                        virtual public BaseVisitable<Number_NumOpNum, Number>
+class Number_NumOpNum
+    : virtual public Number,
+      virtual public llgc::pattern::visitor::BaseVisitable<Number_NumOpNum,
+                                                           Number>
 {
  public:
   /**
@@ -124,13 +129,13 @@ class Number_NumOpNum : virtual public Number,
    *
    * @return The number 1.
    */
-  const std::shared_ptr<const Number> number1() const { return number1_; }
+  const std::shared_ptr<const Number> Number1() const { return number1_; }
   /**
    * @brief Return the number 2.
    *
    * @return The number 2.
    */
-  const std::shared_ptr<const Number> number2() const { return number2_; }
+  const std::shared_ptr<const Number> Number2() const { return number2_; }
 
  private:
   /**
@@ -162,8 +167,7 @@ class Number_NumOpNum : virtual public Number,
 #endif  // ENABLE_VISITABLE_CACHE
 };
 
-}  // namespace visitor
-}  // namespace pattern
+}  // namespace llgc::poco
 
 #endif  // POCO_NUMBER_IMPL_H_
 

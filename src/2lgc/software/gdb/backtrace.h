@@ -34,16 +34,18 @@
 #include <memory>
 #include <string>
 
+namespace llgc::software::gdb
+{
 /**
  * @brief Store all informations about one backtrace.
  */
-class Bt
+class Backtrace
 {
  public:
   /**
    * @brief Default constructor.
    */
-  Bt();
+  Backtrace();
 
   /**
    * @brief Create a Backtrace based on the line.
@@ -54,7 +56,7 @@ class Bt
    *
    * @return The new backtrace and null in failed.
    */
-  static std::unique_ptr<Bt> Factory(const std::string& line);
+  static std::unique_ptr<Backtrace> Factory(const std::string& line);
 
   /**
    * @brief From a line, decode and extract the index, the address, the
@@ -166,6 +168,8 @@ class Bt
    */
   bool ReadSource(const std::string& file) CHK;
 };
+
+}  // namespace llgc::software::gdb
 
 #endif  // SOFTWARE_GDB_BACKTRACE_H_
 

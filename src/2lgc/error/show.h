@@ -26,17 +26,17 @@
 #include <iostream>
 
 // BUG: for internal use only.
-#define BUG(X, Y, MSG, ...)                                                   \
-  do                                                                          \
-  {                                                                           \
-    if (!(X))                                                                 \
-    {                                                                         \
-      Override::SafePrintf(std::cout,                                         \
-                           "file %, function %, line %, text: ", __FILE__,    \
-                           static_cast<const char*>(__FUNCTION__), __LINE__); \
-      Override::SafePrintf(std::cout, MSG, __VA_ARGS__);                      \
-      return Y;                                                               \
-    }                                                                         \
+#define BUG(X, Y, MSG, ...)                                          \
+  do                                                                 \
+  {                                                                  \
+    if (!(X))                                                        \
+    {                                                                \
+      llgc::override::Print::F(                                      \
+          std::cout, "file %, function %, line %, text: ", __FILE__, \
+          static_cast<const char*>(__FUNCTION__), __LINE__);         \
+      llgc::override::Print::F(std::cout, MSG, __VA_ARGS__);         \
+      return Y;                                                      \
+    }                                                                \
   } while (0)
 /**
  * \def BUG(X, Y, MANAGER, MSG, ...)

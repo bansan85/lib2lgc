@@ -28,27 +28,16 @@
 #include <memory>
 #include <string>
 
-namespace pattern
-{
-namespace publisher
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
 {
 class SubscriberInterface;
-}
-}  // namespace pattern
 
-namespace pattern
-{
-namespace publisher
-{
 template <typename M>
 class PublisherBase;
-}
-}  // namespace pattern
 
-namespace pattern
-{
-namespace publisher
-{
 /**
  * @brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
@@ -123,8 +112,7 @@ class ConnectorDirect : public ConnectorInterface,
   std::shared_ptr<PublisherBase<T>> server_;
 };
 
-}  // namespace publisher
-}  // namespace pattern
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
 

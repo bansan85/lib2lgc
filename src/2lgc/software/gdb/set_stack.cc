@@ -38,23 +38,24 @@
 #include <utility>
 #include <vector>
 
-SetStack::SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame)
+llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
+                                        size_t bottom_frame)
     : stack_(Local(with_source_only, top_frame, bottom_frame))
 {
 }
 
-SetStack::Local::Local(bool with_source_only, size_t top_frame,
-                       size_t bottom_frame)
+llgc::software::gdb::SetStack::Local::Local(bool with_source_only,
+                                            size_t top_frame,
+                                            size_t bottom_frame)
     : with_source_only_(with_source_only),
       top_frame_(top_frame),
       bottom_frame_(bottom_frame)
 {
 }
 
-int SetStack::Local::CompareFrom(const size_t nb_max_frames,
-                                 FunctionGetBacktrace get_backtraces,
-                                 const std::unique_ptr<Stack>& i,
-                                 const std::unique_ptr<Stack>& j)
+ssize_t llgc::software::gdb::SetStack::Local::CompareFrom(
+    const size_t nb_max_frames, FunctionGetBacktrace get_backtraces,
+    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
 {
   uint32_t ii = 0, jj = 0;
 
@@ -92,9 +93,9 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
       return 1;
     }
 
-    const Bt* bti = (*i.*get_backtraces)(ii);
-    const Bt* btj = (*j.*get_backtraces)(jj);
-    int compare = bti->GetFile().compare(btj->GetFile());
+    const Backtrace* bti = (*i.*get_backtraces)(ii);
+    const Backtrace* btj = (*j.*get_backtraces)(jj);
+    int compare = bti->GetFile().compare(btj->GetFile());  // NS
 
     if (compare < 0)
     {
@@ -152,8 +153,8 @@ int SetStack::Local::CompareFrom(const size_t nb_max_frames,
 }
 
 // NOLINTNEXTLINE(fuchsia-overloaded-operator)
-bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
-                                 const std::unique_ptr<Stack>& j)
+bool llgc::software::gdb::SetStack::Local::operator()(
+    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
 {
   // If it's the same file.
   if (i->GetFilename() == j->GetFilename())
@@ -161,7 +162,7 @@ bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
     return false;
   }
 
-  int val = CompareFrom(top_frame_, &Stack::GetBacktraceFromTop, i, j);
+  ssize_t val = CompareFrom(top_frame_, &Stack::GetBacktraceFromTop, i, j);
   if (val < 0)
   {
     return true;
@@ -184,13 +185,13 @@ bool SetStack::Local::operator()(const std::unique_ptr<Stack>& i,
   return false;
 }
 
-bool SetStack::Add(const std::string& filename, bool print_one_by_group)
+bool llgc::software::gdb::SetStack::Add(const std::string& filename,
+                                        bool print_one_by_group)
 {
   std::ifstream file(filename);
 
   if (!file.is_open())
   {
-    std::cout << "SetStack::Add" << filename << std::endl;
     return false;
   }
 
@@ -217,11 +218,12 @@ bool SetStack::Add(const std::string& filename, bool print_one_by_group)
   return true;
 }
 
-bool SetStack::ParallelAdd(const std::vector<std::string>& all_files,
-                           unsigned int nthread, bool print_one_by_group)
+bool llgc::software::gdb::SetStack::ParallelAdd(
+    const std::vector<std::string>& all_files, unsigned int nthread,
+    bool print_one_by_group)
 {
   bool retval = true;
-  const unsigned int nthreads =
+  const unsigned int nthreads =  // NS
       std::min(nthread, std::thread::hardware_concurrency());
   std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
@@ -230,14 +232,15 @@ bool SetStack::ParallelAdd(const std::vector<std::string>& all_files,
         std::launch::async,
         std::bind(
             [&all_files, this, nthreads,
-             print_one_by_group](const size_t i_start) {
-              bool retval2 = true;
-              for (size_t i = i_start; i < all_files.size(); i += nthreads)
-              {
-                retval2 &= Add(all_files[i], print_one_by_group);
-              }
-              return retval2;
-            },
+             print_one_by_group](const size_t i_start)
+             {
+               bool retval2 = true;
+               for (size_t i = i_start; i < all_files.size(); i += nthreads)
+               {
+                 retval2 &= Add(all_files[i], print_one_by_group);
+               }
+               return retval2;
+             },
             t));
   }
   for (std::future<bool>& t : threads)
@@ -248,11 +251,13 @@ bool SetStack::ParallelAdd(const std::vector<std::string>& all_files,
   return retval;
 }
 
-bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
-                            const std::string& regex, bool print_one_by_group)
+bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
+                                                 unsigned int nthread,
+                                                 const std::string& regex,
+                                                 bool print_one_by_group)
 {
   std::vector<std::string> all_files;
-  if (!Files::SearchRecursive(folder, regex, &all_files))
+  if (!llgc::filesystem::Files::SearchRecursive(folder, regex, &all_files))
   {
     return false;
   }
@@ -260,15 +265,15 @@ bool SetStack::AddRecursive(const std::string& folder, unsigned int nthread,
   return ParallelAdd(all_files, nthread, print_one_by_group);
 }
 
-bool SetStack::AddList(const std::string& list, unsigned int nthread,
-                       bool print_one_by_group)
+bool llgc::software::gdb::SetStack::AddList(const std::string& list,
+                                            unsigned int nthread,
+                                            bool print_one_by_group)
 {
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
   if (!f.is_open())
   {
-    std::cout << "SetStack::AddList" << std::endl;
     return false;
   }
 
@@ -280,7 +285,7 @@ bool SetStack::AddList(const std::string& list, unsigned int nthread,
   return ParallelAdd(all_files, nthread, print_one_by_group);
 }
 
-void SetStack::Print()
+void llgc::software::gdb::SetStack::Print()
 {
   std::multiset<std::unique_ptr<Stack>, Local>::const_iterator m_it, s_it;
 

@@ -33,14 +33,14 @@
 #include <memory>
 #include <string>
 
-template class pattern::publisher::PublisherBase<msg::Actions>;
-template class pattern::publisher::PublisherRemote<msg::Actions>;
-template class pattern::publisher::ConnectorDirect<msg::Actions>;
+template class llgc::pattern::publisher::PublisherBase<msg::Actions>;
+template class llgc::pattern::publisher::PublisherRemote<msg::Actions>;
+template class llgc::pattern::publisher::ConnectorDirect<msg::Actions>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final : public pattern::publisher::SubscriberDirect
+class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect
 {
  public:
   /**
@@ -65,22 +65,24 @@ class SubscriberBase final : public pattern::publisher::SubscriberDirect
   /**
    * @brief value for test.
    */
-  int value;
+  size_t value;
 };
 
-int main(int /* argc */, char * /* argv */ [])
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  std::shared_ptr<pattern::publisher::PublisherRemote<msg::Actions>> server =
-      std::make_shared<pattern::publisher::PublisherRemote<msg::Actions>>();
+  std::shared_ptr<llgc::pattern::publisher::PublisherRemote<msg::Actions>>
+      server = std::make_shared<
+          llgc::pattern::publisher::PublisherRemote<msg::Actions>>();
 
   // Create three subscribers.
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
-  std::shared_ptr<pattern::publisher::ConnectorDirect<msg::Actions>> connector =
-      std::make_shared<pattern::publisher::ConnectorDirect<msg::Actions>>(
-          subscriber, server);
+  std::shared_ptr<llgc::pattern::publisher::ConnectorDirect<msg::Actions>>
+      connector = std::make_shared<
+          llgc::pattern::publisher::ConnectorDirect<msg::Actions>>(subscriber,
+                                                                   server);
 
   // Add them to the server.
   assert(connector->AddSubscriber(1));

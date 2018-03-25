@@ -22,7 +22,7 @@
 #include <2lgc/pattern/singleton/singleton.h>
 
 template <class T>
-T* pattern::singleton::SingletonStatic<T>::getInstanceStatic()
+T* llgc::pattern::singleton::Static<T>::GetInstanceStatic()
 {
   T* retval = m_instance_static_.load(std::memory_order_acquire).get();
 
@@ -41,7 +41,7 @@ T* pattern::singleton::SingletonStatic<T>::getInstanceStatic()
 }
 
 template <class T>
-bool pattern::singleton::SingletonStatic<T>::isInstanceStatic()
+bool llgc::pattern::singleton::Static<T>::IsInstanceStatic()
 {
   T* retval = m_instance_static_.load(std::memory_order_acquire);
 
@@ -58,7 +58,7 @@ bool pattern::singleton::SingletonStatic<T>::isInstanceStatic()
 }
 
 template <class T>
-T* pattern::singleton::SingletonLocal<T>::getInstanceLocal()
+T* llgc::pattern::singleton::Local<T>::GetInstanceLocal()
 {
   T* retval = m_instance_local_.load(std::memory_order_acquire).get();
 
@@ -77,7 +77,7 @@ T* pattern::singleton::SingletonLocal<T>::getInstanceLocal()
 }
 
 template <class T>
-bool pattern::singleton::SingletonLocal<T>::isInstanceLocal()
+bool llgc::pattern::singleton::Local<T>::IsInstanceLocal()
 {
   T* retval = m_instance_local_.load(std::memory_order_acquire);
 

@@ -27,45 +27,51 @@
 #include <stdexcept>
 #include <string>
 
-Bt::Bt() : index_(0), address_(0), line_(std::numeric_limits<size_t>::max()) {}
+llgc::software::gdb::Backtrace::Backtrace()
+    : index_(0), address_(0), line_(std::numeric_limits<size_t>::max())
+{
+}
 
-std::unique_ptr<Bt> Bt::Factory(const std::string& line)
+std::unique_ptr<llgc::software::gdb::Backtrace>
+llgc::software::gdb::Backtrace::Factory(const std::string& line)
 {
   std::string index, address, function, file;
 
-  std::unique_ptr<Bt> retval = std::make_unique<Bt>();
+  std::unique_ptr<Backtrace> retval = std::make_unique<Backtrace>();
 
   if (!retval->DecodeBacktrace(line, &index, &address, &function, &file))
   {
-    return std::unique_ptr<Bt>(nullptr);
+    return std::unique_ptr<Backtrace>(nullptr);
   }
 
   if (!retval->ReadIndex(index))
   {
-    return std::unique_ptr<Bt>(nullptr);
+    return std::unique_ptr<Backtrace>(nullptr);
   }
 
   if (address.length() != 0 && !retval->ReadAddress(address))
   {
-    return std::unique_ptr<Bt>(nullptr);
+    return std::unique_ptr<Backtrace>(nullptr);
   }
 
   if (function.length() != 0 && !retval->ReadFunction(function))
   {
-    return std::unique_ptr<Bt>(nullptr);
+    return std::unique_ptr<Backtrace>(nullptr);
   }
 
   if (file.length() != 0 && !retval->ReadSource(file))
   {
-    return std::unique_ptr<Bt>(nullptr);
+    return std::unique_ptr<Backtrace>(nullptr);
   }
 
   return retval;
 }
 
-bool Bt::DecodeBacktrace(const std::string& line, std::string* index,
-                         std::string* address, std::string* function,
-                         std::string* file)
+bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
+                                                     std::string* index,
+                                                     std::string* address,
+                                                     std::string* function,
+                                                     std::string* file)
 {
   assert(index);
   assert(address);
@@ -170,7 +176,7 @@ bool Bt::DecodeBacktrace(const std::string& line, std::string* index,
   return function->find('(') != std::string::npos;
 }
 
-bool Bt::ReadIndex(const std::string& number)
+bool llgc::software::gdb::Backtrace::ReadIndex(const std::string& number)
 {
   try
   {
@@ -183,7 +189,7 @@ bool Bt::ReadIndex(const std::string& number)
   return true;
 }
 
-bool Bt::ReadAddress(const std::string& address)
+bool llgc::software::gdb::Backtrace::ReadAddress(const std::string& address)
 {
   try
   {
@@ -196,7 +202,8 @@ bool Bt::ReadAddress(const std::string& address)
   return true;
 }
 
-bool Bt::ReadFunction(const std::string& description)
+bool llgc::software::gdb::Backtrace::ReadFunction(
+    const std::string& description)
 {
   size_t pos_space = description.find(' ');
 
@@ -262,7 +269,7 @@ bool Bt::ReadFunction(const std::string& description)
   return true;
 }
 
-bool Bt::ReadSource(const std::string& file)
+bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
 {
   size_t pos = file.find_last_of(':');
   if (pos == std::string::npos)

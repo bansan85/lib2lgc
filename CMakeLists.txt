@@ -38,6 +38,7 @@ include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/src)
 add_custom_target(check)
 
 file(GLOB_RECURSE ALL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
+file(GLOB_RECURSE SOURCE_FILES_TEST ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc)
 
 add_subdirectory(src)
 add_subdirectory(tests)
@@ -51,7 +52,7 @@ if (CHECK_CODE)
   find_program(CLANG_FORMAT clang-format)
   if (CLANG_FORMAT)
     add_custom_command(TARGET check
-      COMMAND ${CLANG_FORMAT} -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES})
+      COMMAND ${CLANG_FORMAT} -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false } }' -i ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST})
   endif()
   #-readability/braces: disabled false positive because the brace of the macro in the line after the if.
   #-build/include_what_you_use: cpplint.py and iwyu have sometimes differents issues.
@@ -63,12 +64,13 @@ if (CHECK_CODE)
   find_program(CPPLINT cpplint.py)
   if (CPPLINT)
     add_custom_command(TARGET check
-      COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include ${ALL_SOURCE_FILES})
+      COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include ${ALL_SOURCE_FILES}
+      COMMAND ${CPPLINT} --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include ${SOURCE_FILES_TEST})
   endif()
   find_program(CPPCHECK cppcheck)
   if (CPPCHECK)
     add_custom_command(TARGET check
-      COMMAND ${CPPCHECK} -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inline-suppr --inconclusive --enable=all ${ALL_SOURCE_FILES})
+      COMMAND ${CPPCHECK} -I${CMAKE_CURRENT_SOURCE_DIR}/src -I${CMAKE_CURRENT_BINARY_DIR}/src --language=c++ --std=c++14 --inline-suppr --inconclusive --enable=all ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST})
   endif()
   add_custom_command(TARGET check
     COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --gcov-tool ${GCOV_BIN} --capture --rc lcov_branch_coverage=1 --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
@@ -85,7 +87,7 @@ if (CHECK_CODE)
     string(REPLACE "bin" "share/clang" RUN_CLANG_TIDY_ ${CLANG_TIDY})
     string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
     add_custom_command(TARGET check
-      COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay')
+      COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay')
   endif()
   if (DOXYGEN_FOUND)
     add_custom_command(TARGET check

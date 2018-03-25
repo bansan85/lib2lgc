@@ -31,20 +31,20 @@
 #include <google/protobuf/util/message_differencer.h>
 #include <memory>
 
-bool pattern::visitor::NumberVisitorUnit::Visit(const Number_Constant &data,
-                                                std::string *return_value) const
+bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
+                                          std::string *return_value) const
 {
   BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
            false);
 
-  BUGLIB(data.message().constant().unit().SerializeToString(return_value),
+  BUGLIB(data.Message().constant().unit().SerializeToString(return_value),
          false, "protobuf");
 
   return true;
 }
 
-bool pattern::visitor::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
-                                                std::string *return_value) const
+bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
+                                          std::string *return_value) const
 {
   BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
            false);
@@ -53,12 +53,12 @@ bool pattern::visitor::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
   msg::Number_Unit unit2;
   msg::Number_Unit unit;
   std::string return_accept;
-  BUGCONT(data.number1()->Accept(*this, &return_accept), false);
+  BUGCONT(data.Number1()->Accept(*this, &return_accept), false);
   BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.number2()->Accept(*this, &return_accept), false);
+  BUGCONT(data.Number2()->Accept(*this, &return_accept), false);
   BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
 
-  switch (data.message().number_op_number().operator_())
+  switch (data.Message().number_op_number().operator_())
   {
     case msg::Number_Operator_PLUS:
     case msg::Number_Operator_MOINS:
@@ -80,11 +80,11 @@ bool pattern::visitor::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
     {
       NumberVisitorVal visitor_val;
 
-      BUGCONT(data.number2()->Accept(visitor_val, &return_accept), false);
+      BUGCONT(data.Number2()->Accept(visitor_val, &return_accept), false);
       msg::Double double_val;
       BUGLIB(double_val.ParseFromString(return_accept), false, "protobuf");
-      BUGUSER(!Math::AlmostEqualRelativeAndAbsD(double_val.value(), 0., 1e-15,
-                                                1e-15),
+      BUGUSER(!llgc::math::Compare::AlmostEqualRelativeAndAbsD(
+                  double_val.value(), 0., 1e-15, 1e-15),
               false, "Divide by zero.");
       BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_MULTIPLICATION,
                            &unit),

@@ -26,9 +26,10 @@
 #include <2lgc/pattern/visitor/visitor.h>
 #include <string>
 
-namespace pattern
-{
-namespace visitor
+/**
+ * @brief Namespace that contains all classes to manipulate protobuf.
+ */
+namespace llgc::poco
 {
 // We can't include number.h because number.h need number_visitor_value.h.
 class Number_Constant;
@@ -37,9 +38,10 @@ class Number_NumOpNum;
 /**
  * @brief The visitor that will return the floating value.
  */
-class NumberVisitorVal : public BaseVisitor,
-                         public Visitor<Number_Constant>,
-                         public Visitor<Number_NumOpNum>
+class NumberVisitorVal
+    : public llgc::pattern::visitor::BaseVisitor,
+      public llgc::pattern::visitor::Visitor<Number_Constant>,
+      public llgc::pattern::visitor::Visitor<Number_NumOpNum>
 {
  public:
   /**
@@ -69,8 +71,7 @@ class NumberVisitorVal : public BaseVisitor,
              std::string *return_value) const override CHK;
 };
 
-}  // namespace visitor
-}  // namespace pattern
+}  // namespace llgc::poco
 
 #endif  // POCO_NUMBER_VISITOR_VALUE_H_
 

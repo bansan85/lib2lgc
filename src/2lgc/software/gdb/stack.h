@@ -34,6 +34,8 @@
 #include <string>
 #include <vector>
 
+namespace llgc::software::gdb
+{
 /**
  * @brief Store all informations about a stack.
  *
@@ -80,7 +82,7 @@ class Stack
    *
    * @return A const pointer of the backtrace.
    */
-  const Bt* GetBacktraceFromTop(size_t i) const CHK
+  const Backtrace* GetBacktraceFromTop(size_t i) const CHK
   {
     return backtraces_[i].get();
   }
@@ -92,7 +94,7 @@ class Stack
    *
    * @return A const pointer of the backtrace.
    */
-  const Bt* GetBacktraceFromBottom(size_t i) const CHK
+  const Backtrace* GetBacktraceFromBottom(size_t i) const CHK
   {
     return backtraces_[backtraces_.size() - 1 - i].get();
   }
@@ -105,8 +107,10 @@ class Stack
   /**
    * @brief Vector that store all backtraces.
    */
-  std::vector<std::unique_ptr<Bt>> backtraces_;
+  std::vector<std::unique_ptr<Backtrace>> backtraces_;
 };
+
+}  // namespace llgc::software::gdb
 
 #endif  // SOFTWARE_GDB_STACK_H_
 

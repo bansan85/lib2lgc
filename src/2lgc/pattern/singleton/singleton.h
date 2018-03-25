@@ -31,9 +31,7 @@
  *
  * Helper to simply add a singleton to a class.
  */
-namespace pattern
-{
-namespace singleton
+namespace llgc::pattern::singleton
 {
 /**
  * @brief Class that contains the getInstance for the static singleton.
@@ -41,14 +39,30 @@ namespace singleton
  * @tparam T Type of the singleton.
  */
 template <class T>
-class SingletonStatic
+class Static
 {
  public:
-  static T* getInstanceStatic();
-  static bool isInstanceStatic();
+  /**
+   * @brief Get the instance and allocate it if not already.
+   *
+   * @return Return an instance never null.
+   */
+  static T* GetInstanceStatic();
+  /**
+   * @brief Tell if an instance is allocated.
+   *
+   * @return true if allocated.
+   */
+  static bool IsInstanceStatic();
 
  private:
+  /**
+   * @brief Store the instance of the singleton
+   */
   static std::atomic<std::unique_ptr<T>> m_instance_static_;
+  /**
+   * @brief A mutex to implement the singleton.
+   */
   static std::mutex m_mutex_static_;
 };
 
@@ -58,19 +72,34 @@ class SingletonStatic
  * @tparam T Type of the singleton.
  */
 template <class T>
-class SingletonLocal
+class Local
 {
  public:
-  T* getInstanceLocal();
-  bool isInstanceLocal();
+  /**
+   * @brief Get the instance and allocate it if not already.
+   *
+   * @return Return an instance never null.
+   */
+  T* GetInstanceLocal();
+  /**
+   * @brief Tell if an instance is allocated.
+   *
+   * @return true if allocated.
+   */
+  bool IsInstanceLocal();
 
  private:
+  /**
+   * @brief Store the instance of the singleton
+   */
   std::atomic<std::unique_ptr<T>> m_instance_local_;
+  /**
+   * @brief A mutex to implement the singleton.
+   */
   std::mutex m_mutex_local_;
 };
 
-}  // namespace singleton
-}  // namespace pattern
+}  // namespace llgc::pattern::singleton
 
 #endif  // PATTERN_SINGLETON_SINGLETON_H_
 

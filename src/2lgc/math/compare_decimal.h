@@ -31,10 +31,12 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 
+namespace llgc::math
+{
 /**
  * @brief Class that extends math functionnality.
  */
-class Math
+class Compare
 {
  public:
   static bool AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
@@ -47,6 +49,8 @@ class Math
   static bool AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
                                          double maxRelDiff) CHK;
 };
+
+}  // namespace llgc::math
 
 #endif  // MATH_COMPARE_DECIMAL_H_
 

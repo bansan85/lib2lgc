@@ -37,7 +37,9 @@
 #include <string>
 #include <vector>
 
-class Bt;
+namespace llgc::software::gdb
+{
+class Backtrace;
 
 /**
  * @brief Store and sort all stacks.
@@ -146,7 +148,7 @@ class SetStack
      *
      * @return The backtrace. Throw an exception if out of boundary.
      */
-    typedef const Bt* (Stack::*FunctionGetBacktrace)(size_t i) const;
+    typedef const Backtrace* (Stack::*FunctionGetBacktrace)(size_t i) const;
 
     /**
      * @brief Helper to operator(). Compare two stacks from the top or from the
@@ -159,10 +161,10 @@ class SetStack
      *
      * @return -1 if i < j, 0 if i == j and -1 if i > j.
      */
-    int CompareFrom(const size_t nb_max_frames,
-                    FunctionGetBacktrace get_backtraces,
-                    const std::unique_ptr<Stack>& i,
-                    const std::unique_ptr<Stack>& j);
+    ssize_t CompareFrom(const size_t nb_max_frames,
+                        FunctionGetBacktrace get_backtraces,
+                        const std::unique_ptr<Stack>& i,
+                        const std::unique_ptr<Stack>& j);
 
     /**
      * @brief Ignore backtrace where source file is unknown.
@@ -208,6 +210,8 @@ class SetStack
    */
   std::mutex mutex_stack_;
 };
+
+}  // namespace llgc::software::gdb
 
 #endif  // SOFTWARE_GDB_SET_STACK_H_
 

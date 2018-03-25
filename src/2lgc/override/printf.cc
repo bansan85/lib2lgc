@@ -29,7 +29,7 @@
 #include <2lgc/override/printf.h>
 #include <cstddef>
 
-void Override::SafePrintf(std::ostream &out_stream, const std::string &s)
+void llgc::override::Print::F(std::ostream &out_stream, const std::string &s)
 {
   size_t i = 0;
   while (s[i] != 0)

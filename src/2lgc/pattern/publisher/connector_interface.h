@@ -28,9 +28,10 @@
 #include <string>
 #include <utility>
 
-namespace pattern
-{
-namespace publisher
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
 {
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -123,8 +124,7 @@ class ConnectorInterface
   std::shared_ptr<SubscriberInterface> subscriber_;
 };
 
-}  // namespace publisher
-}  // namespace pattern
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 

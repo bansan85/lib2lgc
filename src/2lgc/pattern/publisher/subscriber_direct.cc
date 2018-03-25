@@ -22,7 +22,7 @@
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 
-bool pattern::publisher::SubscriberDirect::Equals(
+bool llgc::pattern::publisher::SubscriberDirect::Equals(
     const SubscriberInterface *connector) const
 {
   auto subscriber_direct_cast =

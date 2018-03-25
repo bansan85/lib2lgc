@@ -40,8 +40,9 @@
 #include <type_traits>
 #include <vector>
 
-bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
-                    char* const argv[], int64_t timeout)
+bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
+                                         unsigned int argc, char* const argv[],
+                                         int64_t timeout)
 {
   auto argvbis = std::make_unique<const char* []>(argc + 24);
   std::string btfullfile;
@@ -95,7 +96,7 @@ bool Gdb::RunBtFull(const std::string& filename, unsigned int argc,
   pid_t child_pid = fork();
   if (child_pid != 0)
   {
-    int status;
+    int status;  // NS
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     int64_t elapsed_seconds;
@@ -136,7 +137,7 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
                         char* const argv[], int64_t timeout)
 {
   bool retval = true;
-  const unsigned int nthreads =
+  const unsigned int nthreads =  // NS
       std::min(nthread, std::thread::hardware_concurrency());
   std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
@@ -144,14 +145,16 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
     threads[t] = std::async(
         std::launch::async,
         std::bind(
-            [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
-              bool retval2 = true;
-              for (size_t i = i_start; i < all_files.size(); i += nthreads)
+            [&all_files, nthreads, argc, argv, timeout](const size_t i_start)
               {
-                retval2 &= Gdb::RunBtFull(all_files[i], argc, argv, timeout);
-              }
-              return retval2;
-            },
+                bool retval2 = true;
+                for (size_t i = i_start; i < all_files.size(); i += nthreads)
+                {
+                  retval2 &= llgc::software::gdb::Gdb::RunBtFull(
+                      all_files[i], argc, argv, timeout);
+                }
+                return retval2;
+              },
             t));
   }
   for (std::future<bool>& t : threads)
@@ -162,12 +165,12 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
   return retval;
 }
 
-bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
-                             const std::string& regex, unsigned int argc,
-                             char* const argv[], int64_t timeout)
+bool llgc::software::gdb::Gdb::RunBtFullRecursive(
+    const std::string& folder, unsigned int nthread, const std::string& regex,
+    unsigned int argc, char* const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
-  if (!Files::SearchRecursive(folder, regex, &all_files))
+  if (!llgc::filesystem::Files::SearchRecursive(folder, regex, &all_files))
   {
     return false;
   }
@@ -175,8 +178,11 @@ bool Gdb::RunBtFullRecursive(const std::string& folder, unsigned int nthread,
   return ParallelRun(all_files, nthread, argc, argv, timeout);
 }
 
-bool Gdb::RunBtFullList(const std::string& list, unsigned int nthread,
-                        unsigned int argc, char* const argv[], int64_t timeout)
+bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
+                                             unsigned int nthread,
+                                             unsigned int argc,
+                                             char* const argv[],
+                                             int64_t timeout)
 {
   std::vector<std::string> all_files;
   std::string line;

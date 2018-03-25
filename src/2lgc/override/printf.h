@@ -30,9 +30,14 @@
 // https://www.codeproject.com/Articles/514443/Debug-Print-in-Variadic-Template-Style#printf
 
 /**
+ * @brief Namespace that have all function that override classic classes.
+ */
+namespace llgc::override
+{
+/**
  * @brief This class allow use of a safe printf.
  */
-class Override
+class Print
 {
  public:
   /**
@@ -49,8 +54,7 @@ class Override
    * @param[in] args The others variables.
    */
   template <typename T, typename... Args>
-  static void SafePrintf(std::ostream &out_stream, const char *s, T value,
-                         Args... args)
+  static void F(std::ostream &out_stream, const char *s, T value, Args... args)
   {
     while (*s)
     {
@@ -63,7 +67,7 @@ class Override
         else
         {
           out_stream << value;
-          SafePrintf(out_stream, s + 1, args...);
+          F(out_stream, s + 1, args...);
           return;
         }
       }
@@ -79,8 +83,10 @@ class Override
    * @param[out] out_stream The output stream (std::cout, …).
    * @param[in] s The string message.
    */
-  static void SafePrintf(std::ostream &out_stream, const std::string &s);
+  static void F(std::ostream &out_stream, const std::string &s);
 };
+
+}  // namespace llgc::override
 
 #endif  // OVERRIDE_PRINTF_H_
 

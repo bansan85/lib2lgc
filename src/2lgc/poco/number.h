@@ -26,9 +26,10 @@
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/number.pb.h>
 
-namespace pattern
-{
-namespace visitor
+/**
+ * @brief Namespace that contains all classes to manipulate protobuf.
+ */
+namespace llgc::poco
 {
 /**
  * @brief Class just to hold the UnitOp method.
@@ -55,7 +56,7 @@ class Unit
 /**
  * @brief Abstract class that represent a read-only number and it's unit.
  */
-class Number : public InterfaceVisitable<msg::Number>
+class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
 {
  public:
   /**
@@ -98,8 +99,7 @@ class Number : public InterfaceVisitable<msg::Number>
 #endif  // ENABLE_VISITABLE_CACHE
 };
 
-}  // namespace visitor
-}  // namespace pattern
+}  // namespace llgc::poco
 
 #endif  // POCO_NUMBER_H_
 
