@@ -30,6 +30,7 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/software/gdb/stack.h>
+#include <sys/types.h>
 #include <cstddef>
 #include <memory>
 #include <mutex>

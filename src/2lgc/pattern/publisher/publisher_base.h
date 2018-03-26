@@ -119,7 +119,7 @@ class PublisherBase
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  void Forward(const std::shared_ptr<const std::string> &message);
+  void Forward(const std::shared_ptr<const std::string>& message);
 
   /**
    * @brief Remove a subscriber of the server.
@@ -132,7 +132,7 @@ class PublisherBase
    */
   virtual bool RemoveSubscriber(
       uint32_t id_message,
-      const std::shared_ptr<ConnectorInterface> &subscriber) CHK = 0;
+      const std::shared_ptr<ConnectorInterface>& subscriber) CHK = 0;
 
  protected:
   /**

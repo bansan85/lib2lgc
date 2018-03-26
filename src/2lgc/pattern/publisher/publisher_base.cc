@@ -20,10 +20,8 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_base.h>
 #include <memory>
-#include <utility>
 
 template <typename M>
 llgc::pattern::publisher::PublisherBase<M>::PublisherBase() = default;
@@ -43,10 +41,9 @@ void llgc::pattern::publisher::PublisherBase<M>::Forward(
   for (int i = 0; i < actions.action_size(); i++)
   {
     // Must use auto because we don't know if M is in namespace or not.
-    auto &action = actions.action(i);
+    auto action = actions.action(i);
 
-    std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
-        iterpair = subscribers_.equal_range(action.data_case());
+    auto iterpair = subscribers_.equal_range(action.data_case());
 
     auto it = iterpair.first;
     for (; it != iterpair.second; ++it)

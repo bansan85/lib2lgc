@@ -309,15 +309,14 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
         std::launch::async,
         std::bind(
             [&all_files, this, nthreads,
-             print_one_by_group](const size_t i_start)
-             {
-               bool retval2 = true;
-               for (size_t i = i_start; i < all_files.size(); i += nthreads)
-               {
-                 retval2 &= Add(all_files[i], print_one_by_group);
-               }
-               return retval2;
-             },
+             print_one_by_group](const size_t i_start) {
+              bool retval2 = true;
+              for (size_t i = i_start; i < all_files.size(); i += nthreads)
+              {
+                retval2 &= Add(all_files[i], print_one_by_group);
+              }
+              return retval2;
+            },
             t));
   }
   for (std::future<bool>& t : threads)

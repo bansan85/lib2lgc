@@ -30,6 +30,7 @@
 #include <2lgc/pattern/publisher/publisher_base.cc>
 #include <2lgc/pattern/publisher/publisher_remote.cc>
 #include <cassert>
+#include <cstddef>
 #include <memory>
 #include <string>
 
