@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option cc_enable_arenas = true;
+
+package msg.software;
+
+message Gdb
+{
+  message RunBtFull
+  {
+    repeated string file = 1;
+  }
+  message AddStack
+  {
+    repeated string file = 1;
+  }
+
+  oneof data
+  {
+    RunBtFull run_bt_full = 1;
+    AddStack add_stack = 2;
+  }
+}
+
+message Gdbs
+{
+  repeated Gdb action = 1;
+}

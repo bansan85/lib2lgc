@@ -20,11 +20,18 @@
  */
 
 #include <2lgc/filesystem/files.h>
+#include <2lgc/pattern/publisher/publisher_base.h>
+#include <2lgc/pattern/publisher/publisher_remote.h>
+#include <2lgc/pattern/singleton/singleton.h>
+#include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/gdb.h>
 #include <bits/stdint-intn.h>
 #include <cxxabi.h>
 #include <sys/wait.h>
 #include <unistd.h>
+#include <2lgc/pattern/publisher/publisher_base.cc>
+#include <2lgc/pattern/publisher/publisher_remote.cc>
+#include <2lgc/pattern/singleton/singleton.cc>
 #include <algorithm>
 #include <chrono>
 #include <csignal>
@@ -33,12 +40,16 @@
 #include <fstream>
 #include <functional>
 #include <future>
-#include <iostream>
 #include <memory>
 #include <system_error>
 #include <thread>
 #include <type_traits>
 #include <vector>
+
+template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
+template class llgc::pattern::publisher::PublisherBase<msg::software::Gdbs>;
+template class llgc::pattern::singleton::Static<
+    llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
 
 bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
                                          unsigned int argc, char* const argv[],
@@ -116,7 +127,19 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
         else
         {
           kill(child_pid, SIGKILL);
-          std::cout << "Timeout: " << filename << std::endl;
+
+          msg::software::Gdbs messages_gdb = msg::software::Gdbs();
+          msg::software::Gdb* message_gdb = messages_gdb.add_action();
+          std::unique_ptr<msg::software::Gdb::RunBtFull> run_bt_full =
+              std::make_unique<msg::software::Gdb::RunBtFull>();
+          std::string* filename_gdb = run_bt_full->add_file();
+          filename_gdb->assign(filename);
+          message_gdb->set_allocated_run_bt_full(run_bt_full.release());
+          std::shared_ptr<std::string> run_bt_full_in_string =
+              std::make_shared<std::string>();
+          messages_gdb.SerializeToString(run_bt_full_in_string.get());
+          Forward(run_bt_full_in_string);
+
           retval = false;
           break;
         }
@@ -145,16 +168,15 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
     threads[t] = std::async(
         std::launch::async,
         std::bind(
-            [&all_files, nthreads, argc, argv, timeout](const size_t i_start)
+            [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
+              bool retval2 = true;
+              for (size_t i = i_start; i < all_files.size(); i += nthreads)
               {
-                bool retval2 = true;
-                for (size_t i = i_start; i < all_files.size(); i += nthreads)
-                {
-                  retval2 &= llgc::software::gdb::Gdb::RunBtFull(
-                      all_files[i], argc, argv, timeout);
-                }
-                return retval2;
-              },
+                retval2 &= llgc::software::gdb::Gdb::RunBtFull(
+                    all_files[i], argc, argv, timeout);
+              }
+              return retval2;
+            },
             t));
   }
   for (std::future<bool>& t : threads)
@@ -198,6 +220,18 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   }
 
   return ParallelRun(all_files, nthread, argc, argv, timeout);
+}
+
+void llgc::software::gdb::Gdb::Forward(const std::shared_ptr<const std::string>& message)
+{
+  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
+  // Check if instance.
+  if (IsInstanceStatic())
+  {
+    // If the instance if freed, GetInstance will create it.
+    auto singleton_ = GetInstanceStatic();
+    singleton_->Forward(message);
+  }
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

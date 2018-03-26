@@ -22,73 +22,43 @@
 #include <2lgc/pattern/singleton/singleton.h>
 
 template <class T>
-T* llgc::pattern::singleton::Static<T>::GetInstanceStatic()
+std::shared_ptr<T> llgc::pattern::singleton::Static<T>::GetInstanceStatic()
 {
-  T* retval = m_instance_static_.load(std::memory_order_acquire).get();
+  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
 
-  if (retval == nullptr)
+  if (instance_static_ == nullptr)
   {
-    std::lock_guard<std::mutex> lock(m_mutex_static_);
-    retval = m_instance_static_.load(std::memory_order_relaxed).get();
-    if (retval == nullptr)
-    {
-      std::unique_ptr<T> unique_ret_val = std::make_unique<T>();
-      retval = unique_ret_val.release();
-      m_instance_static_.store(retval, std::memory_order_release);
-    }
+    instance_static_ = std::make_shared<T>();
   }
-  return retval;
+
+  return instance_static_;
 }
 
 template <class T>
 bool llgc::pattern::singleton::Static<T>::IsInstanceStatic()
 {
-  T* retval = m_instance_static_.load(std::memory_order_acquire);
+  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
 
-  if (retval == nullptr)
-  {
-    std::lock_guard<std::mutex> lock(m_mutex_static_);
-    retval = m_instance_static_.load(std::memory_order_relaxed);
-    if (retval == nullptr)
-    {
-      m_instance_static_.store(retval, std::memory_order_release);
-    }
-  }
-  return retval != nullptr;
+  return instance_static_ != nullptr;
 }
 
 template <class T>
-T* llgc::pattern::singleton::Local<T>::GetInstanceLocal()
+std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstanceLocal()
 {
-  T* retval = m_instance_local_.load(std::memory_order_acquire).get();
+  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
 
-  if (retval == nullptr)
+  if (instance_local_ == nullptr)
   {
-    std::lock_guard<std::mutex> lock(m_mutex_local_);
-    retval = m_instance_local_.load(std::memory_order_relaxed).get();
-    if (retval == nullptr)
-    {
-      std::unique_ptr<T> unique_ret_val = std::make_unique<T>();
-      retval = unique_ret_val.release();
-      m_instance_local_.store(retval, std::memory_order_release);
-    }
+    instance_local_ = std::make_shared<T>();
   }
-  return retval;
+
+  return instance_local_;
 }
 
 template <class T>
 bool llgc::pattern::singleton::Local<T>::IsInstanceLocal()
 {
-  T* retval = m_instance_local_.load(std::memory_order_acquire);
+  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
 
-  if (retval == nullptr)
-  {
-    std::lock_guard<std::mutex> lock(m_mutex_local_);
-    retval = m_instance_local_.load(std::memory_order_relaxed);
-    if (retval == nullptr)
-    {
-      m_instance_local_.store(retval, std::memory_order_release);
-    }
-  }
-  return retval != nullptr;
+  return instance_local_ != nullptr;
 }

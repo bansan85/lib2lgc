@@ -22,7 +22,6 @@
 #ifndef PATTERN_SINGLETON_SINGLETON_H_
 #define PATTERN_SINGLETON_SINGLETON_H_
 
-#include <atomic>
 #include <memory>
 #include <mutex>
 
@@ -43,27 +42,29 @@ class Static
 {
  public:
   /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
-   */
-  static T* GetInstanceStatic();
-  /**
    * @brief Tell if an instance is allocated.
    *
    * @return true if allocated.
    */
   static bool IsInstanceStatic();
+  /**
+   * @brief Get the instance and allocate it if not already.
+   *
+   * @return Return an instance never null.
+   */
+  static std::shared_ptr<T> GetInstanceStatic();
+
+ protected:
+  /**
+   * @brief A mutex to implement the singleton.
+   */
+  static std::recursive_mutex mutex_static_;
 
  private:
   /**
    * @brief Store the instance of the singleton
    */
-  static std::atomic<std::unique_ptr<T>> m_instance_static_;
-  /**
-   * @brief A mutex to implement the singleton.
-   */
-  static std::mutex m_mutex_static_;
+  static std::shared_ptr<T> instance_static_;
 };
 
 /**
@@ -80,7 +81,8 @@ class Local
    *
    * @return Return an instance never null.
    */
-  T* GetInstanceLocal();
+  std::shared_ptr<T> GetInstanceLocal();
+
   /**
    * @brief Tell if an instance is allocated.
    *
@@ -92,11 +94,12 @@ class Local
   /**
    * @brief Store the instance of the singleton
    */
-  std::atomic<std::unique_ptr<T>> m_instance_local_;
+  std::unique_ptr<T> instance_local_;
+
   /**
    * @brief A mutex to implement the singleton.
    */
-  std::mutex m_mutex_local_;
+  std::recursive_mutex mutex_local_;
 };
 
 }  // namespace llgc::pattern::singleton

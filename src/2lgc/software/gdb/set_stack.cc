@@ -208,12 +208,11 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
     }
   }
 
-  mutex_stack_.lock();
+  std::lock_guard<std::mutex> lck (mutex_stack_);
   if (!print_one_by_group || stack_.find(stack_gdb) == stack_.end())
   {
     stack_.insert(std::move(stack_gdb));
   }
-  mutex_stack_.unlock();
 
   return true;
 }

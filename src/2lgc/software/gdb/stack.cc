@@ -23,6 +23,7 @@
 #include <2lgc/software/gdb/stack.h>
 #include <algorithm>
 #include <memory>
+#include <iostream>
 
 llgc::software::gdb::Stack::Stack(std::string filename)
     : filename_(std::move(filename))
@@ -33,16 +34,14 @@ bool llgc::software::gdb::Stack::InterpretLine(const std::string &line)
 {
   std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
 
-  if (bt != nullptr)
+  if (!bt)
   {
-    backtraces_.emplace_back(bt.release());
-    if (backtraces_.back()->GetIndex() + 1 != backtraces_.size())
-    {
-      return false;
-    }
+    return false;
   }
 
-  return true;
+  backtraces_.emplace_back(bt.release());
+
+  return backtraces_.back()->GetIndex() + 1 == backtraces_.size();
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
