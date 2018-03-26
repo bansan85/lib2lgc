@@ -14,12 +14,6 @@ endif()
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-# analyzer-constraints=z3 is totally instlable.
-#if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
-#  if (CHECK_CODE)
-#    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --analyze -Xanalyzer -analyzer-constraints=z3")
-#  endif()
-#endif()
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake;${CMAKE_MODULE_PATH}")
 
 include(2lgc)

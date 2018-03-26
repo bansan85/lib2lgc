@@ -1,4 +1,3 @@
-#include <type_traits2
 if (CHECK_CODE)
 include(CheckCXXCompilerFlag)
 
@@ -263,4 +262,9 @@ if(COMPILER_SUPPORTS_FPROFILE_ARCS)
 else()
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS_SAVE}")
 endif()
+
+# analyzer-constraints=z3 is totally instlable.
+#if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+#  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --analyze -Xanalyzer -analyzer-constraints=z3")
+#endif()
 endif()  # CHECK_CODE
