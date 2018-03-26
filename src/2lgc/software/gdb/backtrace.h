@@ -159,6 +159,15 @@ class Backtrace
    */
   bool ReadFunction(const std::string& description) CHK;
   /**
+   * @brief Helper to find next argument.
+   *
+   * @param[in] args All arguments.
+   *
+   * @return Return the pos of the next argument. If failed, the length on the
+   * string is return.
+   */
+  size_t FindNextArg(const std::string& args);
+  /**
    * @brief Convert the filename and the number of the line of the backtrace in
    * file_ and line_.
    *

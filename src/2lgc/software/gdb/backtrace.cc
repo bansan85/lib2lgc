@@ -162,13 +162,13 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
     if (infrom != std::string::npos)
     {
       *function = line.substr(i, infrom - i + 1);
-      i = infrom + 5;
+      i = infrom + 7;
       *file = line.substr(i);
     }
-    // No as or from.
+    // No at or from.
     else
     {
-      return false;
+      *function = line.substr(i);
     }
   }
 
@@ -205,7 +205,8 @@ bool llgc::software::gdb::Backtrace::ReadAddress(const std::string& address)
 bool llgc::software::gdb::Backtrace::ReadFunction(
     const std::string& description)
 {
-  size_t pos_space = description.find(' ');
+  // ' ' is not enought : loader::(anonymous namespace)::createImageImpl (
+  size_t pos_space = description.find(" (");
 
   if (pos_space == std::string::npos)
   {
@@ -226,11 +227,8 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   }
 
   // Split with delimiter ", "
-  size_t pos_comma = str.find(", ");
-  if (pos_comma == std::string::npos)
-  {
-    pos_comma = str.length();
-  }
+  size_t pos_comma = FindNextArg(str);
+
   while (pos_comma != std::string::npos)
   {
     std::string strcomma = str.substr(0, pos_comma);
@@ -254,11 +252,7 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
     if (pos_comma != str.length())
     {
       str = str.substr(pos_comma + 2);
-      pos_comma = str.find(", ");
-      if (pos_comma == std::string::npos)
-      {
-        pos_comma = str.length();
-      }
+      pos_comma = FindNextArg(str);
     }
     else
     {
@@ -267,6 +261,42 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   }
 
   return true;
+}
+
+size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
+{
+  size_t pos_comma;
+  size_t start_find = 0;
+  size_t nb_start_parenthese = 0;
+  size_t nb_end_parenthese = 0;
+
+  // Test case:
+  // fileFormat=std::shared_ptr (count 3, weak 0) 0x555557048130
+  do
+  {
+    pos_comma = args.find(", ", start_find);
+
+    if (pos_comma == std::string::npos)
+    {
+      return args.length();
+    }
+    for (size_t i = 0; i < pos_comma; i++)
+    {
+      if (args[i] == '(')
+      {
+        nb_start_parenthese++;
+      }
+      else if (args[i] == ')')
+      {
+        nb_end_parenthese++;
+      }
+    }
+
+    start_find = pos_comma + 1;
+  }
+  while (nb_start_parenthese != nb_end_parenthese);
+
+  return pos_comma;
 }
 
 bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)

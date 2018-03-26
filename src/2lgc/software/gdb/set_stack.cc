@@ -197,14 +197,92 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
 
   std::unique_ptr<Stack> stack_gdb = std::make_unique<Stack>(filename);
   std::string line;
+  bool skip_read_line = false;
 
-  while (getline(file, line))
+  while (skip_read_line || getline(file, line))
   {
+    skip_read_line = false;
     if (!stack_gdb->InterpretLine(line))
     {
-      // It's not the backtrace. It can be a "No locals." translation or
-      // a local variable value or an invalid line.
-      // Finally, I don't know if it's a valid or not file.
+      // To works, LANG="" must set.
+      if (line.compare("No locals.") == 0)
+      {
+        continue;
+      }
+      else if (line.compare("No symbol table info available.") == 0)
+      {
+        continue;
+      }
+      // Ok for local
+      else if (line.compare(0, 8, "        ") == 0 && line.find(" = ") != std::string::npos)
+      {
+        // Check if line is not wrapped. For example:
+        // first = Python Exception <class 'OverflowError'> int too big to
+        //         convert:
+        // , second = …
+        // Here, the two line should be concatenate.
+
+        // But sometimes gdb really failed:
+        // overlapResult = {_overlap = 1456208852, _ranges = std::vector of
+        //                 length 3909375852876, capacity 3909375852876 =
+        //                 {<error reading variable>
+        
+        do
+        {
+          size_t nb_start_parenthese = 0;
+          size_t nb_end_parenthese = 0;
+          size_t nb_start_accolade = 0;
+          size_t nb_end_accolade = 0;
+          for (size_t i = 0; i < line.length(); i++)
+          {
+            if (line[i] == '(')
+            {
+              nb_start_parenthese++;
+            }
+            else if (line[i] == ')')
+            {
+              nb_end_parenthese++;
+            }
+            else if (line[i] == '{')
+            {
+              nb_start_accolade++;
+            }
+            else if (line[i] == '}')
+            {
+              nb_end_accolade++;
+            }
+          }
+          std::string line2;
+          // Line complete.
+          if (nb_start_parenthese == nb_end_parenthese && nb_start_accolade == nb_end_accolade)
+          {
+            break;
+          }
+          // End of file.
+          else if (!getline(file, line2))
+          {
+            return false;
+          }
+          // Is next line start of a new type of line (truncate line)
+          if ((line2.compare("No locals.") == 0) ||
+              (line2.compare("No symbol table info available.") == 0) ||
+              // New backtrace.
+              (line2.compare(0, 1, "#") == 0) ||
+              // New local variable.
+              (line2.compare(0, 8, "        ") == 0 && line2.find(" = ") != std::string::npos))
+          {
+            skip_read_line = true;
+            line.assign(line2);
+            break;
+          }
+          line.append(line2);
+        } while(true);
+      }
+      else
+      {
+        std::cout << "Oups:" << filename << " avec " << line << std::endl;
+        return false;
+      }
     }
   }
 
