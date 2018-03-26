@@ -24,6 +24,7 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher_remote.h>
 #include <bits/stdint-uintn.h>
 #include <memory>
 #include <string>
@@ -59,6 +60,27 @@ class ConnectorDirect : public ConnectorInterface,
   explicit ConnectorDirect(
       const std::shared_ptr<SubscriberInterface> &subscriber,
       const std::shared_ptr<PublisherBase<T>> &server);
+
+  /**
+   * @brief Default virtual destructor.
+   */
+  virtual ~ConnectorDirect();
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorDirect(ConnectorDirect &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in,out] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
 
   /**
    * @brief Compare two connectors.
@@ -99,11 +121,6 @@ class ConnectorDirect : public ConnectorInterface,
    * @return true if no problem.
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  virtual ~ConnectorDirect();
 
  private:
   /**

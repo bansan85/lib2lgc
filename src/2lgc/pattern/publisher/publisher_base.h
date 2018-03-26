@@ -70,6 +70,38 @@ class PublisherBase
   virtual ~PublisherBase();
 
   /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherBase(PublisherBase && other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherBase(PublisherBase const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherBase& operator=(PublisherBase && other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherBase& operator=(PublisherBase const& other) & = delete;
+
+  /**
    * @brief Add a subscriber to the server.
    *
    * @param id_message The message to subscribe.

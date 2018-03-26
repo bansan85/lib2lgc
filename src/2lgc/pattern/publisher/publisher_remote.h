@@ -53,13 +53,20 @@ class PublisherRemote : public PublisherBase<M>
   virtual ~PublisherRemote();
 
   /**
-   * @brief TODO
+   * @brief Delete copy constructor.
    *
-   * @param[in,out] port TODO
-   *
-   * @return TODO
+   * @param[in] other The original.
    */
-  bool StartIp(uint16_t port) CHK;
+  PublisherRemote(PublisherRemote&& other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in,out] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherRemote& operator=(PublisherRemote&& other) = delete;
 
   /**
    * @brief Add a subscriber to the server.
