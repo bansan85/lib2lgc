@@ -1,5 +1,6 @@
 #disable for now. travis' image are too old. :(
 language: cpp
+dist: trusty
 sudo: required
 
 compiler :
@@ -8,8 +9,6 @@ compiler :
 
 addons:
   apt:
-    sources:
-      - sourceline: "deb http://deb.debian.org/debian buster main"
     packages:
       - cppcheck
       - iwyu
@@ -32,5 +31,27 @@ branches:
   only:
     - master
 
-os:
-  - linux
+matrix:
+  include:
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+before_install:
+    - eval "${MATRIX_EVAL}"
