@@ -72,6 +72,24 @@ class Function
     args_.push_back(std::pair<std::string, std::string>(name, value));
   }
 
+  /**
+   * @brief Check if a line is a valid variable line.
+   *
+   * @param[in] var The line to check.
+   *
+   * @return true if valid variable line.
+   */
+  static bool IsValidVariableLine(const std::string &var);
+
+  /**
+   * @brief Check if a variable line is wrappable.
+   *
+   * @param[in] var The line to check.
+   *
+   * @return true if variable line is wrappable.
+   */
+  static bool IsVariableLineWrappable(const std::string &var);
+
  private:
   /**
    * @brief Name of the function.
