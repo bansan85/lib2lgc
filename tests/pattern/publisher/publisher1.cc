@@ -24,13 +24,13 @@
 #include <2lgc/pattern/publisher/publisher_remote.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <actions.pb.h>
-#include <bits/stdint-uintn.h>
 #include <google/protobuf/stubs/common.h>
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/publisher_base.cc>
 #include <2lgc/pattern/publisher/publisher_remote.cc>
 #include <cassert>
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 

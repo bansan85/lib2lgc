@@ -24,7 +24,7 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/publisher_base.h>
-#include <bits/stdint-uintn.h>
+#include <cstdint>
 #include <map>
 #include <memory>
 
@@ -47,17 +47,25 @@ class PublisherRemote : public PublisherBase<M>
    * @brief Default constructor.
    */
   PublisherRemote();
+
   /**
    * @brief Default destructor.
    */
   virtual ~PublisherRemote();
 
   /**
-   * @brief Delete copy constructor.
+   * @brief Delete move constructor.
    *
    * @param[in] other The original.
    */
   PublisherRemote(PublisherRemote&& other) = delete;
+
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherRemote(PublisherRemote const& other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -67,6 +75,15 @@ class PublisherRemote : public PublisherBase<M>
    * @return Delete function.
    */
   PublisherRemote& operator=(PublisherRemote&& other) = delete;
+
+  /**
+   * @brief Delete copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherRemote& operator=(PublisherRemote const& other) & = delete;
 
   /**
    * @brief Add a subscriber to the server.

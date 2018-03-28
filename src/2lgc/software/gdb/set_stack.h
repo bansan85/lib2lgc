@@ -29,6 +29,7 @@
 #define SOFTWARE_GDB_SET_STACK_H_
 
 #include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/pattern/singleton/singleton_local.h>
 #include <2lgc/software/gdb/stack.h>
 #include <sys/types.h>
 #include <cstddef>
@@ -37,6 +38,16 @@
 #include <set>
 #include <string>
 #include <vector>
+
+namespace llgc::pattern::publisher
+{
+template <typename M>
+class PublisherRemote;
+}
+namespace msg::software
+{
+class Gdbs;
+}
 
 namespace llgc::software::gdb
 {
@@ -48,6 +59,8 @@ class Backtrace;
  * @details Criterea of sort must be defined on creation.
  */
 class SetStack
+    : public llgc::pattern::singleton::Local<
+          llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
 {
  public:
   /**
@@ -199,6 +212,13 @@ class SetStack
    */
   bool ParallelAdd(const std::vector<std::string>& all_files,
                    unsigned int nthread, bool print_one_by_group) CHK;
+
+  /**
+   * @brief Set a message throw the server to tell that this file is invalid.
+   *
+   * @param[in] filename The filename that failed to be read.
+   */
+  void TellError(const std::string& filename);
 
   /**
    * @brief Storage of all stacks sorted with parameter given by the

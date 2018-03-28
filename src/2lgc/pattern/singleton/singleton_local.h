@@ -19,54 +19,20 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_SINGLETON_SINGLETON_H_
-#define PATTERN_SINGLETON_SINGLETON_H_
+#ifndef PATTERN_SINGLETON_SINGLETON_LOCAL_H_
+#define PATTERN_SINGLETON_SINGLETON_LOCAL_H_
 
 #include <memory>
 #include <mutex>
+#include <string>
 
 /**
- * @file singleton.h
+ * @file singleton_local.h
  *
  * Helper to simply add a singleton to a class.
  */
 namespace llgc::pattern::singleton
 {
-/**
- * @brief Class that contains the getInstance for the static singleton.
- *
- * @tparam T Type of the singleton.
- */
-template <class T>
-class Static
-{
- public:
-  /**
-   * @brief Tell if an instance is allocated.
-   *
-   * @return true if allocated.
-   */
-  static bool IsInstanceStatic();
-  /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
-   */
-  static std::shared_ptr<T> GetInstanceStatic();
-
- protected:
-  /**
-   * @brief A mutex to implement the singleton.
-   */
-  static std::recursive_mutex mutex_static_;
-
- private:
-  /**
-   * @brief Store the instance of the singleton
-   */
-  static std::shared_ptr<T> instance_static_;
-};
-
 /**
  * @brief Class that contains the getInstance for a local singleton.
  *
@@ -90,11 +56,18 @@ class Local
    */
   bool IsInstanceLocal();
 
+  /**
+   * @brief Send the message to all subscriber.
+   *
+   * @param[in] message The message to send.
+   */
+  void Forward(const std::shared_ptr<const std::string>& message);
+
  private:
   /**
    * @brief Store the instance of the singleton
    */
-  std::unique_ptr<T> instance_local_;
+  std::shared_ptr<T> instance_local_;
 
   /**
    * @brief A mutex to implement the singleton.
@@ -104,6 +77,6 @@ class Local
 
 }  // namespace llgc::pattern::singleton
 
-#endif  // PATTERN_SINGLETON_SINGLETON_H_
+#endif  // PATTERN_SINGLETON_SINGLETON_LOCAL_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

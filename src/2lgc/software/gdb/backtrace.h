@@ -29,8 +29,8 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/software/gdb/function.h>
-#include <bits/stdint-uintn.h>
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 

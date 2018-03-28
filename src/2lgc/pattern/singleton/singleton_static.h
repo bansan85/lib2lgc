@@ -19,58 +19,64 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
-#define PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#ifndef PATTERN_SINGLETON_SINGLETON_STATIC_H_
+#define PATTERN_SINGLETON_SINGLETON_STATIC_H_
 
-#include <2lgc/pattern/publisher/subscriber_interface.h>
-#include <cstdint>
+#include <memory>
+#include <mutex>
+#include <string>
 
 /**
- * @brief Namespace for the pattern publisher.
+ * @file singleton_static.h
+ *
+ * Helper to simply add a singleton to a class.
  */
-namespace llgc::pattern::publisher
+namespace llgc::pattern::singleton
 {
 /**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
+ * @brief Class that contains the getInstance for the static singleton.
  *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
+ * @tparam T Type of the singleton.
  */
-class SubscriberDirect : public SubscriberInterface
+template <class T>
+class Static
 {
  public:
   /**
-   * @brief Default constructor
+   * @brief Tell if an instance is allocated.
    *
-   * @param[in] id The id of the constructor.
+   * @return true if allocated.
    */
-  explicit SubscriberDirect(uint32_t id) : id_(id) {}
+  static bool IsInstanceStatic();
+  /**
+   * @brief Get the instance and allocate it if not already.
+   *
+   * @return Return an instance never null.
+   */
+  static std::shared_ptr<T> GetInstanceStatic();
 
   /**
-   * @brief Compare in connector is the same than the object.
+   * @brief Send the message to all subscriber.
    *
-   * @param[in,out] connector The connector to compare with.
-   *
-   * @return true if the same.
+   * @param[in] message The message to send.
    */
-  bool Equals(const SubscriberInterface *connector) const override
-      __attribute__((pure));
+  static void Forward(const std::shared_ptr<const std::string>& message);
 
+ protected:
   /**
-   * @brief Default virtual destructor.
+   * @brief A mutex to implement the singleton.
    */
-  virtual ~SubscriberDirect() {}
+  static std::recursive_mutex mutex_static_;
 
  private:
   /**
-   * @brief The id of the connector.
+   * @brief Store the instance of the singleton
    */
-  const uint32_t id_;
+  static std::shared_ptr<T> instance_static_;
 };
 
-}  // namespace llgc::pattern::publisher
+}  // namespace llgc::pattern::singleton
 
-#endif  // PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#endif  // PATTERN_SINGLETON_SINGLETON_STATIC_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

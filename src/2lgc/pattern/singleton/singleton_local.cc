@@ -19,28 +19,39 @@
  * SOFTWARE.
  */
 
-#include <2lgc/software/gdb/backtrace.h>
-#include <2lgc/software/gdb/stack.h>
-#include <algorithm>
-#include <memory>
+#include <2lgc/pattern/singleton/singleton_local.h>
 
-llgc::software::gdb::Stack::Stack(std::string filename)
-    : filename_(std::move(filename))
+template <class T>
+std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstanceLocal()
 {
-}
+  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
 
-bool llgc::software::gdb::Stack::InterpretLine(const std::string &line)
-{
-  std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
-
-  if (!bt)
+  if (instance_local_ == nullptr)
   {
-    return false;
+    instance_local_ = std::make_shared<T>();
   }
 
-  backtraces_.emplace_back(bt.release());
-
-  return true;
+  return instance_local_;
 }
 
-/* vim:set shiftwidth=2 softtabstop=2 expandtab: */
+template <class T>
+bool llgc::pattern::singleton::Local<T>::IsInstanceLocal()
+{
+  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
+
+  return instance_local_ != nullptr;
+}
+
+template <class T>
+void llgc::pattern::singleton::Local<T>::Forward(
+    const std::shared_ptr<const std::string>& message)
+{
+  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
+  // Check if instance.
+  if (IsInstanceLocal())
+  {
+    // If the instance if freed, GetInstance will create it.
+    auto singleton_ = GetInstanceLocal();
+    singleton_->Forward(message);
+  }
+}

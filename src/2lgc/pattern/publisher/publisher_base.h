@@ -23,7 +23,7 @@
 #define PATTERN_PUBLISHER_PUBLISHER_BASE_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <bits/stdint-uintn.h>
+#include <cstdint>
 #include <map>
 #include <memory>
 #include <string>
@@ -74,7 +74,7 @@ class PublisherBase
    *
    * @param[in] other The original.
    */
-  PublisherBase(PublisherBase && other) = delete;
+  PublisherBase(PublisherBase&& other) = delete;
 
   /**
    * @brief Delete copy constructor.
@@ -90,7 +90,7 @@ class PublisherBase
    *
    * @return Delete function.
    */
-  PublisherBase& operator=(PublisherBase && other) & = delete;
+  PublisherBase& operator=(PublisherBase&& other) & = delete;
 
   /**
    * @brief Delete the copy operator.

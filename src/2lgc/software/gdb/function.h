@@ -75,20 +75,20 @@ class Function
   /**
    * @brief Check if a line is a valid variable line.
    *
-   * @param[in] var The line to check.
+   * @param[in] variable The line to check.
    *
    * @return true if valid variable line.
    */
-  static bool IsValidVariableLine(const std::string &var);
+  static bool IsValidVariableLine(const std::string& variable);
 
   /**
    * @brief Check if a variable line is wrappable.
    *
-   * @param[in] var The line to check.
+   * @param[in] variable The line to check.
    *
    * @return true if variable line is wrappable.
    */
-  static bool IsVariableLineWrappable(const std::string &var);
+  static bool IsVariableLineWrappable(const std::string& variable);
 
  private:
   /**

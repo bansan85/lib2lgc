@@ -293,8 +293,7 @@ size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
     }
 
     start_find = pos_comma + 1;
-  }
-  while (nb_start_parenthese != nb_end_parenthese);
+  } while (nb_start_parenthese != nb_end_parenthese);
 
   return pos_comma;
 }

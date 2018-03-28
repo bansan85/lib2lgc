@@ -19,7 +19,7 @@
  * SOFTWARE.
  */
 
-#include <2lgc/pattern/singleton/singleton.h>
+#include <2lgc/pattern/singleton/singleton_static.h>
 
 template <class T>
 std::shared_ptr<T> llgc::pattern::singleton::Static<T>::GetInstanceStatic()
@@ -43,22 +43,15 @@ bool llgc::pattern::singleton::Static<T>::IsInstanceStatic()
 }
 
 template <class T>
-std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstanceLocal()
+void llgc::pattern::singleton::Static<T>::Forward(
+    const std::shared_ptr<const std::string>& message)
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
-
-  if (instance_local_ == nullptr)
+  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
+  // Check if instance.
+  if (IsInstanceStatic())
   {
-    instance_local_ = std::make_shared<T>();
+    // If the instance if freed, GetInstance will create it.
+    auto singleton_ = GetInstanceStatic();
+    singleton_->Forward(message);
   }
-
-  return instance_local_;
-}
-
-template <class T>
-bool llgc::pattern::singleton::Local<T>::IsInstanceLocal()
-{
-  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
-
-  return instance_local_ != nullptr;
 }

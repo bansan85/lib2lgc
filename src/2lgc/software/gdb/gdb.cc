@@ -22,16 +22,15 @@
 #include <2lgc/filesystem/files.h>
 #include <2lgc/pattern/publisher/publisher_base.h>
 #include <2lgc/pattern/publisher/publisher_remote.h>
-#include <2lgc/pattern/singleton/singleton.h>
+#include <2lgc/pattern/singleton/singleton_static.h>
 #include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/gdb.h>
-#include <bits/stdint-intn.h>
 #include <cxxabi.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <2lgc/pattern/publisher/publisher_base.cc>
 #include <2lgc/pattern/publisher/publisher_remote.cc>
-#include <2lgc/pattern/singleton/singleton.cc>
+#include <2lgc/pattern/singleton/singleton_static.cc>
 #include <algorithm>
 #include <chrono>
 #include <csignal>
@@ -220,18 +219,6 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   }
 
   return ParallelRun(all_files, nthread, argc, argv, timeout);
-}
-
-void llgc::software::gdb::Gdb::Forward(const std::shared_ptr<const std::string>& message)
-{
-  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
-  // Check if instance.
-  if (IsInstanceStatic())
-  {
-    // If the instance if freed, GetInstance will create it.
-    auto singleton_ = GetInstanceStatic();
-    singleton_->Forward(message);
-  }
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -26,11 +26,11 @@
 #include <2lgc/poco/number_visitor_unit.h>
 #include <2lgc/poco/number_visitor_value.h>
 #include <2lgc/poco/raw.pb.h>
-#include <bits/stdint-uintn.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
 #include <algorithm>
 #include <cmath>
+#include <cstdint>
 #include <memory>
 #include <string>
 

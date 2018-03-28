@@ -27,7 +27,7 @@
  */
 
 #include <2lgc/math/compare_decimal.h>
-#include <bits/stdint-intn.h>
+#include <cstdint>
 #include <cstdlib>
 
 /**

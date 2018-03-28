@@ -20,12 +20,16 @@
  */
 
 #include <2lgc/filesystem/files.h>
+#include <2lgc/pattern/publisher/publisher_remote.h>  // IWYU pragma: export
+#include <2lgc/pattern/singleton/singleton_local.h>
+#include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/backtrace.h>
+#include <2lgc/software/gdb/function.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
-#include <bits/stdint-uintn.h>
 #include <cxxabi.h>
 #include <algorithm>
+#include <cstdint>
 #include <ext/alloc_traits.h>
 #include <fstream>
 #include <functional>
@@ -37,6 +41,11 @@
 #include <thread>
 #include <utility>
 #include <vector>
+
+#include <2lgc/pattern/singleton/singleton_local.cc>
+
+template class llgc::pattern::singleton::Local<
+    llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
 
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
                                         size_t bottom_frame)
@@ -185,19 +194,19 @@ bool llgc::software::gdb::SetStack::Local::operator()(
   return false;
 }
 
-static bool IsValidName(const std::string &name)
+void llgc::software::gdb::SetStack::TellError(const std::string& filename)
 {
-  for (size_t i = 0; i < name.length(); i++)
-  {
-    if (('a' > name[i] || name[i] > 'z') &&
-        ('A' > name[i] || name[i] > 'Z') &&
-        ('0' > name[i] || name[i] > '9') &&
-        (name[i] || '_'))
-    {
-      return false;
-    }
-  }
-  return true;
+  msg::software::Gdbs messages_gdb = msg::software::Gdbs();
+  msg::software::Gdb* message_gdb = messages_gdb.add_action();
+  std::unique_ptr<msg::software::Gdb::AddStack> add_stack =
+      std::make_unique<msg::software::Gdb::AddStack>();
+  std::string* filename_gdb = add_stack->add_file();
+  filename_gdb->assign(filename);
+  message_gdb->set_allocated_add_stack(add_stack.release());
+  std::shared_ptr<std::string> add_stack_in_string =
+      std::make_shared<std::string>();
+  messages_gdb.SerializeToString(add_stack_in_string.get());
+  Forward(add_stack_in_string);
 }
 
 bool llgc::software::gdb::SetStack::Add(const std::string& filename,
@@ -207,6 +216,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
 
   if (!file.is_open())
   {
+    TellError(filename);
     return false;
   }
 
@@ -221,6 +231,12 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
   {
     if (stack_gdb->InterpretLine(line))
     {
+      if (stack_gdb->GetBacktraceFromBottom(0)->GetIndex() + 1 !=
+          stack_gdb->NumberOfBacktraces())
+      {
+        TellError(filename);
+        return false;
+      }
       allow_wrong_line = false;
     }
     else if (Function::IsValidVariableLine(line) || allow_wrong_line)
@@ -229,12 +245,12 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
     }
     else if (!allow_wrong_line)
     {
-      std::cout << "Invalid line:" << filename << " avec " << line << std::endl;
+      TellError(filename);
       return false;
     }
   }
 
-  std::lock_guard<std::mutex> lck (mutex_stack_);
+  std::lock_guard<std::mutex> lck(mutex_stack_);
   if (!print_one_by_group || stack_.find(stack_gdb) == stack_.end())
   {
     stack_.insert(std::move(stack_gdb));

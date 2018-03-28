@@ -28,8 +28,8 @@
 #define SOFTWARE_GDB_GDB_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <2lgc/pattern/singleton/singleton.h>
-#include <bits/stdint-intn.h>
+#include <2lgc/pattern/singleton/singleton_static.h>
+#include <cstdint>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -49,7 +49,8 @@ namespace llgc::software::gdb
 /**
  * @brief Class to run gdb for various purpose.
  */
-class Gdb : public llgc::pattern::singleton::Static<llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
+class Gdb : public llgc::pattern::singleton::Static<
+                llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
 {
  public:
   /**
@@ -100,8 +101,6 @@ class Gdb : public llgc::pattern::singleton::Static<llgc::pattern::publisher::Pu
   static bool RunBtFullList(const std::string& list, unsigned int nthread,
                             unsigned int argc, char* const argv[],
                             int64_t timeout) CHK;
-
-  static void Forward(const std::shared_ptr<const std::string>& message);
 };
 
 }  // namespace llgc::software::gdb

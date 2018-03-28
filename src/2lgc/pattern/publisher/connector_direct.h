@@ -24,8 +24,7 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_remote.h>
-#include <bits/stdint-uintn.h>
+#include <cstdint>
 #include <memory>
 #include <string>
 
@@ -74,6 +73,13 @@ class ConnectorDirect : public ConnectorInterface,
   ConnectorDirect(ConnectorDirect &&other) = delete;
 
   /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorDirect(ConnectorDirect const &other) = delete;
+
+  /**
    * @brief Delete the copy operator.
    *
    * @param[in,out] other The original.
@@ -81,6 +87,15 @@ class ConnectorDirect : public ConnectorInterface,
    * @return Delete function.
    */
   ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in,out] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
 
   /**
    * @brief Compare two connectors.
