@@ -26,7 +26,7 @@
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
-#include <bits/stdint-uintn.h>
+#include <cstdint>
 #include <memory>
 
 /**
