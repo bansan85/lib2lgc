@@ -175,7 +175,7 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
                     all_files[i], argc, argv, timeout);
               }
               return retval2;
-            },
+            },  // NS
             t));
   }
   for (std::future<bool>& t : threads)

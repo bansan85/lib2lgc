@@ -280,7 +280,7 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
                 retval2 &= Add(all_files[i], print_one_by_group);
               }
               return retval2;
-            },
+            },  // NS
             t));
   }
   for (std::future<bool>& t : threads)
