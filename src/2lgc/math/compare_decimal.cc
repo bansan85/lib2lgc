@@ -30,6 +30,8 @@
 #include <cstdint>
 #include <cstdlib>
 
+namespace llgc::math
+{
 /**
  * @brief Internal union to convert float to number (4 bytes).
  *
@@ -93,6 +95,7 @@ union Double_t
    */
   int64_t i;
 } __attribute__((packed));
+}  // namespace llgc::math
 
 /**
  * @brief Function that compare equality of two decimal number that are not
