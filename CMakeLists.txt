@@ -87,6 +87,11 @@ if (CHECK_CODE)
     add_custom_command(TARGET check
       COMMAND make doc)
   endif()
+  find_program(NSIQCPPSTYLE nsiqcppstyle PATHS /opt/nsiqcppstyle)
+  if (NSIQCPPSTYLE)
+    add_custom_command(TARGET check
+      COMMAND ${NSIQCPPSTYLE} ${CMAKE_CURRENT_SOURCE_DIR})
+  endif()
   find_program(PMD_BIN run.sh PATHS /opt/pmd/bin)
   if (PMD_BIN)
     add_custom_command(TARGET check
