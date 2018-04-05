@@ -19,37 +19,41 @@
  * SOFTWARE.
  */
 
-#ifndef FILESYSTEM_FILES_H_
-#define FILESYSTEM_FILES_H_
+#include <2lgc/filesystem/files.h>
+#include <google/protobuf/stubs/common.h>
+#include <cassert>
+#include <experimental/filesystem>
+#include <ext/alloc_traits.h>
+#include <fstream>
 
-#include <2lgc/compatibility/visual_studio.h>
-#include <string>
-#include <vector>
-
-namespace llgc::filesystem
+int main(int /* argc */, char* /* argv */ [])  // NS
 {
-/**
- * @brief Class that manipulate the filesystem.
- */
-class Files
-{
- public:
-  /**
-   * @brief List all files from a folder.
-   *
-   * @param[in] folder The root folder.
-   * @param[in] regex The regex in javascript regex.
-   * @param[out] files All the files. files is not clear if not empty.
-   *
-   * @return true if no problem.
-   */
-  static bool SearchRecursiveFiles(const std::string& folder,
-                                   const std::string& regex,
-                                   std::vector<std::string>* files) CHK;
-};
+  std::experimental::filesystem::create_directory("folder");
+  std::experimental::filesystem::create_directory("folder/2");
 
-}  // namespace llgc::filesystem
+  std::fstream output;
+  output.open("folder/2/output_1", std::ios::out);
+  output.close();
+  output.open("folder/output_1.btfull", std::ios::out);
+  output.close();
 
-#endif  // FILESYSTEM_FILES_H_
+  std::vector<std::string> files;
+  // Test standard regex
+  assert(llgc::filesystem::Files::SearchRecursiveFiles("folder", "^.*\\.btfull",
+                                                       &files));
+  assert(files.size() == 1);
+  assert(files[0] == "folder/output_1.btfull");
+  // Test exclude regex
+  files.clear();
+  assert(files.empty());
+  assert(llgc::filesystem::Files::SearchRecursiveFiles(
+      "folder", "^(?!.*btfull).*$", &files));
+  assert(files.size() == 1);
+  assert(files[0] == "folder/2/output_1");
+
+  google::protobuf::ShutdownProtobufLibrary();
+
+  return 0;
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

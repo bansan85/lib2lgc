@@ -297,7 +297,7 @@ bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
                                                  bool print_one_by_group)
 {
   std::vector<std::string> all_files;
-  if (!llgc::filesystem::Files::SearchRecursive(folder, regex, &all_files))
+  if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
   {
     return false;
   }

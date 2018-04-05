@@ -191,7 +191,7 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
     unsigned int argc, char* const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
-  if (!llgc::filesystem::Files::SearchRecursive(folder, regex, &all_files))
+  if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
   {
     return false;
   }

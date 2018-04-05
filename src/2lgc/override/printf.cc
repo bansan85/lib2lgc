@@ -29,7 +29,7 @@
 #include <2lgc/override/printf.h>
 #include <cstddef>
 
-void llgc::override::Print::F(std::ostream &out_stream, const std::string &s)
+bool llgc::override::Print::F(std::ostream &out_stream, const std::string &s)
 {
   size_t i = 0;
   while (s[i] != 0)
@@ -42,12 +42,13 @@ void llgc::override::Print::F(std::ostream &out_stream, const std::string &s)
       }
       else
       {
-        throw std::runtime_error("invalid format string: missing arguments");
+        return false;
       }
     }
     out_stream << s[i];
     i++;
   }
+  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

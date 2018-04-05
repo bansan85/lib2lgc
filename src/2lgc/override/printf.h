@@ -23,7 +23,6 @@
 #define OVERRIDE_PRINTF_H_
 
 #include <ostream>
-#include <stdexcept>
 #include <string>
 
 // Stolen from
@@ -54,7 +53,7 @@ class Print
    * @param[in] args The others variables.
    */
   template <typename T, typename... Args>
-  static void F(std::ostream &out_stream, const char *s, T value, Args... args)
+  static bool F(std::ostream &out_stream, const char *s, T value, Args... args)
   {
     while (*s)
     {
@@ -67,13 +66,12 @@ class Print
         else
         {
           out_stream << value;
-          F(out_stream, s + 1, args...);
-          return;
+          return F(out_stream, s + 1, args...);
         }
       }
       out_stream << *s++;
     }
-    throw std::logic_error("extra arguments provided to printf");
+    return false;
   }
 
  private:
@@ -83,7 +81,7 @@ class Print
    * @param[out] out_stream The output stream (std::cout, …).
    * @param[in] s The string message.
    */
-  static void F(std::ostream &out_stream, const std::string &s);
+  static bool F(std::ostream &out_stream, const std::string &s);
 };
 
 }  // namespace llgc::override

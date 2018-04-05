@@ -19,37 +19,34 @@
  * SOFTWARE.
  */
 
-#ifndef FILESYSTEM_FILES_H_
-#define FILESYSTEM_FILES_H_
+#include <2lgc/override/printf.h>
+#include <google/protobuf/stubs/common.h>
+#include <cassert>
+#include <sstream>
 
-#include <2lgc/compatibility/visual_studio.h>
-#include <string>
-#include <vector>
-
-namespace llgc::filesystem
+int main(int /* argc */, char* /* argv */ [])  // NS
 {
-/**
- * @brief Class that manipulate the filesystem.
- */
-class Files
-{
- public:
-  /**
-   * @brief List all files from a folder.
-   *
-   * @param[in] folder The root folder.
-   * @param[in] regex The regex in javascript regex.
-   * @param[out] files All the files. files is not clear if not empty.
-   *
-   * @return true if no problem.
-   */
-  static bool SearchRecursiveFiles(const std::string& folder,
-                                   const std::string& regex,
-                                   std::vector<std::string>* files) CHK;
-};
+  std::ostringstream oss;
 
-}  // namespace llgc::filesystem
+  assert(llgc::override::Print::F(oss, "number: %, string: %, double: %", 2,
+                                  "text", 1.5));
+  assert(oss.str() == "number: 2, string: text, double: 1.5");
+  oss.str("");
 
-#endif  // FILESYSTEM_FILES_H_
+  assert(llgc::override::Print::F(oss, "number: %%, string: %.", "text"));
+  assert(oss.str() == "number: %, string: text.");
+  oss.str("");
+
+  assert(llgc::override::Print::F(oss, "number: %, string: %%.", 124));
+  assert(oss.str() == "number: 124, string: %.");
+  oss.str("");
+
+  assert(!llgc::override::Print::F(oss, "number: %, string: %, double: %", 2,
+                                   "text"));
+
+  google::protobuf::ShutdownProtobufLibrary();
+
+  return 0;
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

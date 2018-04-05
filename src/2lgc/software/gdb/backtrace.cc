@@ -61,7 +61,10 @@ llgc::software::gdb::Backtrace::Factory(const std::string& line)
 
   if (file.length() != 0 && !retval->ReadSource(file))
   {
-    return std::unique_ptr<Backtrace>(nullptr);
+    if (!retval->ReadSource(file))
+    {
+      return std::unique_ptr<Backtrace>(nullptr);
+    }
   }
 
   return retval;
@@ -135,12 +138,8 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
       if (('0' > line[ibis] || line[ibis] > '9') &&
           ('a' > line[ibis] || line[ibis] > 'f'))
       {
-        break;
+        return false;
       }
-    }
-    if (ibis != inpos)
-    {
-      return false;
     }
 
     *address = line.substr(i, inpos - i);
@@ -301,9 +300,12 @@ size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
 bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
 {
   size_t pos = file.find_last_of(':');
+  // #10 0x401d7877 in gtk_marshal_NONE__NONE () from /usr/lib/libgtk-1.2.so.0
+  // No line because no source file but library.
   if (pos == std::string::npos)
   {
-    return false;
+    file_ = file;
+    return true;
   }
 
   try

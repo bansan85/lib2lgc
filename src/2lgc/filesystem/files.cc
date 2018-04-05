@@ -1,4 +1,4 @@
-/* Copyright 2018 LE GARREC Vincen2
+/* Copyright 2018 LE GARREC Vincent
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -23,9 +23,9 @@
 #include <experimental/filesystem>
 #include <regex>
 
-bool llgc::filesystem::Files::SearchRecursive(const std::string& folder,
-                                              const std::string& regex,
-                                              std::vector<std::string>* files)
+bool llgc::filesystem::Files::SearchRecursiveFiles(
+    const std::string& folder, const std::string& regex,
+    std::vector<std::string>* files)
 {
   std::regex reg(regex);
   for (auto& p :
@@ -33,7 +33,8 @@ bool llgc::filesystem::Files::SearchRecursive(const std::string& folder,
   {
     std::string filename(p.path().filename().string());
 
-    if (regex.length() == 0 || std::regex_match(filename, reg))
+    if ((regex.length() == 0 || std::regex_match(filename, reg)) &&
+        std::experimental::filesystem::is_regular_file(p))
     {
       files->push_back(p.path().string());
     }
