@@ -81,7 +81,7 @@ int main(int /* argc */, char * /* argv */ [])  // NS
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
 
-  assert(!subscriber->Equals(nullptr))
+  assert(!subscriber->Equals(nullptr));
 
   std::shared_ptr<llgc::pattern::publisher::ConnectorDirect<msg::Actions>>
       connector = std::make_shared<
