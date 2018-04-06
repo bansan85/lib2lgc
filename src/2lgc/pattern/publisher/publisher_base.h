@@ -64,6 +64,7 @@ class PublisherBase
    * @brief Default constructor.
    */
   PublisherBase();
+
   /**
    * @brief Default destructor.
    */
@@ -134,6 +135,20 @@ class PublisherBase
       uint32_t id_message,
       const std::shared_ptr<ConnectorInterface>& subscriber) CHK = 0;
 
+  /**
+   * @brief Return if subscription will failed if subscriber already subscribed.
+   *
+   * @return A boolean.
+   */
+  bool GetOptionFailAlreadySubscribed();
+
+  /**
+   * @brief Set if subscription must failed if subscriber already subscribed.
+   *
+   * @param[in] value true if must failed.
+   */
+  void SetOptionFailAlreadySubscribed(bool value);
+
  protected:
   /**
    * @brief Type of the map for subscribers.
@@ -146,6 +161,7 @@ class PublisherBase
    */
   SubscriberMap subscribers_;
 
+ private:
   /**
    * @brief Options for the behavious of server.
    */

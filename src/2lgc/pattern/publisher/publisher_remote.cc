@@ -41,7 +41,7 @@ template <typename M>
 bool llgc::pattern::publisher::PublisherRemote<M>::AddSubscriber(
     uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
 {
-  if (options_.add_fail_if_already_subscribed)
+  if (this->GetOptionFailAlreadySubscribed())
   {
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
         iterpair = subscribers_.equal_range(id_message);

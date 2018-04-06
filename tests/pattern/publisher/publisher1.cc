@@ -60,7 +60,7 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect
   {
     msg::Actions actions;
     assert(actions.ParseFromString(*message.get()));
-    value = 3;
+    value++;
   }
 
   /**
@@ -80,6 +80,9 @@ int main(int /* argc */, char * /* argv */ [])  // NS
   // Create three subscribers.
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
+
+  assert(!subscriber->Equals(nullptr))
+
   std::shared_ptr<llgc::pattern::publisher::ConnectorDirect<msg::Actions>>
       connector = std::make_shared<
           llgc::pattern::publisher::ConnectorDirect<msg::Actions>>(subscriber,
@@ -102,7 +105,7 @@ int main(int /* argc */, char * /* argv */ [])  // NS
   actions.SerializeToString(action_in_string.get());
   connector->Send(action_in_string);
 
-  assert(subscriber->value == 3);
+  assert(subscriber->value == 1);
 
   // Reset test case.
   subscriber->value = 0;
@@ -111,6 +114,24 @@ int main(int /* argc */, char * /* argv */ [])  // NS
   assert(connector->RemoveSubscriber(1));
   connector->Send(action_in_string);
   assert(subscriber->value == 0);
+
+  assert(!connector->Equals(nullptr));
+
+  // Double insert
+  assert(connector->AddSubscriber(1));
+  assert(connector->AddSubscriber(1));
+  connector->Send(action_in_string);
+  assert(subscriber->value == 2);
+  assert(connector->RemoveSubscriber(1));
+  connector->Send(action_in_string);
+  assert(subscriber->value == 3);
+  assert(connector->RemoveSubscriber(1));
+  connector->Send(action_in_string);
+  assert(subscriber->value == 3);
+  assert(!server->GetOptionFailAlreadySubscribed());
+  server->SetOptionFailAlreadySubscribed(true);
+  assert(connector->AddSubscriber(1));
+  assert(!connector->AddSubscriber(1));
 
   google::protobuf::ShutdownProtobufLibrary();
 

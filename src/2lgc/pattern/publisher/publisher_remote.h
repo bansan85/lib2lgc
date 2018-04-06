@@ -113,7 +113,6 @@ class PublisherRemote : public PublisherBase<M>
 
  protected:
   // using needed because of template inheritance.
-  using PublisherBase<M>::options_;
   using PublisherBase<M>::subscribers_;
   /**
    * @brief definition of the multimap.

@@ -53,4 +53,18 @@ void llgc::pattern::publisher::PublisherBase<M>::Forward(
   }
 }
 
+template <typename M>
+bool llgc::pattern::publisher::PublisherBase<
+    M>::GetOptionFailAlreadySubscribed()
+{
+  return options_.add_fail_if_already_subscribed;
+}
+
+template <typename M>
+void llgc::pattern::publisher::PublisherBase<M>::SetOptionFailAlreadySubscribed(
+    bool value)
+{
+  options_.add_fail_if_already_subscribed = value;
+}
+
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
