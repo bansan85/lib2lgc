@@ -1,0 +1,19 @@
+#0  __GI_raise (sig=sig@entry=6) at ../sysdeps/unix/sysv/linux/raise.c:51
+        set = {__val = {0 <repeats 16 times>}}
+        pid = <optimized out>
+        tid = <optimized out>
+        ret = <optimized out>
+#1  0x00007ffff7a4ac5f in __GI_abort ()
+        save_stage = 2
+        act = {__sigaction_handler = {sa_handler = 0x0, sa_sigaction = 0x0}, sa_mask = {__val = {0 <repeats 16 times>}}, sa_flags = 0, sa_restorer = 0x0}
+        sigs = {__val = {32, 0 <repeats 15 times>}}
+#2  0x00005555555549be in main (argc=2, argv=0x7fffffffd928) at str_cmp.c:23
+        f = 0x555555557260
+        fsize = 35
+        llvm::None = <optimized out>
+        long_var = "tesaurjqesriunaqe qenauq .erniau qeia qen"...
+#3  0x00005555555549be in main (argc=2, argv=0x7fffffffd928) at str_cmp.c:23
+        f = 0x555555557260
+        fsize = 35
+        llvm::None = <optimized out>
+        long_var = "tesaurjqesriunaqe qenauq .erniau qeia qen"...

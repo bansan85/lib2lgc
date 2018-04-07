@@ -28,6 +28,12 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     std::vector<std::string>* files)
 {
   std::regex reg(regex);
+
+  if (!std::experimental::filesystem::is_directory(folder))
+  {
+    return false;
+  }
+
   for (auto& p :
        std::experimental::filesystem::recursive_directory_iterator(folder))
   {

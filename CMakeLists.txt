@@ -81,7 +81,7 @@ if (CHECK_CODE)
     string(REPLACE "bin" "share/clang" RUN_CLANG_TIDY_ ${CLANG_TIDY})
     string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
     add_custom_command(TARGET check
-      COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay')
+      COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator')
   endif()
   if (DOXYGEN_FOUND)
     add_custom_command(TARGET check

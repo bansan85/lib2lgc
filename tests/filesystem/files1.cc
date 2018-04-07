@@ -25,6 +25,8 @@
 #include <experimental/filesystem>
 #include <ext/alloc_traits.h>
 #include <fstream>
+#include <string>
+#include <vector>
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
@@ -45,7 +47,6 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(files[0] == "folder/output_1.btfull");
   // Test exclude regex
   files.clear();
-  assert(files.empty());
   assert(llgc::filesystem::Files::SearchRecursiveFiles(
       "folder", "^(?!.*btfull).*$", &files));
   assert(files.size() == 1);

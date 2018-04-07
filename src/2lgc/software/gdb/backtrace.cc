@@ -21,8 +21,8 @@
 
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
+#include <2lgc/software/gdb/stack.h>
 #include <cassert>
-#include <iostream>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -314,18 +314,22 @@ bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
   }
   catch (const std::invalid_argument&)
   {
-    std::cerr << "Invalid file " << file << std::endl;
     return false;
   }
   catch (const std::out_of_range&)
   {
-    std::cerr << "Invalid file " << file << std::endl;
     return false;
   }
 
   file_ = file.substr(0, pos);
 
   return true;
+}
+
+const llgc::software::gdb::Backtrace& llgc::software::gdb::Backtrace::Iter::
+operator*() const
+{
+  return *stack_.GetBacktraceFromTop(pos_);
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

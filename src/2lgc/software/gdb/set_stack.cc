@@ -48,21 +48,23 @@ template class llgc::pattern::singleton::Local<
     llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
 
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
-                                        size_t bottom_frame)
-    : stack_(Local(with_source_only, top_frame, bottom_frame))
+                                        size_t bottom_frame,
+                                        bool print_one_by_group)
+    : stack_(LocalCompare(with_source_only, top_frame, bottom_frame)),
+      print_one_by_group_(print_one_by_group)
 {
 }
 
-llgc::software::gdb::SetStack::Local::Local(bool with_source_only,
-                                            size_t top_frame,
-                                            size_t bottom_frame)
+llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
+                                                          size_t top_frame,
+                                                          size_t bottom_frame)
     : with_source_only_(with_source_only),
       top_frame_(top_frame),
       bottom_frame_(bottom_frame)
 {
 }
 
-ssize_t llgc::software::gdb::SetStack::Local::CompareFrom(
+ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
     const size_t nb_max_frames, FunctionGetBacktrace get_backtraces,
     const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
 {
@@ -161,8 +163,7 @@ ssize_t llgc::software::gdb::SetStack::Local::CompareFrom(
   return 0;
 }
 
-// NOLINTNEXTLINE(fuchsia-overloaded-operator)
-bool llgc::software::gdb::SetStack::Local::operator()(
+bool llgc::software::gdb::SetStack::LocalCompare::operator()(
     const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
 {
   // If it's the same file.
@@ -209,8 +210,7 @@ void llgc::software::gdb::SetStack::TellError(const std::string& filename)
   Forward(add_stack_in_string);
 }
 
-bool llgc::software::gdb::SetStack::Add(const std::string& filename,
-                                        bool print_one_by_group)
+bool llgc::software::gdb::SetStack::Add(const std::string& filename)
 {
   std::ifstream file(filename);
 
@@ -251,7 +251,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
   }
 
   std::lock_guard<std::mutex> lck(mutex_stack_);
-  if (!print_one_by_group || stack_.find(stack_gdb) == stack_.end())
+  if (!print_one_by_group_ || stack_.find(stack_gdb) == stack_.end())
   {
     stack_.insert(std::move(stack_gdb));
   }
@@ -260,8 +260,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename,
 }
 
 bool llgc::software::gdb::SetStack::ParallelAdd(
-    const std::vector<std::string>& all_files, unsigned int nthread,
-    bool print_one_by_group)
+    const std::vector<std::string>& all_files, unsigned int nthread)
 {
   bool retval = true;
   const unsigned int nthreads =  // NS
@@ -272,12 +271,11 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
     threads[t] = std::async(
         std::launch::async,
         std::bind(
-            [&all_files, this, nthreads,
-             print_one_by_group](const size_t i_start) {
+            [&all_files, this, nthreads](const size_t i_start) {
               bool retval2 = true;
               for (size_t i = i_start; i < all_files.size(); i += nthreads)
               {
-                retval2 &= Add(all_files[i], print_one_by_group);
+                retval2 &= Add(all_files[i]);
               }
               return retval2;
             },  // NS
@@ -293,8 +291,7 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
 
 bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
                                                  unsigned int nthread,
-                                                 const std::string& regex,
-                                                 bool print_one_by_group)
+                                                 const std::string& regex)
 {
   std::vector<std::string> all_files;
   if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
@@ -302,12 +299,11 @@ bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
     return false;
   }
 
-  return ParallelAdd(all_files, nthread, print_one_by_group);
+  return ParallelAdd(all_files, nthread);
 }
 
 bool llgc::software::gdb::SetStack::AddList(const std::string& list,
-                                            unsigned int nthread,
-                                            bool print_one_by_group)
+                                            unsigned int nthread)
 {
   std::vector<std::string> all_files;
   std::string line;
@@ -322,18 +318,20 @@ bool llgc::software::gdb::SetStack::AddList(const std::string& list,
     all_files.push_back(line);
   }
 
-  return ParallelAdd(all_files, nthread, print_one_by_group);
+  return ParallelAdd(all_files, nthread);
 }
 
 void llgc::software::gdb::SetStack::Print()
 {
-  std::multiset<std::unique_ptr<Stack>, Local>::const_iterator m_it, s_it;
+  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator m_it,
+      s_it;
 
   size_t num = 0;
   for (m_it = stack_.begin(); m_it != stack_.end(); m_it = s_it)
   {
-    std::pair<std::multiset<std::unique_ptr<Stack>, Local>::const_iterator,
-              std::multiset<std::unique_ptr<Stack>, Local>::const_iterator>
+    std::pair<
+        std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator,
+        std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator>
         keyRange = stack_.equal_range(*m_it);
 
     std::cout << "Groupe " << num << std::endl;
@@ -344,6 +342,26 @@ void llgc::software::gdb::SetStack::Print()
     }
     num++;
   }
+}
+
+size_t llgc::software::gdb::SetStack::Count() const
+{
+  std::lock_guard<std::mutex> lck(mutex_stack_);
+  return stack_.size();
+}
+
+std::multiset<std::unique_ptr<llgc::software::gdb::Stack>,
+              llgc::software::gdb::SetStack::LocalCompare>::const_iterator
+llgc::software::gdb::SetStack::begin() const  // NS
+{
+  return stack_.begin();
+}
+
+std::multiset<std::unique_ptr<llgc::software::gdb::Stack>,
+              llgc::software::gdb::SetStack::LocalCompare>::const_iterator
+llgc::software::gdb::SetStack::end() const  // NS
+{
+  return stack_.end();
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

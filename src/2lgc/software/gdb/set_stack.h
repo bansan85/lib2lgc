@@ -80,20 +80,20 @@ class SetStack
    * @param[in] bottom_frame Number of frames from the bottom that must be
    * identical so two stacks are the same. Internally, this number can not
    * exceeded the number of frames.
+   * @param[in] print_one_by_group Keep only one identical backtrace.
    */
-  SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame);
+  SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame,
+           bool print_one_by_group);
 
   /**
    * @brief Add a new stack. The file must contains only the full backtrace from
    * GDB.
    *
    * @param[in] filename The file to add.
-   * @param[in] print_one_by_group Add the file only if no equivalent already
-   * added.
    *
    * @return True if the file is a valid backtrace.
    */
-  bool Add(const std::string& filename, bool print_one_by_group) CHK;
+  bool Add(const std::string& filename) CHK;
 
   /**
    * @brief Add new stacks based on files from a folder. All files must contains
@@ -103,13 +103,11 @@ class SetStack
    * @param[in] nthread The number of threads if parallel is allowed.
    * @param[in] regex Regex that match file to read. If empty, all files will be
    * read.
-   * @param[in] print_one_by_group Add the file only if no equivalent already
-   * added.
    *
    * @return true if no problem.
    */
   bool AddRecursive(const std::string& folder, unsigned int nthread,
-                    const std::string& regex, bool print_one_by_group) CHK;
+                    const std::string& regex) CHK;
 
   /**
    * @brief Add new stacks based on files from a list. All files must contains
@@ -117,25 +115,28 @@ class SetStack
    *
    * @param[in] list The folder where all *.btfull files are.
    * @param[in] nthread The number of threads if parallel is allowed.
-   * @param[in] print_one_by_group Add the file only if no equivalent already
-   * added.
    *
    * @return true if no problem.
    */
-  bool AddList(const std::string& list, unsigned int nthread,
-               bool print_one_by_group) CHK;
+  bool AddList(const std::string& list, unsigned int nthread) CHK;
+
+  /**
+   * @brief Get the number of stack.
+   *
+   * @return The number of stack.
+   */
+  size_t Count() const;
 
   /**
    * @brief Show all stacks grouped by condition passed with the constructor.
    */
   void Print();
 
- private:
   /**
    * @brief A local class that compare to stack and says if two stack looks to
    * be the same.
    */
-  struct Local
+  struct LocalCompare
   {
     /**
      * @brief Constructor with parameter of comparaison.
@@ -149,7 +150,7 @@ class SetStack
      * identical so two stacks are the same. Internally, this number can not
      * exceeded the number of frames.
      */
-    Local(bool with_source_only, size_t top_frame, size_t bottom_frame);
+    LocalCompare(bool with_source_only, size_t top_frame, size_t bottom_frame);
 
     /**
      * @brief Function that compare two stacks.
@@ -208,17 +209,35 @@ class SetStack
   };
 
   /**
+   * @brief Return of the first stack.
+   *
+   * @return Begin of the const iterator.
+   */
+  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator
+  begin()  // NS
+      const;
+
+  /**
+   * @brief Return of the last stack.
+   *
+   * @return End of the const iterator.
+   */
+  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator
+  end()  // NS
+      const;
+
+ private:
+  /**
    * @brief Read in parallel a list of files that contains gdb backtraces.
    *
    * @param[in] all_files The list of files that contains gdb backtraces.
    * @param[in] nthread The number of threads with a maximum of
    * std::thread::hardware_concurrency()
-   * @param[in] print_one_by_group Add the file only if no equivalent already
    *
    * @return true if no problem.
    */
   bool ParallelAdd(const std::vector<std::string>& all_files,
-                   unsigned int nthread, bool print_one_by_group) CHK;
+                   unsigned int nthread) CHK;
 
   /**
    * @brief Set a message throw the server to tell that this file is invalid.
@@ -231,12 +250,17 @@ class SetStack
    * @brief Storage of all stacks sorted with parameter given by the
    * constructor.
    */
-  std::multiset<std::unique_ptr<Stack>, Local> stack_;
+  typename std::multiset<std::unique_ptr<Stack>, LocalCompare> stack_;
 
   /**
    * @brief A internal mutex to use stack_ thread-safe.
    */
-  std::mutex mutex_stack_;
+  mutable std::mutex mutex_stack_;
+
+  /**
+   * @brief Add the file only if no equivalent already added.
+   */
+  bool print_one_by_group_;
 };
 
 }  // namespace llgc::software::gdb

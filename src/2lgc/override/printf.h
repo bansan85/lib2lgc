@@ -51,6 +51,8 @@ class Print
    * @param[in] s The message to show with % to show the next variable.
    * @param[in] value The next variable to print.
    * @param[in] args The others variables.
+   *
+   * @return true if number of arguments is compatible with the format.
    */
   template <typename T, typename... Args>
   static bool F(std::ostream &out_stream, const char *s, T value, Args... args)
@@ -80,6 +82,8 @@ class Print
    *
    * @param[out] out_stream The output stream (std::cout, …).
    * @param[in] s The string message.
+   *
+   * @return true if number of arguments is compatible with the format.
    */
   static bool F(std::ostream &out_stream, const std::string &s);
 };

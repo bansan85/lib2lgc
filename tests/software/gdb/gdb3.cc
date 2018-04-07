@@ -19,31 +19,28 @@
  * SOFTWARE.
  */
 
-#include <2lgc/override/printf.h>
+#include <2lgc/software/gdb/set_stack.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
-#include <sstream>
-#include <string>
+#include <experimental/filesystem>
+#include <memory>
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int argc, char* argv[])  // NS
 {
-  std::ostringstream oss;
+  assert(argc == 3);
 
-  assert(llgc::override::Print::F(oss, "number: %, string: %, double: %", 2,
-                                  "text", 1.5));
-  assert(oss.str() == "number: 2, string: text, double: 1.5");
-  oss.str("");
+  std::experimental::filesystem::path folder(argv[1]);
+  std::experimental::filesystem::path folder_bin(argv[2]);
+  assert(std::experimental::filesystem::is_directory(folder));
 
-  assert(llgc::override::Print::F(oss, "number: %%, string: %.", "text"));
-  assert(oss.str() == "number: %, string: text.");
-  oss.str("");
+  std::unique_ptr<llgc::software::gdb::SetStack> set_stack =
+      std::make_unique<llgc::software::gdb::SetStack>(false, 3, 3, true);
 
-  assert(llgc::override::Print::F(oss, "number: %, string: %%.", 124));
-  assert(oss.str() == "number: 124, string: %.");
-  oss.str("");
-
-  assert(!llgc::override::Print::F(oss, "number: %, string: %, double: %", 2,
-                                   "text"));
+  assert(set_stack->AddRecursive(folder, 32, "^.*\\.success$"));
+  assert(!set_stack->AddRecursive("not_found", 32, "^.*\\.success$"));
+  assert(!set_stack->AddList("not_found", 32));
+  assert(set_stack->AddList(folder_bin / "list.bt", 32));
+  set_stack->Print();
 
   google::protobuf::ShutdownProtobufLibrary();
 

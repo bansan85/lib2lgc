@@ -99,11 +99,32 @@ class Stack
     return backtraces_[backtraces_.size() - 1 - i].get();
   }
 
+  /**
+   * @brief Return of the top backtrace.
+   *
+   * @return Begin of the const iterator.
+   */
+  Backtrace::Iter begin() const  // NS
+  {
+    return Backtrace::Iter(*this, 0);
+  }
+
+  /**
+   * @brief Return of the last backtrace.
+   *
+   * @return End of the const iterator.
+   */
+  Backtrace::Iter end() const  // NS
+  {
+    return Backtrace::Iter(*this, backtraces_.size());
+  }
+
  private:
   /**
    * @brief Storage of the filename.
    */
   std::string filename_;
+
   /**
    * @brief Vector that store all backtraces.
    */
