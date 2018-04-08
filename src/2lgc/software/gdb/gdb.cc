@@ -51,7 +51,8 @@ template class llgc::pattern::singleton::Static<
     llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
 
 bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
-                                         unsigned int argc, char* const argv[],
+                                         unsigned int argc,
+                                         const char* const argv[],
                                          int64_t timeout)
 {
   auto argvbis = std::make_unique<const char* []>(argc + 24);
@@ -119,9 +120,9 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
       if (wait_pid == 0)
       {
-        if (elapsed_seconds <= timeout)
+        if (elapsed_seconds < timeout)
         {
-          sleep(1);
+          std::this_thread::sleep_for(std::chrono::milliseconds(50));
         }
         else
         {
@@ -143,7 +144,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           break;
         }
       }
-    } while (wait_pid == 0 && elapsed_seconds <= timeout);
+    } while (wait_pid == 0 && elapsed_seconds < timeout);
   }
   else
   {
@@ -156,11 +157,12 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
 
 static bool ParallelRun(const std::vector<std::string>& all_files,
                         unsigned int nthread, unsigned int argc,
-                        char* const argv[], int64_t timeout)
+                        const char* const argv[], int64_t timeout)
 {
   bool retval = true;
   const unsigned int nthreads =  // NS
-      std::min(nthread, std::thread::hardware_concurrency());
+      std::min(std::min(nthread, std::thread::hardware_concurrency()),
+               static_cast<unsigned int>(all_files.size()));
   std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
   {
@@ -188,7 +190,7 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
 
 bool llgc::software::gdb::Gdb::RunBtFullRecursive(
     const std::string& folder, unsigned int nthread, const std::string& regex,
-    unsigned int argc, char* const argv[], int64_t timeout)
+    unsigned int argc, const char* const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
   if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
@@ -202,7 +204,7 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
 bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
                                              unsigned int nthread,
                                              unsigned int argc,
-                                             char* const argv[],
+                                             const char* const argv[],
                                              int64_t timeout)
 {
   std::vector<std::string> all_files;

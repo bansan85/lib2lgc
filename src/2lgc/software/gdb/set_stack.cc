@@ -35,6 +35,7 @@
 #include <functional>
 #include <future>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <system_error>
@@ -78,11 +79,11 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
   {
     if (with_source_only_)
     {
-      while (ii < icount && !(*i.*get_backtraces)(ii)->HasSource())
+      while (ii < icount && !(*i.*get_backtraces)(ii).HasSource())
       {
         ii++;
       }
-      while (jj < jcount && !(*j.*get_backtraces)(jj)->HasSource())
+      while (jj < jcount && !(*j.*get_backtraces)(jj).HasSource())
       {
         jj++;
       }
@@ -104,9 +105,9 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
       return 1;
     }
 
-    const Backtrace* bti = (*i.*get_backtraces)(ii);
-    const Backtrace* btj = (*j.*get_backtraces)(jj);
-    int compare = bti->GetFile().compare(btj->GetFile());  // NS
+    const Backtrace& bti = (*i.*get_backtraces)(ii);
+    const Backtrace& btj = (*j.*get_backtraces)(jj);
+    int compare = bti.GetFile().compare(btj.GetFile());  // NS
 
     if (compare < 0)
     {
@@ -118,22 +119,22 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
     }
 
     // First compare the line.
-    if (bti->GetLine() < btj->GetLine())
+    if (bti.GetLine() < btj.GetLine())
     {
       return -1;
     }
-    if (bti->GetLine() > btj->GetLine())
+    if (bti.GetLine() > btj.GetLine())
     {
       return 1;
     }
     // If both lines are unknown, compare the name of the function.
-    if (bti->GetLine() == std::numeric_limits<size_t>::max())
+    if (bti.GetLine() == std::numeric_limits<size_t>::max())
     {
-      if (bti->GetName().compare(btj->GetName()) < 0)
+      if (bti.GetName().compare(btj.GetName()) < 0)
       {
         return -1;
       }
-      if (bti->GetName().compare(btj->GetName()) > 0)
+      if (bti.GetName().compare(btj.GetName()) > 0)
       {
         return 1;
       }
@@ -231,7 +232,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
   {
     if (stack_gdb->InterpretLine(line))
     {
-      if (stack_gdb->GetBacktraceFromBottom(0)->GetIndex() + 1 !=
+      if (stack_gdb->GetBacktraceFromBottom(0).GetIndex() + 1 !=
           stack_gdb->NumberOfBacktraces())
       {
         TellError(filename);
@@ -264,7 +265,8 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
 {
   bool retval = true;
   const unsigned int nthreads =  // NS
-      std::min(nthread, std::thread::hardware_concurrency());
+      std::min(std::min(nthread, std::thread::hardware_concurrency()),
+               static_cast<unsigned int>(all_files.size()));
   std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
   {
@@ -362,6 +364,13 @@ std::multiset<std::unique_ptr<llgc::software::gdb::Stack>,
 llgc::software::gdb::SetStack::end() const  // NS
 {
   return stack_.end();
+}
+
+const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(size_t i)
+{
+  auto it = begin();
+  std::advance(it, i);
+  return **it;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

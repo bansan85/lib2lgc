@@ -73,7 +73,7 @@ class Gdb : public llgc::pattern::singleton::Static<
    * @return true if no problem.
    */
   static bool RunBtFull(const std::string& filename, unsigned int argc,
-                        char* const argv[], int64_t timeout) CHK;
+                        const char* const argv[], int64_t timeout) CHK;
 
   /**
    * @brief Find recursively all files and run gdb to get the backtrace full.
@@ -91,7 +91,7 @@ class Gdb : public llgc::pattern::singleton::Static<
 
   static bool RunBtFullRecursive(const std::string& folder,
                                  unsigned int nthread, const std::string& regex,
-                                 unsigned int argc, char* const argv[],
+                                 unsigned int argc, const char* const argv[],
                                  int64_t timeout) CHK;
   /**
    * @brief Get files from a list and run gdb to get the backtrace full.
@@ -106,7 +106,7 @@ class Gdb : public llgc::pattern::singleton::Static<
    * @return true if no problem.
    */
   static bool RunBtFullList(const std::string& list, unsigned int nthread,
-                            unsigned int argc, char* const argv[],
+                            unsigned int argc, const char* const argv[],
                             int64_t timeout) CHK;
 };
 

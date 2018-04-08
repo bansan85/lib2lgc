@@ -24,6 +24,11 @@ add_executable(gdb2 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/gdb2.cc)
 add_executable(gdb3 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/gdb3.cc)
+add_executable(deadbeef EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/deadbeef.c)
+add_executable(gdb4 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/gdb4.cc)
+add_dependencies(gdb4 deadbeef)
 
 
 target_link_libraries(files1 ${Protobuf_LIBRARIES} 2lgc)
@@ -35,6 +40,7 @@ target_link_libraries(publisher1 ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(gdb1 ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(gdb2 ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(gdb3 ${Protobuf_LIBRARIES} 2lgc)
+target_link_libraries(gdb4 ${Protobuf_LIBRARIES} 2lgc)
 
 add_test(files1 files1)
 add_test(compare_decimal1 compare_decimal1)
@@ -43,9 +49,12 @@ add_test(visitor1 visitor1)
 add_test(publisher1 publisher1)
 add_test(gdb1 gdb1)
 add_test(gdb2 gdb2 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb")
-add_test(gdb3 gdb3 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb" "${CMAKE_CURRENT_BINARY_DIR}")
 add_custom_command(TARGET gdb3 PRE_BUILD
   COMMAND echo "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/btfull10.success" > "${CMAKE_CURRENT_BINARY_DIR}/list.bt")
+add_test(gdb3 gdb3 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb" "${CMAKE_CURRENT_BINARY_DIR}")
+add_custom_command(TARGET gdb4 PRE_BUILD
+  COMMAND echo "${CMAKE_CURRENT_BINARY_DIR}/deadbeef" > "${CMAKE_CURRENT_BINARY_DIR}/deadbeef.list")
+add_test(gdb4 gdb4 "${CMAKE_CURRENT_BINARY_DIR}")
 
 if (CHECK_CODE)
   set_target_properties(files1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -56,6 +65,8 @@ if (CHECK_CODE)
   set_target_properties(gdb1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb2 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb3 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(deadbeef PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(gdb4 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 add_custom_command(TARGET check_all_tests POST_BUILD
@@ -68,6 +79,7 @@ add_dependencies(check_all_tests
   publisher1
   gdb1
   gdb2
-  gdb3)
+  gdb3
+  gdb4)
 
 add_dependencies(check check_all_tests)

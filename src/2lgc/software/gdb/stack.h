@@ -30,6 +30,7 @@
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <cstddef>
+#include <ext/alloc_traits.h>
 #include <memory>
 #include <string>
 #include <vector>
@@ -82,9 +83,9 @@ class Stack
    *
    * @return A const pointer of the backtrace.
    */
-  const Backtrace* GetBacktraceFromTop(size_t i) const CHK
+  const Backtrace& GetBacktraceFromTop(size_t i) const CHK
   {
-    return backtraces_[i].get();
+    return *backtraces_[i];
   }
 
   /**
@@ -94,9 +95,9 @@ class Stack
    *
    * @return A const pointer of the backtrace.
    */
-  const Backtrace* GetBacktraceFromBottom(size_t i) const CHK
+  const Backtrace& GetBacktraceFromBottom(size_t i) const CHK
   {
-    return backtraces_[backtraces_.size() - 1 - i].get();
+    return *backtraces_[backtraces_.size() - 1 - i];
   }
 
   /**

@@ -170,7 +170,7 @@ class SetStack
      *
      * @return The backtrace. Throw an exception if out of boundary.
      */
-    typedef const Backtrace* (Stack::*FunctionGetBacktrace)(size_t i) const;
+    typedef const Backtrace& (Stack::*FunctionGetBacktrace)(size_t i) const;
 
     /**
      * @brief Helper to operator(). Compare two stacks from the top or from the
@@ -214,7 +214,7 @@ class SetStack
    * @return Begin of the const iterator.
    */
   std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator
-  begin()  // NS
+      begin()  // NS
       const;
 
   /**
@@ -223,8 +223,10 @@ class SetStack
    * @return End of the const iterator.
    */
   std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator
-  end()  // NS
+      end()  // NS
       const;
+
+  const Stack& Get(size_t i);
 
  private:
   /**
