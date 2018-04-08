@@ -1,4 +1,4 @@
-# 2lgcutils
+# Util
 
 These files are needed by all lib and project from 2lgc.
 

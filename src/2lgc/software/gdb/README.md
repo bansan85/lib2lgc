@@ -1,4 +1,4 @@
-# lib2lgcgdb
+# gdb
 
 This library helps you to manipulate gdb to extract backtrace of a crash and to compare a bunch of backtrace files.
 

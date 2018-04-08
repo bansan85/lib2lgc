@@ -1,4 +1,4 @@
-# lib2lgcmath
+# math
 
 This library contains all you need for math calculation.
 
