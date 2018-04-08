@@ -47,8 +47,9 @@
 
 template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
 template class llgc::pattern::publisher::PublisherBase<msg::software::Gdbs>;
-template class llgc::pattern::singleton::Static<
-    llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
+template class llgc::pattern::singleton::Static<llgc::software::gdb::Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
+
+llgc::pattern::singleton::Static<llgc::software::gdb::Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>> llgc::software::gdb::Gdb::server_;
 
 bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
                                          unsigned int argc,
@@ -221,6 +222,18 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   }
 
   return ParallelRun(all_files, nthread, argc, argv, timeout);
+}
+
+void llgc::software::gdb::Gdb::Forward(const std::shared_ptr<const std::string>& message)
+{
+  std::lock_guard<std::recursive_mutex> myLock(server_.mutex_);
+  // Check if instance.
+  if (server_.IsInstance())
+  {
+    // If the instance if freed, GetInstance will create it.
+    auto singleton_ = server_.GetInstance();
+    singleton_->Forward(message);
+  }
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

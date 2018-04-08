@@ -43,36 +43,29 @@ class Local
 {
  public:
   /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
+   * @brief A mutex to implement the singleton.
    */
-  std::shared_ptr<T> GetInstanceLocal();
+  std::recursive_mutex mutex_;
 
   /**
    * @brief Tell if an instance is allocated.
    *
    * @return true if allocated.
    */
-  bool IsInstanceLocal();
+  bool IsInstance();
 
   /**
-   * @brief Send the message to all subscriber.
+   * @brief Get the instance and allocate it if not already.
    *
-   * @param[in] message The message to send.
+   * @return Return an instance never null.
    */
-  void Forward(const std::shared_ptr<const std::string>& message);
+  std::shared_ptr<T> GetInstance();
 
  private:
   /**
    * @brief Store the instance of the singleton
    */
-  std::shared_ptr<T> instance_local_;
-
-  /**
-   * @brief A mutex to implement the singleton.
-   */
-  std::recursive_mutex mutex_local_;
+  std::shared_ptr<T> instance_;
 };
 
 }  // namespace llgc::pattern::singleton

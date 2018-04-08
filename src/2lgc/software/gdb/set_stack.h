@@ -66,10 +66,13 @@ class Backtrace;
  * @details Criterea of sort must be defined on creation.
  */
 class SetStack
-    : public llgc::pattern::singleton::Local<
-          llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
 {
  public:
+  /**
+   * @brief Server publisher.
+   */
+  llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>> server_;
+
   /**
    * @brief Default constructor.
    *
@@ -239,6 +242,22 @@ class SetStack
 
  private:
   /**
+   * @brief Storage of all stacks sorted with parameter given by the
+   * constructor.
+   */
+  std::multiset<std::unique_ptr<Stack>, LocalCompare> stack_;
+
+  /**
+   * @brief A internal mutex to use stack_ thread-safe.
+   */
+  mutable std::mutex mutex_stack_;
+
+  /**
+   * @brief Add the file only if no equivalent already added.
+   */
+
+  bool print_one_by_group_;
+  /**
    * @brief Read in parallel a list of files that contains gdb backtraces.
    *
    * @param[in] all_files The list of files that contains gdb backtraces.
@@ -258,20 +277,11 @@ class SetStack
   void TellError(const std::string& filename);
 
   /**
-   * @brief Storage of all stacks sorted with parameter given by the
-   * constructor.
+   * @brief Send the message to all subscribers.
+   *
+   * @param[in] message The message to send.
    */
-  std::multiset<std::unique_ptr<Stack>, LocalCompare> stack_;
-
-  /**
-   * @brief A internal mutex to use stack_ thread-safe.
-   */
-  mutable std::mutex mutex_stack_;
-
-  /**
-   * @brief Add the file only if no equivalent already added.
-   */
-  bool print_one_by_group_;
+  void Forward(const std::shared_ptr<const std::string>& message);
 };
 
 }  // namespace llgc::software::gdb

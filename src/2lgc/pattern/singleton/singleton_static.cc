@@ -21,37 +21,23 @@
 
 #include <2lgc/pattern/singleton/singleton_static.h>
 
-template <class T>
-std::shared_ptr<T> llgc::pattern::singleton::Static<T>::GetInstanceStatic()
+template <class T, class U>
+bool llgc::pattern::singleton::Static<T, U>::IsInstance()
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
 
-  if (instance_static_ == nullptr)
-  {
-    instance_static_ = std::make_shared<T>();
-  }
-
-  return instance_static_;
+  return instance_ != nullptr;
 }
 
-template <class T>
-bool llgc::pattern::singleton::Static<T>::IsInstanceStatic()
+template <class T, class U>
+std::shared_ptr<U> llgc::pattern::singleton::Static<T, U>::GetInstance()
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
 
-  return instance_static_ != nullptr;
-}
-
-template <class T>
-void llgc::pattern::singleton::Static<T>::Forward(
-    const std::shared_ptr<const std::string>& message)
-{
-  std::lock_guard<std::recursive_mutex> myLock(mutex_static_);
-  // Check if instance.
-  if (IsInstanceStatic())
+  if (instance_ == nullptr)
   {
-    // If the instance if freed, GetInstance will create it.
-    auto singleton_ = GetInstanceStatic();
-    singleton_->Forward(message);
+    instance_ = std::make_shared<U>();
   }
+
+  return instance_;
 }

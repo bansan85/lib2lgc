@@ -36,9 +36,11 @@ namespace llgc::pattern::singleton
 /**
  * @brief Class that contains the getInstance for the static singleton.
  *
- * @tparam T Type of the singleton.
+ * @tparam T Class inheriting the singleton. Need only to handle case where two
+ * differents static classes need to have singleton with the same return class.
+ * @tparam U Class return of the singleton.
  */
-template <class T>
+template <class T, class U>
 class Static
 {
  public:
@@ -47,32 +49,25 @@ class Static
    *
    * @return true if allocated.
    */
-  static bool IsInstanceStatic();
+  static bool IsInstance();
+
   /**
    * @brief Get the instance and allocate it if not already.
    *
    * @return Return an instance never null.
    */
-  static std::shared_ptr<T> GetInstanceStatic();
+  static std::shared_ptr<U> GetInstance();
 
-  /**
-   * @brief Send the message to all subscriber.
-   *
-   * @param[in] message The message to send.
-   */
-  static void Forward(const std::shared_ptr<const std::string>& message);
-
- protected:
   /**
    * @brief A mutex to implement the singleton.
    */
-  static std::recursive_mutex mutex_static_;
+  static std::recursive_mutex mutex_;
 
  private:
   /**
    * @brief Store the instance of the singleton
    */
-  static std::shared_ptr<T> instance_static_;
+  static std::shared_ptr<U> instance_;
 };
 
 }  // namespace llgc::pattern::singleton

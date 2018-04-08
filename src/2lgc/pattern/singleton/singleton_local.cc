@@ -22,36 +22,22 @@
 #include <2lgc/pattern/singleton/singleton_local.h>
 
 template <class T>
-std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstanceLocal()
+bool llgc::pattern::singleton::Local<T>::IsInstance()
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
 
-  if (instance_local_ == nullptr)
-  {
-    instance_local_ = std::make_shared<T>();
-  }
-
-  return instance_local_;
+  return instance_ != nullptr;
 }
 
 template <class T>
-bool llgc::pattern::singleton::Local<T>::IsInstanceLocal()
+std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstance()
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
 
-  return instance_local_ != nullptr;
-}
-
-template <class T>
-void llgc::pattern::singleton::Local<T>::Forward(
-    const std::shared_ptr<const std::string>& message)
-{
-  std::lock_guard<std::recursive_mutex> myLock(mutex_local_);
-  // Check if instance.
-  if (IsInstanceLocal())
+  if (instance_ == nullptr)
   {
-    // If the instance if freed, GetInstance will create it.
-    auto singleton_ = GetInstanceLocal();
-    singleton_->Forward(message);
+    instance_ = std::make_shared<T>();
   }
+
+  return instance_;
 }

@@ -56,8 +56,7 @@ namespace llgc::software::gdb
 /**
  * @brief Class to run gdb for various purpose.
  */
-class Gdb : public llgc::pattern::singleton::Static<
-                llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
+class Gdb
 {
  public:
   /**
@@ -108,14 +107,18 @@ class Gdb : public llgc::pattern::singleton::Static<
   static bool RunBtFullList(const std::string& list, unsigned int nthread,
                             unsigned int argc, const char* const argv[],
                             int64_t timeout) CHK;
+
+  static void Forward(const std::shared_ptr<const std::string>& message);
+
+  static llgc::pattern::singleton::Static<Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>> server_;
 };
 
 }  // namespace llgc::software::gdb
 
-template <typename T>
-std::recursive_mutex llgc::pattern::singleton::Static<T>::mutex_static_;
-template <typename T>
-std::shared_ptr<T> llgc::pattern::singleton::Static<T>::instance_static_;
+template <typename T, typename U>
+std::recursive_mutex llgc::pattern::singleton::Static<T, U>::mutex_;
+template <typename T, typename U>
+std::shared_ptr<U> llgc::pattern::singleton::Static<T, U>::instance_;
 
 #endif  // SOFTWARE_GDB_GDB_H_
 
