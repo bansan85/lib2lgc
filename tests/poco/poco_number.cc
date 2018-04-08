@@ -37,10 +37,10 @@ int main(int /* argc */, char* /* argv */ [])  // NS
                                                      0.5e-13, 4));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(constant1->GetVal(), 0.5,
                                                      0.5e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(constant1->GetUnit().m(),
-                                                     1., 1e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(constant1->GetUnit().m(),
-                                                     1., 1e-13, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(constant1->GetUnit().m(),
+                                                     1.f, 1.e-8f, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(constant1->GetUnit().m(),
+                                                     1.f, 1.e-8f, 4));
 
   unit = std::make_unique<msg::Number_Unit>();
   unit->set_m(1.);
@@ -53,28 +53,28 @@ int main(int /* argc */, char* /* argv */ [])  // NS
                                                      2.8e-13, 4));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(addition.GetVal(), 2.8,
                                                      2.8e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(addition.GetUnit().m(), 1.,
-                                                     1e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(addition.GetUnit().m(), 1.,
-                                                     1e-13, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(addition.GetUnit().m(),
+                                                     1.f, 1.e-8f, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(addition.GetUnit().m(),
+                                                     1.f, 1.e-8f, 4));
   llgc::poco::Number_NumOpNum moins(4, constant1, msg::Number_Operator_MOINS,
                                     constant2);
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(moins.GetVal(), -1.8,
                                                      1.8e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(moins.GetUnit().m(), 1.,
-                                                     1e-13, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(moins.GetUnit().m(), 1.f,
+                                                     1.e-13f, 4));
   llgc::poco::Number_NumOpNum multiplication(
       5, constant1, msg::Number_Operator_MULTIPLICATION, constant2);
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(multiplication.GetVal(),
                                                      1.15, 1.4e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(
-      multiplication.GetUnit().m(), 2., 2e-13, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(
+      multiplication.GetUnit().m(), 2.f, 2.e-13f, 4));
   llgc::poco::Number_NumOpNum division(
       6, constant1, msg::Number_Operator_DIVISION, constant2);
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(division.GetVal(),
                                                      0.5 / 2.3, 0.18e-13, 4));
-  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(division.GetUnit().m(), 0.,
-                                                     1e-13, 4));
+  assert(llgc::math::Compare::AlmostEqualUlpsAndAbsF(division.GetUnit().m(),
+                                                     0.f, 1.e-13f, 4));
 
   google::protobuf::ShutdownProtobufLibrary();
 

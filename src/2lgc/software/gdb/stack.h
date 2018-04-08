@@ -37,6 +37,8 @@
 
 namespace llgc::software::gdb
 {
+class SetStack;
+
 /**
  * @brief Store all informations about a stack.
  *
@@ -45,6 +47,62 @@ namespace llgc::software::gdb
 class Stack
 {
  public:
+  /**
+   * @brief Iterator for Stack.
+   */
+  class Iter
+  {
+   public:
+    /**
+     * @brief The constructor
+     *
+     * @param[in] set_stack The set_stack contains the list of stack.
+     * @param[in] pos The position of the current stack.
+     */
+    Iter(const SetStack& set_stack, size_t pos)
+        : set_stack_(set_stack), pos_(pos)
+    {
+    }
+
+    /**
+     * @brief Compare operator
+     *
+     * @param[in] other The iterator to compare with.
+     *
+     * @return true if different.
+     */
+    bool operator!=(const Iter& other) const { return pos_ != other.pos_; }
+
+    /**
+     * @brief Dereference an iterator return the current stack.
+     *
+     * @return Return the current backtrace.
+     */
+    const Stack& operator*() const;
+
+    /**
+     * @brief Increment the current stack.
+     *
+     * @return Himself.
+     */
+    const Iter& operator++()
+    {
+      ++pos_;
+      return *this;
+    }
+
+   private:
+    /**
+     * @brief The stack that contains all stacks.
+     */
+    const SetStack& set_stack_;
+
+    /**
+     * @brief The position of the current stack.
+     */
+    size_t pos_;
+  };
+
   /**
    * @brief Default constructor.
    *
@@ -111,7 +169,7 @@ class Stack
   }
 
   /**
-   * @brief Return of the last backtrace.
+   * @brief Return after of the last backtrace.
    *
    * @return End of the const iterator.
    */

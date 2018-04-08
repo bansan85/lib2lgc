@@ -20,6 +20,7 @@
  */
 
 #include <2lgc/software/gdb/backtrace.h>
+#include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
 #include <algorithm>
 #include <memory>
@@ -29,7 +30,7 @@ llgc::software::gdb::Stack::Stack(std::string filename)
 {
 }
 
-bool llgc::software::gdb::Stack::InterpretLine(const std::string &line)
+bool llgc::software::gdb::Stack::InterpretLine(const std::string& line)
 {
   std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
 
@@ -41,6 +42,12 @@ bool llgc::software::gdb::Stack::InterpretLine(const std::string &line)
   backtraces_.emplace_back(bt.release());
 
   return true;
+}
+
+const llgc::software::gdb::Stack& llgc::software::gdb::Stack::Iter::operator*()
+    const
+{
+  return set_stack_.Get(pos_);
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

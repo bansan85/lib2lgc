@@ -51,7 +51,7 @@ class PublisherRemote : public PublisherBase<M>
   /**
    * @brief Default destructor.
    */
-  virtual ~PublisherRemote();
+  ~PublisherRemote() override;
 
   /**
    * @brief Delete move constructor.

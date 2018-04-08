@@ -60,7 +60,7 @@ class SubscriberDirect : public SubscriberInterface
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~SubscriberDirect() {}
+  ~SubscriberDirect() override {}
 
  private:
   /**

@@ -352,23 +352,10 @@ size_t llgc::software::gdb::SetStack::Count() const
   return stack_.size();
 }
 
-std::multiset<std::unique_ptr<llgc::software::gdb::Stack>,
-              llgc::software::gdb::SetStack::LocalCompare>::const_iterator
-llgc::software::gdb::SetStack::begin() const  // NS
+const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
+    size_t i) const
 {
-  return stack_.begin();
-}
-
-std::multiset<std::unique_ptr<llgc::software::gdb::Stack>,
-              llgc::software::gdb::SetStack::LocalCompare>::const_iterator
-llgc::software::gdb::SetStack::end() const  // NS
-{
-  return stack_.end();
-}
-
-const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(size_t i)
-{
-  auto it = begin();
+  auto it = stack_.begin();
   std::advance(it, i);
   return **it;
 }

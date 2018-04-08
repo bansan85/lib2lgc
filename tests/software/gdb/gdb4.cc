@@ -29,6 +29,8 @@
 #include <memory>
 #include <string>
 
+void CheckBtfull(const std::experimental::filesystem::path& path);
+
 void CheckBtfull(const std::experimental::filesystem::path& path)
 {
   assert(std::experimental::filesystem::is_regular_file(path));

@@ -209,31 +209,33 @@ class SetStack
   };
 
   /**
-   * @brief Return of the first stack.
-   *
-   * @return Begin of the const iterator.
-   */
-  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator
-  begin()  // NS
-      const;
-
-  /**
-   * @brief Return of the last stack.
-   *
-   * @return End of the const iterator.
-   */
-  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator
-  end()  // NS
-      const;
-
-  /**
    * @brief Get the nth stack of the set.
    *
    * @param[in] i the nth stack. First is at 0.
    *
    * @return A reference to the stack. The ith stack must exists.
    */
-  const Stack& Get(size_t i);
+  const Stack& Get(size_t i) const;
+
+  /**
+   * @brief Return of the top stack.
+   *
+   * @return Begin of the const iterator.
+   */
+  Stack::Iter begin() const  // NS
+  {
+    return Stack::Iter(*this, 0);
+  }
+
+  /**
+   * @brief Return after of the last stack.
+   *
+   * @return End of the const iterator.
+   */
+  Stack::Iter end() const  // NS
+  {
+    return Stack::Iter(*this, stack_.size());
+  }
 
  private:
   /**

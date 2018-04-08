@@ -23,7 +23,7 @@
 #define POCO_NUMBER_IMPL_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <2lgc/config.h>
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
@@ -73,8 +73,8 @@ class Number_Constant
    */
   msg::Number_Unit GetUnit() const override;
 
- private:
 #ifndef DISABLE_VISITABLE_CACHE
+ private:
   /**
    * @brief The id of the cached value.
    */

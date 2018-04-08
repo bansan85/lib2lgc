@@ -26,7 +26,6 @@
 #include <cassert>
 #include <cstddef>
 #include <experimental/filesystem>
-#include <map>
 #include <memory>
 #include <string>
 
@@ -49,13 +48,13 @@ int main(int argc, char* argv[])  // NS
   assert(set_stack->Count() == 0);
   assert(set_stack->Add(folder / "btfull1.success"));
   assert(set_stack->Count() == 1);
-  for (auto it = set_stack->begin(); it != set_stack->end(); ++it)
+  for (const auto& it : *set_stack)
   {
-    assert((*it)->GetFilename() == folder / "btfull1.success");
-    assert((*it)->NumberOfBacktraces() == 3);
+    assert(it.GetFilename() == folder / "btfull1.success");
+    assert(it.NumberOfBacktraces() == 3);
     size_t i = 0;
     // Check range-based loop
-    for (auto& it2 : **it)
+    for (const auto& it2 : it)
     {
       switch (i)
       {
