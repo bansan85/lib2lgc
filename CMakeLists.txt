@@ -11,6 +11,7 @@ set(CHECK_CODE)
 if (CHECK_CODE)
   set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
+set(DISABLE_VISITABLE_CACHE)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -76,12 +77,14 @@ if (CHECK_CODE)
   #-clang-diagnostic-covered-switch-default: gcc wants a default case.
   #-cppcoreguidelines-pro-bounds-array-to-pointer-decay: warn all assert.
   #-hicpp-no-array-decay: warn all assert.
+  #-google-readability-namespace-comments: allow namespace llgc::math
+  #-llvm-namespace-comment: allow namespace llgc::math
   find_program(CLANG_TIDY clang-tidy)
   if (CLANG_TIDY)
     string(REPLACE "bin" "share/clang" RUN_CLANG_TIDY_ ${CLANG_TIDY})
     string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
     add_custom_command(TARGET check
-      COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator')
+      COMMAND ${RUN_CLANG_TIDY} ${ALL_SOURCE_FILES} ${SOURCE_FILES_TEST} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment')
   endif()
   if (DOXYGEN_FOUND)
     add_custom_command(TARGET check

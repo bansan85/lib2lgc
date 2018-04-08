@@ -31,6 +31,7 @@
 #include <algorithm>
 #include <cmath>
 #include <cstdint>
+#include <limits>
 #include <memory>
 #include <string>
 
@@ -83,10 +84,10 @@ bool llgc::poco::Unit::UnitOp(const msg::Number_Unit &unit1,
 llgc::poco::Number_Constant::Number_Constant(const uint32_t id,
                                              const double value,
                                              msg::Number_Unit *unit)
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
     : cache_value_id_(std::numeric_limits<uint32_t>::max()),
       cache_unit_id_(std::numeric_limits<uint32_t>::max())
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 {
   auto constant = std::make_unique<msg::Number_Constant>();
   constant->set_value(value);
@@ -98,13 +99,13 @@ llgc::poco::Number_Constant::Number_Constant(const uint32_t id,
 
 double llgc::poco::Number_Constant::GetVal() const
 {
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   // Check cache.
   if (cache_value_id_ == Message().id())
   {
     return cache_value_;
   }
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   std::string return_value;
   llgc::poco::NumberVisitorVal visitor_val;
@@ -113,23 +114,23 @@ double llgc::poco::Number_Constant::GetVal() const
   msg::Double double_value;
   BUGLIB(double_value.ParseFromString(return_value), std::nan(""), "protobuf");
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
   cache_value_id_ = Message().id();
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   return double_value.value();
 }
 
 msg::Number_Unit llgc::poco::Number_Constant::GetUnit() const
 {
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   // Check cache.
   if (cache_unit_id_ == Message().id())
   {
     return cache_unit_;
   }
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   std::string return_unit;
   llgc::poco::NumberVisitorUnit visitor_unit;
@@ -139,10 +140,10 @@ msg::Number_Unit llgc::poco::Number_Constant::GetUnit() const
   BUGLIB(number_unit.ParseFromString(return_unit), msg::Number_Unit(),
          "protobuf");
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   cache_unit_ = number_unit;
   cache_unit_id_ = Message().id();
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   return number_unit;
 }
@@ -152,13 +153,13 @@ llgc::poco::Number_NumOpNum::Number_NumOpNum(
     msg::Number_Operator operator_, std::shared_ptr<const Number> number2)
     : number1_(std::move(number1)),
       number2_(std::move(number2))
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
       ,
       cache_value1_id_(std::numeric_limits<uint32_t>::max()),
       cache_value2_id_(std::numeric_limits<uint32_t>::max()),
       cache_unit1_id_(std::numeric_limits<uint32_t>::max()),
       cache_unit2_id_(std::numeric_limits<uint32_t>::max())
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 {
   auto number_operator_number = std::make_unique<msg::Number_NumberOpNumber>();
   number_operator_number->set_id1(number1_->Message().id());
@@ -171,14 +172,14 @@ llgc::poco::Number_NumOpNum::Number_NumOpNum(
 
 double llgc::poco::Number_NumOpNum::GetVal() const
 {
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   // Check cache.
   if ((cache_value1_id_ == number1_->Message().id()) &&
       (cache_value2_id_ == number2_->Message().id()))
   {
     return cache_value_;
   }
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   std::string return_value;
   llgc::poco::NumberVisitorVal visitor_val;
@@ -187,25 +188,25 @@ double llgc::poco::Number_NumOpNum::GetVal() const
   msg::Double double_value;
   BUGLIB(double_value.ParseFromString(return_value), std::nan(""), "protobuf");
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
   cache_value1_id_ = number1_->Message().id();
   cache_value2_id_ = number2_->Message().id();
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   return double_value.value();
 }
 
 msg::Number_Unit llgc::poco::Number_NumOpNum::GetUnit() const
 {
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   // Check cache.
   if ((cache_unit1_id_ == number1_->Message().id()) &&
       (cache_unit2_id_ == number2_->Message().id()))
   {
     return cache_unit_;
   }
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   std::string return_unit;
   llgc::poco::NumberVisitorUnit visitor_unit;
@@ -215,11 +216,11 @@ msg::Number_Unit llgc::poco::Number_NumOpNum::GetUnit() const
   BUGLIB(number_unit.ParseFromString(return_unit), msg::Number_Unit(),
          "protobuf");
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   cache_unit_ = number_unit;
   cache_unit1_id_ = number1_->Message().id();
   cache_unit2_id_ = number2_->Message().id();
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 
   return number_unit;
 }

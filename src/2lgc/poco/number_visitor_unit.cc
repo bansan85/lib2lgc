@@ -86,8 +86,7 @@ bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
       BUGUSER(!llgc::math::Compare::AlmostEqualRelativeAndAbsD(
                   double_val.value(), 0., 1e-15, 1e-15),
               false, "Divide by zero.");
-      BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_MULTIPLICATION,
-                           &unit),
+      BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_DIVISION, &unit),
               false);
       BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
       return true;

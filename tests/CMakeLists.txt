@@ -18,6 +18,8 @@ set_source_files_properties(${PUBLISHER_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/p
 add_executable(publisher1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher1.cc
   ${PUBLISHER_PROTO_SRC})
+add_executable(poco_number EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/poco/poco_number.cc)
 add_executable(gdb1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/gdb1.cc)
 add_executable(gdb2 EXCLUDE_FROM_ALL
@@ -37,6 +39,7 @@ target_link_libraries(printf1 ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(visitor1 ${Protobuf_LIBRARIES} 2lgc)
 target_include_directories(publisher1 PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(publisher1 ${Protobuf_LIBRARIES} 2lgc)
+target_link_libraries(poco_number ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(gdb1 ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(gdb2 ${Protobuf_LIBRARIES} 2lgc)
 target_link_libraries(gdb3 ${Protobuf_LIBRARIES} 2lgc)
@@ -47,6 +50,7 @@ add_test(compare_decimal1 compare_decimal1)
 add_test(printf1 printf1)
 add_test(visitor1 visitor1)
 add_test(publisher1 publisher1)
+add_test(poco_number poco_number)
 add_test(gdb1 gdb1)
 add_test(gdb2 gdb2 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb")
 add_custom_command(TARGET gdb3 PRE_BUILD
@@ -62,6 +66,7 @@ if (CHECK_CODE)
   set_target_properties(printf1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(visitor1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(poco_number PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb2 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb3 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -77,6 +82,7 @@ add_dependencies(check_all_tests
   printf1
   visitor1
   publisher1
+  poco_number
   gdb1
   gdb2
   gdb3

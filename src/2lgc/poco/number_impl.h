@@ -23,6 +23,7 @@
 #define POCO_NUMBER_IMPL_H_
 
 #include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/config.h>
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/number.h>
 #include <2lgc/poco/number.pb.h>
@@ -73,7 +74,7 @@ class Number_Constant
   msg::Number_Unit GetUnit() const override;
 
  private:
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   /**
    * @brief The id of the cached value.
    */
@@ -82,7 +83,7 @@ class Number_Constant
    * @brief The id of the cached unit.
    */
   mutable uint32_t cache_unit_id_;
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 };
 
 /**
@@ -147,7 +148,7 @@ class Number_NumOpNum
    */
   const std::shared_ptr<const Number> number2_;
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   /**
    * @brief The id of the number 1 for the cached value.
    */
@@ -164,7 +165,7 @@ class Number_NumOpNum
    * @brief The id of the unit 2 for the cached unit.
    */
   mutable uint32_t cache_unit2_id_;
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 };
 
 }  // namespace llgc::poco

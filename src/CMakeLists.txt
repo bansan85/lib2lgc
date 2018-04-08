@@ -1,3 +1,5 @@
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/2lgc/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/2lgc/config.h)
+
 add_subdirectory(2lgc/poco)
 
 file(GLOB_RECURSE 2LGC_HEADERS

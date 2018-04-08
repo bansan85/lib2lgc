@@ -23,6 +23,7 @@
 #define POCO_NUMBER_H_
 
 #include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/config.h>
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/number.pb.h>
 
@@ -63,9 +64,9 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
    * @brief Default constructor.
    */
   Number()
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
       : cache_value_(0.), cache_unit_()
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
   {
   }
   /**
@@ -86,7 +87,7 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
    */
   virtual msg::Number_Unit GetUnit() const = 0;
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
  protected:
   /**
    * @brief If cache enabled, the value.
@@ -96,7 +97,7 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
    * @brief If cache enabled, the unit.
    */
   mutable msg::Number_Unit cache_unit_;
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 };
 
 }  // namespace llgc::poco

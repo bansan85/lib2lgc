@@ -19,11 +19,11 @@
  * SOFTWARE.
  */
 
-#include <stddef.h>
+#ifndef CONFIG_H_
+#define CONFIG_H_
 
-int main()   // NS
-{
-  size_t *p = (size_t*)0xDEADBEEF;
-  *p = 2;
-  return 0;
-}
+#cmakedefine DISABLE_VISITABLE_CACHE
+
+#endif  // CONFIG_H_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

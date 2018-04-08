@@ -59,10 +59,10 @@ a virtual destructor and for each method that will visit the object :
 class Coordonate : public InterfaceVisitable<msg::Coordonate> {
  public:
   Coordonate()
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
       : cache_x_(std::nan("")),
         cache_y_(std::nan(""))
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
   {
   }
   virtual ~Coordonate() {}
@@ -74,10 +74,10 @@ class Coordonate : public InterfaceVisitable<msg::Coordonate> {
   static CoordonateVisitorX visitor_x;
   static CoordonateVisitorY visitor_y;
 
-#ifdef ENABLE_VISITABLE_CACHE
+#ifndef DISABLE_VISITABLE_CACHE
   mutable double cache_x_;
   mutable double cache_y_;
-#endif  // ENABLE_VISITABLE_CACHE
+#endif  // DISABLE_VISITABLE_CACHE
 }
 ```
 
