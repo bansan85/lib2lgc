@@ -75,7 +75,7 @@ if (CHECK_CODE)
 endif()
 
 add_custom_command(TARGET check_all_tests POST_BUILD
-  COMMAND ${CMAKE_CTEST_COMMAND})
+  COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
 add_dependencies(check_all_tests
   files1
   compare_decimal1
