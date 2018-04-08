@@ -61,14 +61,16 @@ class Stack
      * @param[in] pos The position of the current stack.
      */
     Iter(const SetStack& set_stack, size_t pos)
-        : llgc::pattern::iterator::Iterator<SetStack, Stack>(set_stack, pos) { }
+        : llgc::pattern::iterator::Iterator<SetStack, Stack>(set_stack, pos)
+    {
+    }
 
     /**
      * @brief Dereference an iterator return the current stack.
      *
      * @return Return the current backtrace.
      */
-    const Stack& operator*() const;
+    const Stack& operator*() const override;
   };
 
   /**

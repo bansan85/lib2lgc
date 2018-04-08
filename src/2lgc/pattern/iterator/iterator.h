@@ -32,10 +32,7 @@
 namespace llgc::pattern::iterator
 {
 /**
- * @brief Iterator for Stack.
- */
-/**
- * @brief 
+ * @brief Helper class to implement range-based for loop.
  *
  * @tparam T Class that will be loop.
  * @tparam U Object that will be return by the loop.
@@ -50,7 +47,7 @@ class Iterator
    * @param[in] data The data contains the list of object.
    * @param[in] pos The position of the current object.
    */
-  Iterator(const T& data, size_t pos) : data_(data), pos_(pos) { }
+  Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
 
   /**
    * @brief Compare operator
@@ -91,8 +88,8 @@ class Iterator
   size_t pos_;
 };
 
-}  // namespace llgc::software::gdb
+}  // namespace llgc::pattern::iterator
 
-#endif  // SOFTWARE_GDB_STACK_H_
+#endif  // PATTERN_ITERATOR_ITERATOR_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

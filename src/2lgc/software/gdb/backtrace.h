@@ -57,14 +57,16 @@ class Backtrace
      * @param[in] pos The position of the current backtrace.
      */
     Iter(const Stack& stack, size_t pos)
-        : llgc::pattern::iterator::Iterator<Stack, Backtrace>(stack, pos) { }
+        : llgc::pattern::iterator::Iterator<Stack, Backtrace>(stack, pos)
+    {
+    }
 
     /**
      * @brief Dereference an iterator return the current backtrace.
      *
      * @return Return the current backtrace.
      */
-    const Backtrace& operator*() const;
+    const Backtrace& operator*() const override;
   };
 
   /**
