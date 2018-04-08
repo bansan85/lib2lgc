@@ -27,6 +27,8 @@
 #ifndef PATTERN_ITERATOR_ITERATOR_H_
 #define PATTERN_ITERATOR_ITERATOR_H_
 
+#include <cstddef>
+
 namespace llgc::pattern::iterator
 {
 /**

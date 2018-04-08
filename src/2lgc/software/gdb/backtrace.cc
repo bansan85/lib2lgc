@@ -329,7 +329,7 @@ bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
 const llgc::software::gdb::Backtrace& llgc::software::gdb::Backtrace::Iter::
 operator*() const
 {
-  return stack_.GetBacktraceFromTop(pos_);
+  return data_.GetBacktraceFromTop(pos_);
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
