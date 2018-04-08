@@ -62,11 +62,15 @@ int main(int argc, char* argv[])  // NS
 
   std::string deadbeef_file(deadbeef_path);
   const char* const argv_gdb[1] = {deadbeef_file.c_str()};
-  std::experimental::filesystem::remove(deadbeef_btfull_path);
+  std::error_code err;
+  if (!std::experimental::filesystem::remove(deadbeef_btfull_path, err))
+  {
+    std::cout << "filesystem::remove: " << err << std::endl;
+  }
   assert(llgc::software::gdb::Gdb::RunBtFull(deadbeef_file, 1, argv_gdb, 30));
   CheckBtfull(deadbeef_btfull_path);
 
-  std::experimental::filesystem::remove(deadbeef_btfull_path);
+  assert(std::experimental::filesystem::remove(deadbeef_btfull_path));
   assert(!llgc::software::gdb::Gdb::RunBtFull(deadbeef_file, 1, argv_gdb, 0));
 
   assert(!llgc::software::gdb::Gdb::RunBtFullList("not_found", 32, 1, argv_gdb,
