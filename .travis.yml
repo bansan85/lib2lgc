@@ -32,6 +32,7 @@ matrix:
             - g++-7
             - cppcheck
             - iwyu
+            - gdb
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -44,6 +45,7 @@ matrix:
 #            - clang-5.0
 #            - cppcheck
 #            - iwyu
+#            - gdb
 #      env:
 #        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
