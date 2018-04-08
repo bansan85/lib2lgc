@@ -46,7 +46,7 @@ class Backtrace
   /**
    * @brief Iterator for Backtrace.
    */
-  class Iter
+  class Iter : public llgc::pattern::iterator::Iterator<Stack, Backtrace>
   {
    public:
     /**
@@ -55,16 +55,8 @@ class Backtrace
      * @param[in] stack The stack contains the list of backtraces.
      * @param[in] pos The position of the current backtrace.
      */
-    Iter(const Stack& stack, size_t pos) : stack_(stack), pos_(pos) {}
-
-    /**
-     * @brief Compare operator
-     *
-     * @param[in] other The iterator to compare with.
-     *
-     * @return true if different.
-     */
-    bool operator!=(const Iter& other) const { return pos_ != other.pos_; }
+    Iter(const Stack& stack, size_t pos)
+        : llgc::pattern::iterator::Iterator<Stack, Backtrace>(stack, pos) { }
 
     /**
      * @brief Dereference an iterator return the current backtrace.
@@ -72,28 +64,6 @@ class Backtrace
      * @return Return the current backtrace.
      */
     const Backtrace& operator*() const;
-
-    /**
-     * @brief Increment the current backtrace.
-     *
-     * @return Himself.
-     */
-    const Iter& operator++()
-    {
-      ++pos_;
-      return *this;
-    }
-
-   private:
-    /**
-     * @brief The stack that contains all backtraces.
-     */
-    const Stack& stack_;
-
-    /**
-     * @brief The position of the current backtrace.
-     */
-    size_t pos_;
   };
 
   /**

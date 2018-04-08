@@ -28,6 +28,7 @@
 #define SOFTWARE_GDB_STACK_H_
 
 #include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/pattern/iterator/iterator.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <cstddef>
 #include <ext/alloc_traits.h>
@@ -50,7 +51,7 @@ class Stack
   /**
    * @brief Iterator for Stack.
    */
-  class Iter
+  class Iter : public llgc::pattern::iterator::Iterator<SetStack, Stack>
   {
    public:
     /**
@@ -60,18 +61,7 @@ class Stack
      * @param[in] pos The position of the current stack.
      */
     Iter(const SetStack& set_stack, size_t pos)
-        : set_stack_(set_stack), pos_(pos)
-    {
-    }
-
-    /**
-     * @brief Compare operator
-     *
-     * @param[in] other The iterator to compare with.
-     *
-     * @return true if different.
-     */
-    bool operator!=(const Iter& other) const { return pos_ != other.pos_; }
+        : llgc::pattern::iterator::Iterator<SetStack, Stack>(set_stack, pos) { }
 
     /**
      * @brief Dereference an iterator return the current stack.
@@ -79,28 +69,6 @@ class Stack
      * @return Return the current backtrace.
      */
     const Stack& operator*() const;
-
-    /**
-     * @brief Increment the current stack.
-     *
-     * @return Himself.
-     */
-    const Iter& operator++()
-    {
-      ++pos_;
-      return *this;
-    }
-
-   private:
-    /**
-     * @brief The stack that contains all stacks.
-     */
-    const SetStack& set_stack_;
-
-    /**
-     * @brief The position of the current stack.
-     */
-    size_t pos_;
   };
 
   /**

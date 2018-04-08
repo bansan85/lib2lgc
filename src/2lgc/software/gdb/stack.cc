@@ -47,7 +47,7 @@ bool llgc::software::gdb::Stack::InterpretLine(const std::string& line)
 const llgc::software::gdb::Stack& llgc::software::gdb::Stack::Iter::operator*()
     const
 {
-  return set_stack_.Get(pos_);
+  return data_.Get(pos_);
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
