@@ -261,7 +261,7 @@ class SetStack
    * @brief Storage of all stacks sorted with parameter given by the
    * constructor.
    */
-  typename std::multiset<std::unique_ptr<Stack>, LocalCompare> stack_;
+  std::multiset<std::unique_ptr<Stack>, LocalCompare> stack_;
 
   /**
    * @brief A internal mutex to use stack_ thread-safe.
