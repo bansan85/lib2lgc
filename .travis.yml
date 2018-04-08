@@ -8,14 +8,14 @@ script:
   - cd protobuf
   - wget https://github.com/google/protobuf/archive/v3.5.2.tar.gz
   - tar -xzvf v3.5.2.tar.gz
-  - cd protobuf-3.5.2 && ./autogen.sh && ./configure && make && sudo make install
+  - cd protobuf-3.5.2 && ./autogen.sh && ./configure && make -j`grep -c ^processor /proc/cpuinfo` && sudo make install
   - cd ../..
   - mkdir build
   - cd build
   - export LD_LIBRARY_PATH=/usr/local/lib
   - cmake ..
-  - make
-  - make check
+  - make -j`grep -c ^processor /proc/cpuinfo`
+  - make check -j`grep -c ^processor /proc/cpuinfo`
 
 branches:
   only:
