@@ -71,7 +71,9 @@ class SetStack
   /**
    * @brief Server publisher.
    */
-  llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>> server_;
+  llgc::pattern::singleton::Local<
+      llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
+      server_;
 
   /**
    * @brief Default constructor.

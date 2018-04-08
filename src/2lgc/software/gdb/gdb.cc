@@ -47,9 +47,9 @@
 
 template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
 template class llgc::pattern::publisher::PublisherBase<msg::software::Gdbs>;
-template class llgc::pattern::singleton::Static<llgc::software::gdb::Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
-
-llgc::pattern::singleton::Static<llgc::software::gdb::Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>> llgc::software::gdb::Gdb::server_;
+template class llgc::pattern::singleton::Static<
+    llgc::software::gdb::Gdb,
+    llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
 
 bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
                                          unsigned int argc,
@@ -224,14 +224,15 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   return ParallelRun(all_files, nthread, argc, argv, timeout);
 }
 
-void llgc::software::gdb::Gdb::Forward(const std::shared_ptr<const std::string>& message)
+void llgc::software::gdb::Gdb::Forward(
+    const std::shared_ptr<const std::string>& message)
 {
-  std::lock_guard<std::recursive_mutex> myLock(server_.mutex_);
+  std::lock_guard<std::recursive_mutex> myLock(gdb_server_::mutex_);
   // Check if instance.
-  if (server_.IsInstance())
+  if (gdb_server_::IsInstance())
   {
     // If the instance if freed, GetInstance will create it.
-    auto singleton_ = server_.GetInstance();
+    auto singleton_ = gdb_server_::GetInstance();
     singleton_->Forward(message);
   }
 }

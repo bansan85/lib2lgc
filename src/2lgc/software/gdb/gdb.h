@@ -108,9 +108,18 @@ class Gdb
                             unsigned int argc, const char* const argv[],
                             int64_t timeout) CHK;
 
+  /**
+   * @brief Send the message to all subscribers.
+   *
+   * @param[in] message The message to send.
+   */
   static void Forward(const std::shared_ptr<const std::string>& message);
 
-  static llgc::pattern::singleton::Static<Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>> server_;
+  /**
+   * @brief Server publisher.
+   */
+  using gdb_server_ = llgc::pattern::singleton::Static<
+      Gdb, llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
 };
 
 }  // namespace llgc::software::gdb

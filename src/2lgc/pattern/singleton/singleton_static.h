@@ -24,7 +24,6 @@
 
 #include <memory>
 #include <mutex>
-#include <string>
 
 /**
  * @file singleton_static.h

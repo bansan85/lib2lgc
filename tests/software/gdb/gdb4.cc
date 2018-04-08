@@ -26,8 +26,10 @@
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <experimental/filesystem>
+#include <iostream>
 #include <memory>
 #include <string>
+#include <system_error>
 
 void CheckBtfull(const std::experimental::filesystem::path& path);
 
