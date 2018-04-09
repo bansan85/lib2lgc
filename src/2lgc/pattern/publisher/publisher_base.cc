@@ -20,8 +20,12 @@
  */
 
 #include <2lgc/error/show.h>
+#include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_base.h>
+#include <2lgc/poco/gdb.pb.h>  // IWYU pragma: keep
 #include <memory>
+
+template class llgc::pattern::publisher::PublisherBase<msg::software::Gdbs>;
 
 template <typename M>
 llgc::pattern::publisher::PublisherBase<M>::PublisherBase() = default;

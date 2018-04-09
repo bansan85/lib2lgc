@@ -21,10 +21,10 @@
 
 #include <2lgc/filesystem/files.h>
 #include <2lgc/pattern/publisher/publisher_remote.h>  // IWYU pragma: keep
-#include <2lgc/pattern/singleton/singleton_local.h>
 #include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
+#include <2lgc/software/gdb/gdb_server.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
 #include <cxxabi.h>
@@ -43,10 +43,7 @@
 #include <utility>
 #include <vector>
 
-#include <2lgc/pattern/singleton/singleton_local.cc>
-
-template class llgc::pattern::singleton::Local<
-    llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
+#include <2lgc/pattern/singleton/singleton.cc>
 
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
                                         size_t bottom_frame,

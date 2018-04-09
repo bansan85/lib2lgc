@@ -19,56 +19,27 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_SINGLETON_SINGLETON_LOCAL_H_
-#define PATTERN_SINGLETON_SINGLETON_LOCAL_H_
+#include <2lgc/pattern/singleton/singleton.h>
 
-#include <memory>
-#include <mutex>
-
-/**
- * @file singleton_local.h
- *
- * Helper to simply add a singleton to a class.
- */
-namespace llgc::pattern::singleton
-{
-/**
- * @brief Class that contains the getInstance for a local singleton.
- *
- * @tparam T Type of the singleton.
- */
 template <class T>
-class Local
+bool llgc::pattern::singleton::Local<T>::IsInstance()
 {
- public:
-  /**
-   * @brief A mutex to implement the singleton.
-   */
-  std::recursive_mutex mutex_;
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
 
-  /**
-   * @brief Tell if an instance is allocated.
-   *
-   * @return true if allocated.
-   */
-  bool IsInstance();
+  return instance_ != nullptr;
+}
 
-  /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
-   */
-  std::shared_ptr<T> GetInstance();
+template <class T>
+std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstance()
+{
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
 
- private:
-  /**
-   * @brief Store the instance of the singleton
-   */
-  std::shared_ptr<T> instance_;
-};
+  if (instance_ == nullptr)
+  {
+    instance_ = std::make_shared<T>();
+  }
 
-}  // namespace llgc::pattern::singleton
-
-#endif  // PATTERN_SINGLETON_SINGLETON_LOCAL_H_
+  return instance_;
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

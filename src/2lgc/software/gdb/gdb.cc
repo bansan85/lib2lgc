@@ -20,17 +20,15 @@
  */
 
 #include <2lgc/filesystem/files.h>
-#include <2lgc/pattern/publisher/publisher_base.h>
-#include <2lgc/pattern/publisher/publisher_remote.h>
-#include <2lgc/pattern/singleton/singleton_static.h>
 #include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/gdb.h>
+#include <2lgc/software/gdb/gdb_server.h>
 #include <cxxabi.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <2lgc/pattern/publisher/publisher_base.cc>
 #include <2lgc/pattern/publisher/publisher_remote.cc>
-#include <2lgc/pattern/singleton/singleton_static.cc>
+#include <2lgc/pattern/singleton/singleton.cc>
 #include <algorithm>
 #include <chrono>
 #include <csignal>
@@ -45,11 +43,7 @@
 #include <type_traits>
 #include <vector>
 
-template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
-template class llgc::pattern::publisher::PublisherBase<msg::software::Gdbs>;
-template class llgc::pattern::singleton::Static<
-    llgc::software::gdb::Gdb,
-    llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>;
+llgc::software::gdb::GdbServer llgc::software::gdb::Gdb::server_;
 
 bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
                                          unsigned int argc,
@@ -139,7 +133,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           std::shared_ptr<std::string> run_bt_full_in_string =
               std::make_shared<std::string>();
           messages_gdb.SerializeToString(run_bt_full_in_string.get());
-          Forward(run_bt_full_in_string);
+          server_.Forward(run_bt_full_in_string);
 
           retval = false;
           break;
@@ -222,19 +216,6 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   }
 
   return ParallelRun(all_files, nthread, argc, argv, timeout);
-}
-
-void llgc::software::gdb::Gdb::Forward(
-    const std::shared_ptr<const std::string>& message)
-{
-  std::lock_guard<std::recursive_mutex> myLock(gdb_server_::mutex_);
-  // Check if instance.
-  if (gdb_server_::IsInstance())
-  {
-    // If the instance if freed, GetInstance will create it.
-    auto singleton_ = gdb_server_::GetInstance();
-    singleton_->Forward(message);
-  }
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

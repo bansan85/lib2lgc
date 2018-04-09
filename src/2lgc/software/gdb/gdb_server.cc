@@ -19,58 +19,26 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_SINGLETON_SINGLETON_STATIC_H_
-#define PATTERN_SINGLETON_SINGLETON_STATIC_H_
-
+#include <2lgc/pattern/publisher/publisher_remote.h>
+#include <2lgc/software/gdb/gdb_server.h>
+#include <2lgc/pattern/publisher/publisher_base.cc>
+#include <2lgc/pattern/publisher/publisher_remote.cc>
+#include <2lgc/pattern/singleton/singleton.cc>
 #include <memory>
 #include <mutex>
+#include <string>
 
-/**
- * @file singleton_static.h
- *
- * Helper to simply add a singleton to a class.
- */
-namespace llgc::pattern::singleton
+void llgc::software::gdb::GdbServer::Forward(
+    const std::shared_ptr<const std::string>& message)
 {
-/**
- * @brief Class that contains the getInstance for the static singleton.
- *
- * @tparam T Class inheriting the singleton. Need only to handle case where two
- * differents static classes need to have singleton with the same return class.
- * @tparam U Class return of the singleton.
- */
-template <class T, class U>
-class Static
-{
- public:
-  /**
-   * @brief Tell if an instance is allocated.
-   *
-   * @return true if allocated.
-   */
-  static bool IsInstance();
-
-  /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
-   */
-  static std::shared_ptr<U> GetInstance();
-
-  /**
-   * @brief A mutex to implement the singleton.
-   */
-  static std::recursive_mutex mutex_;
-
- private:
-  /**
-   * @brief Store the instance of the singleton
-   */
-  static std::shared_ptr<U> instance_;
-};
-
-}  // namespace llgc::pattern::singleton
-
-#endif  // PATTERN_SINGLETON_SINGLETON_STATIC_H_
+  std::lock_guard<std::recursive_mutex> myLock(mutex_);
+  // Check if instance.
+  if (IsInstance())
+  {
+    // If the instance if freed, GetInstance will create it.
+    auto singleton_ = GetInstance();
+    singleton_->Forward(message);
+  }
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

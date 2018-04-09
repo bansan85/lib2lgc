@@ -27,6 +27,16 @@
 #include <type_traits>
 #include <utility>
 
+/**
+ * @brief Contains all Protobuf for software.
+ */
+namespace msg::software
+{
+class Gdbs;
+}
+
+template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
+
 template <typename M>
 llgc::pattern::publisher::PublisherRemote<M>::PublisherRemote()
     : PublisherBase<M>(), port_(0)
