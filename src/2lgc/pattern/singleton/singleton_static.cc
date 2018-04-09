@@ -41,3 +41,5 @@ std::shared_ptr<U> llgc::pattern::singleton::Static<T, U>::GetInstance()
 
   return instance_;
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -73,3 +73,5 @@ bool llgc::software::gdb::Function::IsVariableLineWrappable(
   return (variable.find(" Cannot find type ") != std::string::npos) ||
          (variable.find(" Python Exception ") != std::string::npos);
 }
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */
