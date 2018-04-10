@@ -53,6 +53,10 @@ llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
 {
 }
 
+llgc::software::gdb::SetStack::~SetStack()
+{
+}
+
 llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
                                                           size_t top_frame,
                                                           size_t bottom_frame)
@@ -197,11 +201,11 @@ void llgc::software::gdb::SetStack::TellError(const std::string& filename)
 {
   msg::software::Gdbs messages_gdb = msg::software::Gdbs();
   msg::software::Gdb* message_gdb = messages_gdb.add_action();
-  std::unique_ptr<msg::software::Gdb::AddStack> add_stack =
-      std::make_unique<msg::software::Gdb::AddStack>();
-  std::string* filename_gdb = add_stack->add_file();
+  std::unique_ptr<msg::software::Gdb::AddStackFailed> add_stack_failed =
+      std::make_unique<msg::software::Gdb::AddStackFailed>();
+  std::string* filename_gdb = add_stack_failed->add_file();
   filename_gdb->assign(filename);
-  message_gdb->set_allocated_add_stack(add_stack.release());
+  message_gdb->set_allocated_add_stack_failed(add_stack_failed.release());
   std::shared_ptr<std::string> add_stack_in_string =
       std::make_shared<std::string>();
   messages_gdb.SerializeToString(add_stack_in_string.get());

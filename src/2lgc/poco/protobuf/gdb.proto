@@ -6,19 +6,19 @@ package msg.software;
 
 message Gdb
 {
-  message RunBtFull
+  message RunBtFullTimeOut
   {
     repeated string file = 1;
   }
-  message AddStack
+  message AddStackFailed
   {
     repeated string file = 1;
   }
 
   oneof data
   {
-    RunBtFull run_bt_full = 1;
-    AddStack add_stack = 2;
+    RunBtFullTimeOut run_bt_full_time_out = 1;
+    AddStackFailed add_stack_failed = 2;
   }
 }
 

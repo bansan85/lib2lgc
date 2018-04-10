@@ -125,11 +125,13 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
 
           msg::software::Gdbs messages_gdb = msg::software::Gdbs();
           msg::software::Gdb* message_gdb = messages_gdb.add_action();
-          std::unique_ptr<msg::software::Gdb::RunBtFull> run_bt_full =
-              std::make_unique<msg::software::Gdb::RunBtFull>();
-          std::string* filename_gdb = run_bt_full->add_file();
+          std::unique_ptr<msg::software::Gdb::RunBtFullTimeOut>
+              run_bt_full_time_out =
+                  std::make_unique<msg::software::Gdb::RunBtFullTimeOut>();
+          std::string* filename_gdb = run_bt_full_time_out->add_file();
           filename_gdb->assign(filename);
-          message_gdb->set_allocated_run_bt_full(run_bt_full.release());
+          message_gdb->set_allocated_run_bt_full_time_out(
+              run_bt_full_time_out.release());
           std::shared_ptr<std::string> run_bt_full_in_string =
               std::make_shared<std::string>();
           messages_gdb.SerializeToString(run_bt_full_in_string.get());

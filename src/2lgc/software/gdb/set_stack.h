@@ -75,6 +75,11 @@ class SetStack
            bool print_one_by_group);
 
   /**
+   * @brief Default destructor.
+   */
+  ~SetStack();
+
+  /**
    * @brief Add a new stack. The file must contains only the full backtrace from
    * GDB.
    *
