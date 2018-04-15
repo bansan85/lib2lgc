@@ -54,7 +54,6 @@ int main(int argc, char* argv[])  // NS
 {
   assert(argc == 2);
 
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
   std::experimental::filesystem::path folder_bin(argv[1]);
   assert(std::experimental::filesystem::is_directory(folder_bin));
   std::experimental::filesystem::path deadbeef_path(folder_bin / "deadbeef");

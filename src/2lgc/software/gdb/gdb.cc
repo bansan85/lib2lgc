@@ -83,18 +83,14 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
   argvbis[22] = "--args";
   for (unsigned int i = 0; i < argc; i++)
   {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     if (strcmp("@@", argv[i]) == 0)
     {
       // a const_cast is necessary. argvbis must be not const.
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-      argvbis[23 + i] = const_cast<char*>(
-          filename
-              .c_str());  // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
+      argvbis[23 + i] = const_cast<char*>(filename.c_str());
     }
     else
     {
-      // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
       argvbis[23 + i] = argv[i];
     }
   }

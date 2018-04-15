@@ -5,6 +5,9 @@ macro(llgc_init_cflags)
   if (CHECK_CODE)
     include(CheckCXXCompilerFlag)
 
+    # run-clang-tidy.py needs compile_commands.json.
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
     CHECK_CXX_COMPILER_FLAG("-fmax-errors=10" COMPILER_SUPPORTS_FMAX_ERRORS_10)
     if(COMPILER_SUPPORTS_FMAX_ERRORS_10)
       set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmax-errors=10")
@@ -289,7 +292,7 @@ macro(llgc_iwyu)
   endif()  # CHECK_CODE
 endmacro()  # llgc_iwyu
 
-macro(llgc_check_all sources remove_coverage)
+macro(llgc_check_all sources enable_coverage remove_coverage)
   if (CHECK_CODE)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
       if (LIB2LGC_INCLUDE)
@@ -317,10 +320,12 @@ macro(llgc_check_all sources remove_coverage)
       add_custom_command(TARGET check
         COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include ${sources})
     endif()
-    add_custom_command(TARGET check
-      COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --gcov-tool ${GCOV_BIN} --capture --rc lcov_branch_coverage=1 --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
-      COMMAND lcov --remove ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info ${remove_coverage} --rc lcov_branch_coverage=1 -o ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info
-      COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info)
+    if (${enable_coverage})
+      add_custom_command(TARGET check
+        COMMAND lcov --directory ${CMAKE_CURRENT_BINARY_DIR} --gcov-tool ${GCOV_BIN} --capture --rc lcov_branch_coverage=1 --output-file ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info
+        COMMAND lcov --remove ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info ${remove_coverage} --rc lcov_branch_coverage=1 -o ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info
+        COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info)
+    endif()
     #-llvm-include-order: Google and LLVM have differents rules.
     #-llvm-header-guard: cpplint do the work well.
     #-fuchsia-default-arguments: don't always write default boring arguments.
@@ -329,14 +334,13 @@ macro(llgc_check_all sources remove_coverage)
     #-hicpp-no-array-decay: warn all assert.
     #-google-readability-namespace-comments: allow namespace llgc::math
     #-llvm-namespace-comment: allow namespace llgc::math
+    #-cppcoreguidelines-pro-bounds-pointer-arithmetic: pour utiliser avec argv
     find_program(CLANG_TIDY clang-tidy)
     if (CLANG_TIDY)
       string(REPLACE "bin" "share/clang" RUN_CLANG_TIDY_ ${CLANG_TIDY})
       string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
       add_custom_command(TARGET check
-        COMMAND echo ${sources})
-      add_custom_command(TARGET check
-        COMMAND ${RUN_CLANG_TIDY} ${sources} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment')
+        COMMAND ${RUN_CLANG_TIDY} ${sources} -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic')
     endif()
     if (DOXYGEN_FOUND)
       add_custom_command(TARGET check
@@ -344,8 +348,13 @@ macro(llgc_check_all sources remove_coverage)
     endif()
     find_program(NSIQCPPSTYLE nsiqcppstyle PATHS /opt/nsiqcppstyle)
     if (NSIQCPPSTYLE)
-      add_custom_command(TARGET check
-        COMMAND ${NSIQCPPSTYLE} ${CMAKE_CURRENT_SOURCE_DIR})
+      if (LIB2LGC_INCLUDE)
+        add_custom_command(TARGET check
+          COMMAND ${NSIQCPPSTYLE} -f ${LIB2LGC_INCLUDE}/util/nsiqcppstyle/filefilter.txt ${CMAKE_CURRENT_SOURCE_DIR})
+      else()
+        add_custom_command(TARGET check
+          COMMAND ${NSIQCPPSTYLE} -f ${CMAKE_CURRENT_SOURCE_DIR}/util/nsiqcppstyle/filefilter.txt ${CMAKE_CURRENT_SOURCE_DIR})
+      endif()
     endif()
     find_program(PMD_BIN run.sh PATHS /opt/pmd/bin)
     if (PMD_BIN)

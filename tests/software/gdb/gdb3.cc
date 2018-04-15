@@ -29,9 +29,7 @@ int main(int argc, char* argv[])  // NS
 {
   assert(argc == 3);
 
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
   std::experimental::filesystem::path folder(argv[1]);
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-bounds-pointer-arithmetic)
   std::experimental::filesystem::path folder_bin(argv[2]);
   assert(std::experimental::filesystem::is_directory(folder));
 

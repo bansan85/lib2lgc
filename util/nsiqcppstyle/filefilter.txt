@@ -15,7 +15,7 @@
 ~ RULE_4_1_B_indent_each_enum_item_in_enum_block
 ~ RULE_4_1_B_locate_each_enum_item_in_seperate_line
 ~ RULE_4_1_C_align_long_function_parameter_list
-~ RULE_4_1_E_align_conditions
+# RULE_4_1_E_align_conditions
 # RULE_4_2_A_A_space_around_operator
 ~ RULE_4_2_A_B_space_around_word
 ~ RULE_4_4_A_do_not_write_over_120_columns_per_line
