@@ -53,9 +53,7 @@ llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
 {
 }
 
-llgc::software::gdb::SetStack::~SetStack()
-{
-}
+llgc::software::gdb::SetStack::~SetStack() = default;
 
 llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
                                                           size_t top_frame,
