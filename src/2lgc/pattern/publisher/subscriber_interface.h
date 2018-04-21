@@ -49,7 +49,7 @@ class SubscriberInterface
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
+  virtual void Listen(std::shared_ptr<const std::string> message) = 0;
 
   /**
    * @brief Compare in connector is the same than the object.

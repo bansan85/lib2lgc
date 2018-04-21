@@ -22,13 +22,14 @@
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
+#include <algorithm>
 #include <memory>
 
 template <typename T>
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
-    const std::shared_ptr<SubscriberInterface> &subscriber,
-    const std::shared_ptr<PublisherBase<T>> &server)
-    : ConnectorInterface(subscriber), server_(server)
+    std::shared_ptr<SubscriberInterface> subscriber,
+    std::shared_ptr<PublisherBase<T>> server)
+    : ConnectorInterface(std::move(subscriber)), server_(std::move(server))
 {
 }
 
@@ -58,16 +59,9 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
 
 template <typename T>
 void llgc::pattern::publisher::ConnectorDirect<T>::Send(
-    const std::shared_ptr<const std::string> &message)
+    std::shared_ptr<const std::string> message)
 {
-  server_->Forward(message);
-}
-
-template <typename T>
-void llgc::pattern::publisher::ConnectorDirect<T>::Listen(
-    const std::shared_ptr<const std::string> &message)
-{
-  subscriber_->Listen(message);
+  server_->Forward(std::move(message));
 }
 
 template <typename T>

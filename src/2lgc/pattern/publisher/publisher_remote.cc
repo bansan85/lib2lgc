@@ -74,7 +74,7 @@ bool llgc::pattern::publisher::PublisherRemote<M>::AddSubscriber(
 
 template <typename M>
 bool llgc::pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
-    uint32_t id_message, const std::shared_ptr<ConnectorInterface> &subscriber)
+    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
 {
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>

@@ -23,20 +23,26 @@
 #include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_base.h>
 #include <2lgc/poco/gdb.pb.h>  // IWYU pragma: keep
+#include <2lgc/utils/thread/count_lock.h>
+#include <functional>
 #include <memory>
 
 template class llgc::pattern::publisher::PublisherBase<msg::software::Gdbs>;
 
 template <typename M>
-llgc::pattern::publisher::PublisherBase<M>::PublisherBase() = default;
+llgc::pattern::publisher::PublisherBase<M>::PublisherBase()
+    : options_(), lock_forward_(0)
+{
+}
 
 template <typename M>
 llgc::pattern::publisher::PublisherBase<M>::~PublisherBase() = default;
 
 template <typename M>
 void llgc::pattern::publisher::PublisherBase<M>::Forward(
-    const std::shared_ptr<const std::string> &message)
+    std::shared_ptr<const std::string> message)
 {
+  std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
   M actions;
 
   BUGUSER(actions.ParseFromString(*message.get()), ,
@@ -47,13 +53,30 @@ void llgc::pattern::publisher::PublisherBase<M>::Forward(
     // Must use auto because we don't know if M is in namespace or not.
     auto action = actions.action(i);
 
+    // Filter to keep only the data case.
     auto iterpair = subscribers_.equal_range(action.data_case());
 
-    auto it = iterpair.first;
+    auto &it = iterpair.first;
     for (; it != iterpair.second; ++it)
     {
-      it->second->Listen(message);
+      it->second->Listen(message, lock_forward_ != 0);
     }
+  }
+}
+
+template <typename M>
+void llgc::pattern::publisher::PublisherBase<M>::ForwardPending()
+{
+  std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
+
+  if (lock_forward_ != 0)
+  {
+    return;
+  }
+
+  for (auto &it : subscribers_)
+  {
+    it.second->ListenPending();
   }
 }
 
@@ -69,6 +92,16 @@ void llgc::pattern::publisher::PublisherBase<M>::SetOptionFailAlreadySubscribed(
     bool value)
 {
   options_.add_fail_if_already_subscribed = value;
+}
+
+template <typename M>
+llgc::utils::thread::CountLock<size_t>
+llgc::pattern::publisher::PublisherBase<M>::LockForward()
+{
+  return llgc::utils::thread::CountLock<size_t>(
+      &lock_forward_, &mutex_forward_,
+      std::bind(&llgc::pattern::publisher::PublisherBase<M>::ForwardPending,
+                this));
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

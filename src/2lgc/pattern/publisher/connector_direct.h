@@ -56,9 +56,8 @@ class ConnectorDirect : public ConnectorInterface,
    * @param[in,out] subscriber The subscriber.
    * @param[in,out] server The server.
    */
-  explicit ConnectorDirect(
-      const std::shared_ptr<SubscriberInterface> &subscriber,
-      const std::shared_ptr<PublisherBase<T>> &server);
+  explicit ConnectorDirect(std::shared_ptr<SubscriberInterface> subscriber,
+                           std::shared_ptr<PublisherBase<T>> server);
 
   /**
    * @brief Default virtual destructor.
@@ -107,17 +106,11 @@ class ConnectorDirect : public ConnectorInterface,
   bool Equals(const ConnectorInterface *connector) const override CHK;
 
   /**
-   * @brief Send message.
+   * @brief Send message to the publisher.
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  void Send(const std::shared_ptr<const std::string> &message) override;
-  /**
-   * @brief Listen message.
-   *
-   * @param message Data of the message in ProtoBuf, SerializeToString.
-   */
-  void Listen(const std::shared_ptr<const std::string> &message) override;
+  void Send(std::shared_ptr<const std::string> message) override;
 
   /**
    * @brief Add a subscriber.

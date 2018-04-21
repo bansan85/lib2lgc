@@ -23,6 +23,7 @@
 #include <2lgc/pattern/publisher/publisher_base.h>
 #include <2lgc/pattern/publisher/publisher_remote.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/utils/thread/count_lock.h>
 #include <actions.pb.h>
 #include <google/protobuf/stubs/common.h>
 #include <2lgc/pattern/publisher/connector_direct.cc>
@@ -56,7 +57,7 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect
    *
    * @param[in] message message from the publisher in protobuf format.
    */
-  void Listen(const std::shared_ptr<const std::string> &message) override
+  void Listen(std::shared_ptr<const std::string> message) override
   {
     msg::Actions actions;
     assert(actions.ParseFromString(*message.get()));
@@ -77,7 +78,6 @@ int main(int /* argc */, char * /* argv */ [])  // NS
       server = std::make_shared<
           llgc::pattern::publisher::PublisherRemote<msg::Actions>>();
 
-  // Create three subscribers.
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
 
@@ -104,13 +104,19 @@ int main(int /* argc */, char * /* argv */ [])  // NS
       std::make_shared<std::string>();
   actions.SerializeToString(action_in_string.get());
   connector->Send(action_in_string);
-
   assert(subscriber->value == 1);
 
-  // Reset test case.
+  // Test lock forward.
   subscriber->value = 0;
+  {
+    llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
+    connector->Send(action_in_string);
+    assert(subscriber->value == 0);
+  }
+  assert(subscriber->value == 1);
 
   // Remove the first subscriber.
+  subscriber->value = 0;
   assert(connector->RemoveSubscriber(1));
   connector->Send(action_in_string);
   assert(subscriber->value == 0);

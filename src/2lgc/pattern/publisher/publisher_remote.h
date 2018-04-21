@@ -109,7 +109,7 @@ class PublisherRemote : public PublisherBase<M>
    */
   bool RemoveSubscriber(
       uint32_t id_message,
-      const std::shared_ptr<ConnectorInterface>& subscriber) override CHK;
+      std::shared_ptr<ConnectorInterface> subscriber) override CHK;
 
  protected:
   // using needed because of template inheritance.

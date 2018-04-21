@@ -22,11 +22,19 @@
 #ifndef PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 #define PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 
-#include <2lgc/pattern/publisher/subscriber_interface.h>
+#include <2lgc/compatibility/visual_studio.h>
+#include <cstdint>
 #include <memory>
 #include <queue>
 #include <string>
-#include <utility>
+
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
+{
+class SubscriberInterface;
+}
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -48,11 +56,7 @@ class ConnectorInterface
    *
    * @param[in,out] subscriber Subscriber.
    */
-  explicit ConnectorInterface(
-      const std::shared_ptr<SubscriberInterface> &subscriber)
-      : messages_(), next_id_(0), subscriber_(subscriber)
-  {
-  }
+  explicit ConnectorInterface(std::shared_ptr<SubscriberInterface> subscriber);
 
   /**
    * @brief Compare in connector is the same than the object.
@@ -64,18 +68,25 @@ class ConnectorInterface
   virtual bool Equals(const ConnectorInterface *connector) const CHK = 0;
 
   /**
-   * @brief Send message.
+   * @brief Send message to the publisher.
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  virtual void Send(const std::shared_ptr<const std::string> &message) = 0;
+  virtual void Send(std::shared_ptr<const std::string> message) = 0;
 
   /**
-   * @brief Send message.
+   * @brief Listen message from the publisher.
    *
    * @param[in] message Data of the message in ProtoBuf, SerializeToString.
+   * @param[in] hold If true, message is not send to subscriber be will be
+   * pending until ListenPending is called.
    */
-  virtual void Listen(const std::shared_ptr<const std::string> &message) = 0;
+  void Listen(std::shared_ptr<const std::string> message, const bool hold);
+
+  /**
+   * @brief Listen pending messages from the publisher.
+   */
+  void ListenPending();
 
   /**
    * @brief Get the subscriber that manager this interface.
@@ -109,9 +120,9 @@ class ConnectorInterface
 
  protected:
   /**
-   * @brief Pair with the id of the event and the arguments.
+   * @brief Messages on hold.
    */
-  std::queue<std::pair<uint32_t, std::shared_ptr<const std::string>>> messages_;
+  std::queue<std::shared_ptr<const std::string>> messages_;
 
   /**
    * @brief id of the next message.

@@ -23,9 +23,12 @@
 #define PATTERN_PUBLISHER_PUBLISHER_BASE_H_
 
 #include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/utils/thread/count_lock.h>
+#include <cstddef>
 #include <cstdint>
 #include <map>
 #include <memory>
+#include <mutex>
 #include <string>
 
 /**
@@ -106,7 +109,7 @@ class PublisherBase
    * @brief Add a subscriber to the server.
    *
    * @param id_message The message to subscribe.
-   * @param subscriber The subscriber.
+   * @param subscriber The subscriber. It's not a reference.
    *
    * @return true if success. May failed if add_fail_if_already_subscribed is
    * true and the subscriber is already registered.
@@ -120,7 +123,12 @@ class PublisherBase
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  void Forward(const std::shared_ptr<const std::string>& message);
+  void Forward(std::shared_ptr<const std::string> message);
+
+  /**
+   * @brief Send all pending messages of all subscribers.
+   */
+  void ForwardPending();
 
   /**
    * @brief Remove a subscriber of the server.
@@ -133,7 +141,7 @@ class PublisherBase
    */
   virtual bool RemoveSubscriber(
       uint32_t id_message,
-      const std::shared_ptr<ConnectorInterface>& subscriber) CHK = 0;
+      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
 
   /**
    * @brief Return if subscription will failed if subscriber already subscribed.
@@ -148,6 +156,14 @@ class PublisherBase
    * @param[in] value true if must failed.
    */
   void SetOptionFailAlreadySubscribed(bool value);
+
+  /**
+   * @brief Lock forwarding message all the while the return object is not
+   * destroyed.
+   *
+   * @return The object to keep alive.
+   */
+  llgc::utils::thread::CountLock<size_t> LockForward() CHK;
 
  protected:
   /**
@@ -166,6 +182,16 @@ class PublisherBase
    * @brief Options for the behavious of server.
    */
   Options options_;
+
+  /**
+   * @brief Lock the forward. Must be use with class CountLock.
+   */
+  size_t lock_forward_;
+
+  /**
+   * @brief Forward is not thread-safe.
+   */
+  std::recursive_mutex mutex_forward_;
 };
 
 }  // namespace llgc::pattern::publisher

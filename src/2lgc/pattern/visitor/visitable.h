@@ -79,7 +79,7 @@ template <class M>
 class InterfaceVisitable
 {
   static_assert(std::is_base_of<::google::protobuf::Message, M>::value,  // NS
-                "M must be a descendant of ::google::protobuf::Message");
+                "M must be a descendant of ::google::protobuf::Message.");
 
  public:
   /**

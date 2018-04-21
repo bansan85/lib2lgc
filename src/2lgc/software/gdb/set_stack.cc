@@ -362,7 +362,6 @@ const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
 void llgc::software::gdb::SetStack::Forward(
     const std::shared_ptr<const std::string>& message)
 {
-  std::lock_guard<std::recursive_mutex> myLock(server_.mutex_);
   // Check if instance.
   if (server_.IsInstance())
   {

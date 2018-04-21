@@ -25,13 +25,11 @@
 #include <2lgc/pattern/publisher/publisher_remote.cc>
 #include <2lgc/pattern/singleton/singleton.cc>
 #include <memory>
-#include <mutex>
 #include <string>
 
 void llgc::software::gdb::GdbServer::Forward(
     const std::shared_ptr<const std::string>& message)
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_);
   // Check if instance.
   if (IsInstance())
   {

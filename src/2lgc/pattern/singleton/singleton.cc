@@ -24,7 +24,7 @@
 template <class T>
 bool llgc::pattern::singleton::Local<T>::IsInstance()
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_);
+  std::lock_guard<std::recursive_mutex> my_lock(mutex_);
 
   return instance_ != nullptr;
 }
@@ -32,7 +32,7 @@ bool llgc::pattern::singleton::Local<T>::IsInstance()
 template <class T>
 std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstance()
 {
-  std::lock_guard<std::recursive_mutex> myLock(mutex_);
+  std::lock_guard<std::recursive_mutex> my_lock(mutex_);
 
   if (instance_ == nullptr)
   {

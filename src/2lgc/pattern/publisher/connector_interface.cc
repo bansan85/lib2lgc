@@ -19,56 +19,35 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_SINGLETON_SINGLETON_H_
-#define PATTERN_SINGLETON_SINGLETON_H_
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/subscriber_interface.h>
+#include <algorithm>
 
-#include <memory>
-#include <mutex>
-
-/**
- * @file singleton.h
- *
- * Helper to simply add a singleton to a class.
- */
-namespace llgc::pattern::singleton
+llgc::pattern::publisher::ConnectorInterface::ConnectorInterface(
+    std::shared_ptr<SubscriberInterface> subscriber)
+    : messages_(), next_id_(0), subscriber_(std::move(subscriber))
 {
-/**
- * @brief Class that contains the getInstance for a local singleton.
- *
- * @tparam T Type of the singleton.
- */
-template <class T>
-class Local
+}
+
+void llgc::pattern::publisher::ConnectorInterface::Listen(
+    std::shared_ptr<const std::string> message, const bool hold)
 {
- public:
-  /**
-   * @brief Tell if an instance is allocated.
-   *
-   * @return true if allocated.
-   */
-  bool IsInstance();
+  if (hold)
+  {
+    messages_.push(std::move(message));
+  }
+  else
+  {
+    subscriber_->Listen(std::move(message));
+  }
+}
 
-  /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
-   */
-  std::shared_ptr<T> GetInstance();
-
- private:
-  /**
-   * @brief A mutex to implement the singleton.
-   */
-  std::recursive_mutex mutex_;
-
-  /**
-   * @brief Store the instance of the singleton
-   */
-  std::shared_ptr<T> instance_;
-};
-
-}  // namespace llgc::pattern::singleton
-
-#endif  // PATTERN_SINGLETON_SINGLETON_H_
-
-/* vim:set shiftwidth=2 softtabstop=2 expandtab: */
+void llgc::pattern::publisher::ConnectorInterface::ListenPending()
+{
+  while (!messages_.empty())
+  {
+    const std::shared_ptr<const std::string> it = messages_.front();
+    subscriber_->Listen(it);
+    messages_.pop();
+  }
+}
