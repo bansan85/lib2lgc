@@ -1,4 +1,3 @@
-#disable for now. travis' image are too old. :(
 language: cpp
 dist: trusty
 sudo: required
@@ -20,6 +19,22 @@ script:
 branches:
   only:
     - master
+
+env:
+  global:
+    - secure: "3F4hPrfEoJSIkP179gTTGm0W7q9n48uZKFP5VHMzqgmBM+EtfT2APxTrUu+LNagj+4/Uv2lw6n/y4AEPwtAq7nS4jqz5G4tHEtirmQJblUnzLJzsmx1VRQ4P7CSQd0pBKpBcT3bx3QzUW5jN3cPcW4vB1qyLS6XaPi7lffGRErc9zBHQ07LfgtRS3Zo4GrxSp/+Ev/BEpp2tetchTBKx/c6ABxpm90S8ha8FxBvUya4UbRPeqsNDOZqD5pEO9SmtSnWFv8+z0H70Nd9/6G5B4X2jsWK4GnYsFnlmUA1BZ0XrzeceWFGpUMtidbyYRsoQqi4XGpw05zqzG/tTE92g1JJEKXacJCHha8imq/51mwehtL5KRyt5899klAA+dSntosvkqdMaGl6V23nM61aCAGmN4ztB+2YlJLrjnpPvQGd2eFkMbFIxv7VgsXYCBMxLL89bXu9Vp7IjSw66Hs0BVjLakVQ5gHZiue9oIrsweVmNsy5xVpqUo8L0m4lT/gvrWIes0qj/00MsxHiA+c3aQ5VoD0poxqg1VYgjJ9uazfFhL+onecKJ1AboG8IPmgjyDN1ps7/SIj42OtY26v+2S3QBHErmNHs0WtWSRp1s2JXGM7VLI2oYZcE8aPMRfvaIbwfbPzLuyPaQXZIWZL5vFqlCRV1oo+PAtQDraaBRqLg="
+    - LD_LIBRARY_PATH=/usr/local/lib
+
+addons:
+  coverity_scan:
+    project:
+      name: my_github/my_project
+      version: 1.0
+      description: My Project
+    build_command_prepend: mkdir protobuf; cd protobuf; wget https://github.com/google/protobuf/archive/v3.5.2.tar.gz; tar -xzvf v3.5.2.tar.gz; cd protobuf-3.5.2 && ./autogen.sh && ./configure && make -j`grep -c ^processor /proc/cpuinfo` && sudo make install; cd ../..; mkdir build; cd build; cmake ..
+    build_command: make check
+    branch_pattern: coverity_scan
+
 
 matrix:
   include:
