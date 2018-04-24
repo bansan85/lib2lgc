@@ -21,3 +21,9 @@ make check
 `-DDISABLE_VISITABLE_CACHE=1` disable cache in visitor pattern.
 
 `-DCMAKE_CXX_FLAGS=...` custom flags.
+
+<h1>TODO</h1>
+Missing local README.md means that the functionnality is still under development.
+
+  - command pattern,
+  - publisher pattern.
