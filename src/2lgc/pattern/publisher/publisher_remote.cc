@@ -35,8 +35,6 @@ namespace msg::software
 class Gdbs;
 }
 
-template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
-
 template <typename M>
 llgc::pattern::publisher::PublisherRemote<M>::PublisherRemote()
     : PublisherBase<M>(), port_(0)
@@ -92,5 +90,7 @@ bool llgc::pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
 
   return false;
 }
+
+template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
