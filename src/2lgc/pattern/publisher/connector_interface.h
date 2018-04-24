@@ -34,13 +34,7 @@
 namespace llgc::pattern::publisher
 {
 class SubscriberInterface;
-}
 
-/**
- * @brief Namespace for the pattern publisher.
- */
-namespace llgc::pattern::publisher
-{
 /**
  * @brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
