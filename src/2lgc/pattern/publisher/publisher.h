@@ -19,8 +19,8 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_PUBLISHER_PUBLISHER_BASE_H_
-#define PATTERN_PUBLISHER_PUBLISHER_BASE_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_H_
+#define PATTERN_PUBLISHER_PUBLISHER_H_
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/utils/thread/count_lock.h>
@@ -43,7 +43,7 @@ class ConnectorInterface;
  *        messages.
  */
 template <typename M>
-class PublisherBase
+class Publisher
 {
  public:
   /**
@@ -66,26 +66,26 @@ class PublisherBase
   /**
    * @brief Default constructor.
    */
-  PublisherBase();
+  Publisher();
 
   /**
    * @brief Default destructor.
    */
-  virtual ~PublisherBase();
+  virtual ~Publisher();
 
   /**
    * @brief Delete move constructor.
    *
    * @param[in] other The original.
    */
-  PublisherBase(PublisherBase&& other) = delete;
+  Publisher(Publisher&& other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  PublisherBase(PublisherBase const& other) = delete;
+  Publisher(Publisher const& other) = delete;
 
   /**
    * @brief Delete the move operator.
@@ -94,7 +94,7 @@ class PublisherBase
    *
    * @return Delete function.
    */
-  PublisherBase& operator=(PublisherBase&& other) & = delete;
+  Publisher& operator=(Publisher&& other) & = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -103,7 +103,7 @@ class PublisherBase
    *
    * @return Delete function.
    */
-  PublisherBase& operator=(PublisherBase const& other) & = delete;
+  Publisher& operator=(Publisher const& other) & = delete;
 
   /**
    * @brief Add a subscriber to the server.
@@ -115,8 +115,7 @@ class PublisherBase
    * true and the subscriber is already registered.
    */
   virtual bool AddSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
+      uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) CHK;
 
   /**
    * @brief Send the message to all subscribers.
@@ -141,7 +140,7 @@ class PublisherBase
    */
   virtual bool RemoveSubscriber(
       uint32_t id_message,
-      std::shared_ptr<ConnectorInterface> subscriber) CHK = 0;
+      const std::shared_ptr<ConnectorInterface>& subscriber) CHK;
 
   /**
    * @brief Return if subscription will failed if subscriber already subscribed.
@@ -196,6 +195,6 @@ class PublisherBase
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_PUBLISHER_BASE_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

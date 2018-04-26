@@ -36,7 +36,7 @@ namespace llgc::pattern::publisher
 class SubscriberInterface;
 
 template <typename M>
-class PublisherBase;
+class Publisher;
 
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -57,7 +57,7 @@ class ConnectorDirect : public ConnectorInterface,
    * @param[in,out] server The server.
    */
   explicit ConnectorDirect(std::shared_ptr<SubscriberInterface> subscriber,
-                           std::shared_ptr<PublisherBase<T>> server);
+                           std::shared_ptr<Publisher<T>> server);
 
   /**
    * @brief Default virtual destructor.
@@ -134,7 +134,7 @@ class ConnectorDirect : public ConnectorInterface,
   /**
    * @brief The server.
    */
-  std::shared_ptr<PublisherBase<T>> server_;
+  std::shared_ptr<Publisher<T>> server_;
 };
 
 }  // namespace llgc::pattern::publisher

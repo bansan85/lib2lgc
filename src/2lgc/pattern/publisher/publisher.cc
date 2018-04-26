@@ -19,37 +19,95 @@
  * SOFTWARE.
  */
 
-#include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_base.h>
-#include <2lgc/pattern/publisher/publisher_remote.h>
-#include <cstdint>
+#include <2lgc/error/show.h>
+#include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
+#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/poco/gdb.pb.h>  // IWYU pragma: keep
+#include <2lgc/utils/thread/count_lock.h>
+#include <functional>
 #include <memory>
 #include <type_traits>
 #include <utility>
 
-/**
- * @brief Contains all Protobuf for software.
- */
-namespace msg::software
-{
-class Gdbs;
-}
-
 template <typename M>
-llgc::pattern::publisher::PublisherRemote<M>::PublisherRemote()
-    : PublisherBase<M>(), port_(0)
+llgc::pattern::publisher::Publisher<M>::Publisher()
+    : options_(), lock_forward_(0)
 {
 }
 
 template <typename M>
-llgc::pattern::publisher::PublisherRemote<M>::~PublisherRemote() = default;
+llgc::pattern::publisher::Publisher<M>::~Publisher() = default;
+
+template <typename M>
+void llgc::pattern::publisher::Publisher<M>::Forward(
+    std::shared_ptr<const std::string> message)
+{
+  std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
+  M actions;
+
+  BUGUSER(actions.ParseFromString(*message.get()), ,
+          "Failed to decode message.\n");
+
+  for (int i = 0; i < actions.action_size(); i++)
+  {
+    // Must use auto because we don't know if M is in namespace or not.
+    auto action = actions.action(i);
+
+    // Filter to keep only the data case.
+    auto iterpair = subscribers_.equal_range(action.data_case());
+
+    auto &it = iterpair.first;
+    for (; it != iterpair.second; ++it)
+    {
+      it->second->Listen(message, lock_forward_ != 0);
+    }
+  }
+}
+
+template <typename M>
+void llgc::pattern::publisher::Publisher<M>::ForwardPending()
+{
+  std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
+
+  if (lock_forward_ != 0)
+  {
+    return;
+  }
+
+  for (auto &it : subscribers_)
+  {
+    it.second->ListenPending();
+  }
+}
+
+template <typename M>
+bool llgc::pattern::publisher::Publisher<M>::GetOptionFailAlreadySubscribed()
+{
+  return options_.add_fail_if_already_subscribed;
+}
+
+template <typename M>
+void llgc::pattern::publisher::Publisher<M>::SetOptionFailAlreadySubscribed(
+    bool value)
+{
+  options_.add_fail_if_already_subscribed = value;
+}
+
+template <typename M>
+llgc::utils::thread::CountLock<size_t>
+llgc::pattern::publisher::Publisher<M>::LockForward()
+{
+  return llgc::utils::thread::CountLock<size_t>(
+      &lock_forward_, &mutex_forward_,
+      std::bind(&llgc::pattern::publisher::Publisher<M>::ForwardPending, this));
+}
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename M>
-bool llgc::pattern::publisher::PublisherRemote<M>::AddSubscriber(
+bool llgc::pattern::publisher::Publisher<M>::AddSubscriber(
     uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
 {
-  if (this->GetOptionFailAlreadySubscribed())
+  if (GetOptionFailAlreadySubscribed())
   {
     std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
         iterpair = subscribers_.equal_range(id_message);
@@ -71,8 +129,8 @@ bool llgc::pattern::publisher::PublisherRemote<M>::AddSubscriber(
 }
 
 template <typename M>
-bool llgc::pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber)
+bool llgc::pattern::publisher::Publisher<M>::RemoveSubscriber(
+    uint32_t id_message, const std::shared_ptr<ConnectorInterface>& subscriber)
 {
   // Check if Subscriber is already subscribed.
   std::pair<SubscriberMap::const_iterator, SubscriberMap::const_iterator>
@@ -90,7 +148,5 @@ bool llgc::pattern::publisher::PublisherRemote<M>::RemoveSubscriber(
 
   return false;
 }
-
-template class llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>;
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

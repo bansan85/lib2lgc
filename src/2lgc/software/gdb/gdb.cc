@@ -26,8 +26,7 @@
 #include <cxxabi.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <2lgc/pattern/publisher/publisher_base.cc>
-#include <2lgc/pattern/publisher/publisher_remote.cc>
+#include <2lgc/pattern/publisher/publisher.cc>
 #include <2lgc/pattern/singleton/singleton.cc>
 #include <algorithm>
 #include <chrono>

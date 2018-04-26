@@ -21,7 +21,7 @@
 
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
-#include <algorithm>
+#include <utility>
 
 llgc::pattern::publisher::ConnectorInterface::ConnectorInterface(
     std::shared_ptr<SubscriberInterface> subscriber)

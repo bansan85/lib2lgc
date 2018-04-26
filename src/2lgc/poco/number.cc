@@ -28,12 +28,12 @@
 #include <2lgc/poco/raw.pb.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
-#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <limits>
 #include <memory>
 #include <string>
+#include <utility>
 
 bool llgc::poco::Unit::UnitOp(const msg::Number_Unit &unit1,
                               const msg::Number_Unit &unit2,

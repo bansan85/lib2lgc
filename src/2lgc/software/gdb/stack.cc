@@ -22,8 +22,8 @@
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
-#include <algorithm>
 #include <memory>
+#include <utility>
 
 llgc::software::gdb::Stack::Stack(std::string filename)
     : filename_(std::move(filename))

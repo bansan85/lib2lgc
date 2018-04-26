@@ -21,7 +21,9 @@
 
 #include <2lgc/filesystem/files.h>
 #include <experimental/filesystem>
+#include <map>
 #include <regex>
+#include <sstream>
 
 bool llgc::filesystem::Files::SearchRecursiveFiles(
     const std::string& folder, const std::string& regex,

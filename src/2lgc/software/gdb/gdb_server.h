@@ -27,7 +27,7 @@
 #ifndef SOFTWARE_GDB_GDB_SERVER_H_
 #define SOFTWARE_GDB_GDB_SERVER_H_
 
-#include <2lgc/pattern/publisher/publisher_remote.h>
+#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/singleton/singleton.h>
 #include <memory>
 #include <string>
@@ -45,9 +45,8 @@ namespace llgc::software::gdb
 /**
  * @brief Class to run gdb for various purpose.
  */
-class GdbServer
-    : public llgc::pattern::singleton::Local<
-          llgc::pattern::publisher::PublisherRemote<msg::software::Gdbs>>
+class GdbServer : public llgc::pattern::singleton::Local<
+                      llgc::pattern::publisher::Publisher<msg::software::Gdbs>>
 {
  public:
   /**

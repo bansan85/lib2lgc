@@ -20,23 +20,20 @@
  */
 
 #include <2lgc/pattern/publisher/connector_direct.h>
-#include <2lgc/pattern/publisher/publisher_base.h>
-#include <2lgc/pattern/publisher/publisher_remote.h>
+#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/utils/thread/count_lock.h>
 #include <actions.pb.h>
 #include <google/protobuf/stubs/common.h>
 #include <2lgc/pattern/publisher/connector_direct.cc>
-#include <2lgc/pattern/publisher/publisher_base.cc>
-#include <2lgc/pattern/publisher/publisher_remote.cc>
+#include <2lgc/pattern/publisher/publisher.cc>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
 #include <memory>
 #include <string>
 
-template class llgc::pattern::publisher::PublisherBase<msg::Actions>;
-template class llgc::pattern::publisher::PublisherRemote<msg::Actions>;
+template class llgc::pattern::publisher::Publisher<msg::Actions>;
 template class llgc::pattern::publisher::ConnectorDirect<msg::Actions>;
 
 /**
@@ -74,9 +71,8 @@ int main(int /* argc */, char * /* argv */ [])  // NS
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  std::shared_ptr<llgc::pattern::publisher::PublisherRemote<msg::Actions>>
-      server = std::make_shared<
-          llgc::pattern::publisher::PublisherRemote<msg::Actions>>();
+  std::shared_ptr<llgc::pattern::publisher::Publisher<msg::Actions>> server =
+      std::make_shared<llgc::pattern::publisher::Publisher<msg::Actions>>();
 
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);

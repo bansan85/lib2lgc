@@ -19,13 +19,13 @@
  * SOFTWARE.
  */
 
-#include <2lgc/pattern/publisher/publisher_remote.h>
+#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/software/gdb/gdb_server.h>
-#include <2lgc/pattern/publisher/publisher_base.cc>
-#include <2lgc/pattern/publisher/publisher_remote.cc>
-#include <2lgc/pattern/singleton/singleton.cc>
+#include <2lgc/pattern/publisher/publisher.cc>
 #include <memory>
 #include <string>
+
+template class llgc::pattern::publisher::Publisher<msg::software::Gdbs>;
 
 void llgc::software::gdb::GdbServer::Forward(
     const std::shared_ptr<const std::string>& message)

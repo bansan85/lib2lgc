@@ -20,7 +20,7 @@
  */
 
 #include <2lgc/filesystem/files.h>
-#include <2lgc/pattern/publisher/publisher_remote.h>  // IWYU pragma: keep
+#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>

@@ -22,13 +22,13 @@
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
-#include <algorithm>
 #include <memory>
+#include <utility>
 
 template <typename T>
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
     std::shared_ptr<SubscriberInterface> subscriber,
-    std::shared_ptr<PublisherBase<T>> server)
+    std::shared_ptr<Publisher<T>> server)
     : ConnectorInterface(std::move(subscriber)), server_(std::move(server))
 {
 }
