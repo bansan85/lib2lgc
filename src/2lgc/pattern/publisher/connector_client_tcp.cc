@@ -19,26 +19,29 @@
  * SOFTWARE.
  */
 
-#include <2lgc/pattern/publisher/connector_direct.h>
+#include <2lgc/pattern/publisher/connector_client_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+#include <iostream>
 
 template <typename T>
-llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
-    std::shared_ptr<SubscriberInterface<T>> subscriber,
-    std::shared_ptr<Publisher<T>> server)
-    : ConnectorInterface<T>(subscriber), server_(server)
+llgc::pattern::publisher::ConnectorClientTcp<T>::ConnectorClientTcp(
+    std::shared_ptr<SubscriberInterface<T>> subscriber, int socket_fd)
+    : ConnectorInterface<T>(subscriber), socket_(socket_fd)
 {
 }
 
 template <typename T>
-llgc::pattern::publisher::ConnectorDirect<T>::~ConnectorDirect() = default;
+llgc::pattern::publisher::ConnectorClientTcp<T>::~ConnectorClientTcp() =
+    default;
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorDirect<T>::Equals(
+bool llgc::pattern::publisher::ConnectorClientTcp<T>::Equals(
     const ConnectorInterface<T> &connector) const
 {
   const auto *connector_direct =
-      dynamic_cast<const ConnectorDirect<T> *>(&connector);
+      dynamic_cast<const ConnectorClientTcp<T> *>(&connector);
 
   if (connector_direct == nullptr)
   {
@@ -49,26 +52,26 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::Equals(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
-    uint32_t id_message)
+bool llgc::pattern::publisher::ConnectorClientTcp<T>::AddSubscriber(
+    uint32_t /*id_message*/)
 {
-  return server_->AddSubscriber(id_message, this->shared_from_this());
+  return false;
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorDirect<T>::Send(
+bool llgc::pattern::publisher::ConnectorClientTcp<T>::Send(
     const std::string &message)
 {
-  server_->Forward(message);
-
-  return true;
+  std::cout << "ConnectorClientTcp<T>::Send" << std::endl;
+  return send(socket_, message.c_str(), message.length(), 0) ==
+         static_cast<ssize_t>(message.length());
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
-    uint32_t id_message)
+bool llgc::pattern::publisher::ConnectorClientTcp<T>::RemoveSubscriber(
+    uint32_t /*id_message*/)
 {
-  return server_->RemoveSubscriber(id_message, this->shared_from_this());
+  return false;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

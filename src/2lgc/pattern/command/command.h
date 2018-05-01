@@ -22,7 +22,6 @@
 #ifndef PATTERN_COMMAND_COMMAND_H_
 #define PATTERN_COMMAND_COMMAND_H_
 
-#include <2lgc/compatibility/visual_studio.h>
 #include <chrono>
 #include <memory>
 #include <string>
@@ -38,9 +37,18 @@ namespace llgc::pattern::command
 class Command
 {
  public:
-  Command(std::chrono::time_point<std::chrono::system_clock> time);
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in,out] time Time of the execution of the command.
+   */
+  explicit Command(std::chrono::time_point<std::chrono::system_clock> time);
 
+  /**
+   * @brief Default destructor. Virtual because command is abstract.
+   */
   virtual ~Command() = default;
+
   /**
    * @brief Execute the command.
    *
@@ -63,18 +71,26 @@ class Command
   virtual void Redo() = 0;
 
   /**
+   * @brief Tell if the command change the model or just the gui (and should
+   * not notify others instances).
+   *
+   * @return true if command change the model.
+   */
+  virtual bool ChangeModel() = 0;
+
+  /**
    * @brief Return the description of the command.
    *
    * @return The description.
    */
-  virtual const std::string & GetDescription() const = 0;
+  virtual const std::string& GetDescription() const = 0;
 
   /**
    * @brief Convert the command to a protobuf serialization.
    *
    * @return The protobuf string.
    */
-  virtual const std::string * ToProtobuf() const = 0;
+  virtual const std::string* ToProtobuf() const = 0;
 
  private:
   /**
@@ -100,6 +116,6 @@ class Command
 
 }  // namespace llgc::pattern::command
 
-#endif  // PATTERN_COMMAND_COMMAND_INTERFACE_H_
+#endif  // PATTERN_COMMAND_COMMAND_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

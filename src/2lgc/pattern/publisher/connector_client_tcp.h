@@ -19,8 +19,8 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
-#define PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_CLIENT_TCP_H_
+#define PATTERN_PUBLISHER_CONNECTOR_CLIENT_TCP_H_
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
@@ -33,11 +33,8 @@
  */
 namespace llgc::pattern::publisher
 {
-template <typename M>
+template <typename T>
 class SubscriberInterface;
-
-template <typename M>
-class Publisher;
 
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -47,55 +44,56 @@ class Publisher;
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class ConnectorDirect : public ConnectorInterface<T>,
-                        public std::enable_shared_from_this<ConnectorDirect<T>>
+class ConnectorClientTcp : public ConnectorInterface<T>
 {
  public:
   /**
    * @brief Default constructor.
    *
-   * @param[in] subscriber The subscriber.
-   * @param[in] server The server.
+   * @param[in] subscriber Subscriber to communicate with client.
+   * @param[in] socket_fd Socket to communicate with client.
    */
-  ConnectorDirect(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                  std::shared_ptr<Publisher<T>> server);
+  ConnectorClientTcp(
+      std::shared_ptr<llgc::pattern::publisher::SubscriberInterface<T>>
+          subscriber,  // NS
+      int socket_fd);
 
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorDirect();
+  virtual ~ConnectorClientTcp();
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorDirect(ConnectorDirect &&other) = delete;
+  ConnectorClientTcp(ConnectorClientTcp &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorDirect(ConnectorDirect const &other) = delete;
+  ConnectorClientTcp(ConnectorClientTcp const &other) = delete;
 
   /**
    * @brief Delete the copy operator.
    *
-   * @param[in,out] other The original.
+   * @param[in] other The original.
    *
    * @return Delete function.
    */
-  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
+  ConnectorClientTcp &operator=(ConnectorClientTcp &&other) = delete;
 
   /**
    * @brief Delete the copy operator.
    *
-   * @param[in,out] other The original.
+   * @param[in] other The original.
    *
    * @return Delete function.
    */
-  ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
+  ConnectorClientTcp &operator=(ConnectorClientTcp const &other) & = delete;
 
   /**
    * @brief Compare two connectors.
@@ -133,15 +131,15 @@ class ConnectorDirect : public ConnectorInterface<T>,
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
- private:
+ protected:
   /**
-   * @brief The server.
+   * @brief Socket to the server.
    */
-  std::shared_ptr<Publisher<T>> server_;
+  int socket_;  // NS
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_CLIENT_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

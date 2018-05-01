@@ -22,6 +22,14 @@ make check
 
 `-DCMAKE_CXX_FLAGS=...` custom flags.
 
+<h1>Dependencies</h1>
+
+<h2>Protobuf</h2>
+All messages are send by using protobuf message.
+
+<h2>OpenSSL</h2>
+If OpenSSL is found, TCP acknowledges will be SHA512 sum. If not found, djb2 will be used.
+
 <h1>TODO</h1>
 Missing local README.md means that the functionnality is still under development.
 

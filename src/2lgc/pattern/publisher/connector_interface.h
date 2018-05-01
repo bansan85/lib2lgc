@@ -33,6 +33,7 @@
  */
 namespace llgc::pattern::publisher
 {
+template <typename T>
 class SubscriberInterface;
 
 /**
@@ -42,6 +43,7 @@ class SubscriberInterface;
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
+template <typename T>
 class ConnectorInterface
 {
  public:
@@ -50,7 +52,41 @@ class ConnectorInterface
    *
    * @param[in,out] subscriber Subscriber.
    */
-  explicit ConnectorInterface(std::shared_ptr<SubscriberInterface> subscriber);
+  explicit ConnectorInterface(
+      std::shared_ptr<SubscriberInterface<T>> subscriber);
+
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface(ConnectorInterface&& other) = delete;
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface(ConnectorInterface const& other) = delete;
+  /**
+   * @brief Delete move operator.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface& operator=(ConnectorInterface&& other) & = delete;
+  /**
+   * @brief Delete copy operator.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface& operator=(ConnectorInterface const& other) & = delete;
 
   /**
    * @brief Compare in connector is the same than the object.
@@ -59,14 +95,16 @@ class ConnectorInterface
    *
    * @return true if the same.
    */
-  virtual bool Equals(const ConnectorInterface *connector) const CHK = 0;
+  virtual bool Equals(const ConnectorInterface<T>& connector) const CHK = 0;
 
   /**
    * @brief Send message to the publisher.
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
+   *
+   * @return true if no problem.
    */
-  virtual void Send(std::shared_ptr<const std::string> message) = 0;
+  virtual bool Send(const std::string& message) CHK = 0;
 
   /**
    * @brief Listen message from the publisher.
@@ -75,7 +113,7 @@ class ConnectorInterface
    * @param[in] hold If true, message is not send to subscriber be will be
    * pending until ListenPending is called.
    */
-  void Listen(std::shared_ptr<const std::string> message, const bool hold);
+  void Listen(const T& message, const bool hold);
 
   /**
    * @brief Listen pending messages from the publisher.
@@ -87,7 +125,10 @@ class ConnectorInterface
    *
    * @return return the subscriber.
    */
-  const SubscriberInterface *GetSubscriber() const { return subscriber_.get(); }
+  const SubscriberInterface<T>* GetSubscriber() const
+  {
+    return subscriber_.get();
+  }
 
   /**
    * @brief Add a new subscriber.
@@ -116,7 +157,7 @@ class ConnectorInterface
   /**
    * @brief Messages on hold.
    */
-  std::queue<std::shared_ptr<const std::string>> messages_;
+  std::queue<T> messages_;
 
   /**
    * @brief id of the next message.
@@ -124,9 +165,9 @@ class ConnectorInterface
   uint32_t next_id_;
 
   /**
-   * @brief The subsriber.
+   * @brief The subscriber.
    */
-  std::shared_ptr<SubscriberInterface> subscriber_;
+  std::shared_ptr<SubscriberInterface<T>> subscriber_;
 };
 
 }  // namespace llgc::pattern::publisher

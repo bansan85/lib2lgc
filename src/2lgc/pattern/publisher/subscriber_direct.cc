@@ -20,13 +20,22 @@
  */
 
 #include <2lgc/pattern/publisher/subscriber_direct.h>
-#include <2lgc/pattern/publisher/subscriber_interface.h>
 
-bool llgc::pattern::publisher::SubscriberDirect::Equals(
-    const SubscriberInterface *connector) const
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
 {
-  auto subscriber_direct_cast =
-      dynamic_cast<const SubscriberDirect *>(connector);
+template <typename T>
+class SubscriberInterface;
+}
+
+template <typename T>
+bool llgc::pattern::publisher::SubscriberDirect<T>::Equals(
+    const SubscriberInterface<T> &connector) const
+{
+  const auto *subscriber_direct_cast =
+      dynamic_cast<const SubscriberDirect<T> *>(&connector);
 
   // Not the same type.
   if (subscriber_direct_cast == nullptr)

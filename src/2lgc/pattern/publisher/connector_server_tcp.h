@@ -19,25 +19,24 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
-#define PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_H_
+#define PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_H_
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <thread>
 
 /**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
-template <typename M>
+template <typename T>
 class SubscriberInterface;
-
-template <typename M>
-class Publisher;
 
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -47,60 +46,60 @@ class Publisher;
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class ConnectorDirect : public ConnectorInterface<T>,
-                        public std::enable_shared_from_this<ConnectorDirect<T>>
+class ConnectorServerTcp : public ConnectorInterface<T>
 {
  public:
   /**
    * @brief Default constructor.
    *
    * @param[in] subscriber The subscriber.
-   * @param[in] server The server.
+   * @param[in] ip The IP of the server.
+   * @param[in] port The port of the server.
    */
-  ConnectorDirect(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                  std::shared_ptr<Publisher<T>> server);
+  ConnectorServerTcp(std::shared_ptr<SubscriberInterface<T>> subscriber,
+                     std::string ip, uint16_t port);
 
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorDirect();
+  virtual ~ConnectorServerTcp();
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorDirect(ConnectorDirect &&other) = delete;
+  ConnectorServerTcp(ConnectorServerTcp &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorDirect(ConnectorDirect const &other) = delete;
+  ConnectorServerTcp(ConnectorServerTcp const &other) = delete;
 
   /**
    * @brief Delete the copy operator.
    *
-   * @param[in,out] other The original.
+   * @param[in] other The original.
    *
    * @return Delete function.
    */
-  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
+  ConnectorServerTcp &operator=(ConnectorServerTcp &&other) = delete;
 
   /**
    * @brief Delete the copy operator.
    *
-   * @param[in,out] other The original.
+   * @param[in] other The original.
    *
    * @return Delete function.
    */
-  ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
+  ConnectorServerTcp &operator=(ConnectorServerTcp const &other) & = delete;
 
   /**
    * @brief Compare two connectors.
    *
-   * @param[in,out] connector The connector to compare with this.
+   * @param[in] connector The connector to compare with this.
    *
    * @return true if same connector.
    */
@@ -133,15 +132,50 @@ class ConnectorDirect : public ConnectorInterface<T>,
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
+  /**
+   * @brief The function used by the thread that receive message from server.
+   *
+   * Need to be public so thread can use it. Protected is not possible.
+   */
+  void Receiver();
+
+ protected:
+  /**
+   * @brief The IP of the server.
+   */
+  std::string ip_;
+
+  /**
+   * @brief The port of the server.
+   */
+  uint16_t port_;
+
+  /**
+   * @brief Socket to the server.
+   */
+  int socket_;  // NS
+
+  /**
+   * @brief Start connection with server.
+   *
+   * @return true if no problem.
+   */
+  virtual bool Connect() CHK = 0;
+
+  /**
+   * @brief Thread that listen the server.
+   */
+  std::thread receiver_;
+
  private:
   /**
-   * @brief The server.
+   * @brief If thread in trying to stop.
    */
-  std::shared_ptr<Publisher<T>> server_;
+  std::atomic<bool> disposing_;
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -19,13 +19,44 @@
  * SOFTWARE.
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef NET_LINUX_H_
+#define NET_LINUX_H_
 
-#cmakedefine DISABLE_VISITABLE_CACHE
+#include <sys/socket.h>
+#include <cstddef>
 
-#cmakedefine OPENSSL_FOUND
+/**
+ * @brief This is all about net.
+ */
+namespace llgc::net
+{
+/**
+ * @brief Class to manipulate Linux functions.
+ */
+class Linux
+{
+ public:
+  /**
+   * @brief Disable interrupt on signal PIPE.
+   */
+  static void DisableSigPipe();
 
-#endif  // CONFIG_H_
+  /**
+   * @brief bind function with timeout.
+   *
+   * @param[in] sockfd Socket file descriptor.
+   * @param[in] addr Address of the socket description.
+   * @param[in] addrlen Length of the socket description.
+   * @param[in] timeout Timeout in millisecond.
+   *
+   * @return false if timeout or failed to bind.
+   */
+  static bool Bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen,
+                   size_t timeout);
+};
+
+}  // namespace llgc::net
+
+#endif  // NET_LINUX_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

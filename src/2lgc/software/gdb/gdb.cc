@@ -127,9 +127,8 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           filename_gdb->assign(filename);
           message_gdb->set_allocated_run_bt_full_time_out(
               run_bt_full_time_out.release());
-          std::shared_ptr<std::string> run_bt_full_in_string =
-              std::make_shared<std::string>();
-          messages_gdb.SerializeToString(run_bt_full_in_string.get());
+          std::string run_bt_full_in_string;
+          messages_gdb.SerializeToString(&run_bt_full_in_string);
           server_.Forward(run_bt_full_in_string);
 
           retval = false;

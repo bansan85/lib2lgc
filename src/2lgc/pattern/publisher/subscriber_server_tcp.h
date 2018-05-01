@@ -19,11 +19,10 @@
  * SOFTWARE.
  */
 
-#ifndef PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
-#define PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#ifndef PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
+#define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
 
 #include <2lgc/pattern/publisher/subscriber_interface.h>
-#include <cstdint>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -38,15 +37,15 @@ namespace llgc::pattern::publisher
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class SubscriberDirect : public SubscriberInterface<T>
+class SubscriberServerTcp : public SubscriberInterface<T>
 {
  public:
   /**
    * @brief Default constructor
    *
-   * @param[in] id The id of the constructor.
+   * @param[in] socket Socket to communicate with server.
    */
-  explicit SubscriberDirect(uint32_t id) : id_(id) {}
+  explicit SubscriberServerTcp(int socket) : socket_(socket) {}
 
   /**
    * @brief Delete move constructor.
@@ -55,7 +54,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect(SubscriberDirect&& other) = delete;
+  SubscriberServerTcp(SubscriberServerTcp&& other) = delete;
   /**
    * @brief Delete copy constructor.
    *
@@ -63,7 +62,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect(SubscriberDirect const& other) = delete;
+  SubscriberServerTcp(SubscriberServerTcp const& other) = delete;
   /**
    * @brief Delete move operator.
    *
@@ -71,7 +70,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect& operator=(SubscriberDirect&& other) & = delete;
+  SubscriberServerTcp& operator=(SubscriberServerTcp&& other) & = delete;
   /**
    * @brief Delete copy operator.
    *
@@ -79,7 +78,15 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect& operator=(SubscriberDirect const& other) & = delete;
+  SubscriberServerTcp& operator=(SubscriberServerTcp const& other) & = delete;
+  /**
+   * @brief Receive message from publisher.
+   *
+   * @param[in] message message from the publisher in protobuf format.
+   */
+
+  void Listen(const T& message) override;
+
   /**
    * @brief Compare in connector is the same than the object.
    *
@@ -87,24 +94,23 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return true if the same.
    */
-
   bool Equals(const SubscriberInterface<T>& connector) const override
       __attribute__((pure));
 
   /**
    * @brief Default virtual destructor.
    */
-  ~SubscriberDirect() override {}
+  ~SubscriberServerTcp() override {}
 
  private:
   /**
    * @brief The id of the connector.
    */
-  const uint32_t id_;
+  const int socket_;  // NS
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#endif  // PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

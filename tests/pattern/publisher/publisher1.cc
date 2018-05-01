@@ -20,26 +20,37 @@
  */
 
 #include <2lgc/pattern/publisher/connector_direct.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/utils/thread/count_lock.h>
 #include <actions.pb.h>
 #include <google/protobuf/stubs/common.h>
-#include <2lgc/pattern/publisher/connector_direct.cc>
-#include <2lgc/pattern/publisher/publisher.cc>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
+#include <ext/alloc_traits.h>
+#include <functional>
+#include <map>
 #include <memory>
 #include <string>
+#include <vector>
+
+#include <2lgc/pattern/publisher/connector_direct.cc>
+#include <2lgc/pattern/publisher/connector_interface.cc>
+#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/subscriber_direct.cc>
 
 template class llgc::pattern::publisher::Publisher<msg::Actions>;
+template class llgc::pattern::publisher::ConnectorInterface<msg::Actions>;
 template class llgc::pattern::publisher::ConnectorDirect<msg::Actions>;
+template class llgc::pattern::publisher::SubscriberDirect<msg::Actions>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect
+class SubscriberBase final
+    : public llgc::pattern::publisher::SubscriberDirect<msg::Actions>
 {
  public:
   /**
@@ -47,17 +58,38 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect
    *
    * @param[in] id id of the subscriber.
    */
-  explicit SubscriberBase(uint32_t id) : SubscriberDirect(id), value(0) {}
+  explicit SubscriberBase(uint32_t id)
+      : SubscriberDirect(id),
+        value(0),
+        action_vector(msg::Action::DataCase::kTest + 1)
+  {
+    action_vector[0] = nullptr;
+    action_vector[msg::Action::DataCase::kTest] = &SubscriberBase::TestFct;
+  }
 
   /**
    * @brief Receive message from publisher.
    *
    * @param[in] message message from the publisher in protobuf format.
    */
-  void Listen(std::shared_ptr<const std::string> message) override
+  void Listen(const msg::Actions& message) override
   {
-    msg::Actions actions;
-    assert(actions.ParseFromString(*message.get()));
+    for (int i = 0; i < message.action_size(); i++)
+    {
+      const msg::Action& action = message.action(i);
+
+      action_vector[action.data_case()](*this, action);
+    }
+  }
+
+  /**
+   * @brief Function that will be run with test event.
+   *
+   * @param[in] action Action that contains the test event.
+   */
+  void TestFct(const msg::Action& action)
+  {
+    (void)action;
     value++;
   }
 
@@ -65,9 +97,15 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect
    * @brief value for test.
    */
   size_t value;
+
+  /**
+   * @brief Action à exécuter.
+   */
+  std::vector<std::function<void(SubscriberBase&, const msg::Action&)>>
+      action_vector;
 };
 
-int main(int /* argc */, char * /* argv */ [])  // NS
+int main(int /* argc */, char* /* argv */ [])  // NS
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
@@ -77,36 +115,33 @@ int main(int /* argc */, char * /* argv */ [])  // NS
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
 
-  assert(!subscriber->Equals(nullptr));
-
   std::shared_ptr<llgc::pattern::publisher::ConnectorDirect<msg::Actions>>
       connector = std::make_shared<
           llgc::pattern::publisher::ConnectorDirect<msg::Actions>>(subscriber,
                                                                    server);
 
   // Add them to the server.
-  assert(connector->AddSubscriber(1));
+  assert(connector->AddSubscriber(msg::Action::DataCase::kTest));
 
   // Base test case.
   assert(subscriber->value == 0);
 
   // Check first message.
   msg::Actions actions = msg::Actions();
-  msg::Action *action = actions.add_action();
+  msg::Action* action = actions.add_action();
   std::unique_ptr<msg::Action_Test> action_test =
       std::make_unique<msg::Action_Test>();
   action->set_allocated_test(action_test.release());
-  std::shared_ptr<std::string> action_in_string =
-      std::make_shared<std::string>();
-  actions.SerializeToString(action_in_string.get());
-  connector->Send(action_in_string);
+  std::string action_in_string;
+  actions.SerializeToString(&action_in_string);
+  assert(connector->Send(action_in_string));
   assert(subscriber->value == 1);
 
   // Test lock forward.
   subscriber->value = 0;
   {
     llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
-    connector->Send(action_in_string);
+    assert(connector->Send(action_in_string));
     assert(subscriber->value == 0);
   }
   assert(subscriber->value == 1);
@@ -114,21 +149,19 @@ int main(int /* argc */, char * /* argv */ [])  // NS
   // Remove the first subscriber.
   subscriber->value = 0;
   assert(connector->RemoveSubscriber(1));
-  connector->Send(action_in_string);
+  assert(connector->Send(action_in_string));
   assert(subscriber->value == 0);
-
-  assert(!connector->Equals(nullptr));
 
   // Double insert
   assert(connector->AddSubscriber(1));
   assert(connector->AddSubscriber(1));
-  connector->Send(action_in_string);
+  assert(connector->Send(action_in_string));
   assert(subscriber->value == 2);
   assert(connector->RemoveSubscriber(1));
-  connector->Send(action_in_string);
+  assert(connector->Send(action_in_string));
   assert(subscriber->value == 3);
   assert(connector->RemoveSubscriber(1));
-  connector->Send(action_in_string);
+  assert(connector->Send(action_in_string));
   assert(subscriber->value == 3);
   assert(!server->GetOptionFailAlreadySubscribed());
   server->SetOptionFailAlreadySubscribed(true);

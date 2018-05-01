@@ -22,7 +22,6 @@
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
 #include <2lgc/software/gdb/stack.h>
-#include <cassert>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -76,10 +75,11 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
                                                      std::string* function,
                                                      std::string* file)
 {
-  assert(index);
-  assert(address);
-  assert(function);
-  assert(file);
+  if (index == nullptr || address == nullptr || function == nullptr ||
+      file == nullptr)
+  {
+    return false;
+  }
 
   // Regex: "^#(\\d+) *((0x.*) in )?((.*\\)) at )?(.*)$"
   // Size for the beginning #\d

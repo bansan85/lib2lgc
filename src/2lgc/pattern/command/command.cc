@@ -21,6 +21,8 @@
 
 #include <2lgc/pattern/command/command.h>
 
-llgc::pattern::command::Command::Command(std::chrono::time_point<std::chrono::system_clock> time) : time_start_(time)
+llgc::pattern::command::Command::Command(
+    std::chrono::time_point<std::chrono::system_clock> time)
+    : time_start_(time), duration_start_(0.)
 {
 }

@@ -19,16 +19,20 @@
  * SOFTWARE.
  */
 
+#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/software/gdb/gdb_server.h>
-#include <2lgc/pattern/publisher/publisher.cc>
 #include <memory>
 #include <string>
 
+#include <2lgc/pattern/publisher/connector_interface.cc>
+#include <2lgc/pattern/publisher/publisher.cc>
+
+template class llgc::pattern::publisher::ConnectorInterface<
+    msg::software::Gdbs>;
 template class llgc::pattern::publisher::Publisher<msg::software::Gdbs>;
 
-void llgc::software::gdb::GdbServer::Forward(
-    const std::shared_ptr<const std::string>& message)
+void llgc::software::gdb::GdbServer::Forward(const std::string& message)
 {
   // Check if instance.
   if (IsInstance())

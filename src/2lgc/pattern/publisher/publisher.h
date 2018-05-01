@@ -30,21 +30,34 @@
 #include <memory>
 #include <mutex>
 #include <string>
+#include <type_traits>
+
+/**
+ * @brief Google Protobuf stuff.
+ */
+namespace google::protobuf
+{
+class Message;
+}
 
 /**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
+template <typename T>
 class ConnectorInterface;
 
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
  */
-template <typename M>
+template <typename T>
 class Publisher
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
   /**
    * @brief Options of the server.
@@ -115,14 +128,15 @@ class Publisher
    * true and the subscriber is already registered.
    */
   virtual bool AddSubscriber(
-      uint32_t id_message, std::shared_ptr<ConnectorInterface> subscriber) CHK;
+      uint32_t id_message,
+      std::shared_ptr<ConnectorInterface<T>> subscriber) CHK;
 
   /**
    * @brief Send the message to all subscribers.
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  void Forward(std::shared_ptr<const std::string> message);
+  void Forward(const std::string& message);
 
   /**
    * @brief Send all pending messages of all subscribers.
@@ -140,7 +154,7 @@ class Publisher
    */
   virtual bool RemoveSubscriber(
       uint32_t id_message,
-      const std::shared_ptr<ConnectorInterface>& subscriber) CHK;
+      std::shared_ptr<ConnectorInterface<T>> subscriber) CHK;
 
   /**
    * @brief Return if subscription will failed if subscriber already subscribed.
@@ -169,7 +183,7 @@ class Publisher
    * @brief Type of the map for subscribers.
    */
   using SubscriberMap =
-      std::multimap<uint32_t, std::shared_ptr<ConnectorInterface>>;
+      std::multimap<uint32_t, std::shared_ptr<ConnectorInterface<T>>>;
 
   /**
    * @brief List of subscribers to send message.

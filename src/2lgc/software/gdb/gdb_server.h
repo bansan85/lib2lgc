@@ -29,7 +29,6 @@
 
 #include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/singleton/singleton.h>
-#include <memory>
 #include <string>
 
 namespace msg::software
@@ -54,7 +53,7 @@ class GdbServer : public llgc::pattern::singleton::Local<
    *
    * @param[in] message The message to send.
    */
-  void Forward(const std::shared_ptr<const std::string>& message);
+  void Forward(const std::string& message);
 };
 
 }  // namespace llgc::software::gdb

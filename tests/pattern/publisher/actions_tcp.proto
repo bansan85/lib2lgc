@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+import "net.proto";
+
+package msg;
+
+message ActionTcp {
+  message Test {
+  }
+
+  oneof data {
+    msg.net.AddSubscriber add_subscriber = 1;
+    msg.net.RemoveSubscriber remove_subscriber = 2;
+    Test test = 3;
+  }
+}
+
+message ActionsTcp {
+  repeated ActionTcp action = 1;
+}

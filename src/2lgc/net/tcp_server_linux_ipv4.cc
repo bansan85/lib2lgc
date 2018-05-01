@@ -19,13 +19,47 @@
  * SOFTWARE.
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#include <2lgc/net/linux.h>
+#include <2lgc/net/tcp_server_linux.h>
+#include <2lgc/net/tcp_server_linux_ipv4.h>
+#include <netinet/in.h>
+#include <sys/socket.h>
+#include <cerrno>
+#include <iostream>
 
-#cmakedefine DISABLE_VISITABLE_CACHE
+template <typename T>
+llgc::net::TcpServerLinuxIpv4<T>::TcpServerLinuxIpv4(uint16_t port)
+    : TcpServerLinux<T>(port)
+{
+}
 
-#cmakedefine OPENSSL_FOUND
+template <typename T>
+bool llgc::net::TcpServerLinuxIpv4<T>::Listen()
+{
+  this->sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-#endif  // CONFIG_H_
+  if (this->sockfd_ == -1)
+  {
+    return false;
+  }
+
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
+  struct sockaddr_in socket_addr;
+  socket_addr.sin_family = AF_INET;
+  socket_addr.sin_addr.s_addr = INADDR_ANY;
+  socket_addr.sin_port = htons(this->port_);
+
+  if (!llgc::net::Linux::Bind(
+          this->sockfd_,
+          // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+          reinterpret_cast<struct sockaddr *>(&socket_addr),
+          sizeof(socket_addr), 4 * 60 * 1000))
+  {
+    std::cout << "Failed to bind socket. Error n°" << errno << "." << std::endl;
+    return false;
+  }
+
+  return listen(this->sockfd_, 3) != -1;
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

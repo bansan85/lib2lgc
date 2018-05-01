@@ -28,10 +28,19 @@
 #include <string>
 
 /**
+ * @brief Google Protobuf stuff.
+ */
+namespace google::protobuf
+{
+class Message;
+}
+
+/**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
+template <typename T>
 class ConnectorInterface;
 
 /**
@@ -41,15 +50,19 @@ class ConnectorInterface;
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
+template <typename T>
 class SubscriberInterface
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
   /**
    * @brief Send message.
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
    */
-  virtual void Listen(std::shared_ptr<const std::string> message) = 0;
+  virtual void Listen(const T& message) = 0;
 
   /**
    * @brief Compare in connector is the same than the object.
@@ -58,7 +71,7 @@ class SubscriberInterface
    *
    * @return true if the same.
    */
-  virtual bool Equals(const SubscriberInterface *connector) const = 0;
+  virtual bool Equals(const SubscriberInterface<T>& connector) const = 0;
 
   /**
    * @brief Default virtual destructor.

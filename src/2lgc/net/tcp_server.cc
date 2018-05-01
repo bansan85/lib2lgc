@@ -19,13 +19,37 @@
  * SOFTWARE.
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#include <2lgc/net/tcp_server.h>
+#include <2lgc/pattern/publisher/publisher.h>
 
-#cmakedefine DISABLE_VISITABLE_CACHE
+template <typename T>
+llgc::net::TcpServer<T>::TcpServer(uint16_t port)
+    : llgc::pattern::publisher::Publisher<T>(), port_(port), disposing_(false)
+{
+}
 
-#cmakedefine OPENSSL_FOUND
+template <typename T>
+llgc::net::TcpServer<T>::~TcpServer()
+{
+  JoinWait();
+}
 
-#endif  // CONFIG_H_
+template <typename T>
+bool llgc::net::TcpServer<T>::IsStopping()
+{
+  return disposing_;
+}
+
+template <typename T>
+void llgc::net::TcpServer<T>::Stop()
+{
+  disposing_ = true;
+}
+
+template <typename T>
+void llgc::net::TcpServer<T>::JoinWait()
+{
+  thread_wait_.join();
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -20,33 +20,35 @@
  */
 
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/subscriber_interface.h>
-#include <utility>
+#include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep
 
-llgc::pattern::publisher::ConnectorInterface::ConnectorInterface(
-    std::shared_ptr<SubscriberInterface> subscriber)
-    : messages_(), next_id_(0), subscriber_(std::move(subscriber))
+template <typename T>
+llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
+    std::shared_ptr<SubscriberInterface<T>> subscriber)
+    : messages_(), next_id_(0), subscriber_(subscriber)
 {
 }
 
-void llgc::pattern::publisher::ConnectorInterface::Listen(
-    std::shared_ptr<const std::string> message, const bool hold)
+template <typename T>
+void llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
+                                                             const bool hold)
 {
   if (hold)
   {
-    messages_.push(std::move(message));
+    messages_.push(message);
   }
   else
   {
-    subscriber_->Listen(std::move(message));
+    subscriber_->Listen(message);
   }
 }
 
-void llgc::pattern::publisher::ConnectorInterface::ListenPending()
+template <typename T>
+void llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
 {
   while (!messages_.empty())
   {
-    const std::shared_ptr<const std::string> it = messages_.front();
+    const T& it = messages_.front();
     subscriber_->Listen(it);
     messages_.pop();
   }

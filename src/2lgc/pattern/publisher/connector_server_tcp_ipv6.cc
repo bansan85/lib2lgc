@@ -19,13 +19,34 @@
  * SOFTWARE.
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#include <2lgc/pattern/publisher/connector_server_tcp.h>
+#include <2lgc/pattern/publisher/connector_server_tcp_ipv6.h>
 
-#cmakedefine DISABLE_VISITABLE_CACHE
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
+{
+template <typename T>
+class SubscriberInterface;
+}
 
-#cmakedefine OPENSSL_FOUND
+template <typename T>
+llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::ConnectorServerTcpIpv6(
+    std::shared_ptr<SubscriberInterface<T>> subscriber, const std::string ip,
+    uint16_t port)
+    : ConnectorServerTcp<T>(subscriber, ip, port)
+{
+}
 
-#endif  // CONFIG_H_
+template <typename T>
+llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::~ConnectorServerTcpIpv6() =
+    default;
+
+template <typename T>
+int llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::SizeOfSocket()  // NS
+{
+  return sizeof(struct sockaddr_in6);
+}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

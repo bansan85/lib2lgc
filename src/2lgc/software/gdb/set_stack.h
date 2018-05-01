@@ -272,7 +272,7 @@ class SetStack
    *
    * @param[in] message The message to send.
    */
-  void Forward(const std::shared_ptr<const std::string>& message);
+  void Forward(const std::string& message);
 };
 
 }  // namespace llgc::software::gdb

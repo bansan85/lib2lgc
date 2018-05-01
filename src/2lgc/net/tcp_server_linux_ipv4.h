@@ -19,13 +19,42 @@
  * SOFTWARE.
  */
 
-#ifndef CONFIG_H_
-#define CONFIG_H_
+#ifndef NET_TCP_SERVER_LINUX_IPV4_H_
+#define NET_TCP_SERVER_LINUX_IPV4_H_
 
-#cmakedefine DISABLE_VISITABLE_CACHE
+#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/net/tcp_server_linux.h>
+#include <cstdint>
 
-#cmakedefine OPENSSL_FOUND
+/**
+ * @brief This is all about net.
+ */
+namespace llgc::net
+{
+/**
+ * @brief Interface to create a TCP server.
+ */
+template <typename T>
+class TcpServerLinuxIpv4 : public TcpServerLinux<T>
+{
+ public:
+  /**
+   * @brief Constructor with port for the TCP server.
+   *
+   * @param[in] port The port to listen from.
+   */
+  explicit TcpServerLinuxIpv4(uint16_t port);
 
-#endif  // CONFIG_H_
+  /**
+   * @brief Start the server and the listening the port.
+   *
+   * @return true if no problem.
+   */
+  bool Listen() override CHK;
+};
+
+}  // namespace llgc::net
+
+#endif  // NET_TCP_SERVER_LINUX_IPV4_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

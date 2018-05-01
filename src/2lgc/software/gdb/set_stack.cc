@@ -204,9 +204,8 @@ void llgc::software::gdb::SetStack::TellError(const std::string& filename)
   std::string* filename_gdb = add_stack_failed->add_file();
   filename_gdb->assign(filename);
   message_gdb->set_allocated_add_stack_failed(add_stack_failed.release());
-  std::shared_ptr<std::string> add_stack_in_string =
-      std::make_shared<std::string>();
-  messages_gdb.SerializeToString(add_stack_in_string.get());
+  std::string add_stack_in_string;
+  messages_gdb.SerializeToString(&add_stack_in_string);
   Forward(add_stack_in_string);
 }
 
@@ -359,8 +358,7 @@ const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
   return **it;
 }
 
-void llgc::software::gdb::SetStack::Forward(
-    const std::shared_ptr<const std::string>& message)
+void llgc::software::gdb::SetStack::Forward(const std::string& message)
 {
   // Check if instance.
   if (server_.IsInstance())
