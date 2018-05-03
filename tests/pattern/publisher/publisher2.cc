@@ -249,7 +249,6 @@ void RemoveSubscriberFct(llgc::net::TcpServer<msg::ActionsTcp>* /*server*/,
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
-  return 0;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   //  llgc::net::Linux::DisableSigPipe();

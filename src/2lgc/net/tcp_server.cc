@@ -44,6 +44,7 @@ llgc::net::TcpServer<T>::TcpServer(uint16_t port)
 template <typename T>
 llgc::net::TcpServer<T>::~TcpServer()
 {
+  // Can't destroy a thread if it's still running.
   JoinWait();
 }
 
@@ -62,7 +63,17 @@ void llgc::net::TcpServer<T>::Stop()
 template <typename T>
 void llgc::net::TcpServer<T>::JoinWait()
 {
-  thread_wait_.join();
+  if (thread_wait_.joinable())
+  {
+    thread_wait_.join();
+  }
+  for (auto& thread_i : thread_sockets_)
+  {
+    if (thread_i.second.joinable())
+    {
+      thread_i.second.join();
+    }
+  }
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
