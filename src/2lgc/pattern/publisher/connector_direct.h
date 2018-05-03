@@ -33,11 +33,11 @@
  */
 namespace llgc::pattern::publisher
 {
-template <typename M>
+template <typename T>
 class SubscriberInterface;
 
-template <typename M>
-class Publisher;
+template <typename T>
+class PublisherDirect;
 
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -58,7 +58,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
    * @param[in] server The server.
    */
   ConnectorDirect(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                  std::shared_ptr<Publisher<T>> server);
+                  std::shared_ptr<PublisherDirect<T>> server);
 
   /**
    * @brief Default virtual destructor.
@@ -137,7 +137,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
   /**
    * @brief The server.
    */
-  std::shared_ptr<Publisher<T>> server_;
+  std::shared_ptr<PublisherDirect<T>> server_;
 };
 
 }  // namespace llgc::pattern::publisher

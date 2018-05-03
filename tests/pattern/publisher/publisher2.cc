@@ -26,7 +26,6 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_server_tcp.h>
 #include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
-#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <2lgc/poco/net.pb.h>
@@ -64,7 +63,6 @@ template class llgc::pattern::publisher::ConnectorServerTcp<msg::ActionsTcp>;
 template class llgc::pattern::publisher::ConnectorServerTcpIpv4<
     msg::ActionsTcp>;
 template class llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::Publisher<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>;
 template class llgc::net::TcpServer<msg::ActionsTcp>;
@@ -170,7 +168,7 @@ std::map<msg::ActionTcp::DataCase,
 void WaitServer(llgc::net::TcpServer<msg::ActionsTcp>* server, int socket)
 {
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct pollfd fd;
+  struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket;
   fd.events = POLLIN;
   int retval;  // NS
@@ -203,8 +201,7 @@ void WaitServer(llgc::net::TcpServer<msg::ActionsTcp>* server, int socket)
       std::cout << "Server Client " << socket << " Talk" << std::endl;
       msg::ActionsTcp message;
 
-      std::string client_string(client_message,
-                                static_cast<size_t>(read_size));
+      std::string client_string(client_message, static_cast<size_t>(read_size));
       assert(message.ParseFromString(client_string));
 
       for (int i = 0; i < message.action_size(); i++)

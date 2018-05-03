@@ -29,7 +29,7 @@
 void llgc::net::Linux::DisableSigPipe()
 {
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct sigaction sig;
+  struct sigaction sig;  // NOLINT(hicpp-member-init)
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
   sig.sa_handler = SIG_IGN;  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)

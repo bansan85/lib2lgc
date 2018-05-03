@@ -56,6 +56,11 @@ class ConnectorInterface
       std::shared_ptr<SubscriberInterface<T>> subscriber);
 
   /**
+   * @brief Default destructor.
+   */
+  virtual ~ConnectorInterface() = default;
+
+  /**
    * @brief Delete move constructor.
    *
    * @param[in] other Don't care.
@@ -147,11 +152,6 @@ class ConnectorInterface
    * @return true if no problem.
    */
   virtual bool RemoveSubscriber(uint32_t id_message) CHK = 0;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  virtual ~ConnectorInterface() {}
 
  protected:
   /**

@@ -27,10 +27,21 @@
 #ifndef SOFTWARE_GDB_GDB_SERVER_H_
 #define SOFTWARE_GDB_GDB_SERVER_H_
 
-#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/singleton/singleton.h>
 #include <string>
 
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
+{
+template <typename T>
+class PublisherDirect;
+}
+
+/**
+ * @brief List of Protobuf for software.
+ */
 namespace msg::software
 {
 class Gdbs;
@@ -44,8 +55,9 @@ namespace llgc::software::gdb
 /**
  * @brief Class to run gdb for various purpose.
  */
-class GdbServer : public llgc::pattern::singleton::Local<
-                      llgc::pattern::publisher::Publisher<msg::software::Gdbs>>
+class GdbServer
+    : public llgc::pattern::singleton::Local<
+          llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>
 {
  public:
   /**

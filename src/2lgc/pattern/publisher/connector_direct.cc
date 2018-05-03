@@ -25,7 +25,7 @@
 template <typename T>
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
-    std::shared_ptr<Publisher<T>> server)
+    std::shared_ptr<PublisherDirect<T>> server)
     : ConnectorInterface<T>(subscriber), server_(server)
 {
 }

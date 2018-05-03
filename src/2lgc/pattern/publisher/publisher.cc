@@ -25,19 +25,39 @@
 #include <2lgc/poco/gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/utils/thread/count_lock.h>
 #include <functional>
+#include <memory>
 #include <utility>
 
-template <typename T>
-llgc::pattern::publisher::Publisher<T>::Publisher()
+template <typename T, typename U>
+std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> GetConn(
+    U connector)
+{
+  if (std::is_same<U,
+                   std::shared_ptr<
+                       llgc::pattern::publisher::ConnectorInterface<T>>>::value)
+  {
+    return static_cast<
+        std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(
+        connector);
+  }
+  return static_cast<
+             std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(
+             connector)
+      .lock();
+}
+
+template <typename T, typename U>
+llgc::pattern::publisher::Publisher<T, U>::Publisher()
     : options_(), lock_forward_(0)
 {
 }
 
-template <typename T>
-llgc::pattern::publisher::Publisher<T>::~Publisher() = default;
+template <typename T, typename U>
+llgc::pattern::publisher::Publisher<T, U>::~Publisher() = default;
 
-template <typename T>
-void llgc::pattern::publisher::Publisher<T>::Forward(const std::string &message)
+template <typename T, typename U>
+void llgc::pattern::publisher::Publisher<T, U>::Forward(
+    const std::string &message)
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
   T actions;
@@ -47,7 +67,7 @@ void llgc::pattern::publisher::Publisher<T>::Forward(const std::string &message)
   // We start to store destination to avoid sending the same message multiple
   // time if the subscriber is subscribe to multiple id and the message
   // contains multiple action with the same id.
-  std::map<std::shared_ptr<ConnectorInterface<T>>, T> destination;
+  std::map<U, T, std::owner_less<U>> destination;
 
   for (int i = 0; i < actions.action_size(); i++)
   {
@@ -70,14 +90,20 @@ void llgc::pattern::publisher::Publisher<T>::Forward(const std::string &message)
     }
   }
 
-  for (std::pair<std::shared_ptr<ConnectorInterface<T>>, T> it : destination)
+  for (std::pair<U, T> it : destination)
   {
-    it.first->Listen(it.second, lock_forward_ != 0);
+    std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
+        GetConn<T, U>(it.first);
+    if (connector_subscriber == nullptr)
+    {
+      continue;
+    }
+    connector_subscriber->Listen(it.second, lock_forward_ != 0);
   }
 }
 
-template <typename T>
-void llgc::pattern::publisher::Publisher<T>::ForwardPending()
+template <typename T, typename U>
+void llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
 
@@ -86,39 +112,44 @@ void llgc::pattern::publisher::Publisher<T>::ForwardPending()
     return;
   }
 
-  for (std::pair<uint32_t, std::shared_ptr<ConnectorInterface<T>>> it :
-       subscribers_)
+  for (std::pair<uint32_t, U> it : subscribers_)
   {
-    it.second->ListenPending();
+    std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
+        GetConn<T, U>(it.second);
+    if (connector_subscriber == nullptr)
+    {
+      continue;
+    }
+    connector_subscriber->ListenPending();
   }
 }
 
-template <typename T>
-bool llgc::pattern::publisher::Publisher<T>::GetOptionFailAlreadySubscribed()
+template <typename T, typename U>
+bool llgc::pattern::publisher::Publisher<T, U>::GetOptionFailAlreadySubscribed()
 {
   return options_.add_fail_if_already_subscribed;
 }
 
-template <typename T>
-void llgc::pattern::publisher::Publisher<T>::SetOptionFailAlreadySubscribed(
+template <typename T, typename U>
+void llgc::pattern::publisher::Publisher<T, U>::SetOptionFailAlreadySubscribed(
     bool value)
 {
   options_.add_fail_if_already_subscribed = value;
 }
 
-template <typename T>
+template <typename T, typename U>
 llgc::utils::thread::CountLock<size_t>
-llgc::pattern::publisher::Publisher<T>::LockForward()
+llgc::pattern::publisher::Publisher<T, U>::LockForward()
 {
   return llgc::utils::thread::CountLock<size_t>(
       &lock_forward_, &mutex_forward_,
-      std::bind(&llgc::pattern::publisher::Publisher<T>::ForwardPending, this));
+      std::bind(&Publisher<T, U>::ForwardPending, this));
 }
 
 // Do not fail if subscriber is already subscribed in the same id_message.
-template <typename T>
-bool llgc::pattern::publisher::Publisher<T>::AddSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface<T>> subscriber)
+template <typename T, typename U>
+bool llgc::pattern::publisher::Publisher<T, U>::AddSubscriber(
+    uint32_t id_message, U subscriber)
 {
   if (GetOptionFailAlreadySubscribed())
   {
@@ -127,34 +158,74 @@ bool llgc::pattern::publisher::Publisher<T>::AddSubscriber(
     auto &it = iterpair.first;
     for (; it != iterpair.second; ++it)
     {
-      if (it->second->Equals(*subscriber))
+      std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
+          GetConn<T, U>(subscriber);
+      std::shared_ptr<ConnectorInterface<T>> connector_it =
+          GetConn<T, U>(it->second);
+      if (connector_subscriber == nullptr || connector_it == nullptr)
+      {
+        return false;
+      }
+      if (connector_it->Equals(*connector_subscriber))
       {
         return false;
       }
     }
   }
 
-  subscribers_.insert(
-      std::pair<uint32_t, std::shared_ptr<ConnectorInterface<T>>>(id_message,
-                                                                  subscriber));
+  subscribers_.insert(std::pair<uint32_t, U>(id_message, subscriber));
 
   return true;
 }
 
-template <typename T>
-bool llgc::pattern::publisher::Publisher<T>::RemoveSubscriber(
-    uint32_t id_message, std::shared_ptr<ConnectorInterface<T>> subscriber)
+template <typename T, typename U>
+bool llgc::pattern::publisher::Publisher<T, U>::RemoveSubscriber(
+    uint32_t id_message, U subscriber)
 {
-  // Check if Subscriber is already subscribed.
-  auto iterpair = subscribers_.equal_range(id_message);
-
-  auto it = iterpair.first;
-  for (; it != iterpair.second; ++it)
+  // Remove the subscriber from all id_message.
+  if (id_message == 0)
   {
-    if (it->second->Equals(*subscriber))
+    for (auto it = subscribers_.cbegin(); it != subscribers_.cend();)
     {
-      subscribers_.erase(it);
-      return true;
+      std::shared_ptr<ConnectorInterface<T>> connector_i =
+          GetConn<T, U>(it->second);
+      std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
+          GetConn<T, U>(subscriber);
+      if (connector_i == nullptr || connector_subscriber == nullptr)
+      {
+        continue;
+      }
+      if (connector_i->Equals(*connector_subscriber))
+      {
+        it = subscribers_.erase(it);
+      }
+      else
+      {
+        ++it;
+      }
+    }
+  }
+  else
+  {
+    // Check if Subscriber is already subscribed.
+    auto iterpair = subscribers_.equal_range(id_message);
+
+    auto it = iterpair.first;
+    for (; it != iterpair.second; ++it)
+    {
+      std::shared_ptr<ConnectorInterface<T>> connector_i =
+          GetConn<T, U>(it->second);
+      std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
+          GetConn<T, U>(subscriber);
+      if (connector_i == nullptr || connector_subscriber == nullptr)
+      {
+        continue;
+      }
+      if (connector_i->Equals(*connector_subscriber))
+      {
+        subscribers_.erase(it);
+        return true;
+      }
     }
   }
 

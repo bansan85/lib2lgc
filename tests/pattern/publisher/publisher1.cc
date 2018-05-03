@@ -22,6 +22,7 @@
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/utils/thread/count_lock.h>
 #include <actions.pb.h>
@@ -41,10 +42,12 @@
 #include <2lgc/pattern/publisher/publisher.cc>
 #include <2lgc/pattern/publisher/subscriber_direct.cc>
 
-template class llgc::pattern::publisher::Publisher<msg::Actions>;
+template class llgc::pattern::publisher::Publisher<
+    msg::Actions,
+    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<msg::Actions>>>;
 template class llgc::pattern::publisher::ConnectorInterface<msg::Actions>;
-template class llgc::pattern::publisher::ConnectorDirect<msg::Actions>;
 template class llgc::pattern::publisher::SubscriberDirect<msg::Actions>;
+template class llgc::pattern::publisher::ConnectorDirect<msg::Actions>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
@@ -109,8 +112,9 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  std::shared_ptr<llgc::pattern::publisher::Publisher<msg::Actions>> server =
-      std::make_shared<llgc::pattern::publisher::Publisher<msg::Actions>>();
+  std::shared_ptr<llgc::pattern::publisher::PublisherDirect<msg::Actions>>
+      server = std::make_shared<
+          llgc::pattern::publisher::PublisherDirect<msg::Actions>>();
 
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);

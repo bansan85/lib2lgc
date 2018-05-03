@@ -19,50 +19,67 @@
  * SOFTWARE.
  */
 
-#include <2lgc/net/tcp_server.h>
+#ifndef PATTERN_PUBLISHER_PUBLISHER_DIRECT_H_
+#define PATTERN_PUBLISHER_PUBLISHER_DIRECT_H_
+
+#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher.h>
+#include <memory>
 
 /**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
+/**
+ * @brief Server that will be used to managed subscribers and to keep and send
+ *        messages.
+ */
 template <typename T>
-class ConnectorInterface;
-}
-
-template <typename T>
-llgc::net::TcpServer<T>::TcpServer(uint16_t port)
-    : llgc::pattern::publisher::Publisher<
-          T,
-          std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(),
-      port_(port),
-      disposing_(false)
+class PublisherDirect
+    : public Publisher<T, std::weak_ptr<ConnectorInterface<T>>>
 {
-}
+ public:
+  /**
+   * @brief Default constructor.
+   */
+  PublisherDirect() = default;
 
-template <typename T>
-llgc::net::TcpServer<T>::~TcpServer()
-{
-  JoinWait();
-}
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherDirect(PublisherDirect&& other) = delete;
 
-template <typename T>
-bool llgc::net::TcpServer<T>::IsStopping()
-{
-  return disposing_;
-}
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherDirect(PublisherDirect const& other) = delete;
 
-template <typename T>
-void llgc::net::TcpServer<T>::Stop()
-{
-  disposing_ = true;
-}
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherDirect& operator=(PublisherDirect&& other) & = delete;
 
-template <typename T>
-void llgc::net::TcpServer<T>::JoinWait()
-{
-  thread_wait_.join();
-}
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherDirect& operator=(PublisherDirect const& other) & = delete;
+};
+
+}  // namespace llgc::pattern::publisher
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_DIRECT_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

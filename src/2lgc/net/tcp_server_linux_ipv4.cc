@@ -44,7 +44,7 @@ bool llgc::net::TcpServerLinuxIpv4<T>::Listen()
   }
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct sockaddr_in socket_addr;
+  struct sockaddr_in socket_addr;  // NOLINT(hicpp-member-init)
   socket_addr.sin_family = AF_INET;
   socket_addr.sin_addr.s_addr = INADDR_ANY;
   socket_addr.sin_port = htons(this->port_);

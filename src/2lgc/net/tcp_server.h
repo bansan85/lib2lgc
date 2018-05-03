@@ -28,7 +28,17 @@
 #include <cstdint>
 #include <functional>
 #include <map>
+#include <memory>
 #include <thread>
+
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
+{
+template <typename T>
+class ConnectorInterface;
+}
 
 /**
  * @brief This is all about net.
@@ -41,7 +51,9 @@ namespace llgc::net
  * @tparam T Message from protobuf.
  */
 template <typename T>
-class TcpServer : public llgc::pattern::publisher::Publisher<T>
+class TcpServer
+    : public llgc::pattern::publisher::Publisher<
+          T, std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>
 {
  public:
   /**

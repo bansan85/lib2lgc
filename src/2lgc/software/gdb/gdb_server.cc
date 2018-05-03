@@ -21,6 +21,7 @@
 
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/software/gdb/gdb_server.h>
 #include <memory>
 #include <string>
@@ -30,7 +31,10 @@
 
 template class llgc::pattern::publisher::ConnectorInterface<
     msg::software::Gdbs>;
-template class llgc::pattern::publisher::Publisher<msg::software::Gdbs>;
+template class llgc::pattern::publisher::Publisher<
+    msg::software::Gdbs,
+    std::weak_ptr<
+        llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
 
 void llgc::software::gdb::GdbServer::Forward(const std::string& message)
 {

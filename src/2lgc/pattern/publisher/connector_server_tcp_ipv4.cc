@@ -64,7 +64,7 @@ bool llgc::pattern::publisher::ConnectorServerTcpIpv4<T>::Connect()
   }
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct sockaddr_in server;
+  struct sockaddr_in server;  // NOLINT(hicpp-member-init)
   server.sin_addr.s_addr = inet_addr(this->ip_.c_str());
   server.sin_family = AF_INET;
   server.sin_port = htons(this->port_);

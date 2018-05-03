@@ -30,6 +30,7 @@
 #include <iostream>
 #include <memory>
 #include <type_traits>
+#include <utility>
 
 template <typename T>
 llgc::pattern::publisher::ConnectorServerTcp<T>::ConnectorServerTcp(
@@ -140,7 +141,7 @@ template <typename T>
 void llgc::pattern::publisher::ConnectorServerTcp<T>::Receiver()
 {
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct pollfd fd;
+  struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket_;
   fd.events = POLLIN;
   int retval;  // NS

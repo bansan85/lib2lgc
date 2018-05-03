@@ -27,7 +27,6 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
-#include <memory>
 #include <mutex>
 #include <string>
 #include <type_traits>
@@ -45,14 +44,11 @@ class Message;
  */
 namespace llgc::pattern::publisher
 {
-template <typename T>
-class ConnectorInterface;
-
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
  */
-template <typename T>
+template <typename T, typename U>
 class Publisher
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
@@ -127,9 +123,7 @@ class Publisher
    * @return true if success. May failed if add_fail_if_already_subscribed is
    * true and the subscriber is already registered.
    */
-  virtual bool AddSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface<T>> subscriber) CHK;
+  virtual bool AddSubscriber(uint32_t id_message, U subscriber) CHK;
 
   /**
    * @brief Send the message to all subscribers.
@@ -152,9 +146,7 @@ class Publisher
    * @return true if subscriber is unsubscribed successfully.
    *         May failed if suscriber is not subscribe to the specific message.
    */
-  virtual bool RemoveSubscriber(
-      uint32_t id_message,
-      std::shared_ptr<ConnectorInterface<T>> subscriber) CHK;
+  virtual bool RemoveSubscriber(uint32_t id_message, U subscriber) CHK;
 
   /**
    * @brief Return if subscription will failed if subscriber already subscribed.
@@ -182,8 +174,7 @@ class Publisher
   /**
    * @brief Type of the map for subscribers.
    */
-  using SubscriberMap =
-      std::multimap<uint32_t, std::shared_ptr<ConnectorInterface<T>>>;
+  using SubscriberMap = std::multimap<uint32_t, U>;
 
   /**
    * @brief List of subscribers to send message.
