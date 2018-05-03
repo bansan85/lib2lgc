@@ -27,6 +27,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <map>
+#include <memory>
 #include <mutex>
 #include <string>
 #include <type_traits>
@@ -44,6 +45,9 @@ class Message;
  */
 namespace llgc::pattern::publisher
 {
+template <typename T>
+class ConnectorInterface;
+
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
@@ -196,6 +200,28 @@ class Publisher
    * @brief Forward is not thread-safe.
    */
   std::recursive_mutex mutex_forward_;
+
+  /**
+   * @brief Convert a weak_ptr to shared_ptr.
+   *
+   * @param[in] connector The weak_ptr connector.
+   *
+   * @return The shared_ptr from weak_ptr connector.
+   */
+  std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> GetConn(
+      std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector);
+
+  /**
+   * @brief Convert a shared_ptr to shared_ptr. Exists to be compatible with
+   * GetConn with weak_ptr.
+   *
+   * @param[in] connector The shared_ptr connector.
+   *
+   * @return connector.
+   */
+  std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> GetConn(
+      std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+          connector);
 };
 
 }  // namespace llgc::pattern::publisher

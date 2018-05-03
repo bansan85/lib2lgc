@@ -29,21 +29,19 @@
 #include <utility>
 
 template <typename T, typename U>
-std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> GetConn(
-    U connector)
+std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+llgc::pattern::publisher::Publisher<T, U>::GetConn(
+    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
 {
-  if (std::is_same<U,
-                   std::shared_ptr<
-                       llgc::pattern::publisher::ConnectorInterface<T>>>::value)
-  {
-    return static_cast<
-        std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(
-        connector);
-  }
-  return static_cast<
-             std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(
-             connector)
-      .lock();
+  return connector.lock();
+}
+
+template <typename T, typename U>
+std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+llgc::pattern::publisher::Publisher<T, U>::GetConn(
+    std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
+{
+  return connector;
 }
 
 template <typename T, typename U>
@@ -93,7 +91,7 @@ void llgc::pattern::publisher::Publisher<T, U>::Forward(
   for (std::pair<U, T> it : destination)
   {
     std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
-        GetConn<T, U>(it.first);
+        GetConn(it.first);
     if (connector_subscriber == nullptr)
     {
       continue;
@@ -115,7 +113,7 @@ void llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
   for (std::pair<uint32_t, U> it : subscribers_)
   {
     std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
-        GetConn<T, U>(it.second);
+        GetConn(it.second);
     if (connector_subscriber == nullptr)
     {
       continue;
@@ -159,9 +157,8 @@ bool llgc::pattern::publisher::Publisher<T, U>::AddSubscriber(
     for (; it != iterpair.second; ++it)
     {
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
-          GetConn<T, U>(subscriber);
-      std::shared_ptr<ConnectorInterface<T>> connector_it =
-          GetConn<T, U>(it->second);
+          GetConn(subscriber);
+      std::shared_ptr<ConnectorInterface<T>> connector_it = GetConn(it->second);
       if (connector_subscriber == nullptr || connector_it == nullptr)
       {
         return false;
@@ -187,10 +184,9 @@ bool llgc::pattern::publisher::Publisher<T, U>::RemoveSubscriber(
   {
     for (auto it = subscribers_.cbegin(); it != subscribers_.cend();)
     {
-      std::shared_ptr<ConnectorInterface<T>> connector_i =
-          GetConn<T, U>(it->second);
+      std::shared_ptr<ConnectorInterface<T>> connector_i = GetConn(it->second);
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
-          GetConn<T, U>(subscriber);
+          GetConn(subscriber);
       if (connector_i == nullptr || connector_subscriber == nullptr)
       {
         continue;
@@ -213,10 +209,9 @@ bool llgc::pattern::publisher::Publisher<T, U>::RemoveSubscriber(
     auto it = iterpair.first;
     for (; it != iterpair.second; ++it)
     {
-      std::shared_ptr<ConnectorInterface<T>> connector_i =
-          GetConn<T, U>(it->second);
+      std::shared_ptr<ConnectorInterface<T>> connector_i = GetConn(it->second);
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
-          GetConn<T, U>(subscriber);
+          GetConn(subscriber);
       if (connector_i == nullptr || connector_subscriber == nullptr)
       {
         continue;
