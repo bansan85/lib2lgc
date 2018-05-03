@@ -24,6 +24,7 @@
 #include <chrono>
 #include <csignal>
 #include <iostream>
+#include <thread>
 #include <type_traits>
 
 void llgc::net::Linux::DisableSigPipe()
@@ -53,6 +54,7 @@ bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr *addr,
 
     do
     {
+      std::this_thread::sleep_for(std::chrono::milliseconds(500));
       retval_bind = bind(sockfd, addr, addrlen);
       end = std::chrono::system_clock::now();
     } while (
