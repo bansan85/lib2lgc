@@ -150,7 +150,7 @@ void llgc::pattern::publisher::ConnectorServerTcp<T>::Receiver()
 
   do
   {
-    retval = poll(&fd, 1, 1000);
+    retval = poll(&fd, 1, 50);
 
     // Problem: stop the thread.
     if (retval == -1)

@@ -57,9 +57,9 @@ bool llgc::net::TcpServerLinux<T>::Wait(
       FD_ZERO(&rfds);
       FD_SET(sockfd_, &rfds);
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-      struct timeval tv; // NOLINT(hicpp-member-init)
-      tv.tv_sec = 1L;
-      tv.tv_usec = 0L;
+      struct timeval tv;  // NOLINT(hicpp-member-init)
+      tv.tv_sec = 0L;
+      tv.tv_usec = 50000L;
 
       iResult = select(sockfd_ + 1, &rfds, nullptr, nullptr, &tv);
       if (iResult > 0)

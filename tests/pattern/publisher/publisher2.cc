@@ -35,7 +35,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #include <cassert>
-#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -43,7 +42,6 @@
 #include <map>
 #include <memory>
 #include <string>
-#include <thread>
 #include <utility>
 
 #include <2lgc/net/tcp_server.cc>
@@ -177,7 +175,7 @@ void WaitServer(llgc::net::TcpServer<msg::ActionsTcp>* server, int socket)
 
   do
   {
-    retval = poll(&fd, 1, 1000);
+    retval = poll(&fd, 1, 50);
 
     // Problem: stop the thread.
     if (retval == -1)
@@ -261,8 +259,6 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>>(8888);
   assert(server->Listen());
   assert(server->Wait(&WaitServer));
-  // Wait to be sure that accept4 is waiting.
-  std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
