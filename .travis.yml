@@ -13,8 +13,8 @@ script:
   - cd build
   - export LD_LIBRARY_PATH=/usr/local/lib
   - cmake ..
-  - make -j`grep -c ^processor /proc/cpuinfo`
-  - make check -j`grep -c ^processor /proc/cpuinfo`
+  - VERBOSE=1 make -j`grep -c ^processor /proc/cpuinfo`
+  - VERBOSE=1 make check -j`grep -c ^processor /proc/cpuinfo`
 
 branches:
   only:
