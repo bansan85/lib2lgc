@@ -20,7 +20,7 @@
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/net/tcp_server.h>
 #include <cstdint>
-#include <functional>
+#include <type_traits>
 
 /**
  * @brief This is all about net.
@@ -44,18 +44,33 @@ class TcpServerLinux : public TcpServer<T>
   /**
    * @brief Wait for client.
    *
-   * @param[in] wait_function function.
-   *
    * @return true if no problem.
    */
-  bool Wait(std::function<void(llgc::net::TcpServer<T>*, int)> wait_function)
-      override CHK;
+  bool Wait() override CHK;
 
  protected:
   /**
    * @brief Socket file descriptor.
    */
   int sockfd_;  // NS
+
+  /**
+   * @brief Internal function to subscribe a socket to an event.
+   *
+   * @param[in] socket The socket.
+   * @param[in] action_tcp The message.
+   */
+  void AddSubscriberLocal(
+      int socket, decltype(std::declval<T>().action(0)) action_tcp) override;
+
+ private:
+  /**
+   * @brief Function that will be executed by the thread that wait instruction
+   * from a client.
+   *
+   * @param[in] socket The socket to the client.
+   */
+  void WaitThread(int socket);
 };
 
 }  // namespace llgc::net

@@ -23,21 +23,15 @@
 #include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
-#include <2lgc/poco/net.pb.h>
 #include <actions_tcp.pb.h>
 #include <google/protobuf/stubs/common.h>
-#include <poll.h>
-#include <sys/socket.h>
-#include <unistd.h>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
-#include <functional>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <string>
-#include <utility>
 
 #include <2lgc/net/tcp_server.cc>
 #include <2lgc/net/tcp_server_linux.cc>
@@ -153,107 +147,16 @@ class SubscriberBase final
   size_t value;
 };
 
-std::map<msg::ActionTcp::DataCase,
-         std::function<void(llgc::net::TcpServer<msg::ActionsTcp>*, int,
-                            const msg::ActionTcp&)>>
-    action_server;
-
-void WaitServer(llgc::net::TcpServer<msg::ActionsTcp>* server, int socket)
-{
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct pollfd fd;  // NOLINT(hicpp-member-init)
-  fd.fd = socket;
-  fd.events = POLLIN;
-  int retval;  // NS
-
-  std::cout << "Server Client " << socket << " Start" << std::endl;
-
-  do
-  {
-    retval = poll(&fd, 1, 50);
-
-    // Problem: stop the thread.
-    if (retval == -1)
-    {
-      std::cout << "Server Client " << socket << " Stop" << std::endl;
-      server->Stop();
-    }
-    else if (retval != 0)
-    {
-      char client_message[1500];
-
-      ssize_t read_size =
-          recv(socket, client_message, sizeof(client_message), 0);
-
-      if (read_size == -1 || read_size == 0)
-      {
-        std::cout << "Server Client " << socket << " Stop" << std::endl;
-        server->Stop();
-        break;
-      }
-      std::cout << "Server Client " << socket << " Talk" << std::endl;
-      msg::ActionsTcp message;
-
-      std::string client_string(client_message, static_cast<size_t>(read_size));
-      assert(message.ParseFromString(client_string));
-
-      for (int i = 0; i < message.action_size(); i++)
-      {
-        const msg::ActionTcp& action_tcp = message.action(i);
-
-        auto it = action_server.find(action_tcp.data_case());
-
-        if (it != action_server.end())
-        {
-          (*it).second(server, socket, action_tcp);
-        }
-      }
-
-      server->Forward(client_string);
-    }
-  } while (!server->IsStopping());
-
-  close(socket);
-
-  std::cout << "Server Client " << socket << " End" << std::endl;
-}
-
-void AddSubscriberFct(llgc::net::TcpServer<msg::ActionsTcp>* server, int socket,
-                      const msg::ActionTcp& action_tcp)
-{
-  assert(action_tcp.has_add_subscriber());
-  std::shared_ptr<
-      llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>>
-      subscriber = std::make_shared<
-          llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>>(
-          socket);
-  std::shared_ptr<llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>>
-      connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>>(
-          subscriber, socket);
-  assert(server->AddSubscriber(action_tcp.add_subscriber().id_message(),
-                               connector));
-}
-
-void RemoveSubscriberFct(llgc::net::TcpServer<msg::ActionsTcp>* /*server*/,
-                         int /*socket*/, const msg::ActionTcp& /*action_tcp*/)
-{
-}
-
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   //  llgc::net::Linux::DisableSigPipe();
 
-  action_server[msg::ActionTcp::DataCase::kAddSubscriber] = &AddSubscriberFct;
-  action_server[msg::ActionTcp::DataCase::kRemoveSubscriber] =
-      &RemoveSubscriberFct;
-
   std::shared_ptr<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>> server =
       std::make_shared<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>>(8888);
   assert(server->Listen());
-  assert(server->Wait(&WaitServer));
+  assert(server->Wait());
 
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);

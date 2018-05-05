@@ -21,10 +21,10 @@
 #include <2lgc/pattern/publisher/publisher.h>
 #include <atomic>
 #include <cstdint>
-#include <functional>
 #include <map>
 #include <memory>
 #include <thread>
+#include <type_traits>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -106,12 +106,9 @@ class TcpServer
   /**
    * @brief Wait for client.
    *
-   * @param[in] wait_function function.
-   *
    * @return true if no problem.
    */
-  virtual bool Wait(
-      std::function<void(llgc::net::TcpServer<T>*, int)> wait_function) CHK = 0;
+  virtual bool Wait() CHK = 0;
 
   /**
    * @brief If thread is in stopping.
@@ -145,6 +142,15 @@ class TcpServer
    * @brief Store thread based on the socket file descriptor.
    */
   std::map<int, std::thread> thread_sockets_;  // NS
+
+  /**
+   * @brief Internal function to subscribe a socket to an event.
+   *
+   * @param[in] socket The socket.
+   * @param[in] action_tcp The message.
+   */
+  virtual void AddSubscriberLocal(
+      int socket, decltype(std::declval<T>().action(0)) action_tcp) = 0;
 
  private:
   /**
