@@ -20,6 +20,7 @@
  */
 
 #include <2lgc/config.h>
+#include <2lgc/error/show.h>
 #include <2lgc/math/hash.h>
 
 #ifdef OPENSSL_FOUND
@@ -61,9 +62,10 @@ std::vector<uint8_t> llgc::math::Hash::Sha512(const std::string& in)
   // Don't use SHA512 that need an reinterpret_cast because c_str() is
   // const char* and SHA512 in const unsigned char*.
   SHA512_CTX ctx;
-  SHA512_Init(&ctx);
-  SHA512_Update(&ctx, in.c_str(), in.length());
-  SHA512_Final(hash, &ctx);
+  BUGLIB(SHA512_Init(&ctx) == 1, std::vector<uint8_t>(), "openssl");
+  BUGLIB(SHA512_Update(&ctx, in.c_str(), in.length()) == 1,
+         std::vector<uint8_t>(), "openssl");
+  BUGLIB(SHA512_Final(hash, &ctx) == 1, std::vector<uint8_t>(), "openssl");
 
   return std::vector<uint8_t>(hash, hash + SHA512_DIGEST_LENGTH);
 #else

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
 #include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/gdb.h>
@@ -24,6 +25,7 @@
 #include <2lgc/pattern/publisher/publisher.cc>
 #include <2lgc/pattern/singleton/singleton.cc>
 #include <algorithm>
+#include <cerrno>
 #include <chrono>
 #include <csignal>
 #include <cstring>
@@ -46,7 +48,6 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
 {
   auto argvbis = std::make_unique<const char* []>(argc + 24);
   std::string btfullfile;
-  bool retval = true;
   btfullfile.assign("set logging file ");
   btfullfile.append(filename);
   btfullfile.append(".btfull");
@@ -90,6 +91,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
   }
   argvbis[23 + argc] = nullptr;
   pid_t child_pid = fork();
+  BUGCRIT(child_pid != -1, false, "Failed to create fork. Errno %\n.", errno);
   if (child_pid != 0)
   {
     int status;  // NS
@@ -100,6 +102,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
     do
     {
       wait_pid = waitpid(child_pid, &status, WNOHANG);
+      BUGCRIT(wait_pid != -1, false, "Failed to waitpid. Errno %\n.", errno);
       end = std::chrono::system_clock::now();
       elapsed_seconds =
           std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
@@ -111,7 +114,8 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
         }
         else
         {
-          kill(child_pid, SIGKILL);
+          BUGCRIT(kill(child_pid, SIGKILL), false,
+                  "Failed to waitpid. Errno %.\n");
 
           msg::software::Gdbs messages_gdb = msg::software::Gdbs();
           msg::software::Gdb* message_gdb = messages_gdb.add_action();
@@ -123,11 +127,11 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           message_gdb->set_allocated_run_bt_full_time_out(
               run_bt_full_time_out.release());
           std::string run_bt_full_in_string;
-          messages_gdb.SerializeToString(&run_bt_full_in_string);
-          server_.Forward(run_bt_full_in_string);
+          BUGLIB(messages_gdb.SerializeToString(&run_bt_full_in_string), false,
+                 "protobuf");
+          BUGCONT(server_.Forward(run_bt_full_in_string), false);
 
-          retval = false;
-          break;
+          return false;
         }
       }
     } while (wait_pid == 0 && elapsed_seconds < timeout);
@@ -136,9 +140,10 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
   {
     // a const_cast is necessary.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    execvp(argvbis[0], const_cast<char* const*>(argvbis.get()));
+    BUGCRIT(execvp(argvbis[0], const_cast<char* const*>(argvbis.get())) != -1,
+            false, "Failed to run %.", argvbis[0]);
   }
-  return retval;
+  return true;
 }
 
 static bool ParallelRun(const std::vector<std::string>& all_files,
@@ -179,12 +184,12 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
     unsigned int argc, const char* const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
-  if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
-  {
-    return false;
-  }
+  BUGCRIT(
+      llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files),
+      false, "Failed to recursively read %.", folder);
 
-  return ParallelRun(all_files, nthread, argc, argv, timeout);
+  BUGCONT(ParallelRun(all_files, nthread, argc, argv, timeout), false);
+  return true;
 }
 
 bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
@@ -196,17 +201,15 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  if (!f.is_open())
-  {
-    return false;
-  }
+  BUGUSER(f.is_open(), false, "Failed to open %.", list);
 
   while (std::getline(f, line))
   {
     all_files.push_back(line);
   }
 
-  return ParallelRun(all_files, nthread, argc, argv, timeout);
+  BUGCONT(ParallelRun(all_files, nthread, argc, argv, timeout), false);
+  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

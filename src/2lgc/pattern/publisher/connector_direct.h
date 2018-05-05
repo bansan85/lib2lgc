@@ -58,7 +58,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorDirect();
+  ~ConnectorDirect() override;
 
   /**
    * @brief Delete copy constructor.

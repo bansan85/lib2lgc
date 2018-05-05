@@ -45,6 +45,11 @@ class Iterator
   Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
 
   /**
+   * @brief Default destructor.
+   */
+  virtual ~Iterator() = default;
+
+  /**
    * @brief Compare operator
    *
    * @param[in] other The iterator to compare with.

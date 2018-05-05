@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
+#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_server_tcp.h>
 #include <2lgc/poco/net.pb.h>
@@ -66,10 +68,7 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorServerTcp<T>::AddSubscriber(
     uint32_t id_message)
 {
-  if (!Connect())
-  {
-    return false;
-  }
+  BUGCONT(Connect(), false);
 
   T actions;
   decltype(std::declval<T>().add_action()) action = actions.add_action();
@@ -78,14 +77,9 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::AddSubscriber(
   action_add->set_id_message(id_message);
   action->set_allocated_add_subscriber(action_add.release());
   std::string action_in_string;
-  if (!actions.SerializeToString(&action_in_string))
-  {
-    return false;
-  }
-  if (!Send(action_in_string))
-  {
-    return false;
-  }
+  BUGLIB(actions.SerializeToString(&action_in_string), false, "protobuf");
+  BUGCONT(Send(action_in_string), false);
+
   return true;
 }
 
@@ -94,25 +88,17 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::Send(
     const std::string &message)
 {
   std::cout << "ConnectorServerTcp<T>::Send" << std::endl;
-  ssize_t sendi = send(socket_, message.c_str(), message.length(), 0);
-  if (sendi == -1)
-  {
-    std::cout << "errno" << errno << std::endl;
-  }
-  auto meslen = static_cast<ssize_t>(message.length());
-  std::cout << "Client " << socket_ << " -> serveur A" << sendi << "B" << meslen
+  std::cout << "Client " << socket_ << " -> serveur " << message.length()
             << std::endl;
-  return sendi == meslen;
+  BUGCONT(llgc::net::Linux::Send(socket_, message), false);
+  return true;
 }
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorServerTcp<T>::RemoveSubscriber(
     uint32_t id_message)
 {
-  if (!Connect())
-  {
-    return false;
-  }
+  BUGCONT(Connect(), false);
 
   T actions;
   decltype(std::declval<T>().add_action()) action = actions.add_action();
@@ -121,20 +107,16 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::RemoveSubscriber(
   action_add->set_id_message(id_message);
   action->set_allocated_remove_subscriber(action_add.release());
   std::string action_in_string;
-  if (!actions.SerializeToString(&action_in_string))
-  {
-    return false;
-  }
-  if (!Send(action_in_string))
-  {
-    return false;
-  }
+  BUGLIB(actions.SerializeToString(&action_in_string), false, "protobuf");
+  BUGCONT(Send(action_in_string), false);
+
   return true;
 }
 
 template <typename T>
 void llgc::pattern::publisher::ConnectorServerTcp<T>::Receiver()
 {
+  llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket_);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket_;
@@ -148,48 +130,32 @@ void llgc::pattern::publisher::ConnectorServerTcp<T>::Receiver()
     retval = poll(&fd, 1, 50);
 
     // Problem: stop the thread.
-    if (retval == -1)
-    {
-      std::cout << "Client " << socket_ << " Stop" << std::endl;
-      disposing_ = true;
-    }
-    else if (retval == 0)
-    {
-      std::cout << "Client " << socket_ << " Nothing to read" << std::endl;
-    }
-    else if (retval != 0)
+    BUGCRIT(retval != -1, , "Client %, poll failed. Errno %.\n", socket_,
+            errno);
+    if (retval != 0)
     {
       char client_message[1500];
 
-      std::cout << "Client " << socket_ << " Waiting" << std::endl;
       ssize_t read_size =
           recv(socket_, client_message, sizeof(client_message), 0);
-      if (read_size == -1 || read_size == 0)
-      {
-        std::cout << "Client " << socket_ << " Stop" << std::endl;
-        disposing_ = true;
-      }
-      else
-      {
-        std::cout << "Client " << socket_ << " recv" << std::endl;
-        T message;
 
-        std::string client_string(client_message,
-                                  static_cast<size_t>(read_size));
-        if (!message.ParseFromString(client_string))
-        {
-          disposing_ = true;
-        }
-        else
-        {
-          this->subscriber_->Listen(message);
-        }
+      BUGCRIT(read_size != -1, ,
+              "Client % recv failed. Close connection. Errno %.\n", socket_,
+              errno);
+
+      if (read_size == 0)
+      {
+        continue;
       }
+
+      std::cout << "Client " << socket_ << " recv" << std::endl;
+      T message;
+      std::string client_string(client_message, static_cast<size_t>(read_size));
+      BUGLIB(message.ParseFromString(client_string), , "protobuf");
+
+      BUGCONT(this->subscriber_->Listen(message), );
     }
   } while (!disposing_);
-
-  close(socket_);
-  socket_ = -1;
 
   std::cout << "Client " << socket_ << " End" << std::endl;
 }

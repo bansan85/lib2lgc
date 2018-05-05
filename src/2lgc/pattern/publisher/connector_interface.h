@@ -112,13 +112,17 @@ class ConnectorInterface
    * @param[in] message Data of the message in ProtoBuf, SerializeToString.
    * @param[in] hold If true, message is not send to subscriber be will be
    * pending until ListenPending is called.
+   *
+   * @return true if no problem.
    */
-  void Listen(const T& message, const bool hold);
+  bool Listen(const T& message, const bool hold) CHK;
 
   /**
    * @brief Listen pending messages from the publisher.
+   *
+   * @return true if no problem.
    */
-  void ListenPending();
+  bool ListenPending() CHK;
 
   /**
    * @brief Get the subscriber that manager this interface.

@@ -17,6 +17,7 @@
 #ifndef OVERRIDE_PRINTF_H_
 #define OVERRIDE_PRINTF_H_
 
+#include <cassert>
 #include <ostream>
 #include <string>
 
@@ -68,10 +69,9 @@ class Print
       }
       out_stream << *s++;
     }
-    return false;
+    assert(false);
   }
 
- private:
   /**
    * @brief Print a message to an ouput stream.
    *

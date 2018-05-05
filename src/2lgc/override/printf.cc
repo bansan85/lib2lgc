@@ -21,6 +21,7 @@
  * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/override/printf.h>
 #include <cstddef>
 
@@ -31,14 +32,8 @@ bool llgc::override::Print::F(std::ostream &out_stream, const std::string &s)
   {
     if (s[i] == '%')
     {
-      if (s[i + 1] == '%')
-      {
-        ++i;
-      }
-      else
-      {
-        return false;
-      }
+      BUGCRIT(s[i + 1] == '%', false, "Missing argument to convert %%.\n");
+      ++i;
     }
     out_stream << s[i];
     i++;

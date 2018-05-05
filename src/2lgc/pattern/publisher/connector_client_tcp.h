@@ -56,7 +56,7 @@ class ConnectorClientTcp : public ConnectorInterface<T>
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorClientTcp();
+  ~ConnectorClientTcp() override;
 
   /**
    * @brief Delete copy constructor.

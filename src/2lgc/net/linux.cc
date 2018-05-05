@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
+#include <unistd.h>
 #include <cerrno>
 #include <chrono>
 #include <csignal>
@@ -30,11 +32,11 @@ void llgc::net::Linux::DisableSigPipe()
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
   sig.sa_handler = SIG_IGN;  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   sig.sa_flags = 0;
-  sigemptyset(&sig.sa_mask);
-  sigaction(SIGPIPE, &sig, nullptr);
+  BUGCRIT(sigemptyset(&sig.sa_mask) == 0, , "Errno %\n", errno);
+  BUGCRIT(sigaction(SIGPIPE, &sig, nullptr) == 0, , "Errno %\n", errno);
 }
 
-bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr *addr,
+bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
                             socklen_t addrlen, size_t timeout)
 {
   int retval_bind = bind(sockfd, addr, addrlen);  // NS
@@ -59,7 +61,51 @@ bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr *addr,
                 .count()) < timeout);
   }
 
-  return retval_bind == 0;
+  BUGUSER(retval_bind == 0, false,
+          "Failed to open a TCP port socket. Errno %.\n", errno);
+  return true;
+}
+
+bool llgc::net::Linux::Send(int sockfd, const std::string& message)
+{
+  ssize_t retval_send = send(sockfd, message.c_str(), message.length(), 0);
+
+  BUGCRIT(retval_send != -1, false, "Send failed. Errno %.\n", errno);
+  BUGCRIT(retval_send == static_cast<ssize_t>(message.length()), false,
+          "Send partial message. Length %. Errno %.\n", retval_send, errno);
+
+  return true;
+}
+
+int llgc::net::Linux::RepeteOnEintr(const std::function<int()>& function)  // NS
+{
+  int retval;  // NS
+  do
+  {
+    retval = function();
+  } while (retval == -1 && errno == EINTR);
+  return retval;
+}
+
+llgc::net::Linux::AutoCloseSocket::AutoCloseSocket(int* socket)
+    : socket_(socket), delete_socket_(true)
+{
+}
+
+void llgc::net::Linux::AutoCloseSocket::DontDeleteSocket()
+{
+  delete_socket_ = false;
+}
+
+llgc::net::Linux::AutoCloseSocket::~AutoCloseSocket()
+{
+  if (!delete_socket_)
+  {
+    return;
+  }
+  int socket_tmp = *socket_;  // NS
+  *socket_ = -1;
+  BUGCRIT(close(socket_tmp) == 0, , "Errno %\n", errno);
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

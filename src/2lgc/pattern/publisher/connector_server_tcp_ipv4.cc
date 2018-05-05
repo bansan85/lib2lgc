@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
+#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_server_tcp.h>
 #include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
-#include <unistd.h>
+#include <cerrno>
 #include <thread>
 #include <utility>
 
@@ -53,25 +55,29 @@ bool llgc::pattern::publisher::ConnectorServerTcpIpv4<T>::Connect()
   }
 
   this->socket_ = socket(AF_INET, SOCK_STREAM, 0);
-  if (this->socket_ == -1)
-  {
-    return false;
-  }
+  BUGCRIT(this->socket_ != -1, false, "Failed to run server. Errno %.\n",
+          errno);
+
+  llgc::net::Linux::AutoCloseSocket auto_close_socket(&this->socket_);
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct sockaddr_in server;  // NOLINT(hicpp-member-init)
-  server.sin_addr.s_addr = inet_addr(this->ip_.c_str());
+                              // Ugly hack to prevent strict aliasing warning.
+  BUGUSER(
+      inet_aton(this->ip_.c_str(),
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+                reinterpret_cast<in_addr *>(
+                    static_cast<void *>(&server.sin_addr.s_addr))) == 1,
+      false, "Failed to get IP for name %.\n", this->ip_);
   server.sin_family = AF_INET;
   server.sin_port = htons(this->port_);
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-  if (connect(this->socket_, reinterpret_cast<struct sockaddr *>(&server),
-              sizeof(server)) < 0)
-  {
-    close(this->socket_);
-    this->socket_ = -1;
-    return false;
-  }
+  BUGCRIT(connect(this->socket_, reinterpret_cast<struct sockaddr *>(&server),
+                  sizeof(server)) == 0,
+          false, "Failed to start listening. Errno %.\n", errno);
+
+  auto_close_socket.DontDeleteSocket();
 
   std::thread t(&ConnectorServerTcp<T>::Receiver, this);
   this->receiver_ = std::move(t);

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
@@ -29,10 +30,7 @@ bool llgc::software::gdb::Stack::InterpretLine(const std::string& line)
 {
   std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
 
-  if (!bt)
-  {
-    return false;
-  }
+  BUGCONT(bt != nullptr, false);
 
   backtraces_.emplace_back(bt.release());
 

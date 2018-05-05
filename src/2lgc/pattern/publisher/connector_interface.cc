@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep
 
@@ -25,7 +26,7 @@ llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
 }
 
 template <typename T>
-void llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
+bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
                                                              const bool hold)
 {
   if (hold)
@@ -34,17 +35,20 @@ void llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
   }
   else
   {
-    subscriber_->Listen(message);
+    BUGCONT(subscriber_->Listen(message), false);
   }
+
+  return true;
 }
 
 template <typename T>
-void llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
+bool llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
 {
   while (!messages_.empty())
   {
     const T& it = messages_.front();
-    subscriber_->Listen(it);
+    BUGCONT(subscriber_->Listen(it), false);
     messages_.pop();
   }
+  return true;
 }

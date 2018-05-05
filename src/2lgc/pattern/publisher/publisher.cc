@@ -49,13 +49,14 @@ template <typename T, typename U>
 llgc::pattern::publisher::Publisher<T, U>::~Publisher() = default;
 
 template <typename T, typename U>
-void llgc::pattern::publisher::Publisher<T, U>::Forward(
+bool llgc::pattern::publisher::Publisher<T, U>::Forward(
     const std::string &message)
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
   T actions;
 
-  BUGUSER(actions.ParseFromString(message), , "Failed to decode message.\n");
+  BUGLIB(actions.ParseFromString(message), false,
+         "Failed to decode message.\n");
 
   // We start to store destination to avoid sending the same message multiple
   // time if the subscriber is subscribe to multiple id and the message
@@ -91,18 +92,20 @@ void llgc::pattern::publisher::Publisher<T, U>::Forward(
     {
       continue;
     }
-    connector_subscriber->Listen(it.second, lock_forward_ != 0);
+    BUGCONT(connector_subscriber->Listen(it.second, lock_forward_ != 0), false);
   }
+
+  return true;
 }
 
 template <typename T, typename U>
-void llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
+bool llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
 
   if (lock_forward_ != 0)
   {
-    return;
+    return false;
   }
 
   for (std::pair<uint32_t, U> it : subscribers_)
@@ -113,8 +116,10 @@ void llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
     {
       continue;
     }
-    connector_subscriber->ListenPending();
+    BUGCONT(connector_subscriber->ListenPending(), false);
   }
+
+  return true;
 }
 
 template <typename T, typename U>
@@ -154,14 +159,10 @@ bool llgc::pattern::publisher::Publisher<T, U>::AddSubscriber(
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
           GetConn(subscriber);
       std::shared_ptr<ConnectorInterface<T>> connector_it = GetConn(it->second);
-      if (connector_subscriber == nullptr || connector_it == nullptr)
-      {
-        return false;
-      }
-      if (connector_it->Equals(*connector_subscriber))
-      {
-        return false;
-      }
+      BUGCRIT(connector_subscriber != nullptr && connector_it != nullptr, false,
+              "Failed to add subscriber.\n");
+      BUGCRIT(!connector_it->Equals(*connector_subscriber), false,
+              "Subscriber already exists.\n");
     }
   }
 
@@ -182,10 +183,14 @@ bool llgc::pattern::publisher::Publisher<T, U>::RemoveSubscriber(
       std::shared_ptr<ConnectorInterface<T>> connector_i = GetConn(it->second);
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
           GetConn(subscriber);
+      BUGCRIT(connector_i != nullptr && connector_subscriber != nullptr, false,
+              "Failed to remove subscriber.\n");
+      /*
       if (connector_i == nullptr || connector_subscriber == nullptr)
       {
         continue;
       }
+      */
       if (connector_i->Equals(*connector_subscriber))
       {
         it = subscribers_.erase(it);
@@ -207,10 +212,14 @@ bool llgc::pattern::publisher::Publisher<T, U>::RemoveSubscriber(
       std::shared_ptr<ConnectorInterface<T>> connector_i = GetConn(it->second);
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
           GetConn(subscriber);
+      BUGCRIT(connector_i != nullptr && connector_subscriber != nullptr, false,
+              "Failed to remove subscriber.\n");
+      /*
       if (connector_i == nullptr || connector_subscriber == nullptr)
       {
         continue;
       }
+      */
       if (connector_i->Equals(*connector_subscriber))
       {
         subscribers_.erase(it);

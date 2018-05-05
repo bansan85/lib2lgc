@@ -20,7 +20,6 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <cerrno>
-#include <iostream>
 
 template <typename T>
 llgc::net::TcpServerLinuxIpv4<T>::TcpServerLinuxIpv4(uint16_t port)
@@ -33,10 +32,8 @@ bool llgc::net::TcpServerLinuxIpv4<T>::Listen()
 {
   this->sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-  if (this->sockfd_ == -1)
-  {
-    return false;
-  }
+  BUGCRIT(this->sockfd_ != -1, false, "Failed to open socket. Errno %\n",
+          errno);
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct sockaddr_in socket_addr;  // NOLINT(hicpp-member-init)
@@ -44,17 +41,17 @@ bool llgc::net::TcpServerLinuxIpv4<T>::Listen()
   socket_addr.sin_addr.s_addr = INADDR_ANY;
   socket_addr.sin_port = htons(this->port_);
 
-  if (!llgc::net::Linux::Bind(
-          this->sockfd_,
-          // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-          reinterpret_cast<struct sockaddr *>(&socket_addr),
-          sizeof(socket_addr), 4 * 60 * 1000))
-  {
-    std::cout << "Failed to bind socket. Error n°" << errno << "." << std::endl;
-    return false;
-  }
+  BUGCONT(llgc::net::Linux::Bind(
+              this->sockfd_,
+              // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+              reinterpret_cast<struct sockaddr *>(&socket_addr),
+              sizeof(socket_addr), 4 * 60 * 1000),
+          false);
 
-  return listen(this->sockfd_, 3) != -1;
+  BUGCRIT(listen(this->sockfd_, 3) != -1, false,
+          "Failed to listen socket. Errno %\n", errno);
+
+  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

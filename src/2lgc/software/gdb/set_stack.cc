@@ -14,8 +14,12 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
+#include <2lgc/pattern/singleton/singleton.h>
 #include <2lgc/poco/gdb.pb.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
@@ -38,7 +42,13 @@
 #include <utility>
 #include <vector>
 
+#include <2lgc/pattern/publisher/connector_interface.cc>
+#include <2lgc/pattern/publisher/publisher.cc>
 #include <2lgc/pattern/singleton/singleton.cc>
+
+template class llgc::pattern::publisher::Publisher<msg::software::Gdbs, std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
+template class llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
+template class llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>;
 
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
                                         size_t bottom_frame,
@@ -190,7 +200,7 @@ bool llgc::software::gdb::SetStack::LocalCompare::operator()(
   return false;
 }
 
-void llgc::software::gdb::SetStack::TellError(const std::string& filename)
+bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
 {
   msg::software::Gdbs messages_gdb = msg::software::Gdbs();
   msg::software::Gdb* message_gdb = messages_gdb.add_action();
@@ -200,8 +210,10 @@ void llgc::software::gdb::SetStack::TellError(const std::string& filename)
   filename_gdb->assign(filename);
   message_gdb->set_allocated_add_stack_failed(add_stack_failed.release());
   std::string add_stack_in_string;
-  messages_gdb.SerializeToString(&add_stack_in_string);
-  Forward(add_stack_in_string);
+  BUGLIB(messages_gdb.SerializeToString(&add_stack_in_string), false,
+         "protobuf");
+  BUGCONT(Forward(add_stack_in_string), false);
+  return true;
 }
 
 bool llgc::software::gdb::SetStack::Add(const std::string& filename)
@@ -210,7 +222,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
 
   if (!file.is_open())
   {
-    TellError(filename);
+    BUGCONT(TellError(filename), false);
     return false;
   }
 
@@ -228,7 +240,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
       if (stack_gdb->GetBacktraceFromBottom(0).GetIndex() + 1 !=
           stack_gdb->NumberOfBacktraces())
       {
-        TellError(filename);
+        BUGCONT(TellError(filename), false);
         return false;
       }
       allow_wrong_line = false;
@@ -239,7 +251,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
     }
     else if (!allow_wrong_line)
     {
-      TellError(filename);
+      BUGCONT(TellError(filename), false);
       return false;
     }
   }
@@ -294,7 +306,8 @@ bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
     return false;
   }
 
-  return ParallelAdd(all_files, nthread);
+  BUGCONT(ParallelAdd(all_files, nthread), false);
+  return true;
 }
 
 bool llgc::software::gdb::SetStack::AddList(const std::string& list,
@@ -303,17 +316,15 @@ bool llgc::software::gdb::SetStack::AddList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  if (!f.is_open())
-  {
-    return false;
-  }
+  BUGUSER(f.is_open(), false, "Failed to open %.", list);
 
   while (std::getline(f, line))
   {
     all_files.push_back(line);
   }
 
-  return ParallelAdd(all_files, nthread);
+  BUGCONT(ParallelAdd(all_files, nthread), false);
+  return true;
 }
 
 void llgc::software::gdb::SetStack::Print()
@@ -353,15 +364,16 @@ const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
   return **it;
 }
 
-void llgc::software::gdb::SetStack::Forward(const std::string& message)
+bool llgc::software::gdb::SetStack::Forward(const std::string& message)
 {
   // Check if instance.
   if (server_.IsInstance())
   {
     // If the instance if freed, GetInstance will create it.
     auto singleton_ = server_.GetInstance();
-    singleton_->Forward(message);
+    BUGCONT(singleton_->Forward(message), false);
   }
+  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

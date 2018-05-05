@@ -53,15 +53,11 @@ class Command
 
   /**
    * @brief Undo the command.
-   *
-   * @return true if no problem.
    */
   virtual void Undo() = 0;
 
   /**
    * @brief Repeat the command.
-   *
-   * @return true if no problem.
    */
   virtual void Redo() = 0;
 

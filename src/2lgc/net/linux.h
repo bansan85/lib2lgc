@@ -17,8 +17,11 @@
 #ifndef NET_LINUX_H_
 #define NET_LINUX_H_
 
+#include <2lgc/compatibility/visual_studio.h>
 #include <sys/socket.h>
 #include <cstddef>
+#include <functional>
+#include <string>
 
 /**
  * @brief This is all about net.
@@ -46,8 +49,64 @@ class Linux
    *
    * @return false if timeout or failed to bind.
    */
-  static bool Bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen,
-                   size_t timeout);
+  static bool Bind(int sockfd, const struct sockaddr* addr, socklen_t addrlen,
+                   size_t timeout) CHK;
+
+  /**
+   * @brief send function with error handle.
+   *
+   * @param[in] sockfd Socket file descriptor.
+   * @param[in] message Message to send.
+   *
+   * @return true if no problem.
+   */
+  static bool Send(int sockfd, const std::string& message) CHK;
+
+  /**
+   * @brief Execute a function. If this function return -1, check if errno ==
+   * EINTR. If so, reexecute the function.
+   * RepeteOnEintr should be used with select and accept4.
+   *
+   * @param[in] function Function to execute.
+   *
+   * @return The value returned by function.
+   */
+  static int RepeteOnEintr(const std::function<int()>& function) CHK;  // NS
+
+  /**
+   * @brief Class that auto close a socket on destructor.
+   */
+  class AutoCloseSocket
+  {
+   public:
+    /**
+     * @brief Constructor with the socket to handle.
+     *
+     * @param[in] socket The socket.
+     */
+    explicit AutoCloseSocket(int* socket);
+
+    /**
+     * @brief Dont delete the socket on destrutor.
+     */
+    void DontDeleteSocket();
+
+    /**
+     * @brief Destructor that close the socket.
+     */
+    ~AutoCloseSocket();
+
+   private:
+    /**
+     * @brief The socket to handle.
+     */
+    int* socket_;  // NS
+
+    /**
+     * @brief If the socket must be deleted on destructor. True by default.
+     */
+    bool delete_socket_;
+  };
 };
 
 }  // namespace llgc::net

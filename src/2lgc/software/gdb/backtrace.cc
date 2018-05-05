@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
 #include <2lgc/software/gdb/stack.h>
@@ -33,33 +34,16 @@ llgc::software::gdb::Backtrace::Factory(const std::string& line)
 
   std::unique_ptr<Backtrace> retval = std::make_unique<Backtrace>();
 
-  if (!retval->DecodeBacktrace(line, &index, &address, &function, &file))
-  {
-    return std::unique_ptr<Backtrace>(nullptr);
-  }
-
-  if (!retval->ReadIndex(index))
-  {
-    return std::unique_ptr<Backtrace>(nullptr);
-  }
-
-  if (address.length() != 0 && !retval->ReadAddress(address))
-  {
-    return std::unique_ptr<Backtrace>(nullptr);
-  }
-
-  if (function.length() != 0 && !retval->ReadFunction(function))
-  {
-    return std::unique_ptr<Backtrace>(nullptr);
-  }
-
-  if (file.length() != 0 && !retval->ReadSource(file))
-  {
-    if (!retval->ReadSource(file))
-    {
-      return std::unique_ptr<Backtrace>(nullptr);
-    }
-  }
+  BUGCONT(retval->DecodeBacktrace(line, &index, &address, &function, &file),
+          std::unique_ptr<Backtrace>(nullptr));
+  BUGCONT(retval->ReadIndex(index), std::unique_ptr<Backtrace>(nullptr));
+  BUGCONT(address.length() == 0 || retval->ReadAddress(address),
+          std::unique_ptr<Backtrace>(nullptr));
+  BUGCONT(function.length() == 0 || retval->ReadFunction(function),
+          std::unique_ptr<Backtrace>(nullptr));
+  BUGCONT(file.length() == 0 || retval->ReadSource(file) ||
+              retval->ReadSource(file),
+          std::unique_ptr<Backtrace>(nullptr));
 
   return retval;
 }
@@ -70,25 +54,17 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
                                                      std::string* function,
                                                      std::string* file)
 {
-  if (index == nullptr || address == nullptr || function == nullptr ||
-      file == nullptr)
-  {
-    return false;
-  }
+  BUGPARAM(index, index != nullptr, false);
+  BUGPARAM(address, address != nullptr, false);
+  BUGPARAM(function, function != nullptr, false);
+  BUGPARAM(file, file != nullptr, false);
 
   // Regex: "^#(\\d+) *((0x.*) in )?((.*\\)) at )?(.*)$"
   // Size for the beginning #\d
   size_t line_length = line.length();
-  if (line_length < 2)
-  {
-    return false;
-  }
-
+  BUGUSER(line_length >= 2, false, "Length of line to small '%'.\n", line);
   // First char: '#'
-  if (line[0] != '#')
-  {
-    return false;
-  }
+  BUGUSER(line[0] == '#', false, "Line doesn't start with '#' '%'.\n", line);
 
   // Next chars: decimal until space.
   size_t i = 1;
@@ -97,23 +73,16 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
     if (line[i] == ' ')
     {
       // No decimal.
-      if (i == 1)
-      {
-        return false;
-      }
+      BUGUSER(i != 1, false, "Line doesn't have a number after '#' '%'.\n",
+              line);
       break;
     }
-    if ('0' > line[i] || line[i] > '9')
-    {
-      return false;
-    }
+    BUGUSER('0' <= line[i] && line[i] <= '9', false,
+            "Line doesn't have a valid number after '#' '%'.\n", line);
     i++;
   }
 
-  if (i == line_length)
-  {
-    return false;
-  }
+  BUGUSER(i != line_length, false, "Line truncated '%'.\n", line);
 
   *index = line.substr(1, i - 1);
 
@@ -130,11 +99,10 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
     size_t ibis;
     for (ibis = i + 2; ibis < inpos; ibis++)
     {
-      if (('0' > line[ibis] || line[ibis] > '9') &&
-          ('a' > line[ibis] || line[ibis] > 'f'))
-      {
-        return false;
-      }
+      BUGUSER(('0' <= line[ibis] && line[ibis] <= '9') ||
+                  ('a' <= line[ibis] && line[ibis] <= 'f'),
+              false, "Line doesn't have a valid hexadecimal number '%'.\n",
+              line);
     }
 
     *address = line.substr(i, inpos - i);
@@ -167,7 +135,9 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
   }
 
   // A function must have a '(' before ')'.
-  return function->find('(') != std::string::npos;
+  BUGUSER(function->find('(') != std::string::npos, false,
+          "Function doesn't have arguments '%'.\n", line);
+  return true;
 }
 
 bool llgc::software::gdb::Backtrace::ReadIndex(const std::string& number)
@@ -178,7 +148,7 @@ bool llgc::software::gdb::Backtrace::ReadIndex(const std::string& number)
   }
   catch (const std::out_of_range&)
   {
-    return false;
+    BUGUSER(false, false, "Index doesn't have valid number '%'.\n", number);
   }
   return true;
 }
@@ -191,7 +161,7 @@ bool llgc::software::gdb::Backtrace::ReadAddress(const std::string& address)
   }
   catch (const std::out_of_range&)
   {
-    return false;
+    BUGUSER(false, false, "Address doesn't have valid number '%'.\n", address);
   }
   return true;
 }
@@ -202,10 +172,8 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   // ' ' is not enought : loader::(anonymous namespace)::createImageImpl (
   size_t pos_space = description.find(" (");
 
-  if (pos_space == std::string::npos)
-  {
-    return false;
-  }
+  BUGUSER(pos_space != std::string::npos, false,
+          "Function doesn't have arguments '%'.\n", description);
 
   function_.SetName(description.substr(0, pos_space));
 
@@ -227,10 +195,8 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   {
     std::string strcomma = str.substr(0, pos_comma);
     size_t pos_last_equal = strcomma.find_last_of('=');
-    if (pos_last_equal == std::string::npos)
-    {
-      return false;
-    }
+    BUGUSER(pos_last_equal != std::string::npos, false,
+            "Function doesn't have valid arguments '%'.\n", description);
     size_t pos_equal = strcomma.find('=');
     while (pos_equal != pos_last_equal)
     {
@@ -309,11 +275,11 @@ bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
   }
   catch (const std::invalid_argument&)
   {
-    return false;
+    BUGUSER(false, false, "Source line is invalid '%'.\n", file);
   }
   catch (const std::out_of_range&)
   {
-    return false;
+    BUGUSER(false, false, "Source line is out of range '%'.\n", file);
   }
 
   file_ = file.substr(0, pos);

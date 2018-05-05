@@ -26,12 +26,14 @@
 #include <actions_tcp.pb.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
+#include <chrono>
 #include <cstddef>
 #include <cstdint>
 #include <iostream>
 #include <map>
 #include <memory>
 #include <string>
+#include <type_traits>
 
 #include <2lgc/net/tcp_server.cc>
 #include <2lgc/net/tcp_server_linux.cc>
@@ -117,7 +119,7 @@ class SubscriberBase final
    *
    * @param[in] message message from the publisher in protobuf format.
    */
-  void Listen(const msg::ActionsTcp& message) override
+  bool Listen(const msg::ActionsTcp& message) override
   {
     std::cout << "LISTEN" << std::endl;
     for (int i = 0; i < message.action_size(); i++)
@@ -139,6 +141,7 @@ class SubscriberBase final
           assert(false);
       }
     }
+    return true;
   }
 
   /**
@@ -182,9 +185,16 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   std::string action_in_string;
   actions.SerializeToString(&action_in_string);
   assert(connector->Send(action_in_string));
-  while (subscriber->value != 1)
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
+  do
   {
-  }
+    end = std::chrono::system_clock::now();
+    assert(
+        static_cast<size_t>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()) < 1000);
+  } while (subscriber->value != 1);
 
   server->Stop();
   server->JoinWait();

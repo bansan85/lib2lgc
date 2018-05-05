@@ -29,8 +29,7 @@
 bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
                                           std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
-           false);
+  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
 
   BUGLIB(data.Message().constant().unit().SerializeToString(return_value),
          false, "protobuf");
@@ -41,8 +40,7 @@ bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
 bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
                                           std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
-           false);
+  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
 
   msg::Number_Unit unit1;
   msg::Number_Unit unit2;

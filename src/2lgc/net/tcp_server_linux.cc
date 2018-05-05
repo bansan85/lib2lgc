@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
+#include <2lgc/net/linux.h>
 #include <2lgc/net/tcp_server.h>
 #include <2lgc/net/tcp_server_linux.h>
 #include <poll.h>
@@ -21,6 +23,7 @@
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <unistd.h>
+#include <cerrno>
 #include <cstddef>
 #include <functional>
 #include <iostream>
@@ -57,7 +60,8 @@ bool llgc::net::TcpServerLinux<T>::Wait()
   }
 
   std::thread t([this]() {
-    int iResult;  // NS
+    int iResult;          // NS
+    int client_sock = 0;  // NS
     fd_set rfds;
 
     std::cout << "Server is waiting for client" << std::endl;
@@ -72,10 +76,12 @@ bool llgc::net::TcpServerLinux<T>::Wait()
       tv.tv_sec = 0L;
       tv.tv_usec = 50000L;
 
-      iResult = select(sockfd_ + 1, &rfds, nullptr, nullptr, &tv);
+      iResult = Linux::RepeteOnEintr(
+          std::bind(&select, sockfd_ + 1, &rfds, nullptr, nullptr, &tv));
       if (iResult > 0)
       {
-        int client_sock = accept4(sockfd_, nullptr, nullptr, 0);  // NS
+        client_sock = Linux::RepeteOnEintr(
+            std::bind(accept4, sockfd_, nullptr, nullptr, 0));
         if (client_sock > 0)
         {
           std::cout << "Server new client" << client_sock << std::endl;
@@ -85,8 +91,10 @@ bool llgc::net::TcpServerLinux<T>::Wait()
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }
       }
-    } while (iResult >= 0 && !this->IsStopping());
+    } while (iResult >= 0 && client_sock >= 0 && !this->IsStopping());
     std::cout << "Server stop listening" << std::endl;
+    BUGCRIT(iResult != -1, , "Errno %\n", errno);
+    BUGCRIT(client_sock != -1, , "Errno %\n", errno);
   });  // NS
 
   this->thread_wait_ = std::move(t);
@@ -97,6 +105,7 @@ bool llgc::net::TcpServerLinux<T>::Wait()
 template <typename T>
 void llgc::net::TcpServerLinux<T>::WaitThread(int socket)
 {
+  Linux::AutoCloseSocket auto_close_socket(&socket);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket;
@@ -109,56 +118,56 @@ void llgc::net::TcpServerLinux<T>::WaitThread(int socket)
   {
     retval = poll(&fd, 1, 50);
 
-    // Problem: stop the thread.
-    if (retval == -1)
+    BUGCRIT(retval != -1, ,
+            "Server client % poll failed. Close connection. Errno %.\n", socket,
+            errno);
+
+    if (retval == 0)
     {
-      std::cout << "Server Client " << socket << " Stop" << std::endl;
-      this->Stop();
-      break;
+      continue;
     }
-    if (retval != 0)
+
+    char client_message[1500];
+
+    ssize_t read_size = recv(socket, client_message, sizeof(client_message), 0);
+
+    BUGCRIT(read_size != -1, ,
+            "Server client % recv failed. Close connection. Errno %.\n", socket,
+            errno);
+    if (read_size == 0)
     {
-      char client_message[1500];
+      std::cout << "Server Client " << socket << ", empty message.\n"
+                << std::endl;
+      continue;
+    }
 
-      ssize_t read_size =
-          recv(socket, client_message, sizeof(client_message), 0);
+    std::cout << "Server Client " << socket << " Talk" << std::endl;
+    T message;
 
-      if (read_size == -1 || read_size == 0)
+    std::string client_string(client_message, static_cast<size_t>(read_size));
+    BUGLIB(message.ParseFromString(client_string), , "protobuf.");
+
+    for (int i = 0; i < message.action_size(); i++)
+    {
+      auto& action_tcp = message.action(i);
+
+      auto enumeration = action_tcp.data_case();
+
+      if (enumeration ==
+          std::remove_reference<decltype(action_tcp)>::type::kAddSubscriber)
       {
-        std::cout << "Server Client " << socket << " Stop" << std::endl;
-        this->Stop();
+        AddSubscriberLocal(socket, action_tcp);
+      }
+      /*
+      case action_tcp.kRemoveSubscriber:
+      {
+        AddSubscriber(socket, &action_tcp);
         break;
-      }
-      std::cout << "Server Client " << socket << " Talk" << std::endl;
-      T message;
-
-      std::string client_string(client_message, static_cast<size_t>(read_size));
-      assert(message.ParseFromString(client_string));
-
-      for (int i = 0; i < message.action_size(); i++)
-      {
-        auto& action_tcp = message.action(i);
-
-        auto enumeration = action_tcp.data_case();
-
-        if (enumeration ==
-            std::remove_reference<decltype(action_tcp)>::type::kAddSubscriber)
-        {
-          AddSubscriberLocal(socket, action_tcp);
-        }
-        /*
-        case action_tcp.kRemoveSubscriber:
-        {
-          AddSubscriber(socket, &action_tcp);
-          break;
-        }*/
-      }
-
-      this->Forward(client_string);
+      }*/
     }
-  } while (!this->IsStopping());
 
-  close(socket);
+    BUGCONT(this->Forward(client_string), );
+  } while (!this->IsStopping());
 
   std::cout << "Server Client " << socket << " End" << std::endl;
 }
@@ -167,15 +176,16 @@ template <typename T>
 void llgc::net::TcpServerLinux<T>::AddSubscriberLocal(
     int socket, decltype(std::declval<T>().action(0)) action_tcp)
 {
-  assert(action_tcp.has_add_subscriber());
+  BUGCRIT(action_tcp.has_add_subscriber(), , "Failed to add a subscriber.");
   std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
       std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
           socket);
   std::shared_ptr<llgc::pattern::publisher::ConnectorClientTcp<T>> connector =
       std::make_shared<llgc::pattern::publisher::ConnectorClientTcp<T>>(
           subscriber, socket);
-  assert(
-      this->AddSubscriber(action_tcp.add_subscriber().id_message(), connector));
+  BUGCRIT(
+      this->AddSubscriber(action_tcp.add_subscriber().id_message(), connector),
+      , "Failed to add a subscriber.");
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

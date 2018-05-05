@@ -29,8 +29,7 @@
 bool llgc::poco::NumberVisitorVal::Visit(const Number_Constant &data,
                                          std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
-           false);
+  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
 
   msg::Double val;
   val.set_value(data.Message().constant().value());
@@ -42,8 +41,7 @@ bool llgc::poco::NumberVisitorVal::Visit(const Number_Constant &data,
 bool llgc::poco::NumberVisitorVal::Visit(const Number_NumOpNum &data,
                                          std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), "%p", return_value != nullptr,
-           false);
+  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
 
   msg::Double val1;
   msg::Double val2;

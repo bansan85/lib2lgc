@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/software/gdb/function.h>
 #include <algorithm>
 #include <cstddef>
@@ -32,7 +33,7 @@ static bool IsValidName(const std::string &name)
       }
       else
       {
-        return false;
+        BUGUSER(false, false, "Invalid name of argument '%'.\n", name);
       }
     }
   }

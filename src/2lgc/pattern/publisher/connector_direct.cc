@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 
@@ -47,15 +48,15 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
     uint32_t id_message)
 {
-  return server_->AddSubscriber(id_message, this->shared_from_this());
+  BUGCONT(server_->AddSubscriber(id_message, this->shared_from_this()), false);
+  return true;
 }
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::Send(
     const std::string &message)
 {
-  server_->Forward(message);
-
+  BUGCONT(server_->Forward(message), false);
   return true;
 }
 
@@ -63,7 +64,9 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
     uint32_t id_message)
 {
-  return server_->RemoveSubscriber(id_message, this->shared_from_this());
+  BUGCONT(server_->RemoveSubscriber(id_message, this->shared_from_this()),
+          false);
+  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

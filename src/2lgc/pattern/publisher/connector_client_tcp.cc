@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
+#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_client_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <sys/socket.h>
-#include <sys/types.h>
+#include <cassert>
 #include <iostream>
 
 template <typename T>
@@ -50,7 +51,8 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorClientTcp<T>::AddSubscriber(
     uint32_t /*id_message*/)
 {
-  return false;
+  // Can't append.
+  assert(false);
 }
 
 template <typename T>
@@ -58,15 +60,15 @@ bool llgc::pattern::publisher::ConnectorClientTcp<T>::Send(
     const std::string &message)
 {
   std::cout << "ConnectorClientTcp<T>::Send" << std::endl;
-  return send(socket_, message.c_str(), message.length(), 0) ==
-         static_cast<ssize_t>(message.length());
+  BUGCONT(llgc::net::Linux::Send(socket_, message), false);
+  return true;
 }
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorClientTcp<T>::RemoveSubscriber(
     uint32_t /*id_message*/)
 {
-  return false;
+  assert(false);
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

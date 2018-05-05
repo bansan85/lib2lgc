@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
 #include <experimental/filesystem>
 #include <map>
@@ -26,10 +27,8 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
 {
   std::regex reg(regex);
 
-  if (!std::experimental::filesystem::is_directory(folder))
-  {
-    return false;
-  }
+  BUGUSER(std::experimental::filesystem::is_directory(folder), false,
+          "% is not a folder.\n", folder);
 
   for (auto& p :
        std::experimental::filesystem::recursive_directory_iterator(folder))

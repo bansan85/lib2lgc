@@ -259,15 +259,19 @@ class SetStack
    * @brief Set a message throw the server to tell that this file is invalid.
    *
    * @param[in] filename The filename that failed to be read.
+   *
+   * @return true if no problem.
    */
-  void TellError(const std::string& filename);
+  bool TellError(const std::string& filename) CHK;
 
   /**
    * @brief Send the message to all subscribers.
    *
    * @param[in] message The message to send.
+   *
+   * @return true if no problem.
    */
-  void Forward(const std::string& message);
+  bool Forward(const std::string& message) CHK;
 };
 
 }  // namespace llgc::software::gdb

@@ -22,6 +22,7 @@
 #ifndef SOFTWARE_GDB_GDB_SERVER_H_
 #define SOFTWARE_GDB_GDB_SERVER_H_
 
+#include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/singleton/singleton.h>
 #include <string>
 
@@ -59,8 +60,10 @@ class GdbServer
    * @brief Send the message to all subscribers.
    *
    * @param[in] message The message to send.
+   *
+   * @return true if no problem.
    */
-  void Forward(const std::string& message);
+  bool Forward(const std::string& message) CHK;
 };
 
 }  // namespace llgc::software::gdb

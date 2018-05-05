@@ -70,7 +70,7 @@ class SubscriberBase final
    *
    * @param[in] message message from the publisher in protobuf format.
    */
-  void Listen(const msg::Actions& message) override
+  bool Listen(const msg::Actions& message) override
   {
     for (int i = 0; i < message.action_size(); i++)
     {
@@ -78,6 +78,7 @@ class SubscriberBase final
 
       action_vector[action.data_case()](*this, action);
     }
+    return true;
   }
 
   /**

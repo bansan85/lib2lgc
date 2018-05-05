@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
+#include <2lgc/pattern/singleton/singleton.h>
 #include <2lgc/software/gdb/gdb_server.h>
 #include <memory>
 #include <string>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/singleton/singleton.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
     msg::software::Gdbs>;
@@ -30,16 +33,19 @@ template class llgc::pattern::publisher::Publisher<
     msg::software::Gdbs,
     std::weak_ptr<
         llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
+template class llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
 
-void llgc::software::gdb::GdbServer::Forward(const std::string& message)
+bool llgc::software::gdb::GdbServer::Forward(const std::string& message)
 {
   // Check if instance.
   if (IsInstance())
   {
     // If the instance if freed, GetInstance will create it.
     auto singleton_ = GetInstance();
-    singleton_->Forward(message);
+    BUGCONT(singleton_->Forward(message), false);
   }
+
+  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

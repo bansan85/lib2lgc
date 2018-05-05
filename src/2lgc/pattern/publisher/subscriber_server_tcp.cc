@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
+#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
-#include <sys/socket.h>
 #include <string>
 
 /**
@@ -28,12 +29,14 @@ class SubscriberInterface;
 }
 
 template <typename T>
-void llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &message)
+bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &message)
 {
   std::string message_socket;
 
-  message.SerializeToString(&message_socket);
-  send(socket_, message_socket.c_str(), message_socket.length(), 0);
+  BUGLIB(message.SerializeToString(&message_socket), false, "protobuf");
+  BUGCONT(llgc::net::Linux::Send(socket_, message_socket), false);
+
+  return true;
 }
 
 template <typename T>

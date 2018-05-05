@@ -74,13 +74,15 @@ class SubscriberServerTcp : public SubscriberInterface<T>
    * @return Nothing.
    */
   SubscriberServerTcp& operator=(SubscriberServerTcp const& other) & = delete;
+
   /**
    * @brief Receive message from publisher.
    *
    * @param[in] message message from the publisher in protobuf format.
+   *
+   * @return true if no problem.
    */
-
-  void Listen(const T& message) override;
+  bool Listen(const T& message) override;
 
   /**
    * @brief Compare in connector is the same than the object.

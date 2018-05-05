@@ -128,13 +128,17 @@ class Publisher
    * @brief Send the message to all subscribers.
    *
    * @param message Data of the message in ProtoBuf, SerializeToString.
+   *
+   * @return true if no problem.
    */
-  void Forward(const std::string& message);
+  bool Forward(const std::string& message) CHK;
 
   /**
    * @brief Send all pending messages of all subscribers.
+   *
+   * @return true if no problem.
    */
-  void ForwardPending();
+  bool ForwardPending() CHK;
 
   /**
    * @brief Remove a subscriber of the server.
