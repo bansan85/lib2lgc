@@ -10,6 +10,8 @@ add_executable(files1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/filesystem/files1.cc)
 add_executable(compare_decimal1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/math/compare_decimal1.cc)
+add_executable(hash1 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/math/hash1.cc)
 add_executable(printf1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/override/printf1.cc)
 add_executable(visitor1 EXCLUDE_FROM_ALL
@@ -45,6 +47,7 @@ add_dependencies(gdb4 deadbeef)
 
 target_link_libraries(files1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(compare_decimal1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
+target_link_libraries(hash1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(printf1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(visitor1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_include_directories(publisher1 PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
@@ -59,6 +62,7 @@ target_link_libraries(gdb4 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 
 add_test(files1 files1)
 add_test(compare_decimal1 compare_decimal1)
+add_test(hash1 hash1)
 add_test(printf1 printf1)
 add_test(visitor1 visitor1)
 add_test(publisher1 publisher1)
@@ -76,6 +80,7 @@ add_test(gdb4 gdb4 "${CMAKE_CURRENT_BINARY_DIR}")
 if (CHECK_CODE)
   set_target_properties(files1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(compare_decimal1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(hash1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(printf1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(visitor1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -93,6 +98,7 @@ add_custom_command(TARGET check_all_tests POST_BUILD
 add_dependencies(check_all_tests
   files1
   compare_decimal1
+  hash1
   printf1
   visitor1
   publisher1
