@@ -30,6 +30,11 @@ set_source_files_properties(${PUBLISHER_PROTO_ACTIONS_TCP_SRC} ${CMAKE_CURRENT_S
 add_executable(publisher2 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher2.cc
   ${PUBLISHER_PROTO_ACTIONS_TCP_SRC})
+set_source_files_properties(${PUBLISHER_PROTO_ACTIONS_TCP_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher3.cc
+  PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
+add_executable(publisher3 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher3.cc
+  ${PUBLISHER_PROTO_ACTIONS_TCP_SRC})
 add_executable(poco_number EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/poco/poco_number.cc)
 add_executable(gdb1 EXCLUDE_FROM_ALL
@@ -54,6 +59,8 @@ target_include_directories(publisher1 PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(publisher1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_include_directories(publisher2 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
 target_link_libraries(publisher2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
+target_include_directories(publisher3 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
+target_link_libraries(publisher3 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(poco_number ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
@@ -67,6 +74,7 @@ add_test(printf1 printf1)
 add_test(visitor1 visitor1)
 add_test(publisher1 publisher1)
 add_test(publisher2 publisher2)
+add_test(publisher3 publisher3)
 add_test(poco_number poco_number)
 add_test(gdb1 gdb1)
 add_test(gdb2 gdb2 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb")
@@ -85,6 +93,7 @@ if (CHECK_CODE)
   set_target_properties(visitor1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher2 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(publisher3 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(poco_number PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb2 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -103,6 +112,7 @@ add_dependencies(check_all_tests
   visitor1
   publisher1
   publisher2
+  publisher3
   poco_number
   gdb1
   gdb2

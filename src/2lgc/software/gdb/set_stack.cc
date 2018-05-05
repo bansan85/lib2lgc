@@ -46,9 +46,14 @@
 #include <2lgc/pattern/publisher/publisher.cc>
 #include <2lgc/pattern/singleton/singleton.cc>
 
-template class llgc::pattern::publisher::Publisher<msg::software::Gdbs, std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
-template class llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
-template class llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>;
+template class llgc::pattern::publisher::Publisher<
+    msg::software::Gdbs,
+    std::weak_ptr<
+        llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
+template class llgc::pattern::singleton::Local<
+    llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
+template class llgc::pattern::publisher::ConnectorInterface<
+    msg::software::Gdbs>;
 
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
                                         size_t bottom_frame,

@@ -86,12 +86,13 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
   ConnectorServerTcpIpv6 &operator=(ConnectorServerTcpIpv6 const &other) & =
       delete;
 
+ protected:
   /**
-   * @brief For internal use with accept4.
+   * @brief Start connection with server.
    *
-   * @return The size of the structure of the socket.
+   * @return true if no problem.
    */
-  int SizeOfSocket() override CHK;  // NS
+  bool Connect() CHK;
 };
 
 }  // namespace llgc::pattern::publisher

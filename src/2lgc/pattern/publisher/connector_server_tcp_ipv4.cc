@@ -64,10 +64,10 @@ bool llgc::pattern::publisher::ConnectorServerTcpIpv4<T>::Connect()
   struct sockaddr_in server;  // NOLINT(hicpp-member-init)
                               // Ugly hack to prevent strict aliasing warning.
   BUGUSER(
-      inet_aton(this->ip_.c_str(),
+      inet_pton(AF_INET, this->ip_.c_str(),
                 // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-                reinterpret_cast<in_addr *>(
-                    static_cast<void *>(&server.sin_addr.s_addr))) == 1,
+                reinterpret_cast<struct sockaddr_in *>(
+                    static_cast<void *>(&server.sin_addr))) == 1,
       false, "Failed to get IP for name %.\n", this->ip_);
   server.sin_family = AF_INET;
   server.sin_port = htons(this->port_);

@@ -17,11 +17,11 @@
 #include <2lgc/net/linux.h>
 #include <2lgc/net/tcp_server.h>
 #include <2lgc/net/tcp_server_linux.h>
-#include <2lgc/net/tcp_server_linux_ipv4.h>
+#include <2lgc/net/tcp_server_linux_ipv6.h>
 #include <2lgc/pattern/publisher/connector_client_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_server_tcp.h>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
+#include <2lgc/pattern/publisher/connector_server_tcp_ipv6.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <actions_tcp.pb.h>
@@ -38,26 +38,26 @@
 
 #include <2lgc/net/tcp_server.cc>
 #include <2lgc/net/tcp_server_linux.cc>
-#include <2lgc/net/tcp_server_linux_ipv4.cc>
+#include <2lgc/net/tcp_server_linux_ipv6.cc>
 #include <2lgc/pattern/publisher/connector_client_tcp.cc>
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_server_tcp.cc>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv4.cc>
+#include <2lgc/pattern/publisher/connector_server_tcp_ipv6.cc>
 #include <2lgc/pattern/publisher/publisher.cc>
 #include <2lgc/pattern/publisher/subscriber_direct.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<msg::ActionsTcp>;
 template class llgc::pattern::publisher::ConnectorServerTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorServerTcpIpv4<
+template class llgc::pattern::publisher::ConnectorServerTcpIpv6<
     msg::ActionsTcp>;
 template class llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>;
 template class llgc::net::TcpServer<msg::ActionsTcp>;
 template class llgc::net::TcpServerLinux<msg::ActionsTcp>;
-template class llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>;
+template class llgc::net::TcpServerLinuxIpv6<msg::ActionsTcp>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
@@ -157,8 +157,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   llgc::net::Linux::DisableSigPipe();
 
-  std::shared_ptr<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>> server =
-      std::make_shared<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>>(8888);
+  std::shared_ptr<llgc::net::TcpServerLinuxIpv6<msg::ActionsTcp>> server =
+      std::make_shared<llgc::net::TcpServerLinuxIpv6<msg::ActionsTcp>>(8889);
   assert(server->Listen());
   assert(server->Wait());
 
@@ -166,10 +166,10 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<SubscriberBase>(1);
 
   std::shared_ptr<
-      llgc::pattern::publisher::ConnectorServerTcpIpv4<msg::ActionsTcp>>
+      llgc::pattern::publisher::ConnectorServerTcpIpv6<msg::ActionsTcp>>
       connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorServerTcpIpv4<msg::ActionsTcp>>(
-          subscriber, "127.0.0.1", 8888);
+          llgc::pattern::publisher::ConnectorServerTcpIpv6<msg::ActionsTcp>>(
+          subscriber, "::1", 8889);
 
   // Add them to the server.
   assert(connector->AddSubscriber(msg::ActionTcp::DataCase::kTest));

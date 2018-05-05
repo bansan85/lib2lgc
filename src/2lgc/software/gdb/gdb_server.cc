@@ -33,7 +33,8 @@ template class llgc::pattern::publisher::Publisher<
     msg::software::Gdbs,
     std::weak_ptr<
         llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
-template class llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
+template class llgc::pattern::singleton::Local<
+    llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
 
 bool llgc::software::gdb::GdbServer::Forward(const std::string& message)
 {
