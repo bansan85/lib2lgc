@@ -1,8 +1,8 @@
-<h1>Introduction</h1>
+# Introduction
 
 The goal of the singleton pattern is to be able to have only one instance of a class that will be shared by multiple threads.
 
-<h1>Design</h1>
+# Design
 
 Singleton has two functions and one public member.
 

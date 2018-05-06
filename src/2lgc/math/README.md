@@ -1,8 +1,8 @@
-<h1>math</h1>
+# math
 
 This library contains all you need for math calculation.
 
-<h2>Compare float</h2>
+## Compare float
 
 Actually you can only compare float and double number.
 
@@ -13,7 +13,7 @@ A absolute difference in float/double mode is also used.
 Use `AlmostEqualRelativeAndAbsF` or `AlmostEqualRelativeAndAbsD` if two numbers are closed to zero.
 The float/double difference is both relative and absolute.
 
-<h2>Hash</h2>
+## Hash
 
 Use cryptographic hash if OpenSSL is found. If not, use jbd2.
 

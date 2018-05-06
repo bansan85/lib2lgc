@@ -1,19 +1,19 @@
-<h1>Introduction</h1>
+# Introduction
 
 The goal of this library is to implement the iterator pattern for the base-ranged for loop (`C++11`).
 
-<h1>Design</h1>
+# Design
 Two classes are needed: the class that will be looped and the class that contain objects that will be returned.
 
-<h2>Iterator</h2>
+## Iterator
 To implement this class, the template need to know the class that will be call from the loop and the class that the loop will return.
 
 The custom iterator that will use this class will have access to two variables: data_ (the object in the loop) and pos_ (the current position in the container).
 
-<h2>Loop-class</h2>
+## Loop-class
 The iterator's class will be stored in Object class.
 
-<h3>Container</h3>
+### Container
 The container can be what you want. You just need two informations:
 the size (number of data) of the container and a function returning the nth element under reference.
 
@@ -24,7 +24,7 @@ For a `map` or a `set` that don't have a direct access, you can use a function l
   return **it;
 ```
 
-<h3>Functions</h3>
+### Functions
 In this loop-class you will need a container and two functions:
 
 ```
@@ -43,7 +43,7 @@ In this loop-class you will need a container and two functions:
   std::multiset<Object> object_;
 ```
 
-<h2>Object</h2>
+## Object
 Add the iterator in the class's object.
 
 ```

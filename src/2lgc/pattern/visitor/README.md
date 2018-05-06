@@ -1,4 +1,4 @@
-<h1>Introduction</h1>
+# Introduction
 
 The goal of this library is to implement the visitor pattern.
 
@@ -8,9 +8,9 @@ The visitor classes are classes that extend visitable classes.
 
 The two classes were designed to be very easy to used by other class.
 
-<h1>Design</h1>
+# Design
 
-<h2>Raw data</h2>
+## Raw data
 
 All data are stored in `ProtoBuf`'s Google messages.
 
@@ -42,7 +42,7 @@ message Coordonate {
 }
 ```
 
-<h2>Container / Interface</h2>
+## Container / Interface
 
 If different data represents the same object, an interface with pure virtual
 method may be used.
@@ -81,7 +81,7 @@ class Coordonate : public InterfaceVisitable<msg::Coordonate> {
 }
 ```
 
-<h2>Visitors</h2>
+## Visitors
 
 All visitors must have a virtual destructor and inheritate :
   - the empty class `BaseVisitor ` so all classes will be able to be cast to
