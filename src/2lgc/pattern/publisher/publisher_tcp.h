@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef NET_TCP_SERVER_H_
-#define NET_TCP_SERVER_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/publisher.h>
@@ -33,20 +33,14 @@ namespace llgc::pattern::publisher
 {
 template <typename T>
 class ConnectorInterface;
-}
 
-/**
- * @brief This is all about net.
- */
-namespace llgc::net
-{
 /**
  * @brief Interface to create a TCP server.
  *
  * @tparam T Message from protobuf.
  */
 template <typename T>
-class TcpServer
+class PublisherTcp
     : public llgc::pattern::publisher::Publisher<
           T, std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>
 {
@@ -56,12 +50,12 @@ class TcpServer
    *
    * @param[in] port The port to listen from.
    */
-  explicit TcpServer(uint16_t port);
+  explicit PublisherTcp(uint16_t port);
 
   /**
    * @brief Destructor. Make sure that thread is finished.
    */
-  virtual ~TcpServer();
+  virtual ~PublisherTcp();
 
 #ifndef SWIG
   /**
@@ -71,7 +65,7 @@ class TcpServer
    *
    * @return Nothing.
    */
-  TcpServer(TcpServer&& other) = delete;
+  PublisherTcp(PublisherTcp&& other) = delete;
   /**
    * @brief Delete copy constructor.
    *
@@ -79,7 +73,7 @@ class TcpServer
    *
    * @return Nothing.
    */
-  TcpServer(TcpServer const& other) = delete;
+  PublisherTcp(PublisherTcp const& other) = delete;
   /**
    * @brief Delete move operator.
    *
@@ -87,7 +81,7 @@ class TcpServer
    *
    * @return Nothing.
    */
-  TcpServer& operator=(TcpServer&& other) & = delete;
+  PublisherTcp& operator=(PublisherTcp&& other) & = delete;
   /**
    * @brief Delete copy operator.
    *
@@ -95,7 +89,7 @@ class TcpServer
    *
    * @return Nothing.
    */
-  TcpServer& operator=(TcpServer const& other) & = delete;
+  PublisherTcp& operator=(PublisherTcp const& other) & = delete;
 #endif  // !SWIG
 
   /**
@@ -163,8 +157,8 @@ class TcpServer
   std::atomic<bool> disposing_;
 };
 
-}  // namespace llgc::net
+}  // namespace llgc::pattern::publisher
 
-#endif  // NET_TCP_SERVER_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -15,13 +15,13 @@
  */
 
 #include <2lgc/net/linux.h>
-#include <2lgc/net/tcp_server.h>
-#include <2lgc/net/tcp_server_linux.h>
-#include <2lgc/net/tcp_server_linux_ipv4.h>
 #include <2lgc/pattern/publisher/connector_client_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_server_tcp.h>
 #include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
+#include <2lgc/pattern/publisher/publisher_tcp.h>
+#include <2lgc/pattern/publisher/publisher_tcp_linux.h>
+#include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <actions_tcp.pb.h>
@@ -36,15 +36,15 @@
 #include <string>
 #include <type_traits>
 
-#include <2lgc/net/tcp_server.cc>
-#include <2lgc/net/tcp_server_linux.cc>
-#include <2lgc/net/tcp_server_linux_ipv4.cc>
 #include <2lgc/pattern/publisher/connector_client_tcp.cc>
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_server_tcp.cc>
 #include <2lgc/pattern/publisher/connector_server_tcp_ipv4.cc>
 #include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/publisher_tcp.cc>
+#include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
+#include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
 #include <2lgc/pattern/publisher/subscriber_direct.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
@@ -55,9 +55,9 @@ template class llgc::pattern::publisher::ConnectorServerTcpIpv4<
 template class llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>;
-template class llgc::net::TcpServer<msg::ActionsTcp>;
-template class llgc::net::TcpServerLinux<msg::ActionsTcp>;
-template class llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>;
+template class llgc::pattern::publisher::PublisherTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::PublisherTcpLinux<msg::ActionsTcp>;
+template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<msg::ActionsTcp>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
@@ -157,8 +157,11 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   llgc::net::Linux::DisableSigPipe();
 
-  std::shared_ptr<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>> server =
-      std::make_shared<llgc::net::TcpServerLinuxIpv4<msg::ActionsTcp>>(8888);
+  std::shared_ptr<
+      llgc::pattern::publisher::PublisherTcpLinuxIpv4<msg::ActionsTcp>>
+      server = std::make_shared<
+          llgc::pattern::publisher::PublisherTcpLinuxIpv4<msg::ActionsTcp>>(
+          8888);
   assert(server->Listen());
   assert(server->Wait());
 

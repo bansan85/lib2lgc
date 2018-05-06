@@ -16,8 +16,8 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
-#include <2lgc/net/tcp_server.h>
-#include <2lgc/net/tcp_server_linux.h>
+#include <2lgc/pattern/publisher/publisher_tcp.h>
+#include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <poll.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -46,13 +46,13 @@ class SubscriberServerTcp;
 }  // namespace llgc::pattern::publisher
 
 template <typename T>
-llgc::net::TcpServerLinux<T>::TcpServerLinux(uint16_t port)
-    : TcpServer<T>(port), sockfd_(-1)
+llgc::pattern::publisher::PublisherTcpLinux<T>::PublisherTcpLinux(uint16_t port)
+    : PublisherTcp<T>(port), sockfd_(-1)
 {
 }
 
 template <typename T>
-bool llgc::net::TcpServerLinux<T>::Wait()
+bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 {
   if (sockfd_ == -1)
   {
@@ -76,17 +76,17 @@ bool llgc::net::TcpServerLinux<T>::Wait()
       tv.tv_sec = 0L;
       tv.tv_usec = 50000L;
 
-      iResult = Linux::RepeteOnEintr(
+      iResult = llgc::net::Linux::RepeteOnEintr(
           std::bind(&select, sockfd_ + 1, &rfds, nullptr, nullptr, &tv));
       if (iResult > 0)
       {
-        client_sock = Linux::RepeteOnEintr(
+        client_sock = llgc::net::Linux::RepeteOnEintr(
             std::bind(accept4, sockfd_, nullptr, nullptr, 0));
         if (client_sock > 0)
         {
           std::cout << "Server new client" << client_sock << std::endl;
           std::thread t2(
-              std::bind(&TcpServerLinux<T>::WaitThread, this, client_sock));
+              std::bind(&PublisherTcpLinux<T>::WaitThread, this, client_sock));
           this->thread_sockets_.insert(
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }
@@ -103,9 +103,9 @@ bool llgc::net::TcpServerLinux<T>::Wait()
 }
 
 template <typename T>
-void llgc::net::TcpServerLinux<T>::WaitThread(int socket)
+void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 {
-  Linux::AutoCloseSocket auto_close_socket(&socket);
+  llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket;
@@ -173,7 +173,7 @@ void llgc::net::TcpServerLinux<T>::WaitThread(int socket)
 }
 
 template <typename T>
-void llgc::net::TcpServerLinux<T>::AddSubscriberLocal(
+void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
     int socket, decltype(std::declval<T>().action(0)) action_tcp)
 {
   BUGCRIT(action_tcp.has_add_subscriber(), , "Failed to add a subscriber.");

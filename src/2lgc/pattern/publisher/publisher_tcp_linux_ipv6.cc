@@ -15,31 +15,32 @@
  */
 
 #include <2lgc/net/linux.h>
-#include <2lgc/net/tcp_server_linux.h>
-#include <2lgc/net/tcp_server_linux_ipv4.h>
+#include <2lgc/pattern/publisher/publisher_tcp_linux.h>
+#include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <cerrno>
 
 template <typename T>
-llgc::net::TcpServerLinuxIpv4<T>::TcpServerLinuxIpv4(uint16_t port)
-    : TcpServerLinux<T>(port)
+llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::PublisherTcpLinuxIpv6(
+    uint16_t port)
+    : PublisherTcpLinux<T>(port)
 {
 }
 
 template <typename T>
-bool llgc::net::TcpServerLinuxIpv4<T>::Listen()
+bool llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::Listen()
 {
-  this->sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
+  this->sockfd_ = socket(AF_INET6, SOCK_STREAM, 0);
 
   BUGCRIT(this->sockfd_ != -1, false, "Failed to open socket. Errno %\n",
           errno);
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct sockaddr_in socket_addr;  // NOLINT(hicpp-member-init)
-  socket_addr.sin_family = AF_INET;
-  socket_addr.sin_addr.s_addr = INADDR_ANY;
-  socket_addr.sin_port = htons(this->port_);
+  struct sockaddr_in6 socket_addr;  // NOLINT(hicpp-member-init)
+  socket_addr.sin6_family = AF_INET6;
+  socket_addr.sin6_addr = in6addr_any;
+  socket_addr.sin6_port = htons(this->port_);
 
   BUGCONT(llgc::net::Linux::Bind(
               this->sockfd_,

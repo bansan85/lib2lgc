@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <2lgc/net/tcp_server.h>
 #include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_tcp.h>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -27,7 +27,7 @@ class ConnectorInterface;
 }
 
 template <typename T>
-llgc::net::TcpServer<T>::TcpServer(uint16_t port)
+llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
     : llgc::pattern::publisher::Publisher<
           T,
           std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(),
@@ -37,26 +37,26 @@ llgc::net::TcpServer<T>::TcpServer(uint16_t port)
 }
 
 template <typename T>
-llgc::net::TcpServer<T>::~TcpServer()
+llgc::pattern::publisher::PublisherTcp<T>::~PublisherTcp()
 {
   // Can't destroy a thread if it's still running.
   JoinWait();
 }
 
 template <typename T>
-bool llgc::net::TcpServer<T>::IsStopping()
+bool llgc::pattern::publisher::PublisherTcp<T>::IsStopping()
 {
   return disposing_;
 }
 
 template <typename T>
-void llgc::net::TcpServer<T>::Stop()
+void llgc::pattern::publisher::PublisherTcp<T>::Stop()
 {
   disposing_ = true;
 }
 
 template <typename T>
-void llgc::net::TcpServer<T>::JoinWait()
+void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
 {
   if (thread_wait_.joinable())
   {

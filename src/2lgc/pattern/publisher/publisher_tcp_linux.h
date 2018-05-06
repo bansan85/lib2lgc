@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef NET_TCP_SERVER_LINUX_H_
-#define NET_TCP_SERVER_LINUX_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_H_
+#define PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <2lgc/net/tcp_server.h>
+#include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <cstdint>
 #include <type_traits>
 
 /**
  * @brief This is all about net.
  */
-namespace llgc::net
+namespace llgc::pattern::publisher
 {
 /**
  * @brief Interface to create a TCP server.
  */
 template <typename T>
-class TcpServerLinux : public TcpServer<T>
+class PublisherTcpLinux : public PublisherTcp<T>
 {
  public:
   /**
@@ -39,7 +39,7 @@ class TcpServerLinux : public TcpServer<T>
    *
    * @param[in] port The port to listen from.
    */
-  explicit TcpServerLinux(uint16_t port);
+  explicit PublisherTcpLinux(uint16_t port);
 
   /**
    * @brief Wait for client.
@@ -75,8 +75,8 @@ class TcpServerLinux : public TcpServer<T>
   void WaitThread(int socket);
 };
 
-}  // namespace llgc::net
+}  // namespace llgc::pattern::publisher
 
-#endif  // NET_TCP_SERVER_LINUX_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -47,7 +47,7 @@
   BUG(X, Y, "Programmation error.", #PARAM " = %.\n", PARAM)
 /**
  * \def BUGPARAM(PARAM, X, Y)
- * \brief Macro that tell that a parameter is invalid. 
+ * \brief Macro that tell that a parameter is invalid.
  * \param PARAM The invalid parameter. Just the variable. It will be used to
  * show the name and the value.
  * \param X Condition to check. This condition is supposed to be always true.
