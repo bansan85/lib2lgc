@@ -1,4 +1,4 @@
-# Introduction
+# Iterator pattern
 
 The goal of this library is to implement the iterator pattern for the base-ranged for loop (`C++11`).
 

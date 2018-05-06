@@ -1,4 +1,4 @@
-# Introduction
+# Singleton pattern
 
 The goal of the singleton pattern is to be able to have only one instance of a class that will be shared by multiple threads.
 

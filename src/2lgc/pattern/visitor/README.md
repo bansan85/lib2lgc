@@ -1,4 +1,4 @@
-# Introduction
+# Visitor pattern
 
 The goal of this library is to implement the visitor pattern.
 

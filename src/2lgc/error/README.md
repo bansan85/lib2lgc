@@ -1,4 +1,6 @@
-# show.h
+# Error
+
+## show.h
 
 Print various error message based on the categorie of the error.
   - BUGPARAM : show an error message if a parameter is invalid, like null pointer if parameter can't be null.

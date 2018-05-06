@@ -1,4 +1,4 @@
-# POCO
+# Poco
 
 `POCO` means `Plain Old Class Object` and stores only raw data.
 

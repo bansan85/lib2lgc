@@ -34,4 +34,4 @@ If OpenSSL is found, TCP acknowledges will be SHA512 sum. If not found, djb2 wil
 # TODO
 Missing local README.md means that the functionnality is still under development.
 
-  - command pattern,
+  - command pattern / undomanager.
