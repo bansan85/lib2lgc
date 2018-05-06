@@ -15,5 +15,5 @@ The float/double difference is both relative and absolute.
 
 ## Hash
 
-Use cryptographic hash if OpenSSL is found. If not, use jbd2.
+Use cryptographic hash if OpenSSL is found. If not, use jbd2. The goal is to use an hash, no matter which one.
 

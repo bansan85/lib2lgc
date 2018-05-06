@@ -36,41 +36,80 @@
   } while (0)
 /**
  * \def BUG(X, Y, MSG, ...)
- * \brief La macro est l'équivalent d'un "return Y; ..." si la condition X
- *        n'est pas vérifiée.
- * \param X : condition à vérifier,
- * \param Y : renvoie Y si la condition X n'est pas vérifiée,
- * \param MSG : Le message afficher.
- * \param ... : Message complémentaire sous une forme compatible avec fprintf.
+ * \brief If condition X is false, show messages then return Y.
+ * \param X Condition to check.
+ * \param Y Return value if X is wrong.
+ * \param MSG First message to show.
+ * \param ... Additionnal message.
  */
 
 #define BUGPARAM(PARAM, X, Y) \
   BUG(X, Y, "Programmation error.", #PARAM " = %.\n", PARAM)
 /**
- * \def BUGPARAM(PARAM, TYPE, X, Y, MANAGER)
- * \brief Macro spécialement conçu pour la vérification des paramètres.
- * \param PARAM : paramètre (variable) invalide,
- * \param TYPE : type du paramètre sous forme de texte ("%s", "%d", …),
- * \param X : condition à vérifier,
- * \param Y : renvoie Y si la condition X n'est pas vérifiée,
- * \param MANAGER : Le gestionnaire d'annulation. Peut être NULL,
+ * \def BUGPARAM(PARAM, X, Y)
+ * \brief Macro that tell that a parameter is invalid. 
+ * \param PARAM The invalid parameter. Just the variable. It will be used to
+ * show the name and the value.
+ * \param X Condition to check. This condition is supposed to be always true.
+ * If in normal use, this condition may be wrong, use BUGUSER.
+ * \param Y Return value if X is wrong.
  */
 
 #define BUGLIB(X, Y, LIB) BUG(X, Y, "Library error.\n", "%\n", LIB)
+/**
+ * \def BUGLIB(X, Y, LIB)
+ * \brief If condition X is false, tell which library then return Y.
+ * \param X Condition to check. This condition is supposed to be always true.
+ * If the condition are wrong, the error comes from a library and the error is
+ * because of the library.
+ * If in normal use, the condition may be wrong, use BUGUSER.
+ * \param Y Return value if X is wrong.
+ * \param LIB Name of the library. You can't had additionnal message. If a
+ * message is needed, it means that you need to use BUGUSER or BUGCRIT.
+ */
 
 #define BUGCRIT(X, Y, ...) BUG(X, Y, "Critical error.\n", __VA_ARGS__)
 /**
  * \def BUGCRIT(X, Y, ...)
  * \brief Macro that check return value of function that should never failed.
- * \param X : condition,
- * \param Y : return value if condition is false,
+ * If the condition are wrong, it a unknown error.
+ * \param X Condition to check. This condition is supposed to be always true.
+ * If in normal use, this condition may be wrong, use BUGUSER.
+ * \param Y Return value if condition is false,
+ * \param ... Additionnal message.
  */
 
 #define BUGUSER(X, Y, ...) BUG(X, Y, "User error.\n", __VA_ARGS__)
+/**
+ * \def BUGUSER(X, Y, ...)
+ * \brief Macro that check return value of function that may fail.
+ * If the condition are wrong, it's user fault.
+ * \param X Condition to check.
+ * \param Y Return value if condition is false,
+ * \param ... Additionnal message.
+ */
 
 #define BUGPROG(X, Y, ...) BUG(X, Y, "Programmation error.\n", __VA_ARGS__)
+/**
+ * \def BUGPROG(X, Y, ...)
+ * \brief Macro that check return value of function that should never failed.
+ * If the condition are wrong, it a programmation error (not implemented switch
+ * for example).
+ * \param X Condition to check. This condition is supposed to be always true.
+ * If in normal use, this condition may be wrong, use BUGUSER.
+ * \param Y Return value if condition is false,
+ * \param ... Additionnal message.
+ */
 
 #define BUGCONT(X, Y) BUG(X, Y, "Throw error.\n", "")
+/**
+ * \def BUGCONT(X, Y, ...)
+ * \brief Macro that check return value of function where return value is
+ * covered with BUG*. So you don't need to write something, the BUG* should have
+ * done the work.
+ * \param X Condition to check.
+ * \param Y Return value if condition is false,
+ */
 
 #endif  // ERROR_SHOW_H_
 
