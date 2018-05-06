@@ -58,6 +58,7 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    */
   ~ConnectorClientTcp() override;
 
+#ifndef SWIG
   /**
    * @brief Delete copy constructor.
    *
@@ -89,6 +90,7 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    * @return Delete function.
    */
   ConnectorClientTcp &operator=(ConnectorClientTcp const &other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Compare two connectors.

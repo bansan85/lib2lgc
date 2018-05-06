@@ -60,6 +60,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
    */
   ~ConnectorDirect() override;
 
+#ifndef SWIG
   /**
    * @brief Delete copy constructor.
    *
@@ -91,6 +92,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
    * @return Delete function.
    */
   ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Compare two connectors.

@@ -54,6 +54,7 @@ class TcpServerLinux : public TcpServer<T>
    */
   int sockfd_;  // NS
 
+#ifndef SWIG
   /**
    * @brief Internal function to subscribe a socket to an event.
    *
@@ -62,6 +63,7 @@ class TcpServerLinux : public TcpServer<T>
    */
   void AddSubscriberLocal(
       int socket, decltype(std::declval<T>().action(0)) action_tcp) override;
+#endif  // !SWIG
 
  private:
   /**

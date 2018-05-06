@@ -42,6 +42,7 @@ class SubscriberServerTcp : public SubscriberInterface<T>
    */
   explicit SubscriberServerTcp(int socket) : socket_(socket) {}
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -74,6 +75,7 @@ class SubscriberServerTcp : public SubscriberInterface<T>
    * @return Nothing.
    */
   SubscriberServerTcp& operator=(SubscriberServerTcp const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Receive message from publisher.
@@ -91,8 +93,7 @@ class SubscriberServerTcp : public SubscriberInterface<T>
    *
    * @return true if the same.
    */
-  bool Equals(const SubscriberInterface<T>& connector) const override
-      __attribute__((pure));
+  bool Equals(const SubscriberInterface<T>& connector) const override;
 
   /**
    * @brief Default virtual destructor.

@@ -81,6 +81,7 @@ class Publisher
    */
   virtual ~Publisher();
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -112,6 +113,7 @@ class Publisher
    * @return Delete function.
    */
   Publisher& operator=(Publisher const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Add a subscriber to the server.

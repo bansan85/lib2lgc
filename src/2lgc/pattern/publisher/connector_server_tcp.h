@@ -59,6 +59,7 @@ class ConnectorServerTcp : public ConnectorInterface<T>
    */
   virtual ~ConnectorServerTcp();
 
+#ifndef SWIG
   /**
    * @brief Delete copy constructor.
    *
@@ -90,6 +91,7 @@ class ConnectorServerTcp : public ConnectorInterface<T>
    * @return Delete function.
    */
   ConnectorServerTcp &operator=(ConnectorServerTcp const &other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Compare two connectors.

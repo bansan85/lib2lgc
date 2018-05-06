@@ -43,6 +43,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    */
   explicit SubscriberDirect(uint32_t id) : id_(id) {}
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -75,6 +76,8 @@ class SubscriberDirect : public SubscriberInterface<T>
    * @return Nothing.
    */
   SubscriberDirect& operator=(SubscriberDirect const& other) & = delete;
+#endif  // !SWIG
+
   /**
    * @brief Compare in connector is the same than the object.
    *
@@ -82,9 +85,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return true if the same.
    */
-
-  bool Equals(const SubscriberInterface<T>& connector) const override
-      __attribute__((pure));
+  bool Equals(const SubscriberInterface<T>& connector) const override;
 
   /**
    * @brief Default virtual destructor.

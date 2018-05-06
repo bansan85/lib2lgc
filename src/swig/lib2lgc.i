@@ -70,8 +70,13 @@
 %include "../2lgc/pattern/publisher/subscriber_server_tcp.h"
 %include "../2lgc/pattern/singleton/singleton.h"
 %include "../2lgc/pattern/visitor/visitable.h"
+%template(interface_visitable_number) llgc::pattern::visitor::InterfaceVisitable<msg::Number>;
 %include "../2lgc/pattern/visitor/visitor.h"
+%template(visitor_number_constant) llgc::pattern::visitor::Visitor<llgc::pattern::visitor::Number_Constant>;
+%template(visitor_number_num_op_num) llgc::pattern::visitor::Visitor<llgc::pattern::visitor::Number_NumOpNum>;
 %include "../2lgc/poco/number.h"
+%template(base_visitable_number_constant) llgc::pattern::visitor::BaseVisitable<llgc::pattern::visitor::Number_Constant, llgc::pattern::visitor::Number>;
+%template(base_visitable_number_num_po_num) llgc::pattern::visitor::BaseVisitable<llgc::pattern::visitor::Number_NumOpNum, llgc::pattern::visitor::Number>;
 %include "../2lgc/poco/number_impl.h"
 %include "../2lgc/poco/number_visitor_unit.h"
 %include "../2lgc/poco/number_visitor_value.h"

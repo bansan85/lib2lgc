@@ -63,6 +63,7 @@ class TcpServer
    */
   virtual ~TcpServer();
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -95,6 +96,7 @@ class TcpServer
    * @return Nothing.
    */
   TcpServer& operator=(TcpServer const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Start the server and the listening the port.
@@ -143,14 +145,16 @@ class TcpServer
    */
   std::map<int, std::thread> thread_sockets_;  // NS
 
+#ifndef SWIG
   /**
    * @brief Internal function to subscribe a socket to an event.
    *
    * @param[in] socket The socket.
-   * @param[in] action_tcp The message.
+   * @param[in] action_tcp A const reference of the message.
    */
   virtual void AddSubscriberLocal(
       int socket, decltype(std::declval<T>().action(0)) action_tcp) = 0;
+#endif  // !SWIG
 
  private:
   /**

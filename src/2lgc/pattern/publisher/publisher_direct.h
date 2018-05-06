@@ -40,6 +40,7 @@ class PublisherDirect
    */
   PublisherDirect() = default;
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -71,6 +72,7 @@ class PublisherDirect
    * @return Delete function.
    */
   PublisherDirect& operator=(PublisherDirect const& other) & = delete;
+#endif  // !SWIG
 };
 
 }  // namespace llgc::pattern::publisher

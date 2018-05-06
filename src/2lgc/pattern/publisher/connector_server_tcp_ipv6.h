@@ -53,6 +53,7 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
    */
   virtual ~ConnectorServerTcpIpv6();
 
+#ifndef SWIG
   /**
    * @brief Delete copy constructor.
    *
@@ -85,6 +86,7 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
    */
   ConnectorServerTcpIpv6 &operator=(ConnectorServerTcpIpv6 const &other) & =
       delete;
+#endif  // !SWIG
 
  protected:
   /**

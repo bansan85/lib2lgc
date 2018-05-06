@@ -55,6 +55,7 @@ class ConnectorInterface
    */
   virtual ~ConnectorInterface() = default;
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -87,6 +88,7 @@ class ConnectorInterface
    * @return Nothing.
    */
   ConnectorInterface& operator=(ConnectorInterface const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Compare in connector is the same than the object.

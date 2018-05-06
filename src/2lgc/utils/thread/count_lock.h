@@ -66,6 +66,7 @@ class CountLock
     }
   }
 
+#ifndef SWIG
   /**
    * @brief Delete move constructor.
    *
@@ -97,6 +98,7 @@ class CountLock
    * @return Delete function.
    */
   CountLock& operator=(CountLock const& other) & = delete;
+#endif  // !SWIG
 
  private:
   /**
