@@ -4,10 +4,32 @@
 
 %{
 // Do not include compatibility.
-// %include "../2lgc/compatibility.h"
-// %include "../2lgc/compatibility/visual_studio.h"
+// #include "../2lgc/compatibility.h"
+// #include "../2lgc/compatibility/visual_studio.h"
 #include "../2lgc/error/show.h"
+#include "../2lgc/filesystem/files.h"
 #include "../2lgc/math/compare_decimal.h"
+#include "../2lgc/math/hash.h"
+#include "../2lgc/net/linux.h"
+#include "../2lgc/net/tcp_server.h"
+#include "../2lgc/net/tcp_server_linux.h"
+#include "../2lgc/net/tcp_server_linux_ipv4.h"
+#include "../2lgc/net/tcp_server_linux_ipv6.h"
+#include "../2lgc/override/printf.h"
+#include "../2lgc/pattern/command/command.h"
+#include "../2lgc/pattern/iterator/iterator.h"
+#include "../2lgc/pattern/publisher/connector_client_tcp.h"
+#include "../2lgc/pattern/publisher/connector_direct.h"
+#include "../2lgc/pattern/publisher/connector_interface.h"
+#include "../2lgc/pattern/publisher/connector_server_tcp.h"
+#include "../2lgc/pattern/publisher/connector_server_tcp_ipv4.h"
+#include "../2lgc/pattern/publisher/connector_server_tcp_ipv6.h"
+#include "../2lgc/pattern/publisher/publisher_direct.h"
+#include "../2lgc/pattern/publisher/publisher.h"
+#include "../2lgc/pattern/publisher/subscriber_direct.h"
+#include "../2lgc/pattern/publisher/subscriber_interface.h"
+#include "../2lgc/pattern/publisher/subscriber_server_tcp.h"
+#include "../2lgc/pattern/singleton/singleton.h"
 #include "../2lgc/pattern/visitor/visitable.h"
 #include "../2lgc/pattern/visitor/visitor.h"
 #include "../2lgc/poco/number.h"
@@ -17,33 +39,46 @@
 #include "../2lgc/software/gdb/backtrace.h"
 #include "../2lgc/software/gdb/function.h"
 #include "../2lgc/software/gdb/gdb.h"
+#include "../2lgc/software/gdb/gdb_server.h"
 #include "../2lgc/software/gdb/set_stack.h"
 #include "../2lgc/software/gdb/stack.h"
+#include "../2lgc/utils/thread/count_lock.h"
 %}
 
 %include "../2lgc/error/show.h"
+%include "../2lgc/filesystem/files.h"
 %include "../2lgc/math/compare_decimal.h"
-
+%include "../2lgc/math/hash.h"
+%include "../2lgc/net/linux.h"
+%include "../2lgc/net/tcp_server.h"
+%include "../2lgc/net/tcp_server_linux.h"
+%include "../2lgc/net/tcp_server_linux_ipv4.h"
+%include "../2lgc/net/tcp_server_linux_ipv6.h"
+%include "../2lgc/override/printf.h"
+%include "../2lgc/pattern/command/command.h"
+%include "../2lgc/pattern/iterator/iterator.h"
+%include "../2lgc/pattern/publisher/connector_client_tcp.h"
+%include "../2lgc/pattern/publisher/connector_direct.h"
+%include "../2lgc/pattern/publisher/connector_interface.h"
+%include "../2lgc/pattern/publisher/connector_server_tcp.h"
+%include "../2lgc/pattern/publisher/connector_server_tcp_ipv4.h"
+%include "../2lgc/pattern/publisher/connector_server_tcp_ipv6.h"
+%include "../2lgc/pattern/publisher/publisher_direct.h"
+%include "../2lgc/pattern/publisher/publisher.h"
+%include "../2lgc/pattern/publisher/subscriber_direct.h"
+%include "../2lgc/pattern/publisher/subscriber_interface.h"
+%include "../2lgc/pattern/publisher/subscriber_server_tcp.h"
+%include "../2lgc/pattern/singleton/singleton.h"
 %include "../2lgc/pattern/visitor/visitable.h"
-
-%template(interface_visitable_number) pattern::visitor::InterfaceVisitable<msg::Number>;
-
 %include "../2lgc/pattern/visitor/visitor.h"
-
-%template(visitor_number_constant) pattern::visitor::Visitor<pattern::visitor::Number_Constant>;
-%template(visitor_number_num_op_num) pattern::visitor::Visitor<pattern::visitor::Number_NumOpNum>;
-
 %include "../2lgc/poco/number.h"
-
-%template(base_visitable_number_constant) pattern::visitor::BaseVisitable<pattern::visitor::Number_Constant, pattern::visitor::Number>;
-%template(base_visitable_number_num_po_num) pattern::visitor::BaseVisitable<pattern::visitor::Number_NumOpNum, pattern::visitor::Number>;
-
 %include "../2lgc/poco/number_impl.h"
-
 %include "../2lgc/poco/number_visitor_unit.h"
 %include "../2lgc/poco/number_visitor_value.h"
 %include "../2lgc/software/gdb/backtrace.h"
 %include "../2lgc/software/gdb/function.h"
 %include "../2lgc/software/gdb/gdb.h"
+%include "../2lgc/software/gdb/gdb_server.h"
 %include "../2lgc/software/gdb/set_stack.h"
 %include "../2lgc/software/gdb/stack.h"
+%include "../2lgc/utils/thread/count_lock.h"
