@@ -69,7 +69,7 @@ class SubscriberBase final
   /**
    * @brief Default constructor.
    *
-   * @param[in] id id of the subscriber.
+   * @param[in] id Id of the subscriber.
    */
   explicit SubscriberBase(uint32_t id) : SubscriberDirect(id), value(0) {}
   /**
@@ -109,16 +109,11 @@ class SubscriberBase final
    * @return Nothing.
    */
   SubscriberBase& operator=(SubscriberBase const& other) & = delete;
-  /**
-   * @brief Receive message from publisher.
-   *
-   * @param[in] message message from the publisher in protobuf format.
-   */
 
   /**
    * @brief Receive message from publisher.
    *
-   * @param[in] message message from the publisher in protobuf format.
+   * @param[in] message Message from the publisher in protobuf format.
    */
   bool Listen(const msg::ActionsTcp& message) override
   {

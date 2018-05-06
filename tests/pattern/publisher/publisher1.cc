@@ -54,7 +54,7 @@ class SubscriberBase final
   /**
    * @brief Default constructor.
    *
-   * @param[in] id id of the subscriber.
+   * @param[in] id Id of the subscriber.
    */
   explicit SubscriberBase(uint32_t id)
       : SubscriberDirect(id),
@@ -68,7 +68,7 @@ class SubscriberBase final
   /**
    * @brief Receive message from publisher.
    *
-   * @param[in] message message from the publisher in protobuf format.
+   * @param[in] message Message from the publisher in protobuf format.
    */
   bool Listen(const msg::Actions& message) override
   {
@@ -98,7 +98,7 @@ class SubscriberBase final
   size_t value;
 
   /**
-   * @brief Action à exécuter.
+   * @brief Function to execute.
    */
   std::vector<std::function<void(SubscriberBase&, const msg::Action&)>>
       action_vector;
