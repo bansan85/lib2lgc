@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <2lgc/override/printf.h>
+#include <2lgc/text/printf.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <sstream>
@@ -24,21 +24,21 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 {
   std::ostringstream oss;
 
-  assert(llgc::override::Print::F(oss, "number: %, string: %, double: %", 2,
-                                  "text", 1.5));
+  assert(llgc::text::Print::F(oss, "number: %, string: %, double: %", 2, "text",
+                              1.5));
   assert(oss.str() == "number: 2, string: text, double: 1.5");
   oss.str("");
 
-  assert(llgc::override::Print::F(oss, "number: %%, string: %.", "text"));
+  assert(llgc::text::Print::F(oss, "number: %%, string: %.", "text"));
   assert(oss.str() == "number: %, string: text.");
   oss.str("");
 
-  assert(llgc::override::Print::F(oss, "number: %, string: %%.", 124));
+  assert(llgc::text::Print::F(oss, "number: %, string: %%.", 124));
   assert(oss.str() == "number: 124, string: %.");
   oss.str("");
 
-  assert(!llgc::override::Print::F(oss, "number: %, string: %, double: %", 2,
-                                   "text"));
+  assert(
+      !llgc::text::Print::F(oss, "number: %, string: %, double: %", 2, "text"));
 
   google::protobuf::ShutdownProtobufLibrary();
 

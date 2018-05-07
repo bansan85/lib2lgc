@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef OVERRIDE_PRINTF_H_
-#define OVERRIDE_PRINTF_H_
+#ifndef TEXT_PRINTF_H_
+#define TEXT_PRINTF_H_
 
 #include <cassert>
 #include <ostream>
@@ -27,7 +27,7 @@
 /**
  * @brief Namespace that have all function that override classic classes.
  */
-namespace llgc::override
+namespace llgc::text
 {
 /**
  * @brief This class allow use of a safe printf.
@@ -83,8 +83,8 @@ class Print
   static bool F(std::ostream &out_stream, const std::string &s);
 };
 
-}  // namespace llgc::override
+}  // namespace llgc::text
 
-#endif  // OVERRIDE_PRINTF_H_
+#endif  // TEXT_PRINTF_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

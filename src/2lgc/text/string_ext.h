@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
+#ifndef TEXT_STRING_EXT_H_
+#define TEXT_STRING_EXT_H_
+
+#include <string>
+#include <vector>
+
 /**
- * @file compare_decimal.cc
- * @brief Compare diff of two decimal number base on their int representation.
- * Base on idea from
- * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/.
+ * @brief Namespace that have all function that override classic classes.
  */
-
-#include <2lgc/error/show.h>
-#include <2lgc/override/printf.h>
-#include <cstddef>
-
-bool llgc::override::Print::F(std::ostream &out_stream, const std::string &s)
+namespace llgc::text
 {
-  size_t i = 0;
-  while (s[i] != 0)
-  {
-    if (s[i] == '%')
-    {
-      BUGCRIT(s[i + 1] == '%', false, "Missing argument to convert %%.\n");
-      ++i;
-    }
-    out_stream << s[i];
-    i++;
-  }
-  return true;
-}
+/**
+ * @brief This class extend std::string.
+ */
+class StringExt
+{
+ public:
+  // Stolen from
+  // https://www.safaribooksonline.com/library/view/c-cookbook/0596007612/ch04s09.html#cplusplusckbk-CHP-4-EX-13
+
+  static std::string Join(const std::vector<std::string>& v,
+                          const std::string& delimiter);
+};
+
+}  // namespace llgc::text
+
+#endif  // TEXT_STRING_EXT_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -17,22 +17,22 @@
 #ifndef ERROR_SHOW_H_
 #define ERROR_SHOW_H_
 
-#include <2lgc/override/printf.h>
+#include <2lgc/text/printf.h>
 #include <iostream>
 
 // BUG: for internal use only.
-#define BUG(X, Y, MSG, ...)                                          \
-  do                                                                 \
-  {                                                                  \
-    if (!(X))                                                        \
-    {                                                                \
-      llgc::override::Print::F(                                      \
-          std::cout, "file %, function %, line %, type: ", __FILE__, \
-          static_cast<const char*>(__FUNCTION__), __LINE__);         \
-      llgc::override::Print::F(std::cout, MSG);                      \
-      llgc::override::Print::F(std::cout, __VA_ARGS__);              \
-      return Y;                                                      \
-    }                                                                \
+#define BUG(X, Y, MSG, ...)                                                   \
+  do                                                                          \
+  {                                                                           \
+    if (!(X))                                                                 \
+    {                                                                         \
+      llgc::text::Print::F(std::cout,                                         \
+                           "file %, function %, line %, type: ", __FILE__,    \
+                           static_cast<const char*>(__FUNCTION__), __LINE__); \
+      llgc::text::Print::F(std::cout, MSG);                                   \
+      llgc::text::Print::F(std::cout, __VA_ARGS__);                           \
+      return Y;                                                               \
+    }                                                                         \
   } while (0)
 /**
  * \def BUG(X, Y, MSG, ...)
