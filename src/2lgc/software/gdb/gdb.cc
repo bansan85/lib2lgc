@@ -141,7 +141,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
     // a const_cast is necessary.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     BUGCRIT(execvp(argvbis[0], const_cast<char* const*>(argvbis.get())) != -1,
-            false, "Failed to run %.", argvbis[0]);
+            false, "Failed to run %.\n", argvbis[0]);
   }
   return true;
 }
@@ -186,7 +186,7 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
   std::vector<std::string> all_files;
   BUGCRIT(
       llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files),
-      false, "Failed to recursively read %.", folder);
+      false, "Failed to recursively read %.\n", folder);
 
   BUGCONT(ParallelRun(all_files, nthread, argc, argv, timeout), false);
   return true;
@@ -201,7 +201,7 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  BUGUSER(f.is_open(), false, "Failed to open %.", list);
+  BUGUSER(f.is_open(), false, "Failed to open %.\n", list);
 
   while (std::getline(f, line))
   {

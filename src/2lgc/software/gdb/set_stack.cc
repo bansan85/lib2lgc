@@ -321,7 +321,7 @@ bool llgc::software::gdb::SetStack::AddList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  BUGUSER(f.is_open(), false, "Failed to open %.", list);
+  BUGUSER(f.is_open(), false, "Failed to open %.\n", list);
 
   while (std::getline(f, line))
   {
