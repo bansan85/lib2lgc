@@ -28,6 +28,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
 {
   try
   {
+    // Can throw regex_error
     std::regex reg(regex);
 
     BUGUSER(std::experimental::filesystem::is_directory(folder), false,
@@ -40,6 +41,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     {
       try
       {
+        // Can throw filesystem_error.
         std::string filename(p.path().filename().string());
 
         if ((regex.length() == 0 || std::regex_match(filename, reg)) &&
