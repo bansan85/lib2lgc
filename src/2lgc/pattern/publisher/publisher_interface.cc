@@ -46,7 +46,8 @@ llgc::pattern::publisher::PublisherInterface<T, U>::PublisherInterface()
 }
 
 template <typename T, typename U>
-llgc::pattern::publisher::PublisherInterface<T, U>::~PublisherInterface() = default;
+llgc::pattern::publisher::PublisherInterface<T, U>::~PublisherInterface() =
+    default;
 
 template <typename T, typename U>
 bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
@@ -123,13 +124,15 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
 }
 
 template <typename T, typename U>
-bool llgc::pattern::publisher::PublisherInterface<T, U>::GetOptionFailAlreadySubscribed()
+bool llgc::pattern::publisher::PublisherInterface<
+    T, U>::GetOptionFailAlreadySubscribed()
 {
   return options_.add_fail_if_already_subscribed;
 }
 
 template <typename T, typename U>
-void llgc::pattern::publisher::PublisherInterface<T, U>::SetOptionFailAlreadySubscribed(bool value)
+void llgc::pattern::publisher::PublisherInterface<
+    T, U>::SetOptionFailAlreadySubscribed(bool value)
 {
   options_.add_fail_if_already_subscribed = value;
 }

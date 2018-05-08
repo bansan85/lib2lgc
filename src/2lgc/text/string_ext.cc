@@ -22,8 +22,7 @@ std::string llgc::text::StringExt::Join(const std::vector<std::string>& v,
                                         const std::string& delimiter)
 {
   std::string retval;
-  for (std::vector<std::string>::const_iterator p = v.begin(); p != v.end();
-       ++p)
+  for (auto p = v.begin(); p != v.end(); ++p)
   {
     retval.append(*p);
     if (p != v.end() - 1)

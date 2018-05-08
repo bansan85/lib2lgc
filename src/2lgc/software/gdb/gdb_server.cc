@@ -16,8 +16,8 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/singleton/singleton.h>
 #include <2lgc/software/gdb/gdb_server.h>
 #include <memory>

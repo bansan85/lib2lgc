@@ -16,8 +16,8 @@
 
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/utils/thread/count_lock.h>
 #include <actions.pb.h>
