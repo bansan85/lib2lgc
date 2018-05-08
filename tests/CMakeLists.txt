@@ -48,6 +48,8 @@ add_executable(deadbeef EXCLUDE_FROM_ALL
 add_executable(gdb4 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/software/gdb/gdb4.cc)
 add_dependencies(gdb4 deadbeef)
+add_executable(tree1 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/utils/tree/tree1.cc)
 
 
 target_link_libraries(files1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
@@ -66,6 +68,7 @@ target_link_libraries(gdb1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb3 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb4 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
+target_link_libraries(tree1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 
 add_test(files1 files1)
 add_test(compare_decimal1 compare_decimal1)
@@ -84,6 +87,7 @@ add_test(gdb3 gdb3 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb" "${CMAKE_CURRENT_B
 add_custom_command(TARGET gdb4 PRE_BUILD
   COMMAND echo "${CMAKE_CURRENT_BINARY_DIR}/deadbeef" > "${CMAKE_CURRENT_BINARY_DIR}/deadbeef.list")
 add_test(gdb4 gdb4 "${CMAKE_CURRENT_BINARY_DIR}")
+add_test(tree1 tree1)
 
 if (CHECK_CODE)
   set_target_properties(files1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -100,6 +104,7 @@ if (CHECK_CODE)
   set_target_properties(gdb3 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(deadbeef PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb4 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(tree1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 add_custom_command(TARGET check_all_tests POST_BUILD
@@ -117,6 +122,7 @@ add_dependencies(check_all_tests
   gdb1
   gdb2
   gdb3
-  gdb4)
+  gdb4
+  tree1)
 
 add_dependencies(check check_all_tests)
