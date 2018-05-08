@@ -16,7 +16,7 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/singleton/singleton.h>
 #include <2lgc/software/gdb/gdb_server.h>
@@ -24,12 +24,12 @@
 #include <string>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
-#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/singleton/singleton.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
     msg::software::Gdbs>;
-template class llgc::pattern::publisher::Publisher<
+template class llgc::pattern::publisher::PublisherInterface<
     msg::software::Gdbs,
     std::weak_ptr<
         llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;

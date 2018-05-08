@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_IPV4_H_
-#define PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_IPV4_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_H_
+#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <2lgc/pattern/publisher/connector_server_tcp.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -32,10 +32,10 @@ template <typename T>
 class SubscriberInterface;
 
 /**
- * @brief IPV4 of ConnectorServerTcp.
+ * @brief IPV4 of ConnectorPublisherTcp.
  */
 template <typename T>
-class ConnectorServerTcpIpv4 : public ConnectorServerTcp<T>
+class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
 {
  public:
   /**
@@ -45,13 +45,13 @@ class ConnectorServerTcpIpv4 : public ConnectorServerTcp<T>
    * @param[in] ip The IP of the server.
    * @param[in] port The port of the server.
    */
-  ConnectorServerTcpIpv4(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                         const std::string ip, uint16_t port);
+  ConnectorPublisherTcpIpv4(std::shared_ptr<SubscriberInterface<T>> subscriber,
+                            const std::string ip, uint16_t port);
 
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorServerTcpIpv4();
+  virtual ~ConnectorPublisherTcpIpv4();
 
 #ifndef SWIG
   /**
@@ -59,14 +59,14 @@ class ConnectorServerTcpIpv4 : public ConnectorServerTcp<T>
    *
    * @param[in] other The original.
    */
-  ConnectorServerTcpIpv4(ConnectorServerTcpIpv4 &&other) = delete;
+  ConnectorPublisherTcpIpv4(ConnectorPublisherTcpIpv4 &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorServerTcpIpv4(ConnectorServerTcpIpv4 const &other) = delete;
+  ConnectorPublisherTcpIpv4(ConnectorPublisherTcpIpv4 const &other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -75,17 +75,18 @@ class ConnectorServerTcpIpv4 : public ConnectorServerTcp<T>
    *
    * @return Delete function.
    */
-  ConnectorServerTcpIpv4 &operator=(ConnectorServerTcpIpv4 &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorServerTcpIpv4 &operator=(ConnectorServerTcpIpv4 const &other) & =
+  ConnectorPublisherTcpIpv4 &operator=(ConnectorPublisherTcpIpv4 &&other) =
       delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorPublisherTcpIpv4 &operator=(
+      ConnectorPublisherTcpIpv4 const &other) & = delete;
 #endif  // !SWIG
 
  protected:
@@ -99,6 +100,6 @@ class ConnectorServerTcpIpv4 : public ConnectorServerTcp<T>
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_IPV4_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

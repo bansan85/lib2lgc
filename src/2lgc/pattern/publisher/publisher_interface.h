@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_PUBLISHER_H_
-#define PATTERN_PUBLISHER_PUBLISHER_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
+#define PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/utils/thread/count_lock.h>
@@ -48,7 +48,7 @@ class ConnectorInterface;
  *        messages.
  */
 template <typename T, typename U>
-class Publisher
+class PublisherInterface
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
                 "T must be a descendant of ::google::protobuf::Message.");
@@ -74,12 +74,12 @@ class Publisher
   /**
    * @brief Default constructor.
    */
-  Publisher();
+  PublisherInterface();
 
   /**
    * @brief Default destructor.
    */
-  virtual ~Publisher();
+  virtual ~PublisherInterface();
 
 #ifndef SWIG
   /**
@@ -87,14 +87,14 @@ class Publisher
    *
    * @param[in] other The original.
    */
-  Publisher(Publisher&& other) = delete;
+  PublisherInterface(PublisherInterface&& other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  Publisher(Publisher const& other) = delete;
+  PublisherInterface(PublisherInterface const& other) = delete;
 
   /**
    * @brief Delete the move operator.
@@ -103,7 +103,7 @@ class Publisher
    *
    * @return Delete function.
    */
-  Publisher& operator=(Publisher&& other) & = delete;
+  PublisherInterface& operator=(PublisherInterface&& other) & = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -112,7 +112,7 @@ class Publisher
    *
    * @return Delete function.
    */
-  Publisher& operator=(Publisher const& other) & = delete;
+  PublisherInterface& operator=(PublisherInterface const& other) & = delete;
 #endif  // !SWIG
 
   /**
@@ -123,6 +123,8 @@ class Publisher
    *
    * @return true if success. May failed if add_fail_if_already_subscribed is
    * true and the subscriber is already registered.
+   *
+   * @dotfile pattern/publisher/publisher_add_subscriber.dot
    */
   virtual bool AddSubscriber(uint32_t id_message, U subscriber) CHK;
 
@@ -227,6 +229,6 @@ class Publisher
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_PUBLISHER_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

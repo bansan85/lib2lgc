@@ -109,6 +109,8 @@ class ConnectorDirect : public ConnectorInterface<T>,
    * @param[in] message Data of the message in ProtoBuf, SerializeToString.
    *
    * @return true if no problem.
+   *
+   * @dotfile pattern/publisher/publisher_direct_send_message.dot
    */
   bool Send(const std::string &message) override CHK;
 

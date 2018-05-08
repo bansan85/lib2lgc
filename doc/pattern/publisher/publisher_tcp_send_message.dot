@@ -1,0 +1,27 @@
+digraph Publisher
+{
+  subgraph cluster1
+  {
+    label="Connector";
+    ConnectorPublisherTcp1;
+  }
+  subgraph cluster2
+  {
+    label="TCP publisher";
+    PublisherTcp;
+    ConnectorSubscriberTcp2;
+  }
+  subgraph cluster3
+  {
+    label="Subscriber 2";
+    ConnectorPublisherTcp2;
+    Subscriber2;
+  }
+  PublisherTcp -> ConnectorPublisherTcp1 [dir=back,style="dashed",headlabel="send",labeldistance=2,labelangle=-100];
+  ConnectorSubscriberTcp2 -> ConnectorPublisherTcp2 [style="dashed"];
+  ConnectorPublisherTcp2 -> Subscriber2 [style="dashed"];
+  PublisherTcp -> ConnectorSubscriberTcp2 [style="dashed"];
+
+  newrank=true;
+  {rank = same; ConnectorPublisherTcp2; ConnectorPublisherTcp1;}
+}

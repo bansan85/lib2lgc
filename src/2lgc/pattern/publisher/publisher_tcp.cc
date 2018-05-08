@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 
 /**
@@ -28,7 +28,7 @@ class ConnectorInterface;
 
 template <typename T>
 llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
-    : llgc::pattern::publisher::Publisher<
+    : llgc::pattern::publisher::PublisherInterface<
           T,
           std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(),
       port_(port),

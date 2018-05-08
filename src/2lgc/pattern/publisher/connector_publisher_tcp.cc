@@ -17,7 +17,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/connector_server_tcp.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <2lgc/poco/net.pb.h>
 #include <poll.h>
 #include <sys/socket.h>
@@ -30,7 +30,7 @@
 #include <utility>
 
 template <typename T>
-llgc::pattern::publisher::ConnectorServerTcp<T>::ConnectorServerTcp(
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, std::string ip,
     uint16_t port)
     : ConnectorInterface<T>(subscriber),
@@ -42,7 +42,7 @@ llgc::pattern::publisher::ConnectorServerTcp<T>::ConnectorServerTcp(
 }
 
 template <typename T>
-llgc::pattern::publisher::ConnectorServerTcp<T>::~ConnectorServerTcp()
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
 {
   // Properly stop recv and close file descriptor.
   disposing_ = true;
@@ -50,11 +50,11 @@ llgc::pattern::publisher::ConnectorServerTcp<T>::~ConnectorServerTcp()
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorServerTcp<T>::Equals(
+bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Equals(
     const ConnectorInterface<T> &connector) const
 {
   const auto *connector_direct =
-      dynamic_cast<const ConnectorServerTcp<T> *>(&connector);
+      dynamic_cast<const ConnectorPublisherTcp<T> *>(&connector);
 
   if (connector_direct == nullptr)
   {
@@ -65,7 +65,7 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::Equals(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorServerTcp<T>::AddSubscriber(
+bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
     uint32_t id_message)
 {
   BUGCONT(Connect(), false);
@@ -84,10 +84,10 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::AddSubscriber(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorServerTcp<T>::Send(
+bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
     const std::string &message)
 {
-  std::cout << "ConnectorServerTcp<T>::Send" << std::endl;
+  std::cout << "ConnectorPublisherTcp<T>::Send" << std::endl;
   std::cout << "Client " << socket_ << " -> serveur " << message.length()
             << std::endl;
   BUGCONT(llgc::net::Linux::Send(socket_, message), false);
@@ -95,7 +95,7 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::Send(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorServerTcp<T>::RemoveSubscriber(
+bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
     uint32_t id_message)
 {
   BUGCONT(Connect(), false);
@@ -114,7 +114,7 @@ bool llgc::pattern::publisher::ConnectorServerTcp<T>::RemoveSubscriber(
 }
 
 template <typename T>
-void llgc::pattern::publisher::ConnectorServerTcp<T>::Receiver()
+void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket_);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)

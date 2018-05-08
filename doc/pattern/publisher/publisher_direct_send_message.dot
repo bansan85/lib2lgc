@@ -1,0 +1,8 @@
+digraph Publisher
+{
+  labelloc="t";
+  label="Direct publisher: send message";
+  ServerDirect -> ConnectorDirect1 [dir=back,style="dashed",headlabel="send"];
+  ServerDirect -> ConnectorDirect2 [style="dashed"];
+  ConnectorDirect2 -> Subscriber2 [style="dashed"];
+}

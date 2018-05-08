@@ -39,7 +39,7 @@
 namespace llgc::pattern::publisher
 {
 template <typename T>
-class ConnectorClientTcp;
+class ConnectorSubscriberTcp;
 
 template <typename T>
 class SubscriberServerTcp;
@@ -180,9 +180,10 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
   std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
       std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
           socket);
-  std::shared_ptr<llgc::pattern::publisher::ConnectorClientTcp<T>> connector =
-      std::make_shared<llgc::pattern::publisher::ConnectorClientTcp<T>>(
-          subscriber, socket);
+  std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
+      connector =
+          std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
+              subscriber, socket);
   BUGCRIT(
       this->AddSubscriber(action_tcp.add_subscriber().id_message(), connector),
       , "Failed to add a subscriber.");

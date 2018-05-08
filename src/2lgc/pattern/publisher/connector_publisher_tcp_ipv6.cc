@@ -16,8 +16,8 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
-#include <2lgc/pattern/publisher/connector_server_tcp.h>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv6.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -35,19 +35,20 @@ class SubscriberInterface;
 }
 
 template <typename T>
-llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::ConnectorServerTcpIpv6(
-    std::shared_ptr<SubscriberInterface<T>> subscriber, const std::string ip,
-    uint16_t port)
-    : ConnectorServerTcp<T>(subscriber, ip, port)
+llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+    T>::ConnectorPublisherTcpIpv6(std::shared_ptr<SubscriberInterface<T>>
+                                      subscriber,
+                                  const std::string ip, uint16_t port)
+    : ConnectorPublisherTcp<T>(subscriber, ip, port)
 {
 }
 
 template <typename T>
-llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::~ConnectorServerTcpIpv6() =
-    default;
+llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+    T>::~ConnectorPublisherTcpIpv6() = default;
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::Connect()
+bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
 {
   if (this->socket_ != -1)
   {
@@ -79,7 +80,7 @@ bool llgc::pattern::publisher::ConnectorServerTcpIpv6<T>::Connect()
 
   auto_close_socket.DontDeleteSocket();
 
-  std::thread t(&ConnectorServerTcp<T>::Receiver, this);
+  std::thread t(&ConnectorPublisherTcp<T>::Receiver, this);
   this->receiver_ = std::move(t);
 
   return true;

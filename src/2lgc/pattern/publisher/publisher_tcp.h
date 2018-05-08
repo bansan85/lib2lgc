@@ -18,7 +18,7 @@
 #define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <atomic>
 #include <cstdint>
 #include <map>
@@ -38,10 +38,12 @@ class ConnectorInterface;
  * @brief Interface to create a TCP server.
  *
  * @tparam T Message from protobuf.
+ *
+ * @dotfile pattern/publisher/publisher_tcp.dot
  */
 template <typename T>
 class PublisherTcp
-    : public llgc::pattern::publisher::Publisher<
+    : public llgc::pattern::publisher::PublisherInterface<
           T, std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>
 {
  public:

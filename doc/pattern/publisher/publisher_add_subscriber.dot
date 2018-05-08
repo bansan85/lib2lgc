@@ -1,0 +1,7 @@
+digraph Publisher
+{
+  labelloc="t";
+  label="Publisher: add subscriber";
+  Server -> Connector1 [headlabel="id",dir=back,labelangle=90,labeldistance=2];
+  Server -> Connector2 [dir=back,labelangle=-90,labeldistance=2,headlabel="id"];
+}

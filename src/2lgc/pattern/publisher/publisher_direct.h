@@ -18,7 +18,7 @@
 #define PATTERN_PUBLISHER_PUBLISHER_DIRECT_H_
 
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <memory>
 
 /**
@@ -29,10 +29,12 @@ namespace llgc::pattern::publisher
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
+ *
+ * @dotfile pattern/publisher/publisher_direct.dot
  */
 template <typename T>
 class PublisherDirect
-    : public Publisher<T, std::weak_ptr<ConnectorInterface<T>>>
+    : public PublisherInterface<T, std::weak_ptr<ConnectorInterface<T>>>
 {
  public:
   /**

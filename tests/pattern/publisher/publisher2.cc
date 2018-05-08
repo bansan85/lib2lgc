@@ -15,10 +15,10 @@
  */
 
 #include <2lgc/net/linux.h>
-#include <2lgc/pattern/publisher/connector_client_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/connector_server_tcp.h>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.h>
+#include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
@@ -36,12 +36,12 @@
 #include <string>
 #include <type_traits>
 
-#include <2lgc/pattern/publisher/connector_client_tcp.cc>
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
-#include <2lgc/pattern/publisher/connector_server_tcp.cc>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv4.cc>
-#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.cc>
+#include <2lgc/pattern/publisher/connector_subscriber_tcp.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
@@ -49,10 +49,11 @@
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorServerTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorServerTcpIpv4<
+template class llgc::pattern::publisher::ConnectorPublisherTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
     msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::ConnectorSubscriberTcp<
+    msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>;
 template class llgc::pattern::publisher::PublisherTcp<msg::ActionsTcp>;
@@ -164,9 +165,9 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<SubscriberBase>(1);
 
   std::shared_ptr<
-      llgc::pattern::publisher::ConnectorServerTcpIpv4<msg::ActionsTcp>>
+      llgc::pattern::publisher::ConnectorPublisherTcpIpv4<msg::ActionsTcp>>
       connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorServerTcpIpv4<msg::ActionsTcp>>(
+          llgc::pattern::publisher::ConnectorPublisherTcpIpv4<msg::ActionsTcp>>(
           subscriber, "127.0.0.1", 8888);
 
   // Add them to the server.

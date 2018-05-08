@@ -142,6 +142,8 @@ class ConnectorInterface
    * @param[in] id_message The add of the message.
    *
    * @return true if no problem.
+   *
+   * @dotfile pattern/publisher/publisher_add_subscriber.dot
    */
   virtual bool AddSubscriber(uint32_t id_message) CHK = 0;
 

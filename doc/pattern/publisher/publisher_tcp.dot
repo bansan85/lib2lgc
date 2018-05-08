@@ -1,0 +1,22 @@
+digraph Publisher
+{
+  labelloc="t";
+  label="TCP publisher";
+
+  subgraph Connector1
+  {
+    ConnectorPublisherTcp1[label=<ConnectorPublisherTcp1<BR/><FONT POINT-SIZE="10">127.0.0.1:8888</FONT>>];
+    ConnectorPublisherTcp1 -> Subscriber1 [dir=back];
+  }
+
+  subgraph Connector2
+  {
+    ConnectorPublisherTcp2[label=<ConnectorPublisherTcp2<BR/><FONT POINT-SIZE="10">127.0.0.1:8888</FONT>>];
+    ConnectorPublisherTcp2 -> Subscriber2 [dir=back];
+  }
+
+  PublisherTcp[label=<PublisherTcp<BR/><FONT POINT-SIZE="10">8888</FONT>>];
+
+  PublisherTcp -> ConnectorPublisherTcp1 [dir=back,style="dashed"];
+  PublisherTcp -> ConnectorPublisherTcp2 [dir=back,style="dashed"];
+}

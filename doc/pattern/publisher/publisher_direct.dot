@@ -1,0 +1,9 @@
+digraph Publisher
+{
+  labelloc="t";
+  label="Direct publisher";
+  ServerDirect -> ConnectorDirect1;
+  ServerDirect -> ConnectorDirect2;
+  ConnectorDirect1 -> Subscriber1 [dir=back];
+  ConnectorDirect2 -> Subscriber2 [dir=back];
+}

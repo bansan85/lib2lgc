@@ -16,7 +16,7 @@
 
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/utils/thread/count_lock.h>
@@ -34,10 +34,10 @@
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
-#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/subscriber_direct.cc>
 
-template class llgc::pattern::publisher::Publisher<
+template class llgc::pattern::publisher::PublisherInterface<
     msg::Actions,
     std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<msg::Actions>>>;
 template class llgc::pattern::publisher::ConnectorInterface<msg::Actions>;

@@ -16,7 +16,7 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/poco/gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/utils/thread/count_lock.h>
 #include <functional>
@@ -25,7 +25,7 @@
 
 template <typename T, typename U>
 std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
-llgc::pattern::publisher::Publisher<T, U>::GetConn(
+llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
     std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
 {
   return connector.lock();
@@ -33,23 +33,23 @@ llgc::pattern::publisher::Publisher<T, U>::GetConn(
 
 template <typename T, typename U>
 std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
-llgc::pattern::publisher::Publisher<T, U>::GetConn(
+llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
     std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
 {
   return connector;
 }
 
 template <typename T, typename U>
-llgc::pattern::publisher::Publisher<T, U>::Publisher()
+llgc::pattern::publisher::PublisherInterface<T, U>::PublisherInterface()
     : options_(), lock_forward_(0)
 {
 }
 
 template <typename T, typename U>
-llgc::pattern::publisher::Publisher<T, U>::~Publisher() = default;
+llgc::pattern::publisher::PublisherInterface<T, U>::~PublisherInterface() = default;
 
 template <typename T, typename U>
-bool llgc::pattern::publisher::Publisher<T, U>::Forward(
+bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
     const std::string &message)
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
@@ -99,7 +99,7 @@ bool llgc::pattern::publisher::Publisher<T, U>::Forward(
 }
 
 template <typename T, typename U>
-bool llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
+bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
 
@@ -123,30 +123,29 @@ bool llgc::pattern::publisher::Publisher<T, U>::ForwardPending()
 }
 
 template <typename T, typename U>
-bool llgc::pattern::publisher::Publisher<T, U>::GetOptionFailAlreadySubscribed()
+bool llgc::pattern::publisher::PublisherInterface<T, U>::GetOptionFailAlreadySubscribed()
 {
   return options_.add_fail_if_already_subscribed;
 }
 
 template <typename T, typename U>
-void llgc::pattern::publisher::Publisher<T, U>::SetOptionFailAlreadySubscribed(
-    bool value)
+void llgc::pattern::publisher::PublisherInterface<T, U>::SetOptionFailAlreadySubscribed(bool value)
 {
   options_.add_fail_if_already_subscribed = value;
 }
 
 template <typename T, typename U>
 llgc::utils::thread::CountLock<size_t>
-llgc::pattern::publisher::Publisher<T, U>::LockForward()
+llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
 {
   return llgc::utils::thread::CountLock<size_t>(
       &lock_forward_, &mutex_forward_,
-      std::bind(&Publisher<T, U>::ForwardPending, this));
+      std::bind(&PublisherInterface<T, U>::ForwardPending, this));
 }
 
 // Do not fail if subscriber is already subscribed in the same id_message.
 template <typename T, typename U>
-bool llgc::pattern::publisher::Publisher<T, U>::AddSubscriber(
+bool llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
     uint32_t id_message, U subscriber)
 {
   if (GetOptionFailAlreadySubscribed())
@@ -172,7 +171,7 @@ bool llgc::pattern::publisher::Publisher<T, U>::AddSubscriber(
 }
 
 template <typename T, typename U>
-bool llgc::pattern::publisher::Publisher<T, U>::RemoveSubscriber(
+bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
     uint32_t id_message, U subscriber)
 {
   // Remove the subscriber from all id_message.

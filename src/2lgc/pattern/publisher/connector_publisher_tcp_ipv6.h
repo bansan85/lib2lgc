@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_IPV6_H_
-#define PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_IPV6_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV6_H_
+#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV6_H_
 
 #include <2lgc/compatibility/visual_studio.h>
-#include <2lgc/pattern/publisher/connector_server_tcp.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <cstdint>
 #include <memory>
 #include <string>
@@ -32,10 +32,10 @@ template <typename T>
 class SubscriberInterface;
 
 /**
- * @brief IPV4 of ConnectorServerTcp.
+ * @brief IPV4 of ConnectorPublisherTcp.
  */
 template <typename T>
-class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
+class ConnectorPublisherTcpIpv6 : public ConnectorPublisherTcp<T>
 {
  public:
   /**
@@ -45,13 +45,13 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
    * @param[in] ip The IP of the server.
    * @param[in] port The port of the server.
    */
-  ConnectorServerTcpIpv6(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                         const std::string ip, uint16_t port);
+  ConnectorPublisherTcpIpv6(std::shared_ptr<SubscriberInterface<T>> subscriber,
+                            const std::string ip, uint16_t port);
 
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorServerTcpIpv6();
+  virtual ~ConnectorPublisherTcpIpv6();
 
 #ifndef SWIG
   /**
@@ -59,14 +59,14 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
    *
    * @param[in] other The original.
    */
-  ConnectorServerTcpIpv6(ConnectorServerTcpIpv6 &&other) = delete;
+  ConnectorPublisherTcpIpv6(ConnectorPublisherTcpIpv6 &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorServerTcpIpv6(ConnectorServerTcpIpv6 const &other) = delete;
+  ConnectorPublisherTcpIpv6(ConnectorPublisherTcpIpv6 const &other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -75,17 +75,18 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
    *
    * @return Delete function.
    */
-  ConnectorServerTcpIpv6 &operator=(ConnectorServerTcpIpv6 &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorServerTcpIpv6 &operator=(ConnectorServerTcpIpv6 const &other) & =
+  ConnectorPublisherTcpIpv6 &operator=(ConnectorPublisherTcpIpv6 &&other) =
       delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorPublisherTcpIpv6 &operator=(
+      ConnectorPublisherTcpIpv6 const &other) & = delete;
 #endif  // !SWIG
 
  protected:
@@ -99,6 +100,6 @@ class ConnectorServerTcpIpv6 : public ConnectorServerTcp<T>
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_CONNECTOR_SERVER_TCP_IPV6_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV6_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

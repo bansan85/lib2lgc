@@ -17,6 +17,13 @@ Three classes are needed:
 
 The subscriber could have been merged but in this way, the connector is a layer to handle communication and the subscriber, which is just an interface, is a layer to execute functions based on messages received from publisher.
 
+## Functions
+
+Three functions will be used:
+  - AddSubscriber that allow a subscriber to receive message with id.
+  - RemoveSubscriber to remove a subscriber from an id.
+  - Send to send (protobuf) messages to the publisher.
+
 ## Messages
 
 All messages are serialized by protobuf library. You can send multiples messages at same time.
@@ -72,13 +79,13 @@ Use the protobuf message class for the typename.
 Header:
 
 ```
-#include <2lgc/pattern/publisher/publisher.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 
-#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
 
 // Here, you need to use std::weak_ptr for internal use.
-template class llgc::pattern::publisher::Publisher<
+template class llgc::pattern::publisher::PublisherInterface<
     msg::Actions,
     std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<msg::Actions>>>;
 ```
@@ -98,7 +105,7 @@ Header:
 ```
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 
-#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
 
 template class llgc::pattern::publisher::SubscriberDirect<msg::Actions>;
 ```
@@ -190,7 +197,7 @@ Header:
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
 
-#include <2lgc/pattern/publisher/publisher.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
@@ -239,31 +246,32 @@ You must implement the subscriber with the Listen function. See Direct mode for 
 Header:
 
 ```
-#include <2lgc/pattern/publisher/connector_client_tcp.h>
+#include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/connector_server_tcp.h>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv4.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.h>
 
-#include <2lgc/pattern/publisher/connector_client_tcp.cc>
+#include <2lgc/pattern/publisher/connector_subscriber_tcp.cc>
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
-#include <2lgc/pattern/publisher/connector_server_tcp.cc>
-#include <2lgc/pattern/publisher/connector_server_tcp_ipv4.cc>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorServerTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorServerTcpIpv4<
+template class llgc::pattern::publisher::ConnectorPublisherTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
     msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorClientTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::ConnectorSubscriberTcp<
+    msg::ActionsTcp>;
 ```
 
 Declaration:
 
 ```
   std::shared_ptr<
-      llgc::pattern::publisher::ConnectorServerTcpIpv4<msg::ActionsTcp>>
+      llgc::pattern::publisher::ConnectorPublisherTcpIpv4<msg::ActionsTcp>>
       connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorServerTcpIpv4<msg::ActionsTcp>>(
+          llgc::pattern::publisher::ConnectorPublisherTcpIpv4<msg::ActionsTcp>>(
           subscriber, "127.0.0.1", 8888);
 ```
 

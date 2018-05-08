@@ -16,28 +16,28 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
-#include <2lgc/pattern/publisher/connector_client_tcp.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
 #include <cassert>
 #include <iostream>
 
 template <typename T>
-llgc::pattern::publisher::ConnectorClientTcp<T>::ConnectorClientTcp(
+llgc::pattern::publisher::ConnectorSubscriberTcp<T>::ConnectorSubscriberTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, int socket_fd)
     : ConnectorInterface<T>(subscriber), socket_(socket_fd)
 {
 }
 
 template <typename T>
-llgc::pattern::publisher::ConnectorClientTcp<T>::~ConnectorClientTcp() =
+llgc::pattern::publisher::ConnectorSubscriberTcp<T>::~ConnectorSubscriberTcp() =
     default;
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorClientTcp<T>::Equals(
+bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Equals(
     const ConnectorInterface<T> &connector) const
 {
   const auto *connector_direct =
-      dynamic_cast<const ConnectorClientTcp<T> *>(&connector);
+      dynamic_cast<const ConnectorSubscriberTcp<T> *>(&connector);
 
   if (connector_direct == nullptr)
   {
@@ -48,7 +48,7 @@ bool llgc::pattern::publisher::ConnectorClientTcp<T>::Equals(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorClientTcp<T>::AddSubscriber(
+bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::AddSubscriber(
     uint32_t /*id_message*/)
 {
   // Can't append.
@@ -56,16 +56,16 @@ bool llgc::pattern::publisher::ConnectorClientTcp<T>::AddSubscriber(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorClientTcp<T>::Send(
+bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(
     const std::string &message)
 {
-  std::cout << "ConnectorClientTcp<T>::Send" << std::endl;
+  std::cout << "ConnectorSubscriberTcp<T>::Send" << std::endl;
   BUGCONT(llgc::net::Linux::Send(socket_, message), false);
   return true;
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorClientTcp<T>::RemoveSubscriber(
+bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::RemoveSubscriber(
     uint32_t /*id_message*/)
 {
   assert(false);

@@ -14,14 +14,16 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_CONNECTOR_CLIENT_TCP_H_
-#define PATTERN_PUBLISHER_CONNECTOR_CLIENT_TCP_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_H_
+#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_H_
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <thread>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -39,24 +41,23 @@ class SubscriberInterface;
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class ConnectorClientTcp : public ConnectorInterface<T>
+class ConnectorPublisherTcp : public ConnectorInterface<T>
 {
  public:
   /**
    * @brief Default constructor.
    *
-   * @param[in] subscriber Subscriber to communicate with client.
-   * @param[in] socket_fd Socket to communicate with client.
+   * @param[in] subscriber The subscriber.
+   * @param[in] ip The IP of the server.
+   * @param[in] port The port of the server.
    */
-  ConnectorClientTcp(
-      std::shared_ptr<llgc::pattern::publisher::SubscriberInterface<T>>
-          subscriber,  // NS
-      int socket_fd);
+  ConnectorPublisherTcp(std::shared_ptr<SubscriberInterface<T>> subscriber,
+                        std::string ip, uint16_t port);
 
   /**
    * @brief Default virtual destructor.
    */
-  ~ConnectorClientTcp() override;
+  virtual ~ConnectorPublisherTcp();
 
 #ifndef SWIG
   /**
@@ -64,14 +65,14 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    *
    * @param[in] other The original.
    */
-  ConnectorClientTcp(ConnectorClientTcp &&other) = delete;
+  ConnectorPublisherTcp(ConnectorPublisherTcp &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorClientTcp(ConnectorClientTcp const &other) = delete;
+  ConnectorPublisherTcp(ConnectorPublisherTcp const &other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -80,7 +81,7 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    *
    * @return Delete function.
    */
-  ConnectorClientTcp &operator=(ConnectorClientTcp &&other) = delete;
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp &&other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -89,13 +90,14 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    *
    * @return Delete function.
    */
-  ConnectorClientTcp &operator=(ConnectorClientTcp const &other) & = delete;
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) & =
+      delete;
 #endif  // !SWIG
 
   /**
    * @brief Compare two connectors.
    *
-   * @param[in,out] connector The connector to compare with this.
+   * @param[in] connector The connector to compare with this.
    *
    * @return true if same connector.
    */
@@ -107,6 +109,8 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    * @param[in] message Data of the message in ProtoBuf, SerializeToString.
    *
    * @return true if no problem.
+   *
+   * @dotfile pattern/publisher/publisher_tcp_send_message.dot
    */
   bool Send(const std::string &message) override CHK;
 
@@ -128,15 +132,50 @@ class ConnectorClientTcp : public ConnectorInterface<T>
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
+  /**
+   * @brief The function used by the thread that receive message from server.
+   *
+   * Need to be public so thread can use it. Protected is not possible.
+   */
+  void Receiver();
+
  protected:
+  /**
+   * @brief The IP of the server.
+   */
+  std::string ip_;
+
+  /**
+   * @brief The port of the server.
+   */
+  uint16_t port_;
+
   /**
    * @brief Socket to the server.
    */
   int socket_;  // NS
+
+  /**
+   * @brief Start connection with server.
+   *
+   * @return true if no problem.
+   */
+  virtual bool Connect() CHK = 0;
+
+  /**
+   * @brief Thread that listen the server.
+   */
+  std::thread receiver_;
+
+ private:
+  /**
+   * @brief If thread in trying to stop.
+   */
+  std::atomic<bool> disposing_;
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_CONNECTOR_CLIENT_TCP_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
