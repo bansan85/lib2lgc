@@ -60,7 +60,9 @@ class Node
    * path.
    *
    * @param[in] end The end of the path.
-   * @param[out] path The result of the path.
+   * @param[out] path The result of the path. For technical reason, the end
+   * is at the beginning of the path and the start of the path is stored at
+   * the end of the path.
    *
    * @return true if found. path is fill only if return value is true.
    */
