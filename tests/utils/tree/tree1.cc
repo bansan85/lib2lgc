@@ -77,14 +77,14 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(n3->AddChild(std::move(t4), 4) != nullptr);
   assert(n3->FindNode(2) != nullptr);
 
-  std::vector<T*> path;
+  std::deque<T*> path;
   assert(n3->FindPath(2, &path));
   assert(path.size() == 4);
   std::cout << path[0]->nom_ << std::endl;
-  assert(path[0]->nom_ == "2");
-  assert(path[1]->nom_ == "0");
-  assert(path[2]->nom_ == "1");
-  assert(path[3]->nom_ == "3");
+  assert(path[0]->nom_ == "3");
+  assert(path[1]->nom_ == "1");
+  assert(path[2]->nom_ == "0");
+  assert(path[3]->nom_ == "2");
 
   google::protobuf::ShutdownProtobufLibrary();
 

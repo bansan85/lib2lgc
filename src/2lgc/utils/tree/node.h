@@ -25,6 +25,7 @@
 #include <2lgc/compatibility/visual_studio.h>
 #include <cstddef>
 #include <memory>
+#include <deque>
 #include <vector>
 
 namespace llgc::utils::tree
@@ -52,6 +53,8 @@ class Node
    *
    * @param[in] child The new child.
    * @param[in] id The id of the new node.
+   *
+   * @return A pointer to the new child. nullptr if AddChild fails.
    */
   Node<T>* AddChild(std::unique_ptr<T> child, size_t id) CHK;
 
@@ -60,13 +63,11 @@ class Node
    * path.
    *
    * @param[in] end The end of the path.
-   * @param[out] path The result of the path. For technical reason, the end
-   * is at the beginning of the path and the start of the path is stored at
-   * the end of the path.
+   * @param[out] path The result of the path.
    *
    * @return true if found. path is fill only if return value is true.
    */
-  bool FindPath(size_t end, std::vector<T*>* path) const CHK
+  bool FindPath(size_t end, std::deque<T*>* path) const CHK
   {
     return FindPath(nullptr, end, path);
   }
@@ -119,7 +120,7 @@ class Node
    * @return true if found. path is fill only if return value is true.
    */
   bool FindPath(const Node<T>* previous, size_t end,
-                std::vector<T*>* path) const CHK;
+                std::deque<T*>* path) const CHK;
 
   /**
    * @brief Find a node based on the id.

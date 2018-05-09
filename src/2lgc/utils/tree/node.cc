@@ -44,14 +44,14 @@ llgc::utils::tree::Node<T>* llgc::utils::tree::Node<T>::AddChild(
 
 template <typename T>
 bool llgc::utils::tree::Node<T>::FindPath(const Node<T>* previous, size_t end,
-                                          std::vector<T*>* path) const
+                                          std::deque<T*>* path) const
 {
   BUGPARAM(path, path != nullptr, false);
   // In case the start is the end.
   if (id_ == end)
   {
     path->clear();
-    path->push_back(data_.get());
+    path->push_front(data_.get());
     return true;
   }
 
@@ -65,7 +65,7 @@ bool llgc::utils::tree::Node<T>::FindPath(const Node<T>* previous, size_t end,
     }
     if (children_[i]->FindPath(this, end, path))
     {
-      path->push_back(data_.get());
+      path->push_front(data_.get());
       return true;
     }
   }
@@ -77,7 +77,7 @@ bool llgc::utils::tree::Node<T>::FindPath(const Node<T>* previous, size_t end,
   }
   if (parent_ != nullptr && parent_->FindPath(this, end, path))
   {
-    path->push_back(data_.get());
+    path->push_front(data_.get());
     return true;
   }
   return false;
