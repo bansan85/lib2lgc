@@ -17,11 +17,11 @@ First, create the protobuf message. Remember that a protobuf class doesn't suppo
 You are not allowed to use the protobuf message without an adapter.
 
 ```
-class Number : public InterfaceVisitable<msg::Number>
+class Number : public InterfaceVisitable<llgc::protobuf::Number>
 {
  public:
   virtual double GetVal() const = 0;
-  virtual msg::Number_Unit GetUnit() const = 0;
+  virtual llgc::protobuf::math::Number_Unit GetUnit() const = 0;
 }
 ```
 

@@ -1,14 +1,19 @@
 syntax = "proto3";
 
-option cc_enable_arenas = true;
+package llgc.protobuf.math;
 
-package msg;
+message Double
+{
+  double value = 1;
+}
 
-message Number {
+message Number
+{
   // id of the number.
   uint32  id = 1;
 
-  message Unit {
+  message Unit
+  {
     float m   = 1;
     float kg  = 2;
     float s   = 3;
@@ -18,19 +23,22 @@ message Number {
     float cd  = 7;
   }
 
-  enum Operator {
+  enum Operator
+  {
     PLUS           = 0;
     MOINS          = 1;
     MULTIPLICATION = 2;
     DIVISION       = 3;
   }
 
-  message Constant {
+  message Constant
+  {
     double value = 1;
     Unit   unit  = 2;
   }
 
-  message NumberOpNumber {
+  message NumberOpNumber
+  {
     // id of the first number of msg.number.
     uint32  id1 = 1;
     // id of the second number of msg.number.
@@ -38,7 +46,8 @@ message Number {
     Operator operator = 3;
   }
 
-  oneof data {
+  oneof data
+  {
     Constant        constant = 2;
     NumberOpNumber  number_op_number = 3;
   }

@@ -20,7 +20,7 @@
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/singleton/singleton.h>
-#include <2lgc/poco/gdb.pb.h>
+#include <2lgc/poco/software_gdb.pb.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
 #include <2lgc/software/gdb/gdb_server.h>
@@ -47,13 +47,13 @@
 #include <2lgc/pattern/singleton/singleton.cc>
 
 template class llgc::pattern::publisher::PublisherInterface<
-    msg::software::Gdbs,
-    std::weak_ptr<
-        llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
+    llgc::protobuf::software::Gdb,
+    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<
+        llgc::protobuf::software::Gdb>>>;
 template class llgc::pattern::singleton::Local<
-    llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
+    llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 template class llgc::pattern::publisher::ConnectorInterface<
-    msg::software::Gdbs>;
+    llgc::protobuf::software::Gdb>;
 
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
                                         size_t bottom_frame,
@@ -207,16 +207,15 @@ bool llgc::software::gdb::SetStack::LocalCompare::operator()(
 
 bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
 {
-  msg::software::Gdbs messages_gdb = msg::software::Gdbs();
-  msg::software::Gdb* message_gdb = messages_gdb.add_action();
-  std::unique_ptr<msg::software::Gdb::AddStackFailed> add_stack_failed =
-      std::make_unique<msg::software::Gdb::AddStackFailed>();
+  llgc::protobuf::software::Gdb messages;
+  auto message = messages.add_msg();
+  auto add_stack_failed =
+      std::make_unique<llgc::protobuf::software::Gdb::Msg::AddStackFailed>();
   std::string* filename_gdb = add_stack_failed->add_file();
   filename_gdb->assign(filename);
-  message_gdb->set_allocated_add_stack_failed(add_stack_failed.release());
+  message->set_allocated_add_stack_failed(add_stack_failed.release());
   std::string add_stack_in_string;
-  BUGLIB(messages_gdb.SerializeToString(&add_stack_in_string), false,
-         "protobuf");
+  BUGLIB(messages.SerializeToString(&add_stack_in_string), false, "protobuf");
   BUGCONT(Forward(add_stack_in_string), false);
   return true;
 }

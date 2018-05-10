@@ -28,13 +28,13 @@
 #include <2lgc/pattern/singleton/singleton.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
-    msg::software::Gdbs>;
+    llgc::protobuf::software::Gdb>;
 template class llgc::pattern::publisher::PublisherInterface<
-    msg::software::Gdbs,
-    std::weak_ptr<
-        llgc::pattern::publisher::ConnectorInterface<msg::software::Gdbs>>>;
+    llgc::protobuf::software::Gdb,
+    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<
+        llgc::protobuf::software::Gdb>>>;
 template class llgc::pattern::singleton::Local<
-    llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>;
+    llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 
 bool llgc::software::gdb::GdbServer::Forward(const std::string& message)
 {

@@ -40,33 +40,40 @@ The protobuf message after serialize cannot be bigger than 1500 bytes, the size 
 // Protobuf 3 is a need.
 syntax = "proto3";
 
-// Use the net.proto to support TCP publisher.
-import "net.proto";
+// Use the pattern_publisher.proto to support TCP publisher.
+import "pattern_publisher.proto";
 
-// By internal convention, all protobuf are in package msg but it possible to not use it.
-package msg;
+// By internal convention, all protobuf are in package llgc.protobuf but it possible to not use it.
+package llgc.protobuf.test;
 
-// Atomic ation.
-message ActionTcp {
-  // All atomic actions of a publisher must be in a sub-message.
-  message Test {
+// Atomic message.
+message Tcp
+{
+  message Msg
+  {
+    // All atomic actions of a publisher must be in a sub-message.
+    message Test
+    {
+    }
+
+    // Then all possible atomic actions must be in a union.
+    oneof data
+    {
+      // These two lines must be keeped unchanged to support TCP publisher.
+      // You can use the id you want.
+      llgc.protobuf.pattern.publisher.AddSubscriber add_subscriber = 1;
+      llgc.protobuf.pattern.publisher.net.RemoveSubscriber remove_subscriber = 2;
+      // Then add all atomic message here.
+      Test test = 3;
+    }
   }
 
-  // Then all possible atomic actions must be in a union.
-  oneof data {
-    // These two lines must be keeped unchanged to support TCP publisher.
-    // You can use the id you want.
-    msg.net.AddSubscriber add_subscriber = 1;
-    msg.net.RemoveSubscriber remove_subscriber = 2;
-    // Then add all atomic action here.
-    Test test = 3;
-  }
+  // Message send to publisher. It's a list of atomic messages.
+  // The name of a list must be msg.
+  repeated Msg msg = 1;
 }
 
-// Message send to publisher. It's a list of atomic actions.
-// The name of a list must be action.
 message ActionsTcp {
-  repeated ActionTcp action = 1;
 }
 ```
 
@@ -130,11 +137,11 @@ class SubscriberBase final
   explicit SubscriberBase(uint32_t id)
       : SubscriberDirect(id),
         // Here, the kTest have the highest id.
-        action_vector(msg::Action::DataCase::kTest + 1)
+        message_vector(msg::Action::DataCase::kTest + 1)
   {
-    action_vector[0] = nullptr;
+    message_vector[0] = nullptr;
     // Attribute a function for each message id.
-    action_vector[msg::Action::DataCase::kTest] = &SubscriberBase::TestFct;
+    message_vector[msg::Action::DataCase::kTest] = &SubscriberBase::TestFct;
   }
 
   bool Listen(const msg::Actions& message) override
@@ -143,9 +150,9 @@ class SubscriberBase final
     {
       const msg::Action& action = message.action(i);
       
-      // Here you supposed that all index of the action_vector are filled and
+      // Here you supposed that all index of the message_vector are filled and
       // not nullptr.
-      action_vector[action.data_case()](*this, action);
+      message_vector[action.data_case()](*this, action);
     }
     return true;
   }

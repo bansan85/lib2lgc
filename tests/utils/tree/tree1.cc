@@ -17,11 +17,11 @@
 #include <2lgc/utils/tree/node.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
+#include <deque>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include <2lgc/utils/tree/node.cc>
 

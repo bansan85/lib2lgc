@@ -59,10 +59,10 @@ class PublisherTcpLinux : public PublisherTcp<T>
    * @brief Internal function to subscribe a socket to an event.
    *
    * @param[in] socket The socket.
-   * @param[in] action_tcp The message.
+   * @param[in] message The message.
    */
-  void AddSubscriberLocal(
-      int socket, decltype(std::declval<T>().action(0)) action_tcp) override;
+  void AddSubscriberLocal(int socket,
+                          decltype(std::declval<T>().msg(0)) message) override;
 #endif  // !SWIG
 
  private:

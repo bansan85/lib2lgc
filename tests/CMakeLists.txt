@@ -17,14 +17,14 @@ add_executable(printf1 EXCLUDE_FROM_ALL
 add_executable(visitor1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/visitor/visitor1.cc)
 protobuf_generate_cpp(PUBLISHER_PROTO_ACTIONS_SRC PUBLISHER_PROTO_ACTIONS_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/actions.proto)
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/direct.proto)
 set_source_files_properties(${PUBLISHER_PROTO_ACTIONS_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher1.cc
   PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
 add_executable(publisher1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher1.cc
   ${PUBLISHER_PROTO_ACTIONS_SRC})
 protobuf_generate_cpp(PUBLISHER_PROTO_ACTIONS_TCP_SRC PUBLISHER_PROTO_ACTIONS_TCP_HEADERS
-  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/actions_tcp.proto)
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/tcp.proto)
 set_source_files_properties(${PUBLISHER_PROTO_ACTIONS_TCP_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher2.cc
   PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
 add_executable(publisher2 EXCLUDE_FROM_ALL

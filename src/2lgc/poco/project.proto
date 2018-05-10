@@ -1,15 +1,14 @@
 syntax = "proto3";
 
-option cc_enable_arenas = true;
-
-package msg;
+package llgc.protobuf.math;
 
 import "area.proto";
 import "load.proto";
-import "number.proto";
+import "math_number.proto";
 
-message Project {
-  map<uint32, msg.Number> numbers = 1;
-  map<uint32, msg.Load> loads = 2;
-  map<uint32, msg.Area> areas = 3;
+message Project
+{
+  map<uint32, llgc.protobuf.math.Number> numbers = 1;
+  map<uint32, llgc.protobuf.math.Load> loads = 2;
+  map<uint32, llgc.protobuf.math.Area> areas = 3;
 }

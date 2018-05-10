@@ -29,11 +29,11 @@ class SubscriberInterface;
 }
 
 template <typename T>
-bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &message)
+bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
 {
   std::string message_socket;
 
-  BUGLIB(message.SerializeToString(&message_socket), false, "protobuf");
+  BUGLIB(messages.SerializeToString(&message_socket), false, "protobuf");
   BUGCONT(llgc::net::Linux::Send(socket_, message_socket), false);
 
   return true;

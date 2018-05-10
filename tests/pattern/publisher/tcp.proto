@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "pattern_publisher.proto";
+
+package llgc.protobuf.test;
+
+message Tcp
+{
+  message Msg
+  {
+    message Test
+    {
+    }
+
+    oneof data
+    {
+      llgc.protobuf.pattern.publisher.AddSubscriber add_subscriber = 1;
+      llgc.protobuf.pattern.publisher.RemoveSubscriber remove_subscriber = 2;
+      Test test = 3;
+    }
+  }
+
+  repeated Msg msg = 1;
+}

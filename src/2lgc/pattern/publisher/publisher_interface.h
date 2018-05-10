@@ -131,11 +131,11 @@ class PublisherInterface
   /**
    * @brief Send the message to all subscribers.
    *
-   * @param message Data of the message in ProtoBuf, SerializeToString.
+   * @param messages Data of the message in ProtoBuf, SerializeToString.
    *
    * @return true if no problem.
    */
-  bool Forward(const std::string& message) CHK;
+  bool Forward(const std::string& messages) CHK;
 
   /**
    * @brief Send all pending messages of all subscribers.

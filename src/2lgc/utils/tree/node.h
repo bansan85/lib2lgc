@@ -24,8 +24,8 @@
 
 #include <2lgc/compatibility/visual_studio.h>
 #include <cstddef>
-#include <memory>
 #include <deque>
+#include <memory>
 #include <vector>
 
 namespace llgc::utils::tree

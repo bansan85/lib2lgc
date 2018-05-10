@@ -146,10 +146,10 @@ class PublisherTcp
    * @brief Internal function to subscribe a socket to an event.
    *
    * @param[in] socket The socket.
-   * @param[in] action_tcp A const reference of the message.
+   * @param[in] message The message.
    */
   virtual void AddSubscriberLocal(
-      int socket, decltype(std::declval<T>().action(0)) action_tcp) = 0;
+      int socket, decltype(std::declval<T>().msg(0)) message) = 0;
 #endif  // !SWIG
 
  private:

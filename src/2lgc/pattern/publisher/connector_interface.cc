@@ -26,16 +26,16 @@ llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
+bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& messages,
                                                              const bool hold)
 {
   if (hold)
   {
-    messages_.push(message);
+    messages_.push(messages);
   }
   else
   {
-    BUGCONT(subscriber_->Listen(message), false);
+    BUGCONT(subscriber_->Listen(messages), false);
   }
 
   return true;

@@ -24,8 +24,8 @@
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
-#include <actions_tcp.pb.h>
 #include <google/protobuf/stubs/common.h>
+#include <tcp.pb.h>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
@@ -48,23 +48,30 @@
 #include <2lgc/pattern/publisher/subscriber_direct.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
-template class llgc::pattern::publisher::ConnectorInterface<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorPublisherTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::ConnectorInterface<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::ConnectorPublisherTcp<
+    llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
-    msg::ActionsTcp>;
+    llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorSubscriberTcp<
-    msg::ActionsTcp>;
-template class llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>;
-template class llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::PublisherTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::PublisherTcpLinux<msg::ActionsTcp>;
-template class llgc::pattern::publisher::PublisherTcpLinuxIpv6<msg::ActionsTcp>;
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::SubscriberDirect<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::SubscriberServerTcp<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherTcp<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherTcpLinux<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherTcpLinuxIpv6<
+    llgc::protobuf::test::Tcp>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final
-    : public llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>
+class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
+                                 llgc::protobuf::test::Tcp>
 {
  public:
   /**
@@ -114,26 +121,26 @@ class SubscriberBase final
   /**
    * @brief Receive message from publisher.
    *
-   * @param[in] message Message from the publisher in protobuf format.
+   * @param[in] messages Message from the publisher in protobuf format.
    */
-  bool Listen(const msg::ActionsTcp& message) override
+  bool Listen(const llgc::protobuf::test::Tcp& messages) override
   {
     std::cout << "LISTEN" << std::endl;
-    for (int i = 0; i < message.action_size(); i++)
+    for (int i = 0; i < messages.msg_size(); i++)
     {
-      decltype(message.action(i)) action = message.action(i);
+      auto message = messages.msg(i);
 
-      switch (action.data_case())
+      switch (message.data_case())
       {
-        case msg::ActionTcp::DataCase::kTest:
+        case llgc::protobuf::test::Tcp_Msg::DataCase::kTest:
         {
           value++;
           std::cout << "value++" << std::endl;
           break;
         }
-        case msg::ActionTcp::DataCase::DATA_NOT_SET:
-        case msg::ActionTcp::DataCase::kAddSubscriber:
-        case msg::ActionTcp::DataCase::kRemoveSubscriber:
+        case llgc::protobuf::test::Tcp_Msg::DataCase::DATA_NOT_SET:
+        case llgc::protobuf::test::Tcp_Msg::DataCase::kAddSubscriber:
+        case llgc::protobuf::test::Tcp_Msg::DataCase::kRemoveSubscriber:
         default:
           assert(false);
       }
@@ -153,38 +160,37 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   llgc::net::Linux::DisableSigPipe();
 
-  std::shared_ptr<
-      llgc::pattern::publisher::PublisherTcpLinuxIpv6<msg::ActionsTcp>>
-      server = std::make_shared<
-          llgc::pattern::publisher::PublisherTcpLinuxIpv6<msg::ActionsTcp>>(
-          8889);
+  std::shared_ptr<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
+      llgc::protobuf::test::Tcp>>
+      server = std::make_shared<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
+          llgc::protobuf::test::Tcp>>(8889);
   assert(server->Listen());
   assert(server->Wait());
 
   std::shared_ptr<SubscriberBase> subscriber =
       std::make_shared<SubscriberBase>(1);
 
-  std::shared_ptr<
-      llgc::pattern::publisher::ConnectorPublisherTcpIpv6<msg::ActionsTcp>>
-      connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorPublisherTcpIpv6<msg::ActionsTcp>>(
-          subscriber, "::1", 8889);
+  std::shared_ptr<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+      llgc::protobuf::test::Tcp>>
+      connector =
+          std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+              llgc::protobuf::test::Tcp>>(subscriber, "::1", 8889);
 
   // Add them to the server.
-  assert(connector->AddSubscriber(msg::ActionTcp::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
 
   // Base test case.
   assert(subscriber->value == 0);
 
   // Check first message.
-  msg::ActionsTcp actions = msg::ActionsTcp();
-  msg::ActionTcp* action = actions.add_action();
-  std::unique_ptr<msg::ActionTcp_Test> action_test =
-      std::make_unique<msg::ActionTcp_Test>();
-  action->set_allocated_test(action_test.release());
-  std::string action_in_string;
-  actions.SerializeToString(&action_in_string);
-  assert(connector->Send(action_in_string));
+  llgc::protobuf::test::Tcp messages;
+  auto message = messages.add_msg();
+  auto message_test = std::make_unique<llgc::protobuf::test::Tcp_Msg_Test>();
+  message->set_allocated_test(message_test.release());
+  std::string messages_in_string;
+  messages.SerializeToString(&messages_in_string);
+  assert(connector->Send(messages_in_string));
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
   do

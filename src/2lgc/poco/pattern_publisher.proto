@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package llgc.protobuf.pattern.publisher;
+
+message AddSubscriber
+{
+  uint32 id_message = 1;
+}
+
+message RemoveSubscriber
+{
+  uint32 id_message = 1;
+}

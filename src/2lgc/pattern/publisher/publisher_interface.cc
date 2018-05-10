@@ -17,7 +17,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/poco/gdb.pb.h>  // IWYU pragma: keep
+#include <2lgc/poco/software_gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/utils/thread/count_lock.h>
 #include <functional>
 #include <memory>
@@ -51,25 +51,24 @@ llgc::pattern::publisher::PublisherInterface<T, U>::~PublisherInterface() =
 
 template <typename T, typename U>
 bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
-    const std::string &message)
+    const std::string &messages)
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
-  T actions;
+  T messages_t;
 
-  BUGLIB(actions.ParseFromString(message), false,
+  BUGLIB(messages_t.ParseFromString(messages), false,
          "Failed to decode message.\n");
 
   // We start to store destination to avoid sending the same message multiple
-  // time if the subscriber is subscribe to multiple id and the message
-  // contains multiple action with the same id.
+  // time if the subscriber is subscribe to multiple id.
   std::map<U, T, std::owner_less<U>> destination;
 
-  for (int i = 0; i < actions.action_size(); i++)
+  for (int i = 0; i < messages_t.msg_size(); i++)
   {
-    decltype(actions.action(i)) action = actions.action(i);
+    auto message = messages_t.msg(i);
 
     // Filter to keep only the data case.
-    auto iterpair = subscribers_.equal_range(action.data_case());
+    auto iterpair = subscribers_.equal_range(message.data_case());
 
     auto &it = iterpair.first;
     for (; it != iterpair.second; ++it)
@@ -80,8 +79,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
         destination[it->second] = T();
       }
       T &message_i = destination[it->second];
-      decltype(message_i.add_action()) new_action_i = message_i.add_action();
-      new_action_i->CopyFrom(action);
+      auto new_message_i = message_i.add_msg();
+      new_message_i->CopyFrom(message);
     }
   }
 

@@ -1,6 +1,5 @@
 # Use this CMakeLists.txt so *.pb.h will be in 2lgc/poco
-file(GLOB PROTO_FILES
-  ${CMAKE_CURRENT_SOURCE_DIR}/*.proto)
+file(GLOB PROTO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.proto)
 
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADERS ${PROTO_FILES})
 

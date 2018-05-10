@@ -55,11 +55,11 @@ class SubscriberInterface
   /**
    * @brief Send message.
    *
-   * @param message Data of the message in ProtoBuf, SerializeToString.
+   * @param messages Data of the message in ProtoBuf, SerializeToString.
    *
    * @return true if no problem.
    */
-  virtual bool Listen(const T& message) CHK = 0;
+  virtual bool Listen(const T& messages) CHK = 0;
 
   /**
    * @brief Compare in connector is the same than the object.

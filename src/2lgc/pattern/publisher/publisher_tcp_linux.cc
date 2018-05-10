@@ -142,26 +142,26 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
     }
 
     std::cout << "Server Client " << socket << " Talk" << std::endl;
-    T message;
+    T messages;
 
     std::string client_string(client_message, static_cast<size_t>(read_size));
-    BUGLIB(message.ParseFromString(client_string), , "protobuf.");
+    BUGLIB(messages.ParseFromString(client_string), , "protobuf.");
 
-    for (int i = 0; i < message.action_size(); i++)
+    for (int i = 0; i < messages.msg_size(); i++)
     {
-      auto& action_tcp = message.action(i);
+      auto& message = messages.msg(i);
 
-      auto enumeration = action_tcp.data_case();
+      auto enumeration = message.data_case();
 
       if (enumeration ==
-          std::remove_reference<decltype(action_tcp)>::type::kAddSubscriber)
+          std::remove_reference<decltype(message)>::type::kAddSubscriber)
       {
-        AddSubscriberLocal(socket, action_tcp);
+        AddSubscriberLocal(socket, message);
       }
       /*
-      case action_tcp.kRemoveSubscriber:
+      case message.kRemoveSubscriber:
       {
-        AddSubscriber(socket, &action_tcp);
+        AddSubscriber(socket, &message);
         break;
       }*/
     }
@@ -174,9 +174,9 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 
 template <typename T>
 void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
-    int socket, decltype(std::declval<T>().action(0)) action_tcp)
+    int socket, decltype(std::declval<T>().msg(0)) message)
 {
-  BUGCRIT(action_tcp.has_add_subscriber(), , "Failed to add a subscriber.");
+  BUGCRIT(message.has_add_subscriber(), , "Failed to add a subscriber.");
   std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
       std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
           socket);
@@ -184,9 +184,8 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
       connector =
           std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
               subscriber, socket);
-  BUGCRIT(
-      this->AddSubscriber(action_tcp.add_subscriber().id_message(), connector),
-      , "Failed to add a subscriber.");
+  BUGCRIT(this->AddSubscriber(message.add_subscriber().id_message(), connector),
+          , "Failed to add a subscriber.");
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

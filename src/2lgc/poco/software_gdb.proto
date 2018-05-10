@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package llgc.protobuf.software;
+
+message Gdb
+{
+  message Msg
+  {
+    message RunBtFullTimeOut
+    {
+      repeated string file = 1;
+    }
+    message AddStackFailed
+    {
+      repeated string file = 1;
+    }
+
+    oneof data
+    {
+      RunBtFullTimeOut run_bt_full_time_out = 1;
+      AddStackFailed add_stack_failed = 2;
+    }
+  }
+
+  repeated Msg msg = 1;
+}

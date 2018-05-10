@@ -20,7 +20,7 @@
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/visitor/visitable.h>
-#include <2lgc/poco/number.pb.h>
+#include <2lgc/poco/math_number.pb.h>
 
 /**
  * @brief Namespace that contains all classes to manipulate protobuf.
@@ -43,16 +43,17 @@ class Unit
    *
    * @return true if the operator is successfully applied in the two units.
    */
-  static bool UnitOp(const msg::Number_Unit &unit1,
-                     const msg::Number_Unit &unit2,
-                     const msg::Number_Operator operator_,
-                     msg::Number_Unit *return_unit) CHK;
+  static bool UnitOp(const llgc::protobuf::math::Number_Unit &unit1,
+                     const llgc::protobuf::math::Number_Unit &unit2,
+                     const llgc::protobuf::math::Number_Operator operator_,
+                     llgc::protobuf::math::Number_Unit *return_unit) CHK;
 };
 
 /**
  * @brief Abstract class that represent a read-only number and it's unit.
  */
-class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
+class Number : public llgc::pattern::visitor::InterfaceVisitable<
+                   llgc::protobuf::math::Number>
 {
  public:
   /**
@@ -80,7 +81,7 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
    *
    * @return The unit. If failed, the default Number_Unit.
    */
-  virtual msg::Number_Unit GetUnit() const = 0;
+  virtual llgc::protobuf::math::Number_Unit GetUnit() const = 0;
 
 #ifndef DISABLE_VISITABLE_CACHE
  protected:
@@ -91,7 +92,7 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<msg::Number>
   /**
    * @brief If cache enabled, the unit.
    */
-  mutable msg::Number_Unit cache_unit_;
+  mutable llgc::protobuf::math::Number_Unit cache_unit_;
 #endif  // DISABLE_VISITABLE_CACHE
 };
 

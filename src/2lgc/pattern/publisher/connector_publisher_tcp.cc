@@ -18,7 +18,7 @@
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
-#include <2lgc/poco/net.pb.h>
+#include <2lgc/poco/pattern_publisher.pb.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <unistd.h>
@@ -26,7 +26,6 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
-#include <type_traits>
 #include <utility>
 
 template <typename T>
@@ -70,15 +69,15 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
 {
   BUGCONT(Connect(), false);
 
-  T actions;
-  decltype(std::declval<T>().add_action()) action = actions.add_action();
-  std::unique_ptr<msg::net::AddSubscriber> action_add =
-      std::make_unique<msg::net::AddSubscriber>();
-  action_add->set_id_message(id_message);
-  action->set_allocated_add_subscriber(action_add.release());
-  std::string action_in_string;
-  BUGLIB(actions.SerializeToString(&action_in_string), false, "protobuf");
-  BUGCONT(Send(action_in_string), false);
+  T messages;
+  auto message = messages.add_msg();
+  auto add =
+      std::make_unique<llgc::protobuf::pattern::publisher::AddSubscriber>();
+  add->set_id_message(id_message);
+  message->set_allocated_add_subscriber(add.release());
+  std::string messages_in_string;
+  BUGLIB(messages.SerializeToString(&messages_in_string), false, "protobuf");
+  BUGCONT(Send(messages_in_string), false);
 
   return true;
 }
@@ -100,15 +99,15 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
 {
   BUGCONT(Connect(), false);
 
-  T actions;
-  decltype(std::declval<T>().add_action()) action = actions.add_action();
-  std::unique_ptr<msg::net::RemoveSubscriber> action_add =
-      std::make_unique<msg::net::RemoveSubscriber>();
-  action_add->set_id_message(id_message);
-  action->set_allocated_remove_subscriber(action_add.release());
-  std::string action_in_string;
-  BUGLIB(actions.SerializeToString(&action_in_string), false, "protobuf");
-  BUGCONT(Send(action_in_string), false);
+  T messages;
+  auto message = messages.add_msg();
+  auto message_add =
+      std::make_unique<llgc::protobuf::pattern::publisher::RemoveSubscriber>();
+  message_add->set_id_message(id_message);
+  message->set_allocated_remove_subscriber(message_add.release());
+  std::string messages_in_string;
+  BUGLIB(messages.SerializeToString(&messages_in_string), false, "protobuf");
+  BUGCONT(Send(messages_in_string), false);
 
   return true;
 }

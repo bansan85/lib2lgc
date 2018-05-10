@@ -20,8 +20,8 @@
 #include <2lgc/compatibility/visual_studio.h>
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/visitor/visitable.h>
+#include <2lgc/poco/math_number.pb.h>
 #include <2lgc/poco/number.h>
-#include <2lgc/poco/number.pb.h>
 #include <cstdint>
 #include <memory>
 
@@ -48,7 +48,7 @@ class Number_Constant
    * stack or in a arena.
    */
   Number_Constant(const uint32_t id, const double value,
-                  msg::Number_Unit *unit);
+                  llgc::protobuf::math::Number_Unit *unit);
   /**
    * @brief Default destructor. No need to delete unit. It will be free
    * automatically.
@@ -66,7 +66,7 @@ class Number_Constant
    *
    * @return The unit.
    */
-  msg::Number_Unit GetUnit() const override;
+  llgc::protobuf::math::Number_Unit GetUnit() const override;
 
 #ifndef DISABLE_VISITABLE_CACHE
  private:
@@ -99,7 +99,7 @@ class Number_NumOpNum
    * @param number2 The number two.
    */
   Number_NumOpNum(const uint32_t id, std::shared_ptr<const Number> number1,
-                  msg::Number_Operator operator_,
+                  llgc::protobuf::math::Number_Operator operator_,
                   std::shared_ptr<const Number> number2);
   /**
    * @brief Default destructor.
@@ -118,7 +118,7 @@ class Number_NumOpNum
    * @return Return a calculated unit base on the operator. If failed, the unit
    * will be default.
    */
-  msg::Number_Unit GetUnit() const override;
+  llgc::protobuf::math::Number_Unit GetUnit() const override;
 
   /**
    * @brief Return the number 1.

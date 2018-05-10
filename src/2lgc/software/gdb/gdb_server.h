@@ -38,9 +38,9 @@ class PublisherDirect;
 /**
  * @brief List of Protobuf for software.
  */
-namespace msg::software
+namespace llgc::protobuf::software
 {
-class Gdbs;
+class Gdb;
 }
 
 /**
@@ -51,9 +51,9 @@ namespace llgc::software::gdb
 /**
  * @brief Class to run gdb for various purpose.
  */
-class GdbServer
-    : public llgc::pattern::singleton::Local<
-          llgc::pattern::publisher::PublisherDirect<msg::software::Gdbs>>
+class GdbServer : public llgc::pattern::singleton::Local<
+                      llgc::pattern::publisher::PublisherDirect<
+                          llgc::protobuf::software::Gdb>>
 {
  public:
   /**

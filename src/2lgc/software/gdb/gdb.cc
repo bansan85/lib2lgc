@@ -16,7 +16,7 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
-#include <2lgc/poco/gdb.pb.h>
+#include <2lgc/poco/software_gdb.pb.h>
 #include <2lgc/software/gdb/gdb.h>
 #include <2lgc/software/gdb/gdb_server.h>
 #include <cxxabi.h>
@@ -117,14 +117,13 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           BUGCRIT(kill(child_pid, SIGKILL), false,
                   "Failed to waitpid. Errno %.\n");
 
-          msg::software::Gdbs messages_gdb = msg::software::Gdbs();
-          msg::software::Gdb* message_gdb = messages_gdb.add_action();
-          std::unique_ptr<msg::software::Gdb::RunBtFullTimeOut>
-              run_bt_full_time_out =
-                  std::make_unique<msg::software::Gdb::RunBtFullTimeOut>();
+          llgc::protobuf::software::Gdb messages_gdb;
+          auto message = messages_gdb.add_msg();
+          auto run_bt_full_time_out = std::make_unique<
+              llgc::protobuf::software::Gdb::Msg::RunBtFullTimeOut>();
           std::string* filename_gdb = run_bt_full_time_out->add_file();
           filename_gdb->assign(filename);
-          message_gdb->set_allocated_run_bt_full_time_out(
+          message->set_allocated_run_bt_full_time_out(
               run_bt_full_time_out.release());
           std::string run_bt_full_in_string;
           BUGLIB(messages_gdb.SerializeToString(&run_bt_full_in_string), false,

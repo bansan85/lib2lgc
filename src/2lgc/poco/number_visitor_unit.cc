@@ -16,12 +16,11 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/math/compare_decimal.h>
+#include <2lgc/poco/math_number.pb.h>
 #include <2lgc/poco/number.h>
-#include <2lgc/poco/number.pb.h>
 #include <2lgc/poco/number_impl.h>
 #include <2lgc/poco/number_visitor_unit.h>
 #include <2lgc/poco/number_visitor_value.h>
-#include <2lgc/poco/raw.pb.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
 #include <memory>
@@ -42,9 +41,9 @@ bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
 {
   BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
 
-  msg::Number_Unit unit1;
-  msg::Number_Unit unit2;
-  msg::Number_Unit unit;
+  llgc::protobuf::math::Number_Unit unit1;
+  llgc::protobuf::math::Number_Unit unit2;
+  llgc::protobuf::math::Number_Unit unit;
   std::string return_accept;
   BUGCONT(data.Number1()->Accept(*this, &return_accept), false);
   BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
@@ -53,34 +52,37 @@ bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
 
   switch (data.Message().number_op_number().operator_())
   {
-    case msg::Number_Operator_PLUS:
-    case msg::Number_Operator_MOINS:
+    case llgc::protobuf::math::Number_Operator_PLUS:
+    case llgc::protobuf::math::Number_Operator_MOINS:
     {
       BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       BUGLIB(unit1.SerializeToString(return_value), false, "protobuf");
       return true;
     }
-    case msg::Number_Operator_MULTIPLICATION:
+    case llgc::protobuf::math::Number_Operator_MULTIPLICATION:
     {
-      BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_MULTIPLICATION,
+      BUGCONT(Unit::UnitOp(unit1, unit2,
+                           llgc::protobuf::math::Number_Operator_MULTIPLICATION,
                            &unit),
               false);
       BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
       return true;
     }
-    case msg::Number_Operator_DIVISION:
+    case llgc::protobuf::math::Number_Operator_DIVISION:
     {
       NumberVisitorVal visitor_val;
 
       BUGCONT(data.Number2()->Accept(visitor_val, &return_accept), false);
-      msg::Double double_val;
+      llgc::protobuf::math::Double double_val;
       BUGLIB(double_val.ParseFromString(return_accept), false, "protobuf");
       BUGUSER(!llgc::math::Compare::AlmostEqualRelativeAndAbsD(
                   double_val.value(), 0., 1e-15, 1e-15),
               false, "Divide by zero.");
-      BUGCONT(Unit::UnitOp(unit1, unit2, msg::Number_Operator_DIVISION, &unit),
-              false);
+      BUGCONT(
+          Unit::UnitOp(unit1, unit2,
+                       llgc::protobuf::math::Number_Operator_DIVISION, &unit),
+          false);
       BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
       return true;
     }
