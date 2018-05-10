@@ -49,6 +49,7 @@ package llgc.protobuf.test;
 // Atomic message.
 message Tcp
 {
+  // By convention, keep Msg for name
   message Msg
   {
     // All atomic actions of a publisher must be in a sub-message.
@@ -72,9 +73,6 @@ message Tcp
   // The name of a list must be msg.
   repeated Msg msg = 1;
 }
-
-message ActionsTcp {
-}
 ```
 
 ## In direct mode
@@ -93,16 +91,16 @@ Header:
 
 // Here, you need to use std::weak_ptr for internal use.
 template class llgc::pattern::publisher::PublisherInterface<
-    msg::Actions,
-    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<msg::Actions>>>;
+    llgc::protobuf::test::Direct,
+    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<
+        llgc::protobuf::test::Direct>>>;
 ```
 
 Declaration:
 
 ```
-  std::shared_ptr<llgc::pattern::publisher::PublisherDirect<msg::Actions>>
-      server = std::make_shared<
-          llgc::pattern::publisher::PublisherDirect<msg::Actions>>();
+  auto server = std::make_shared<llgc::pattern::publisher::PublisherDirect<
+      llgc::protobuf::test::Direct>>();
 ```
 
 ### Subscriber
@@ -114,14 +112,14 @@ Header:
 
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 
-template class llgc::pattern::publisher::SubscriberDirect<msg::Actions>;
+template class llgc::pattern::publisher::SubscriberDirect<
+    llgc::protobuf::test::Direct>;
 ```
 
-Declaration:
+Declaration with SubscriberBase based on SubscriberDirect:
 
 ```
-  std::shared_ptr<SubscriberBase> subscriber =
-      std::make_shared<SubscriberBase>(1);
+  auto subscriber = std::make_shared<SubscriberBase>(1);
 ```
 
 You must implement the subscriber with the Listen function.
@@ -129,30 +127,31 @@ You must implement the subscriber with the Listen function.
 In this example, a function is create for each action. They are stored in a vector and the good index in found with the function `data_case()`.
 
 ```
-class SubscriberBase final
-    : public llgc::pattern::publisher::SubscriberDirect<msg::Actions>
+class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
+                                 llgc::protobuf::test::Direct>
 {
  public:
   // The id is used to compare subscriber by the publisher.
   explicit SubscriberBase(uint32_t id)
       : SubscriberDirect(id),
-        // Here, the kTest have the highest id.
-        message_vector(msg::Action::DataCase::kTest + 1)
+        // Here, the kTest has the highest id.
+        message_vector(llgc::protobuf::test::Direct_Msg::DataCase::kTest + 1)
   {
     message_vector[0] = nullptr;
     // Attribute a function for each message id.
-    message_vector[msg::Action::DataCase::kTest] = &SubscriberBase::TestFct;
+    message_vector[llgc::protobuf::test::Direct_Msg::DataCase::kTest] =
+        &SubscriberBase::TestFct;
   }
 
-  bool Listen(const msg::Actions& message) override
+  bool Listen(const llgc::protobuf::test::Direct& messages) override
   { 
     for (int i = 0; i < message.action_size(); i++)
     {
-      const msg::Action& action = message.action(i);
+      const llgc::protobuf::test::Direct_Msg& message = messages.msg(i);
       
       // Here you supposed that all index of the message_vector are filled and
       // not nullptr.
-      message_vector[action.data_case()](*this, action);
+      message_vector[message.data_case()](*this, message);
     }
     return true;
   }
@@ -161,9 +160,10 @@ class SubscriberBase final
   {
     // Do what you want here.
   }
-  
-  std::vector<std::function<void(SubscriberBase&, const msg::Action&)>>
-      action_vector;
+
+  std::vector<std::function<void(SubscriberBase&,
+                                 const llgc::protobuf::test::Direct_Msg&)>>
+      message_vector;
 };
 
 ```
@@ -179,17 +179,18 @@ Header:
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 
-template class llgc::pattern::publisher::ConnectorInterface<msg::Actions>;
-template class llgc::pattern::publisher::ConnectorDirect<msg::Actions>;
+template class llgc::pattern::publisher::ConnectorInterface<
+    llgc::protobuf::test::Direct>;
+template class llgc::pattern::publisher::ConnectorDirect<
+    llgc::protobuf::test::Direct>;
 ```
 
 Declaration:
 
 ```
-  std::shared_ptr<llgc::pattern::publisher::ConnectorDirect<msg::Actions>>
-      connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorDirect<msg::Actions>>(subscriber,
-                                                                   server);
+  auto connector = std::make_shared<
+      llgc::pattern::publisher::ConnectorDirect<llgc::protobuf::test::Direct>>(
+      subscriber, server);
 ```
 
 
@@ -209,19 +210,20 @@ Header:
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
 
-template class llgc::pattern::publisher::PublisherTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::PublisherTcpLinux<msg::ActionsTcp>;
-template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<msg::ActionsTcp>;
+template class llgc::pattern::publisher::PublisherTcp<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherTcpLinux<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<
+    llgc::protobuf::test::Tcp>;
 ```
 
 Declaration:
 
 ```
-  std::shared_ptr<
-      llgc::pattern::publisher::PublisherTcpLinuxIpv4<msg::ActionsTcp>>
-      server = std::make_shared<
-          llgc::pattern::publisher::PublisherTcpLinuxIpv4<msg::ActionsTcp>>(
-          8888);
+  auto server =
+      std::make_shared<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
+          llgc::protobuf::test::Tcp>>(8889);
 ```
 
 ### Subscriber
@@ -235,15 +237,16 @@ Header:
 #include <2lgc/pattern/publisher/subscriber_direct.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
-template class llgc::pattern::publisher::SubscriberDirect<msg::ActionsTcp>;
-template class llgc::pattern::publisher::SubscriberServerTcp<msg::ActionsTcp>;
+template class llgc::pattern::publisher::SubscriberDirect<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::SubscriberServerTcp<
+    llgc::protobuf::test::Tcp>;
 ```
 
 Declaration:
 
 ```
-  std::shared_ptr<SubscriberBase> subscriber =
-      std::make_shared<SubscriberBase>(1);
+  auto subscriber = std::make_shared<SubscriberBase>(1);
 ```
 
 You must implement the subscriber with the Listen function. See Direct mode for an example.
@@ -264,22 +267,22 @@ Header:
 #include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.cc>
 
-template class llgc::pattern::publisher::ConnectorInterface<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorPublisherTcp<msg::ActionsTcp>;
-template class llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
-    msg::ActionsTcp>;
+template class llgc::pattern::publisher::ConnectorInterface<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::ConnectorPublisherTcp<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+    llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorSubscriberTcp<
-    msg::ActionsTcp>;
+    llgc::protobuf::test::Tcp>;
 ```
 
 Declaration:
 
 ```
-  std::shared_ptr<
-      llgc::pattern::publisher::ConnectorPublisherTcpIpv4<msg::ActionsTcp>>
-      connector = std::make_shared<
-          llgc::pattern::publisher::ConnectorPublisherTcpIpv4<msg::ActionsTcp>>(
-          subscriber, "127.0.0.1", 8888);
+  auto connector =
+      std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+          llgc::protobuf::test::Tcp>>(subscriber, "::1", 8889);
 ```
 
 # Usage
@@ -291,15 +294,15 @@ In direct mode, you don't have anything to do.
 In TCP mode, you need to open the port with Listen and to wait for message.
 
 ```
-server->Listen();
-server->Wait();
+  server->Listen();
+  server->Wait();
 ```
 
 and before closing the application or to stop the server.
 
 ```
-server->Stop();
-server->JoinWait();
+  server->Stop();
+  server->JoinWait();
 ```
 
 ## Subscriber
@@ -313,18 +316,17 @@ The usage is the same for direct mode and TCP mode.
 First add subscriber with id of the message.
 
 ```
-connector->AddSubscriber(msg::Action::DataCase::kTest)
+  connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest);
 ```
 
 Then send protobuf message.
 
 ```
-msg::ActionsTcp actions = msg::ActionsTcp();
-msg::ActionTcp* action = actions.add_action();
-std::unique_ptr<msg::ActionTcp_Test> action_test =
-    std::make_unique<msg::ActionTcp_Test>();
-action->set_allocated_test(action_test.release());
-std::string action_in_string;
-actions.SerializeToString(&action_in_string);
-connector->Send(action_in_string);
+  llgc::protobuf::test::Tcp messages;
+  auto message = messages.add_msg();
+  auto message_test = std::make_unique<llgc::protobuf::test::Tcp_Msg_Test>();
+  message->set_allocated_test(message_test.release());
+  std::string messages_in_string;
+  messages.SerializeToString(&messages_in_string);
+  connector->Send(messages_in_string);
 ```

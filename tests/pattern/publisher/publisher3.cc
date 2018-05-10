@@ -160,21 +160,17 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   llgc::net::Linux::DisableSigPipe();
 
-  std::shared_ptr<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
-      llgc::protobuf::test::Tcp>>
-      server = std::make_shared<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
+  auto server =
+      std::make_shared<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
           llgc::protobuf::test::Tcp>>(8889);
   assert(server->Listen());
   assert(server->Wait());
 
-  std::shared_ptr<SubscriberBase> subscriber =
-      std::make_shared<SubscriberBase>(1);
+  auto subscriber = std::make_shared<SubscriberBase>(1);
 
-  std::shared_ptr<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
-      llgc::protobuf::test::Tcp>>
-      connector =
-          std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
-              llgc::protobuf::test::Tcp>>(subscriber, "::1", 8889);
+  auto connector =
+      std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+          llgc::protobuf::test::Tcp>>(subscriber, "::1", 8889);
 
   // Add them to the server.
   assert(

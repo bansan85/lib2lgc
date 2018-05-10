@@ -43,9 +43,9 @@ template class llgc::pattern::publisher::PublisherInterface<
         llgc::protobuf::test::Direct>>>;
 template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::test::Direct>;
-template class llgc::pattern::publisher::SubscriberDirect<
-    llgc::protobuf::test::Direct>;
 template class llgc::pattern::publisher::ConnectorDirect<
+    llgc::protobuf::test::Direct>;
+template class llgc::pattern::publisher::SubscriberDirect<
     llgc::protobuf::test::Direct>;
 
 /**
