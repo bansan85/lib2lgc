@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package llgc.protobuf.test;
+
+message AbstractFactory
+{
+  message Msg
+  {
+    message Test
+    {
+    }
+
+    oneof data
+    {
+      Test test = 1;
+    }
+  }
+
+  repeated Msg msg = 1;
+}
