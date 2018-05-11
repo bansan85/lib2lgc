@@ -73,7 +73,7 @@ class CommonCommand
 };
 
 template class llgc::pattern::abstract_factory::AbstractFactoryInterface<
-    llgc::protobuf::test::AbstractFactory_Msg, CommonCommand>;
+    llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>;
 
 class CommandTest : public CommonCommand
 {
@@ -125,23 +125,23 @@ class CommandTest : public CommonCommand
 
 class Factory
     : public llgc::pattern::abstract_factory::AbstractFactoryInterface<
-          llgc::protobuf::test::AbstractFactory_Msg, CommonCommand>
+          llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>
 {
  public:
   Factory()
       : AbstractFactoryInterface(
-            llgc::protobuf::test::AbstractFactory_Msg::kTest + 1)
+            llgc::protobuf::test::AbstractFactoryMsg::kTest + 1)
   {
     std::cout << "Constructor "
-              << (llgc::protobuf::test::AbstractFactory_Msg::kTest)
+              << (llgc::protobuf::test::AbstractFactoryMsg::kTest)
               << std::endl;
-    map_factory_[llgc::protobuf::test::AbstractFactory_Msg::kTest] =
+    map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] =
         std::bind(&Factory::GetTest, this, std::placeholders::_1);
   }
 
  private:
   std::unique_ptr<CommonCommand> GetTest(
-      const llgc::protobuf::test::AbstractFactory_Msg& message)
+      const llgc::protobuf::test::AbstractFactoryMsg& message)
   {
     assert(message.has_test());
 
@@ -157,8 +157,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   Factory factory;
 
-  llgc::protobuf::test::AbstractFactory_Msg message;
-  auto add = std::make_unique<llgc::protobuf::test::AbstractFactory_Msg_Test>();
+  llgc::protobuf::test::AbstractFactoryMsg message;
+  auto add = std::make_unique<llgc::protobuf::test::AbstractFactoryMsg_Test>();
   message.set_allocated_test(add.release());
 
   std::string message_in_string;
