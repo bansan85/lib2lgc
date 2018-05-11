@@ -55,7 +55,7 @@ class CommandTest : public CommonCommand
 {
  public:
   void Method1() override {}
-  bool Method2(size_t param) { return true; }
+  bool Method2(size_t param) override { return true; }
 };
 ```
 
