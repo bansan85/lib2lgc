@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_COMMAND_COMMAND_H_
-#define PATTERN_COMMAND_COMMAND_H_
+#ifndef PATTERN_COMMAND_UNDOMANAGER_H_
+#define PATTERN_COMMAND_UNDOMANAGER_H_
 
 #include <chrono>
-#include <memory>
 #include <string>
+#include <vector>
 
 /**
  * @brief Namespace for the pattern command.
@@ -29,20 +29,19 @@ namespace llgc::pattern::command
 /**
  * @brief Interface that define command stored in class.
  */
-class Command
+template <typename T>
+class Undomanager
 {
  public:
   /**
    * @brief Default constructor.
-   *
-   * @param[in,out] time Time of the execution of the command.
    */
-  explicit Command(std::chrono::time_point<std::chrono::system_clock> time);
+  Undomanager();
 
   /**
    * @brief Default destructor. Virtual because command is abstract.
    */
-  virtual ~Command() = default;
+  virtual ~Undomanager() = default;
 
   /**
    * @brief Execute the command.
@@ -53,13 +52,17 @@ class Command
 
   /**
    * @brief Undo the command.
+   *
+   * @return true if command change the model.
    */
-  virtual void Undo() = 0;
+  virtual bool Undo() = 0;
 
   /**
    * @brief Repeat the command.
+   *
+   * @return true if command change the model.
    */
-  virtual void Redo() = 0;
+  virtual bool Redo() = 0;
 
   /**
    * @brief Tell if the command change the model or just the gui (and should
@@ -81,9 +84,26 @@ class Command
    *
    * @return The protobuf string.
    */
-  virtual const std::string* ToProtobuf() const = 0;
+  virtual const std::string& ToProtobuf() const = 0;
 
- private:
+  /**
+   * @brief
+   *
+   * @return List of element modifyed by type and description. To
+   * UI undo description.
+   */
+  virtual std::vector<size_t> GetType() const = 0;
+
+  /**
+   * @brief
+   *
+   * @param[in,out] i
+   *
+   * @return
+   */
+  virtual std::vector<T> FindByZone(int i) const = 0;
+
+ protected:
   /**
    * @brief Time of the execution of the command.
    */
@@ -93,20 +113,10 @@ class Command
    * @brief Duration of the execution of the command.
    */
   std::chrono::duration<double> duration_start_;
-
-  /**
-   * @brief Next simultaneous command.
-   */
-  std::unique_ptr<Command> next_;
-
-  /**
-   * @brief Sub command.
-   */
-  std::unique_ptr<Command> child_;
 };
 
 }  // namespace llgc::pattern::command
 
-#endif  // PATTERN_COMMAND_COMMAND_H_
+#endif  // PATTERN_COMMAND_UNDOMANAGER_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
