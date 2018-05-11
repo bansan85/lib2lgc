@@ -57,7 +57,7 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorPublisherTcp();
+  ~ConnectorPublisherTcp() override;
 
 #ifndef SWIG
   /**

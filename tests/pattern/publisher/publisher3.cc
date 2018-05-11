@@ -128,7 +128,7 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
     std::cout << "LISTEN" << std::endl;
     for (int i = 0; i < messages.msg_size(); i++)
     {
-      auto message = messages.msg(i);
+      const auto& message = messages.msg(i);
 
       switch (message.data_case())
       {

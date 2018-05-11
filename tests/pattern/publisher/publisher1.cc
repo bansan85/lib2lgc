@@ -73,7 +73,7 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
   /**
    * @brief Receive message from publisher.
    *
-   * @param[in] message Message from the publisher in protobuf format.
+   * @param[in] messages Message from the publisher in protobuf format.
    */
   bool Listen(const llgc::protobuf::test::Direct& messages) override
   {
