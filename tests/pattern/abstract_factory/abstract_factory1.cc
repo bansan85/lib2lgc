@@ -132,9 +132,6 @@ class Factory
       : AbstractFactoryInterface(
             llgc::protobuf::test::AbstractFactoryMsg::kTest + 1)
   {
-    std::cout << "Constructor "
-              << (llgc::protobuf::test::AbstractFactoryMsg::kTest)
-              << std::endl;
     map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] =
         std::bind(&Factory::GetTest, this, std::placeholders::_1);
   }
