@@ -20,7 +20,7 @@ add_executable(visitor1 EXCLUDE_FROM_ALL
 protobuf_generate_cpp(ABSTRACT_FACTORY_PROTO_SRC ABSTRACT_FACTORY_PROTO_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory.proto)
 set_source_files_properties(${ABSTRACT_FACTORY_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory1.cc
-  PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
+  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(abstract_factory1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory1.cc
   ${ABSTRACT_FACTORY_PROTO_SRC})
@@ -28,7 +28,7 @@ add_executable(abstract_factory1 EXCLUDE_FROM_ALL
 protobuf_generate_cpp(PUBLISHER_DIRECT_PROTO_SRC PUBLISHER_PROTO_ACTIONS_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/direct.proto)
 set_source_files_properties(${PUBLISHER_DIRECT_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher1.cc
-  PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
+  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(publisher1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher1.cc
   ${PUBLISHER_DIRECT_PROTO_SRC})
@@ -36,12 +36,12 @@ add_executable(publisher1 EXCLUDE_FROM_ALL
 protobuf_generate_cpp(PUBLISHER_TCP_PROTO_SRC PUBLISHER_TCP_PROTO_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/tcp.proto)
 set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher2.cc
-  PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
+  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(publisher2 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher2.cc
   ${PUBLISHER_TCP_PROTO_SRC})
 set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher3.cc
-  PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-extended-offsetof -Wno-global-constructors -Wno-missing-variable-declarations -Wno-missing-prototypes -Wno-c++98-compat-pedantic -Wno-reserved-id-macro")
+  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(publisher3 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher3.cc
   ${PUBLISHER_TCP_PROTO_SRC})
