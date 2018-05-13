@@ -24,7 +24,7 @@
 #ifndef MATH_COMPARE_DECIMAL_H_
 #define MATH_COMPARE_DECIMAL_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 
 namespace llgc::math
 {

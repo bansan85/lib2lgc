@@ -17,7 +17,7 @@
 #ifndef PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
 #define PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <cstdint>
 #include <memory>

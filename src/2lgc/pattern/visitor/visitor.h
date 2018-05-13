@@ -17,7 +17,7 @@
 #ifndef PATTERN_VISITOR_VISITOR_H_
 #define PATTERN_VISITOR_VISITOR_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <string>
 
 /**

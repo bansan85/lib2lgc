@@ -22,7 +22,7 @@
 #ifndef SOFTWARE_GDB_BACKTRACE_H_
 #define SOFTWARE_GDB_BACKTRACE_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <2lgc/pattern/iterator/iterator.h>
 #include <2lgc/software/gdb/function.h>
 #include <cstddef>

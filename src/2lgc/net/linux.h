@@ -17,7 +17,7 @@
 #ifndef NET_LINUX_H_
 #define NET_LINUX_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <sys/socket.h>
 #include <cstddef>
 #include <functional>

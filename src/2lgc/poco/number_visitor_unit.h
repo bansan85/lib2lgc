@@ -17,7 +17,7 @@
 #ifndef POCO_NUMBER_VISITOR_UNIT_H_
 #define POCO_NUMBER_VISITOR_UNIT_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <2lgc/pattern/visitor/visitor.h>
 #include <string>
 

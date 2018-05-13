@@ -17,7 +17,7 @@
 #ifndef UTILS_UNDOMANAGER_UNDOMANAGER_H_
 #define UTILS_UNDOMANAGER_UNDOMANAGER_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <cstddef>
 #include <functional>
 #include <memory>

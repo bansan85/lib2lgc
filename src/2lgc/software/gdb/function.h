@@ -22,7 +22,7 @@
 #ifndef SOFTWARE_GDB_FUNCTION_H_
 #define SOFTWARE_GDB_FUNCTION_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <string>
 #include <utility>
 #include <vector>

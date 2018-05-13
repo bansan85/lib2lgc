@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef COMPATIBILITY_VISUAL_STUDIO_H_
-#define COMPATIBILITY_VISUAL_STUDIO_H_
+#ifndef COMPAT_H_
+#define COMPAT_H_
 
 #ifdef _MSC_VER
 #define CHK _Check_return_
@@ -37,6 +37,6 @@ typedef SSIZE_T ssize_t;
 #define DllExport
 #endif  // defined(_MSC_VER)
 
-#endif  // COMPATIBILITY_VISUAL_STUDIO_H_
+#endif  // COMPAT_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

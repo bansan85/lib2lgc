@@ -1,5 +1,5 @@
 # Compatibility
 
-## visual_studio.h
+## compat.h
 
 Compatibility between differents compilers.

@@ -17,7 +17,7 @@
 #ifndef PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 #define PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <cstdint>
 #include <memory>
 #include <queue>

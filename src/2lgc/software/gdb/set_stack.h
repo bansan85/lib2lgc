@@ -23,7 +23,7 @@
 #ifndef SOFTWARE_GDB_SET_STACK_H_
 #define SOFTWARE_GDB_SET_STACK_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <2lgc/software/gdb/gdb_server.h>
 #include <2lgc/software/gdb/stack.h>
 #include <sys/types.h>

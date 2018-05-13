@@ -17,7 +17,7 @@
 #ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_H_
 #define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <cstdint>
 #include <memory>

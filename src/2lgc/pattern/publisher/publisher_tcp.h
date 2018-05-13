@@ -17,7 +17,7 @@
 #ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 #define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <atomic>
 #include <cstdint>

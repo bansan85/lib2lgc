@@ -17,7 +17,7 @@
 #ifndef FILESYSTEM_FILES_H_
 #define FILESYSTEM_FILES_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <string>
 #include <vector>
 

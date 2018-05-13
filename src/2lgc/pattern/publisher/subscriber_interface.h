@@ -17,7 +17,7 @@
 #ifndef PATTERN_PUBLISHER_SUBSCRIBER_INTERFACE_H_
 #define PATTERN_PUBLISHER_SUBSCRIBER_INTERFACE_H_
 
-#include <2lgc/compatibility/visual_studio.h>
+#include <2lgc/compat.h>
 #include <cstdint>
 #include <memory>
 #include <string>
