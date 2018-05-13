@@ -1,3 +1,6 @@
+include (CheckCXXSourceCompiles)
+CHECK_CXX_SOURCE_COMPILES("namespace A::B { class C; } int main() { return 0; }" CPP17_NAMESPACE)
+
 macro(llgc_init_cflags)
   set(CMAKE_CXX_STANDARD 17)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")

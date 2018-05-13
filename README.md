@@ -23,7 +23,7 @@ make check
 
 `-DCMAKE_CXX_FLAGS=...` custom flags.
 
-`-DNO_CPP17_NAMESPACE=1` disable `namespace A::B {}`.
+`-DCPP17_NAMESPACE=1` or `0`. Force enable/disable `namespace A::B {}`. By default, check by compiling an hello world.
 
 `CC=clang CXX=clang++ cmake -DCMAKE_EXE_LINKER_FLAGS="-lgcc_s"` for clang support in gcc environment.
 

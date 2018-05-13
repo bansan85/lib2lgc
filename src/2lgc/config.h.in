@@ -19,7 +19,7 @@
 
 #cmakedefine DISABLE_VISITABLE_CACHE
 
-#cmakedefine NO_CPP17_NAMESPACE
+#cmakedefine CPP17_NAMESPACE
 
 #cmakedefine OPENSSL_FOUND
 
