@@ -23,13 +23,15 @@ make check
 
 `-DCMAKE_CXX_FLAGS=...` custom flags.
 
+`CC=clang CXX=clang++ cmake -DCMAKE_EXE_LINKER_FLAGS="-lgcc_s"` for clang support in gcc environment.
+
 # Dependencies
 
 ## Protobuf
 All messages are send by using protobuf message.
 
 ## OpenSSL
-If OpenSSL is found, TCP acknowledges will be SHA512 sum. If not found, djb2 will be used.
+Actually not needed but will be for https publisher.
 
 # TODO
 Missing local README.md means that the functionnality is still under development.
