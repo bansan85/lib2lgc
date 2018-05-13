@@ -25,8 +25,8 @@
 /**
  * @brief Namespace that contains all classes to manipulate protobuf.
  */
-namespace llgc::poco
-{
+START_NAMESPACE2(llgc, poco)
+
 /**
  * @brief Class just to hold the UnitOp method.
  */
@@ -96,7 +96,7 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<
 #endif  // DISABLE_VISITABLE_CACHE
 };
 
-}  // namespace llgc::poco
+END_NAMESPACE2(llgc, poco)
 
 #endif  // POCO_NUMBER_H_
 

@@ -17,6 +17,8 @@
 #ifndef COMPAT_H_
 #define COMPAT_H_
 
+#include <2lgc/config.h>
+
 #ifdef _MSC_VER
 #define CHK _Check_return_
 
@@ -36,6 +38,18 @@ typedef SSIZE_T ssize_t;
 #define SSCANF sscanf
 #define DllExport
 #endif  // defined(_MSC_VER)
+
+#ifdef NO_CPP17_NAMESPACE
+#define START_NAMESPACE2(X, Y) namespace X { namespace Y {
+#define END_NAMESPACE2(X, Y) } }
+#define START_NAMESPACE3(X, Y, Z) namespace X { namespace Y { namespace Z {
+#define END_NAMESPACE3(X, Y, Z) } } }
+#else
+#define START_NAMESPACE2(X, Y) namespace X::Y {
+#define END_NAMESPACE2(X, Y) }
+#define START_NAMESPACE3(X, Y, Z) namespace X::Y::Z {
+#define END_NAMESPACE3(X, Y, Z) }
+#endif
 
 #endif  // COMPAT_H_
 

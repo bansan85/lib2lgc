@@ -25,8 +25,8 @@
 /**
  * @brief This is all about net.
  */
-namespace llgc::pattern::publisher
-{
+START_NAMESPACE3(llgc, pattern, publisher)
+
 /**
  * @brief Interface to create a TCP server.
  */
@@ -75,7 +75,7 @@ class PublisherTcpLinux : public PublisherTcp<T>
   void WaitThread(int socket);
 };
 
-}  // namespace llgc::pattern::publisher
+END_NAMESPACE3(llgc, pattern, publisher)
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_H_
 

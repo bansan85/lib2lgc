@@ -22,10 +22,11 @@
 #ifndef PATTERN_ITERATOR_ITERATOR_H_
 #define PATTERN_ITERATOR_ITERATOR_H_
 
+#include <2lgc/compat.h>
 #include <cstddef>
 
-namespace llgc::pattern::iterator
-{
+START_NAMESPACE3(llgc, pattern, iterator)
+
 /**
  * @brief Helper class to implement range-based for loop.
  *
@@ -88,7 +89,7 @@ class Iterator
   size_t pos_;
 };
 
-}  // namespace llgc::pattern::iterator
+END_NAMESPACE3(llgc, pattern, iterator)
 
 #endif  // PATTERN_ITERATOR_ITERATOR_H_
 

@@ -28,8 +28,8 @@
 /**
  * @brief Namespace that contains all classes to manipulate protobuf.
  */
-namespace llgc::poco
-{
+START_NAMESPACE2(llgc, poco)
+
 /**
  * @brief A const number.
  */
@@ -163,7 +163,7 @@ class Number_NumOpNum
 #endif  // DISABLE_VISITABLE_CACHE
 };
 
-}  // namespace llgc::poco
+END_NAMESPACE2(llgc, poco)
 
 #endif  // POCO_NUMBER_IMPL_H_
 

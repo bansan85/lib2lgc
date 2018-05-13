@@ -17,6 +17,7 @@
 #ifndef TEXT_PRINTF_H_
 #define TEXT_PRINTF_H_
 
+#include <2lgc/compat.h>
 #include <cassert>
 #include <ostream>
 #include <string>
@@ -27,8 +28,8 @@
 /**
  * @brief Namespace that have all function that override classic classes.
  */
-namespace llgc::text
-{
+START_NAMESPACE2(llgc, text)
+
 /**
  * @brief This class allow use of a safe printf.
  */
@@ -83,7 +84,7 @@ class Print
   static bool F(std::ostream &out_stream, const std::string &s);
 };
 
-}  // namespace llgc::text
+END_NAMESPACE2(llgc, text)
 
 #endif  // TEXT_PRINTF_H_
 

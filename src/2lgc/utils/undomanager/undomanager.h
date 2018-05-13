@@ -24,17 +24,18 @@
 #include <string>
 #include <vector>
 
-namespace llgc::utils::tree
-{
+START_NAMESPACE3(llgc, utils, tree)
+
 template <typename T>
 class Node;
-}
+
+END_NAMESPACE3(llgc, utils, tree)
 
 /**
  * @brief Namespace for the pattern command.
  */
-namespace llgc::utils::undomanager
-{
+START_NAMESPACE3(llgc, utils, undomanager)
+
 /**
  * @brief Undomanager able you to undo or redo some commands.
  * Command have id. The id could also be the version of the project that use
@@ -117,7 +118,7 @@ class Undomanager
   std::function<T(std::string)> abstract_factory_;
 };
 
-}  // namespace llgc::utils::undomanager
+END_NAMESPACE3(llgc, utils, undomanager)
 
 #endif  // UTILS_UNDOMANAGER_UNDOMANAGER_H_
 

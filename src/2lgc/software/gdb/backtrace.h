@@ -30,8 +30,8 @@
 #include <memory>
 #include <string>
 
-namespace llgc::software::gdb
-{
+START_NAMESPACE3(llgc, software, gdb)
+
 class Stack;
 /**
  * @brief Store all informations about one backtrace.
@@ -200,7 +200,7 @@ class Backtrace
   bool ReadSource(const std::string& file) CHK;
 };
 
-}  // namespace llgc::software::gdb
+END_NAMESPACE3(llgc, software, gdb)
 
 #endif  // SOFTWARE_GDB_BACKTRACE_H_
 

@@ -29,8 +29,8 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher
-{
+START_NAMESPACE3(llgc, pattern, publisher)
+
 template <typename T>
 class ConnectorInterface;
 
@@ -159,7 +159,7 @@ class PublisherTcp
   std::atomic<bool> disposing_;
 };
 
-}  // namespace llgc::pattern::publisher
+END_NAMESPACE3(llgc, pattern, publisher)
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 

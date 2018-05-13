@@ -17,6 +17,7 @@
 #ifndef PATTERN_COMMAND_UNDOMANAGER_H_
 #define PATTERN_COMMAND_UNDOMANAGER_H_
 
+#include <2lgc/compat.h>
 #include <chrono>
 #include <string>
 #include <vector>
@@ -24,8 +25,8 @@
 /**
  * @brief Namespace for the pattern command.
  */
-namespace llgc::pattern::command
-{
+START_NAMESPACE3(llgc, pattern, command)
+
 /**
  * @brief Interface that define command stored in class.
  */
@@ -115,7 +116,7 @@ class Undomanager
   std::chrono::duration<double> duration_start_;
 };
 
-}  // namespace llgc::pattern::command
+END_NAMESPACE3(llgc, pattern, command)
 
 #endif  // PATTERN_COMMAND_UNDOMANAGER_H_
 

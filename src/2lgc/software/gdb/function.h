@@ -27,8 +27,8 @@
 #include <utility>
 #include <vector>
 
-namespace llgc::software::gdb
-{
+START_NAMESPACE3(llgc, software, gdb)
+
 /**
  * @brief Store all informations about a function.
  *
@@ -97,7 +97,7 @@ class Function
   std::vector<std::pair<std::string, std::string>> args_;
 };
 
-}  // namespace llgc::software::gdb
+END_NAMESPACE3(llgc, software, gdb)
 
 #endif  // SOFTWARE_GDB_FUNCTION_H_
 

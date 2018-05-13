@@ -17,14 +17,15 @@
 #ifndef UTILS_THREAD_COUNT_LOCK_H_
 #define UTILS_THREAD_COUNT_LOCK_H_
 
+#include <2lgc/compat.h>
 #include <functional>
 #include <mutex>
 
 /**
  * @brief Namespace for all classes related with thread.
  */
-namespace llgc::utils::thread
-{
+START_NAMESPACE3(llgc, utils, thread)
+
 /**
  * @brief Class that increment variable with constructor and decrease with
  * destrctor.
@@ -117,7 +118,7 @@ class CountLock
   std::function<void()> function_zero_;
 };
 
-}  // namespace llgc::utils::thread
+END_NAMESPACE3(llgc, utils, thread)
 
 #endif  // UTILS_THREAD_COUNT_LOCK_H_
 

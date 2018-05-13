@@ -17,6 +17,7 @@
 #ifndef PATTERN_SINGLETON_SINGLETON_H_
 #define PATTERN_SINGLETON_SINGLETON_H_
 
+#include <2lgc/compat.h>
 #include <memory>
 #include <mutex>
 
@@ -25,8 +26,8 @@
  *
  * Helper to simply add a singleton to a class.
  */
-namespace llgc::pattern::singleton
-{
+START_NAMESPACE3(llgc, pattern, singleton)
+
 /**
  * @brief Class that contains the getInstance for a local singleton.
  *
@@ -62,7 +63,7 @@ class Local
   std::shared_ptr<T> instance_;
 };
 
-}  // namespace llgc::pattern::singleton
+END_NAMESPACE3(llgc, pattern, singleton)
 
 #endif  // PATTERN_SINGLETON_SINGLETON_H_
 

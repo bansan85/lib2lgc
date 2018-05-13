@@ -24,8 +24,8 @@
 /**
  * @brief Namespace that contains all classes to manipulate protobuf.
  */
-namespace llgc::poco
-{
+START_NAMESPACE2(llgc, poco)
+
 // We can't include number.h because number.h need number_visitor_value.h.
 class Number_Constant;
 class Number_NumOpNum;
@@ -66,7 +66,7 @@ class NumberVisitorVal
              std::string *return_value) const override CHK;
 };
 
-}  // namespace llgc::poco
+END_NAMESPACE2(llgc, poco)
 
 #endif  // POCO_NUMBER_VISITOR_VALUE_H_
 
