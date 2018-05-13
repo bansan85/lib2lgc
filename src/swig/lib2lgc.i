@@ -9,6 +9,10 @@
 
 %include <swiginterface.i>
 
+//%interface_impl(llgc::poco::Number);
+//%interface_impl(llgc::pattern::visitor::InterfaceVisitable);
+//%interface_impl(llgc::pattern::visitor::BaseVisitable);
+
 %{
 // Do not include compatibility.
 // #include "../2lgc/compatibility.h"
