@@ -18,6 +18,7 @@
 #define UTILS_UNDOMANAGER_UNDOMANAGER_H_
 
 #include <2lgc/compat.h>
+#include <2lgc/pattern/abstract_factory/abstract_factory_interface.h>
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -45,16 +46,26 @@ START_NAMESPACE3(llgc, utils, undomanager)
  * could be transfert throw PubliserTcp, the storage is done in std::string. The
  * abstract factory will be used to convert std::string to Command.
  */
-template <typename T>
+template <typename T, typename U>
 class Undomanager
 {
  public:
   /**
    * @brief Default constructor and create an empty undomanager.
    *
-   * @param[in,out] abstract_factory etisaurn
+   * @param[in,out] abstract_factory The abstract factory that convert a
+   * std::string from a protobuf message to a command interface.
    */
-  explicit Undomanager(std::function<T(std::string)> abstract_factory);
+  explicit Undomanager(std::unique_ptr<llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>> &abstract_factory);
+
+  /**
+   * @brief Default constructor and load an undomanager from a file.
+   *
+   * @param[in,out] abstract_factory The abstract factory that convert a
+   * std::string from a protobuf message to a command interface.
+   * @param[in,out] file The file to load.
+   */
+  Undomanager(std::unique_ptr<llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>> &abstract_factory, const std::string file);
 
   /**
    * @brief Add a command to the undomanager.
@@ -106,6 +117,23 @@ class Undomanager
    */
   void DrawHistory(void* before, void* after);
 
+  /**
+   * @brief
+   *
+   * @return List of element modifyed by type and description. To
+   * UI undo description.
+   */
+  virtual std::vector<size_t> GetType() const = 0;
+
+  /**
+   * @brief
+   *
+   * @param[in,out] i
+   *
+   * @return
+   */
+  virtual std::vector<T> FindByZone(int i) const = 0;
+
  private:
   /**
    * @brief Storage of all commands in protobuf message format.
@@ -115,7 +143,7 @@ class Undomanager
   /**
    * @brief Abstract factory that convert string to Command.
    */
-  std::function<T(std::string)> abstract_factory_;
+  std::unique_ptr<llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>> &abstract_factory_;
 };
 
 END_NAMESPACE3(llgc, utils, undomanager)

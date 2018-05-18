@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_COMMAND_UNDOMANAGER_H_
-#define PATTERN_COMMAND_UNDOMANAGER_H_
+#ifndef PATTERN_COMMAND_UNDO_INTERFACE_H_
+#define PATTERN_COMMAND_UNDO_INTERFACE_H_
 
 #include <2lgc/compat.h>
 #include <chrono>
@@ -31,13 +31,13 @@ START_NAMESPACE3(llgc, pattern, command)
  * @brief Interface that define command stored in class.
  */
 template <typename T>
-class Undomanager
+class UndoInterface
 {
  public:
   /**
    * @brief Default constructor.
    */
-  Undomanager();
+  Undomanager() = default;
 
   /**
    * @brief Default destructor. Virtual because command is abstract.
@@ -47,23 +47,23 @@ class Undomanager
   /**
    * @brief Execute the command.
    *
-   * @return true if no problem.
+   * @return Fails if command have been already executed.
    */
   virtual bool Do() = 0;
 
   /**
    * @brief Undo the command.
    *
-   * @return true if command change the model.
+   * @return Fails if command have been already undoed.
    */
   virtual bool Undo() = 0;
 
   /**
-   * @brief Repeat the command.
+   * @brief Return a protobuf message to redo if command is redoable.
    *
-   * @return true if command change the model.
+   * @return true if success. If fails, command parameter is untouched.
    */
-  virtual bool Redo() = 0;
+  virtual bool Redo(std::string* command) = 0;
 
   /**
    * @brief Tell if the command change the model or just the gui (and should
@@ -87,23 +87,6 @@ class Undomanager
    */
   virtual const std::string& ToProtobuf() const = 0;
 
-  /**
-   * @brief
-   *
-   * @return List of element modifyed by type and description. To
-   * UI undo description.
-   */
-  virtual std::vector<size_t> GetType() const = 0;
-
-  /**
-   * @brief
-   *
-   * @param[in,out] i
-   *
-   * @return
-   */
-  virtual std::vector<T> FindByZone(int i) const = 0;
-
  protected:
   /**
    * @brief Time of the execution of the command.
@@ -118,6 +101,6 @@ class Undomanager
 
 END_NAMESPACE3(llgc, pattern, command)
 
-#endif  // PATTERN_COMMAND_UNDOMANAGER_H_
+#endif  // PATTERN_COMMAND_UNDO_INTERFACE_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
