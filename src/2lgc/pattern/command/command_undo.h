@@ -30,7 +30,6 @@ namespace llgc::pattern::command {
 /**
  * @brief Interface that define command stored in class.
  */
-template <typename T>
 class UndoInterface
 {
  public:
@@ -81,6 +80,20 @@ class UndoInterface
    * @return The description.
    */
   virtual const std::string& GetDescription() const = 0;
+
+  /**
+   * @brief Get the position on the data where the modification are done.
+   *
+   * @return The position in protobuf format.
+   */
+  virtual std::string GetPosition() const = 0;
+
+  /**
+   * @brief Get the owner of the creator of the command.
+   *
+   * @return A number that the undomanager know more about it.
+   */
+  virtual size_t GetUser() const = 0;
 
   /**
    * @brief Convert the command to a protobuf serialization.

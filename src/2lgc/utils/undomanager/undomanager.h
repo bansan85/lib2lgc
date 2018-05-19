@@ -152,6 +152,16 @@ class Undomanager
    * @brief Abstract factory that convert string to Command.
    */
   std::unique_ptr<llgc::pattern::AbstractFactory<T, U>>& abstract_factory_;
+
+  /**
+   * @brief If user can undo action of other user.
+   */
+  bool undo_local_or_global_;
+
+  /**
+   * @brief Id of the user for having the description of the user.
+   */
+  std::map<size_t, std::string> users_;
 };
 
 }
