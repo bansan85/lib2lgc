@@ -28,16 +28,16 @@
 /**
  * @brief Google Protobuf stuff.
  */
-START_NAMESPACE2(google, protobuf)
+namespace google::protobuf {
 
 class Message;
 
-END_NAMESPACE2(google, protobuf)
+}
 
 /**
  * @brief Namespace for patterns.
  */
-START_NAMESPACE2(llgc, pattern)
+namespace llgc::pattern {
 
 /**
  * @brief Interface that define an abstract factory.
@@ -112,7 +112,7 @@ class AbstractFactory
   std::vector<std::function<std::unique_ptr<U>(const T&)>> map_factory_;
 };
 
-END_NAMESPACE2(llgc, pattern)
+}
 
 #endif  // PATTERN_ABSTRACT_FACTORY_H_
 

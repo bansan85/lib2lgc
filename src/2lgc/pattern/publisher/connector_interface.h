@@ -26,7 +26,7 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-START_NAMESPACE3(llgc, pattern, publisher)
+namespace llgc::pattern::publisher {
 
 template <typename T>
 class SubscriberInterface;
@@ -173,7 +173,7 @@ class ConnectorInterface
   std::shared_ptr<SubscriberInterface<T>> subscriber_;
 };
 
-END_NAMESPACE3(llgc, pattern, publisher)
+}
 
 #endif  // PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 

@@ -27,7 +27,7 @@
  * This header is used has base for every class that a visitor would like to
  * visit.
  */
-START_NAMESPACE3(llgc, pattern, visitor)
+namespace llgc::pattern::visitor {
 
 /**
  * @brief Common class to allow a class to be visited. This class is used to
@@ -124,7 +124,7 @@ class InterfaceVisitable
   M message_;
 };
 
-END_NAMESPACE3(llgc, pattern, visitor)
+}
 
 #endif  // PATTERN_VISITOR_VISITABLE_H_
 

@@ -25,7 +25,7 @@
 /**
  * @brief Namespace for the pattern command.
  */
-START_NAMESPACE3(llgc, pattern, command)
+namespace llgc::pattern::command {
 
 /**
  * @brief Interface that define command stored in class.
@@ -101,7 +101,7 @@ class UndoInterface
   std::chrono::duration<double> duration_start_;
 };
 
-END_NAMESPACE3(llgc, pattern, command)
+}
 
 #endif  // PATTERN_COMMAND_COMMAND_UNDO_H_
 

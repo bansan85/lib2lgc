@@ -23,7 +23,7 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-START_NAMESPACE3(llgc, pattern, publisher)
+namespace llgc::pattern::publisher {
 
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -108,7 +108,7 @@ class SubscriberServerTcp : public SubscriberInterface<T>
   const int socket_;  // NS
 };
 
-END_NAMESPACE3(llgc, pattern, publisher)
+}
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
 

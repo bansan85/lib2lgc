@@ -1,9 +1,4 @@
 #define CHK
-#define NO_CPP17_NAMESPACE 1
-#define START_NAMESPACE2(X, Y) namespace X { namespace Y {
-#define END_NAMESPACE2(X, Y) } }
-#define START_NAMESPACE3(X, Y, Z) namespace X { namespace Y { namespace Z {
-#define END_NAMESPACE3(X, Y, Z) } } }
 
 %module libgdb
 

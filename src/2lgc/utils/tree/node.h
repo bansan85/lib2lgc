@@ -28,7 +28,7 @@
 #include <memory>
 #include <vector>
 
-START_NAMESPACE3(llgc, utils, tree)
+namespace llgc::utils::tree {
 
 /**
  * @brief Node of the unidirectional tree. Composite pattern.
@@ -133,7 +133,7 @@ class Node
   Node<T>* FindNode(size_t id, size_t previous);
 };
 
-END_NAMESPACE3(llgc, utils, tree)
+}
 
 #endif  // UTILS_TREE_NODE_H_
 

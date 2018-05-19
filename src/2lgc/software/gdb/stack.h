@@ -31,7 +31,7 @@
 #include <string>
 #include <vector>
 
-START_NAMESPACE3(llgc, software, gdb)
+namespace llgc::software::gdb {
 
 class SetStack;
 
@@ -155,7 +155,7 @@ class Stack
   std::vector<std::unique_ptr<Backtrace>> backtraces_;
 };
 
-END_NAMESPACE3(llgc, software, gdb)
+}
 
 #endif  // SOFTWARE_GDB_STACK_H_
 

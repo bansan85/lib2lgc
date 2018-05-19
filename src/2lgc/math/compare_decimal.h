@@ -26,7 +26,7 @@
 
 #include <2lgc/compat.h>
 
-START_NAMESPACE2(llgc, math)
+namespace llgc::math {
 
 /**
  * @brief Class that extends math functionnality.
@@ -45,7 +45,7 @@ class Compare
                                          double maxRelDiff) CHK;
 };
 
-END_NAMESPACE2(llgc, math)
+}
 
 #endif  // MATH_COMPARE_DECIMAL_H_
 

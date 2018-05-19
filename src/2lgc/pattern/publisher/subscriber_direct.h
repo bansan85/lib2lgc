@@ -24,7 +24,7 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-START_NAMESPACE3(llgc, pattern, publisher)
+namespace llgc::pattern::publisher {
 
 /**
  * @brief Interface that define functions that allow subscriber to communicate
@@ -100,7 +100,7 @@ class SubscriberDirect : public SubscriberInterface<T>
   const uint32_t id_;
 };
 
-END_NAMESPACE3(llgc, pattern, publisher)
+}
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 

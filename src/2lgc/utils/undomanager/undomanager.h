@@ -23,24 +23,24 @@
 #include <string>
 #include <vector>
 
-START_NAMESPACE2(llgc, pattern)
+namespace llgc::pattern {
 
 template <typename T, typename U>
 class AbstractFactory;
 
-END_NAMESPACE2(llgc, pattern)
+}
 
-START_NAMESPACE3(llgc, utils, tree)
+namespace llgc::utils::tree {
 
 template <typename T>
 class Node;
 
-END_NAMESPACE3(llgc, utils, tree)
+}
 
 /**
  * @brief Namespace for the pattern command.
  */
-START_NAMESPACE3(llgc, utils, undomanager)
+namespace llgc::utils::undomanager {
 
 /**
  * @brief Undomanager able you to undo or redo some commands.
@@ -154,7 +154,7 @@ class Undomanager
   std::unique_ptr<llgc::pattern::AbstractFactory<T, U>>& abstract_factory_;
 };
 
-END_NAMESPACE3(llgc, utils, undomanager)
+}
 
 #endif  // UTILS_UNDOMANAGER_UNDOMANAGER_H_
 

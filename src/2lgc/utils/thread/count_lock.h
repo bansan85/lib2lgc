@@ -24,7 +24,7 @@
 /**
  * @brief Namespace for all classes related with thread.
  */
-START_NAMESPACE3(llgc, utils, thread)
+namespace llgc::utils::thread {
 
 /**
  * @brief Class that increment variable with constructor and decrease with
@@ -118,7 +118,7 @@ class CountLock
   std::function<void()> function_zero_;
 };
 
-END_NAMESPACE3(llgc, utils, thread)
+}
 
 #endif  // UTILS_THREAD_COUNT_LOCK_H_
 

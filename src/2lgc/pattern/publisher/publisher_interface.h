@@ -30,16 +30,16 @@
 /**
  * @brief Google Protobuf stuff.
  */
-START_NAMESPACE2(google, protobuf)
+namespace google::protobuf {
 
 class Message;
 
-END_NAMESPACE2(google, protobuf)
+}
 
 /**
  * @brief Namespace for the pattern publisher.
  */
-START_NAMESPACE3(llgc, pattern, publisher)
+namespace llgc::pattern::publisher {
 
 template <typename T>
 class ConnectorInterface;
@@ -228,7 +228,7 @@ class PublisherInterface
           connector);
 };
 
-END_NAMESPACE3(llgc, pattern, publisher)
+}
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 

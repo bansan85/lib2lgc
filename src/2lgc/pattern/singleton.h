@@ -27,7 +27,7 @@
  * Helper to simply add a singleton to a class.
  */
 
-START_NAMESPACE2(llgc, pattern)
+namespace llgc::pattern {
 
 /**
  * @brief Class that contains the getInstance for a local singleton.
@@ -64,7 +64,7 @@ class Singleton
   std::shared_ptr<T> instance_;
 };
 
-END_NAMESPACE2(llgc, pattern)
+}
 
 #endif  // PATTERN_SINGLETON_H_
 

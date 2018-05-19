@@ -28,7 +28,7 @@
 /**
  * @brief Namespace that have all function that override classic classes.
  */
-START_NAMESPACE2(llgc, text)
+namespace llgc::text {
 
 /**
  * @brief This class allow use of a safe printf.
@@ -84,7 +84,7 @@ class Print
   static bool F(std::ostream &out_stream, const std::string &s);
 };
 
-END_NAMESPACE2(llgc, text)
+}
 
 #endif  // TEXT_PRINTF_H_
 

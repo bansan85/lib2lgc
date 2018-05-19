@@ -26,7 +26,7 @@
 /**
  * @brief This is all about net.
  */
-START_NAMESPACE2(llgc, net)
+namespace llgc::net {
 
 /**
  * @brief Class to manipulate Linux functions.
@@ -109,7 +109,7 @@ class Linux
   };
 };
 
-END_NAMESPACE2(llgc, net)
+}
 
 #endif  // NET_LINUX_H_
 

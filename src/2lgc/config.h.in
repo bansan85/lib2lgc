@@ -19,8 +19,6 @@
 
 #cmakedefine DISABLE_VISITABLE_CACHE
 
-#cmakedefine CPP17_NAMESPACE
-
 #cmakedefine OPENSSL_FOUND
 
 #endif  // CONFIG_H_

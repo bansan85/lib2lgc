@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-START_NAMESPACE2(llgc, math)
+namespace llgc::math {
 
 /**
  * @brief Class that automatically choose the hash function.
@@ -65,7 +65,7 @@ class Hash
   static std::vector<uint8_t> Sha512(const std::string& in);
 };
 
-END_NAMESPACE2(llgc, math)
+}
 
 #endif  // MATH_HASH_H_
 

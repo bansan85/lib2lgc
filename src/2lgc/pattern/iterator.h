@@ -25,7 +25,7 @@
 #include <2lgc/compat.h>
 #include <cstddef>
 
-START_NAMESPACE2(llgc, pattern)
+namespace llgc::pattern {
 
 /**
  * @brief Helper class to implement range-based for loop.
@@ -89,7 +89,7 @@ class Iterator
   size_t pos_;
 };
 
-END_NAMESPACE2(llgc, pattern)
+}
 
 #endif  // PATTERN_ITERATOR_H_
 
