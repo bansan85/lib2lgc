@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_ABSTRACT_FACTORY_ABSTRACT_FACTORY_INTERFACE_H_
-#define PATTERN_ABSTRACT_FACTORY_ABSTRACT_FACTORY_INTERFACE_H_
+#ifndef PATTERN_ABSTRACT_FACTORY_H_
+#define PATTERN_ABSTRACT_FACTORY_H_
 
 #include <2lgc/compat.h>
 #include <cstddef>
@@ -34,17 +34,16 @@ class Message;
 
 END_NAMESPACE2(google, protobuf)
 
-
 /**
- * @brief Namespace for the pattern abstract factory.
+ * @brief Namespace for patterns.
  */
-START_NAMESPACE3(llgc, pattern, abstract_factory)
+START_NAMESPACE2(llgc, pattern)
 
 /**
  * @brief Interface that define an abstract factory.
  */
 template <typename T, typename U>
-class AbstractFactoryInterface
+class AbstractFactory
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
                 "T must be a descendant of ::google::protobuf::Message.");
@@ -56,12 +55,12 @@ class AbstractFactoryInterface
    *
    * @param[in] size Size of the map factory.
    */
-  explicit AbstractFactoryInterface(size_t size) : map_factory_(size) {}
+  explicit AbstractFactory(size_t size) : map_factory_(size) {}
 
   /**
    * @brief Default destructor. Virtual because command is abstract.
    */
-  virtual ~AbstractFactoryInterface() = default;
+  virtual ~AbstractFactory() = default;
 
 #ifndef SWIG
   /**
@@ -69,14 +68,14 @@ class AbstractFactoryInterface
    *
    * @param[in] other The original.
    */
-  AbstractFactoryInterface(AbstractFactoryInterface&& other) = delete;
+  AbstractFactory(AbstractFactory&& other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  AbstractFactoryInterface(AbstractFactoryInterface const& other) = delete;
+  AbstractFactory(AbstractFactory const& other) = delete;
 
   /**
    * @brief Delete the move operator.
@@ -85,8 +84,7 @@ class AbstractFactoryInterface
    *
    * @return Delete function.
    */
-  AbstractFactoryInterface& operator=(AbstractFactoryInterface&& other) & =
-      delete;
+  AbstractFactory& operator=(AbstractFactory&& other) & = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -95,8 +93,7 @@ class AbstractFactoryInterface
    *
    * @return Delete function.
    */
-  AbstractFactoryInterface& operator=(AbstractFactoryInterface const& other) & =
-      delete;
+  AbstractFactory& operator=(AbstractFactory const& other) & = delete;
 #endif  // !SWIG
 
   /**
@@ -115,8 +112,8 @@ class AbstractFactoryInterface
   std::vector<std::function<std::unique_ptr<U>(const T&)>> map_factory_;
 };
 
-END_NAMESPACE3(llgc, pattern, abstract_factory)
+END_NAMESPACE2(llgc, pattern)
 
-#endif  // PATTERN_ABSTRACT_FACTORY_ABSTRACT_FACTORY_INTERFACE_H_
+#endif  // PATTERN_ABSTRACT_FACTORY_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

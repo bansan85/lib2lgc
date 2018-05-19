@@ -22,8 +22,6 @@
 #include <cxxabi.h>
 #include <sys/wait.h>
 #include <unistd.h>
-#include <2lgc/pattern/publisher/publisher_interface.cc>
-#include <2lgc/pattern/singleton/singleton.cc>
 #include <algorithm>
 #include <cerrno>
 #include <chrono>
@@ -38,6 +36,9 @@
 #include <thread>
 #include <type_traits>
 #include <vector>
+
+#include <2lgc/pattern/publisher/publisher_interface.cc>
+#include <2lgc/pattern/singleton.cc>
 
 llgc::software::gdb::GdbServer llgc::software::gdb::Gdb::server_;
 

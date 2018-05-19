@@ -49,8 +49,7 @@ class ConnectorSubscriberTcp : public ConnectorInterface<T>
    * @param[in] socket_fd Socket to communicate with client.
    */
   ConnectorSubscriberTcp(
-      std::shared_ptr<llgc::pattern::publisher::SubscriberInterface<T>>
-          subscriber,  // NS
+      std::shared_ptr<SubscriberInterface<T>> subscriber,  // NS
       int socket_fd);
 
   /**

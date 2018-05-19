@@ -17,6 +17,7 @@
 #ifndef PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 #define PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <cstdint>
 

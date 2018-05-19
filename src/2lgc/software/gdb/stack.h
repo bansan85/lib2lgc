@@ -23,7 +23,7 @@
 #define SOFTWARE_GDB_STACK_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/iterator/iterator.h>
+#include <2lgc/pattern/iterator.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <cstddef>
 #include <ext/alloc_traits.h>
@@ -46,7 +46,7 @@ class Stack
   /**
    * @brief Iterator for Stack.
    */
-  class Iter : public llgc::pattern::iterator::Iterator<SetStack, Stack>
+  class Iter : public llgc::pattern::Iterator<SetStack, Stack>
   {
    public:
     /**
@@ -56,7 +56,7 @@ class Stack
      * @param[in] pos The position of the current stack.
      */
     Iter(const SetStack& set_stack, size_t pos)
-        : llgc::pattern::iterator::Iterator<SetStack, Stack>(set_stack, pos)
+        : llgc::pattern::Iterator<SetStack, Stack>(set_stack, pos)
     {
     }
 

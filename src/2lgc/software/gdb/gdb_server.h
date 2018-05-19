@@ -23,7 +23,7 @@
 #define SOFTWARE_GDB_GDB_SERVER_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/singleton/singleton.h>
+#include <2lgc/pattern/singleton.h>
 #include <string>
 
 /**
@@ -53,9 +53,9 @@ START_NAMESPACE3(llgc, software, gdb)
 /**
  * @brief Class to run gdb for various purpose.
  */
-class GdbServer : public llgc::pattern::singleton::Local<
-                      llgc::pattern::publisher::PublisherDirect<
-                          llgc::protobuf::software::Gdb>>
+class GdbServer
+    : public llgc::pattern::Singleton<llgc::pattern::publisher::PublisherDirect<
+          llgc::protobuf::software::Gdb>>
 {
  public:
   /**

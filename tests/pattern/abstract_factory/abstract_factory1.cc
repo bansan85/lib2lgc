@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/abstract_factory/abstract_factory_interface.h>
+#include <2lgc/pattern/abstract_factory.h>
 #include <abstract_factory.pb.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <ext/alloc_traits.h>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <string>
 #include <utility>
 #include <vector>
 
-#include <2lgc/pattern/abstract_factory/abstract_factory_interface.cc>
+#include <2lgc/pattern/abstract_factory.cc>
 
 class CommonCommand
 {
@@ -72,7 +71,7 @@ class CommonCommand
   virtual bool Check() = 0;
 };
 
-template class llgc::pattern::abstract_factory::AbstractFactoryInterface<
+template class llgc::pattern::AbstractFactory<
     llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>;
 
 class CommandTest : public CommonCommand
@@ -123,14 +122,12 @@ class CommandTest : public CommonCommand
   bool member_{false};
 };
 
-class Factory
-    : public llgc::pattern::abstract_factory::AbstractFactoryInterface<
-          llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>
+class Factory : public llgc::pattern::AbstractFactory<
+                    llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>
 {
  public:
   Factory()
-      : AbstractFactoryInterface(
-            llgc::protobuf::test::AbstractFactoryMsg::kTest + 1)
+      : AbstractFactory(llgc::protobuf::test::AbstractFactoryMsg::kTest + 1)
   {
     map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] =
         std::bind(&Factory::GetTest, this, std::placeholders::_1);

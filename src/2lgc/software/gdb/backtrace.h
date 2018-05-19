@@ -23,7 +23,7 @@
 #define SOFTWARE_GDB_BACKTRACE_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/iterator/iterator.h>
+#include <2lgc/pattern/iterator.h>
 #include <2lgc/software/gdb/function.h>
 #include <cstddef>
 #include <cstdint>
@@ -42,7 +42,7 @@ class Backtrace
   /**
    * @brief Iterator for Backtrace.
    */
-  class Iter : public llgc::pattern::iterator::Iterator<Stack, Backtrace>
+  class Iter : public llgc::pattern::Iterator<Stack, Backtrace>
   {
    public:
     /**
@@ -52,7 +52,7 @@ class Backtrace
      * @param[in] pos The position of the current backtrace.
      */
     Iter(const Stack& stack, size_t pos)
-        : llgc::pattern::iterator::Iterator<Stack, Backtrace>(stack, pos)
+        : llgc::pattern::Iterator<Stack, Backtrace>(stack, pos)
     {
     }
 

@@ -40,15 +40,34 @@ typedef SSIZE_T ssize_t;
 #endif  // defined(_MSC_VER)
 
 #ifdef CPP17_NAMESPACE
-#define START_NAMESPACE2(X, Y) namespace X::Y {
+#define START_NAMESPACE2(X, Y) \
+  namespace X::Y               \
+  {
 #define END_NAMESPACE2(X, Y) }
-#define START_NAMESPACE3(X, Y, Z) namespace X::Y::Z {
+#define START_NAMESPACE3(X, Y, Z) \
+  namespace X::Y::Z               \
+  {
 #define END_NAMESPACE3(X, Y, Z) }
 #else
-#define START_NAMESPACE2(X, Y) namespace X { namespace Y {
-#define END_NAMESPACE2(X, Y) } }
-#define START_NAMESPACE3(X, Y, Z) namespace X { namespace Y { namespace Z {
-#define END_NAMESPACE3(X, Y, Z) } } }
+#define START_NAMESPACE2(X, Y) \
+  namespace X                  \
+  {                            \
+  namespace Y                  \
+  {
+#define END_NAMESPACE2(X, Y) \
+  }                          \
+  }
+#define START_NAMESPACE3(X, Y, Z) \
+  namespace X                     \
+  {                               \
+  namespace Y                     \
+  {                               \
+  namespace Z                     \
+  {
+#define END_NAMESPACE3(X, Y, Z) \
+  }                             \
+  }                             \
+  }
 #endif
 
 #endif  // COMPAT_H_

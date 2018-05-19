@@ -348,10 +348,11 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
     #-whitespace/line_length: clang-format do what he can.
     #-build/include: implementation of template with template class in source instead of header needs include .cc.
     #-whitespace/parens: clang-format do the job.
+    #-readability/fn_size: lint fails to parse END_NAMESPACE2.
     find_program(CPPLINT cpplint.py)
     if (CPPLINT)
       add_custom_command(TARGET check
-        COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens ${sources})
+        COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-readability/fn_size ${sources})
     endif()
     if (${enable_coverage})
       add_custom_command(TARGET check

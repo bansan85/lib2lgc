@@ -19,13 +19,13 @@
  * @brief Interface for the ranged-base loop iterator.
  */
 
-#ifndef PATTERN_ITERATOR_ITERATOR_H_
-#define PATTERN_ITERATOR_ITERATOR_H_
+#ifndef PATTERN_ITERATOR_H_
+#define PATTERN_ITERATOR_H_
 
 #include <2lgc/compat.h>
 #include <cstddef>
 
-START_NAMESPACE3(llgc, pattern, iterator)
+START_NAMESPACE2(llgc, pattern)
 
 /**
  * @brief Helper class to implement range-based for loop.
@@ -89,8 +89,8 @@ class Iterator
   size_t pos_;
 };
 
-END_NAMESPACE3(llgc, pattern, iterator)
+END_NAMESPACE2(llgc, pattern)
 
-#endif  // PATTERN_ITERATOR_ITERATOR_H_
+#endif  // PATTERN_ITERATOR_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

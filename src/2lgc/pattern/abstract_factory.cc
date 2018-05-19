@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/abstract_factory/abstract_factory_interface.h>
+#include <2lgc/pattern/abstract_factory.h>
 
 #include <iostream>
 
 template <typename T, typename U>
-std::unique_ptr<U>
-llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>::Create(
+std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
     const std::string& message)
 {
   T message_t;

@@ -18,14 +18,14 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/singleton/singleton.h>
+#include <2lgc/pattern/singleton.h>
 #include <2lgc/software/gdb/gdb_server.h>
 #include <memory>
 #include <string>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
-#include <2lgc/pattern/singleton/singleton.cc>
+#include <2lgc/pattern/singleton.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::software::Gdb>;
@@ -33,7 +33,7 @@ template class llgc::pattern::publisher::PublisherInterface<
     llgc::protobuf::software::Gdb,
     std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<
         llgc::protobuf::software::Gdb>>>;
-template class llgc::pattern::singleton::Local<
+template class llgc::pattern::Singleton<
     llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 
 bool llgc::software::gdb::GdbServer::Forward(const std::string& message)

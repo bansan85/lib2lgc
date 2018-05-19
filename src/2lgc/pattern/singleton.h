@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_SINGLETON_SINGLETON_H_
-#define PATTERN_SINGLETON_SINGLETON_H_
+#ifndef PATTERN_SINGLETON_H_
+#define PATTERN_SINGLETON_H_
 
 #include <2lgc/compat.h>
 #include <memory>
@@ -26,7 +26,8 @@
  *
  * Helper to simply add a singleton to a class.
  */
-START_NAMESPACE3(llgc, pattern, singleton)
+
+START_NAMESPACE2(llgc, pattern)
 
 /**
  * @brief Class that contains the getInstance for a local singleton.
@@ -34,7 +35,7 @@ START_NAMESPACE3(llgc, pattern, singleton)
  * @tparam T Type of the singleton.
  */
 template <class T>
-class Local
+class Singleton
 {
  public:
   /**
@@ -63,8 +64,8 @@ class Local
   std::shared_ptr<T> instance_;
 };
 
-END_NAMESPACE3(llgc, pattern, singleton)
+END_NAMESPACE2(llgc, pattern)
 
-#endif  // PATTERN_SINGLETON_SINGLETON_H_
+#endif  // PATTERN_SINGLETON_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

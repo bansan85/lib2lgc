@@ -18,12 +18,17 @@
 #define UTILS_UNDOMANAGER_UNDOMANAGER_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/abstract_factory/abstract_factory_interface.h>
 #include <cstddef>
-#include <functional>
 #include <memory>
 #include <string>
 #include <vector>
+
+START_NAMESPACE2(llgc, pattern)
+
+template <typename T, typename U>
+class AbstractFactory;
+
+END_NAMESPACE2(llgc, pattern)
 
 START_NAMESPACE3(llgc, utils, tree)
 
@@ -53,19 +58,22 @@ class Undomanager
   /**
    * @brief Default constructor and create an empty undomanager.
    *
-   * @param[in,out] abstract_factory The abstract factory that convert a
+   * @param[in] abstract_factory The abstract factory that convert a
    * std::string from a protobuf message to a command interface.
    */
-  explicit Undomanager(std::unique_ptr<llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>> &abstract_factory);
+  explicit Undomanager(
+      std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory);
 
   /**
    * @brief Default constructor and load an undomanager from a file.
    *
-   * @param[in,out] abstract_factory The abstract factory that convert a
+   * @param[in] abstract_factory The abstract factory that convert a
    * std::string from a protobuf message to a command interface.
-   * @param[in,out] file The file to load.
+   * @param[in] file The file to load.
    */
-  Undomanager(std::unique_ptr<llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>> &abstract_factory, const std::string file);
+  Undomanager(
+      std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory,
+      const std::string& file);
 
   /**
    * @brief Add a command to the undomanager.
@@ -143,7 +151,7 @@ class Undomanager
   /**
    * @brief Abstract factory that convert string to Command.
    */
-  std::unique_ptr<llgc::pattern::abstract_factory::AbstractFactoryInterface<T, U>> &abstract_factory_;
+  std::unique_ptr<llgc::pattern::AbstractFactory<T, U>>& abstract_factory_;
 };
 
 END_NAMESPACE3(llgc, utils, undomanager)

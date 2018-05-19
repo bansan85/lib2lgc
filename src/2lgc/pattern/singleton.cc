@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/singleton/singleton.h>
+#include <2lgc/pattern/singleton.h>
 
 template <class T>
-bool llgc::pattern::singleton::Local<T>::IsInstance()
+bool llgc::pattern::Singleton<T>::IsInstance()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_);
 
@@ -25,7 +25,7 @@ bool llgc::pattern::singleton::Local<T>::IsInstance()
 }
 
 template <class T>
-std::shared_ptr<T> llgc::pattern::singleton::Local<T>::GetInstance()
+std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_);
 

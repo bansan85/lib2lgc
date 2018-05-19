@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_COMMAND_UNDO_INTERFACE_H_
-#define PATTERN_COMMAND_UNDO_INTERFACE_H_
+#ifndef PATTERN_COMMAND_COMMAND_UNDO_H_
+#define PATTERN_COMMAND_COMMAND_UNDO_H_
 
 #include <2lgc/compat.h>
 #include <chrono>
@@ -61,6 +61,8 @@ class UndoInterface
   /**
    * @brief Return a protobuf message to redo if command is redoable.
    *
+   * @param[out] command Return the new command in protobuf serialize format.
+   *
    * @return true if success. If fails, command parameter is untouched.
    */
   virtual bool Redo(std::string* command) = 0;
@@ -101,6 +103,6 @@ class UndoInterface
 
 END_NAMESPACE3(llgc, pattern, command)
 
-#endif  // PATTERN_COMMAND_UNDO_INTERFACE_H_
+#endif  // PATTERN_COMMAND_COMMAND_UNDO_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
