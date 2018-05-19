@@ -1,2 +1,4 @@
 /build
 *.swp
+/src/swig/*.java
+/src/swig/*.cxx

@@ -17,8 +17,8 @@
 #include "../2lgc/math/compare_decimal.h"
 #include "../2lgc/math/hash.h"
 #include "../2lgc/net/linux.h"
-#include "../2lgc/pattern/abstract_factory/abstract_factory_interface.h"
-#include "../2lgc/pattern/iterator/iterator.h"
+#include "../2lgc/pattern/abstract_factory.h"
+#include "../2lgc/pattern/iterator.h"
 #include "../2lgc/pattern/publisher/connector_direct.h"
 #include "../2lgc/pattern/publisher/connector_interface.h"
 #include "../2lgc/pattern/publisher/connector_publisher_tcp.h"
@@ -34,7 +34,7 @@
 #include "../2lgc/pattern/publisher/subscriber_direct.h"
 #include "../2lgc/pattern/publisher/subscriber_interface.h"
 #include "../2lgc/pattern/publisher/subscriber_server_tcp.h"
-#include "../2lgc/pattern/singleton/singleton.h"
+#include "../2lgc/pattern/singleton.h"
 #include "../2lgc/pattern/visitor/visitable.h"
 #include "../2lgc/pattern/visitor/visitor.h"
 #include "../2lgc/poco/number.h"
@@ -62,8 +62,8 @@
 %include "../2lgc/math/compare_decimal.h"
 %include "../2lgc/math/hash.h"
 %include "../2lgc/net/linux.h"
-%include "../2lgc/pattern/abstract_factory/abstract_factory_interface.h"
-%include "../2lgc/pattern/iterator/iterator.h"
+%include "../2lgc/pattern/abstract_factory.h"
+%include "../2lgc/pattern/iterator.h"
 %include "../2lgc/pattern/publisher/connector_direct.h"
 %include "../2lgc/pattern/publisher/connector_interface.h"
 %include "../2lgc/pattern/publisher/connector_publisher_tcp.h"
@@ -79,7 +79,7 @@
 %include "../2lgc/pattern/publisher/subscriber_direct.h"
 %include "../2lgc/pattern/publisher/subscriber_interface.h"
 %include "../2lgc/pattern/publisher/subscriber_server_tcp.h"
-%include "../2lgc/pattern/singleton/singleton.h"
+%include "../2lgc/pattern/singleton.h"
 %include "../2lgc/pattern/visitor/visitable.h"
 
 
@@ -98,18 +98,18 @@
 %include "../2lgc/poco/number_visitor_unit.h"
 %include "../2lgc/poco/number_visitor_value.h"
 
-%template(iterator_stack_backtrace) llgc::pattern::iterator::Iterator<llgc::software::gdb::Stack, llgc::software::gdb::Backtrace>;
+%template(iterator_stack_backtrace) llgc::pattern::Iterator<llgc::software::gdb::Stack, llgc::software::gdb::Backtrace>;
 
 %include "../2lgc/software/gdb/backtrace.h"
 %include "../2lgc/software/gdb/function.h"
 %include "../2lgc/software/gdb/gdb.h"
 
-%template(local_publisher_direct_gdb) llgc::pattern::singleton::Local<llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
+%template(local_publisher_direct_gdb) llgc::pattern::Singleton<llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 
 %include "../2lgc/software/gdb/gdb_server.h"
 %include "../2lgc/software/gdb/set_stack.h"
 
-%template(iterator_set_stack_stack) llgc::pattern::iterator::Iterator<llgc::software::gdb::SetStack, llgc::software::gdb::Stack>;
+%template(iterator_set_stack_stack) llgc::pattern::Iterator<llgc::software::gdb::SetStack, llgc::software::gdb::Stack>;
 
 %include "../2lgc/software/gdb/stack.h"
 %include "../2lgc/text/printf.h"
