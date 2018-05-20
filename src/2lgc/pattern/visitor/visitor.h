@@ -25,8 +25,8 @@
  *
  * This header is used has base for visitors in the pattern visitor.
  */
-namespace llgc::pattern::visitor {
-
+namespace llgc::pattern::visitor
+{
 /**
  * @brief Common class for all visitors.
  */
@@ -66,7 +66,7 @@ class Visitor
   virtual bool Visit(const T &data, std::string *return_value) const CHK = 0;
 };
 
-}
+}  // namespace llgc::pattern::visitor
 
 #endif  // PATTERN_VISITOR_VISITOR_H_
 

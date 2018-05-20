@@ -14,13 +14,8 @@
  * limitations under the License.
  */
 
-/**
- * @file hash.h
- * @brief Use function hash based on OpenSSL presence.
- */
-
-#ifndef UTILS_TREE_NODE_H_
-#define UTILS_TREE_NODE_H_
+#ifndef UTILS_TREE_H_
+#define UTILS_TREE_H_
 
 #include <2lgc/compat.h>
 #include <cstddef>
@@ -28,15 +23,15 @@
 #include <memory>
 #include <vector>
 
-namespace llgc::utils::tree {
-
+namespace llgc::utils
+{
 /**
- * @brief Node of the unidirectional tree. Composite pattern.
+ * @brief Node of the bidirectional tree. Composite pattern.
  *
  * @tparam T The type of the elements.
  */
 template <typename T>
-class Node
+class Tree
 {
  public:
   /**
@@ -46,7 +41,7 @@ class Node
    * @param[in] data The element.
    * @param[in] parent Parent of the node. nullptr if root of the tree.
    */
-  Node(size_t id, std::unique_ptr<T> data, Node<T>* parent);
+  Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent);
 
   /**
    * @brief Add a child to the node.
@@ -56,7 +51,7 @@ class Node
    *
    * @return A pointer to the new child. nullptr if AddChild fails.
    */
-  Node<T>* AddChild(std::unique_ptr<T> child, size_t id) CHK;
+  Tree<T>* AddChild(std::unique_ptr<T> child, size_t id) CHK;
 
   /**
    * @brief Find by recursion a path from the current node to the end of the
@@ -79,7 +74,7 @@ class Node
    *
    * @return The node if found. nullptr if failed.
    */
-  Node<T>* FindNode(size_t id) { return FindNode(id, id_); }
+  Tree<T>* FindNode(size_t id) { return FindNode(id, id_); }
 
   /**
    * @brief Get the id of the node.
@@ -102,12 +97,12 @@ class Node
   /**
    * @brief Parent of the node.
    */
-  Node<T>* parent_;
+  Tree<T>* parent_;
 
   /**
    * @brief List of children.
    */
-  std::vector<std::unique_ptr<Node<T>>> children_;
+  std::vector<std::unique_ptr<Tree<T>>> children_;
 
   /**
    * @brief Find by recursion a path from the current node to the end of the
@@ -119,7 +114,7 @@ class Node
    *
    * @return true if found. path is fill only if return value is true.
    */
-  bool FindPath(const Node<T>* previous, size_t end,
+  bool FindPath(const Tree<T>* previous, size_t end,
                 std::deque<T*>* path) const CHK;
 
   /**
@@ -130,11 +125,11 @@ class Node
    *
    * @return The node if found. nullptr if failed.
    */
-  Node<T>* FindNode(size_t id, size_t previous);
+  Tree<T>* FindNode(size_t id, size_t previous);
 };
 
-}
+}  // namespace llgc::utils
 
-#endif  // UTILS_TREE_NODE_H_
+#endif  // UTILS_TREE_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -24,8 +24,8 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 /**
  * @brief Server that will be used to managed subscribers and to keep and send
  *        messages.
@@ -77,7 +77,7 @@ class PublisherDirect
 #endif  // !SWIG
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_DIRECT_H_
 

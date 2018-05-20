@@ -19,29 +19,28 @@
 
 #include <2lgc/compat.h>
 #include <cstddef>
+#include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace llgc::pattern {
-
+namespace llgc::pattern
+{
 template <typename T, typename U>
 class AbstractFactory;
-
 }
 
-namespace llgc::utils::tree {
-
+namespace llgc::utils::tree
+{
 template <typename T>
 class Node;
-
 }
 
 /**
  * @brief Namespace for the pattern command.
  */
-namespace llgc::utils::undomanager {
-
+namespace llgc::utils::undomanager
+{
 /**
  * @brief Undomanager able you to undo or redo some commands.
  * Command have id. The id could also be the version of the project that use
@@ -164,7 +163,7 @@ class Undomanager
   std::map<size_t, std::string> users_;
 };
 
-}
+}  // namespace llgc::utils::undomanager
 
 #endif  // UTILS_UNDOMANAGER_UNDOMANAGER_H_
 

@@ -26,8 +26,8 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 template <typename T>
 class SubscriberInterface;
 
@@ -139,7 +139,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
   std::shared_ptr<PublisherDirect<T>> server_;
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_CONNECTOR_DIRECT_H_
 

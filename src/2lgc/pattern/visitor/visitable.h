@@ -27,8 +27,8 @@
  * This header is used has base for every class that a visitor would like to
  * visit.
  */
-namespace llgc::pattern::visitor {
-
+namespace llgc::pattern::visitor
+{
 /**
  * @brief Common class to allow a class to be visited. This class is used to
  *        force the implementation of the Accept method with the right
@@ -124,7 +124,7 @@ class InterfaceVisitable
   M message_;
 };
 
-}
+}  // namespace llgc::pattern::visitor
 
 #endif  // PATTERN_VISITOR_VISITABLE_H_
 

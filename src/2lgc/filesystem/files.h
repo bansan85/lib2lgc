@@ -21,8 +21,8 @@
 #include <string>
 #include <vector>
 
-namespace llgc::filesystem {
-
+namespace llgc::filesystem
+{
 /**
  * @brief Class that manipulate the filesystem.
  */
@@ -43,7 +43,7 @@ class Files
                                    std::vector<std::string>* files) CHK;
 };
 
-}
+}  // namespace llgc::filesystem
 
 #endif  // FILESYSTEM_FILES_H_
 

@@ -22,14 +22,12 @@
 #ifndef MATH_HASH_H_
 #define MATH_HASH_H_
 
-#include <2lgc/compat.h>
-
 #include <cstdint>
 #include <string>
 #include <vector>
 
-namespace llgc::math {
-
+namespace llgc::math
+{
 /**
  * @brief Class that automatically choose the hash function.
  */
@@ -65,7 +63,7 @@ class Hash
   static std::vector<uint8_t> Sha512(const std::string& in);
 };
 
-}
+}  // namespace llgc::math
 
 #endif  // MATH_HASH_H_
 

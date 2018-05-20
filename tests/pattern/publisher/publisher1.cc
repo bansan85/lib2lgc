@@ -19,7 +19,7 @@
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/subscriber_direct.h>
-#include <2lgc/utils/thread/count_lock.h>
+#include <2lgc/utils/count_lock.h>
 #include <direct.pb.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>

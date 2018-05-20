@@ -25,17 +25,16 @@
 /**
  * @brief Google Protobuf stuff.
  */
-namespace google::protobuf {
-
+namespace google::protobuf
+{
 class Message;
-
 }
 
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 template <typename T>
 class ConnectorInterface;
 
@@ -77,7 +76,7 @@ class SubscriberInterface
   virtual ~SubscriberInterface() {}
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_INTERFACE_H_
 

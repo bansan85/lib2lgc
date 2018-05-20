@@ -24,8 +24,8 @@
 /**
  * @brief This is all about net.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 /**
  * @brief Interface to create a TCP server.
  */
@@ -48,7 +48,7 @@ class PublisherTcpLinuxIpv6 : public PublisherTcpLinux<T>
   bool Listen() override CHK;
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_IPV6_H_
 

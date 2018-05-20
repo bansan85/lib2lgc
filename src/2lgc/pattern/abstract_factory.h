@@ -17,7 +17,6 @@
 #ifndef PATTERN_ABSTRACT_FACTORY_H_
 #define PATTERN_ABSTRACT_FACTORY_H_
 
-#include <2lgc/compat.h>
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -28,17 +27,16 @@
 /**
  * @brief Google Protobuf stuff.
  */
-namespace google::protobuf {
-
+namespace google::protobuf
+{
 class Message;
-
 }
 
 /**
  * @brief Namespace for patterns.
  */
-namespace llgc::pattern {
-
+namespace llgc::pattern
+{
 /**
  * @brief Interface that define an abstract factory.
  */
@@ -112,7 +110,7 @@ class AbstractFactory
   std::vector<std::function<std::unique_ptr<U>(const T&)>> map_factory_;
 };
 
-}
+}  // namespace llgc::pattern
 
 #endif  // PATTERN_ABSTRACT_FACTORY_H_
 

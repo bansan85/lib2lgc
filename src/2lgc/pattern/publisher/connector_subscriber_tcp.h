@@ -26,8 +26,8 @@
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 template <typename T>
 class SubscriberInterface;
 
@@ -135,7 +135,7 @@ class ConnectorSubscriberTcp : public ConnectorInterface<T>
   int socket_;  // NS
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_TCP_H_
 

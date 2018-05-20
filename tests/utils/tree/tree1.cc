@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <2lgc/utils/tree/node.h>
+#include <2lgc/utils/tree.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <deque>
@@ -23,7 +23,7 @@
 #include <string>
 #include <utility>
 
-#include <2lgc/utils/tree/node.cc>
+#include <2lgc/utils/tree.cc>
 
 /**
  * @brief Test class.
@@ -44,7 +44,7 @@ class T
   std::string nom_;
 };
 
-template class llgc::utils::tree::Node<T>;
+template class llgc::utils::Tree<T>;
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
@@ -63,16 +63,16 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   // |
   // 4
 
-  llgc::utils::tree::Node<T> root(0, std::move(t0), nullptr);
+  llgc::utils::Tree<T> root(0, std::move(t0), nullptr);
   assert(root.AddChild(std::move(t1), 1) != nullptr);
   assert(root.AddChild(std::move(t1), 0) == nullptr);
   assert(root.AddChild(std::move(t2), 2) != nullptr);
   assert(root.AddChild(std::move(t2), 1) == nullptr);
-  llgc::utils::tree::Node<T>* n1 = root.FindNode(1);
+  llgc::utils::Tree<T>* n1 = root.FindNode(1);
   assert(n1 != nullptr);
   assert(n1->AddChild(std::move(t3), 3) != nullptr);
   assert(n1->AddChild(std::move(t5), 5) != nullptr);
-  llgc::utils::tree::Node<T>* n3 = root.FindNode(3);
+  llgc::utils::Tree<T>* n3 = root.FindNode(3);
   assert(n3 != nullptr);
   assert(n3->AddChild(std::move(t4), 4) != nullptr);
   assert(n3->FindNode(2) != nullptr);

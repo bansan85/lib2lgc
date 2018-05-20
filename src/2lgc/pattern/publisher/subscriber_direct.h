@@ -17,15 +17,14 @@
 #ifndef PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 #define PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 
-#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <cstdint>
 
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 /**
  * @brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
@@ -100,7 +99,7 @@ class SubscriberDirect : public SubscriberInterface<T>
   const uint32_t id_;
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
 

@@ -114,5 +114,5 @@
 %include "../2lgc/software/gdb/stack.h"
 %include "../2lgc/text/printf.h"
 %include "../2lgc/text/string_ext.h"
-%include "../2lgc/utils/thread/count_lock.h"
-%include "../2lgc/utils/tree/node.h"
+%include "../2lgc/utils/count_lock.h"
+%include "../2lgc/utils/node.h"

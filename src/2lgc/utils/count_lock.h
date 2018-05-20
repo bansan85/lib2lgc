@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef UTILS_THREAD_COUNT_LOCK_H_
-#define UTILS_THREAD_COUNT_LOCK_H_
+#ifndef UTILS_COUNT_LOCK_H_
+#define UTILS_COUNT_LOCK_H_
 
 #include <2lgc/compat.h>
 #include <functional>
@@ -24,8 +24,8 @@
 /**
  * @brief Namespace for all classes related with thread.
  */
-namespace llgc::utils::thread {
-
+namespace llgc::utils::thread
+{
 /**
  * @brief Class that increment variable with constructor and decrease with
  * destrctor.
@@ -118,8 +118,8 @@ class CountLock
   std::function<void()> function_zero_;
 };
 
-}
+}  // namespace llgc::utils::thread
 
-#endif  // UTILS_THREAD_COUNT_LOCK_H_
+#endif  // UTILS_COUNT_LOCK_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

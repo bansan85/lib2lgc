@@ -27,6 +27,9 @@
 
 #include <2lgc/pattern/abstract_factory.cc>
 
+/**
+ * @brief Interface of a command.
+ */
 class CommonCommand
 {
  public:
@@ -74,6 +77,9 @@ class CommonCommand
 template class llgc::pattern::AbstractFactory<
     llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>;
 
+/**
+ * @brief Example of implementation of command.
+ */
 class CommandTest : public CommonCommand
 {
  public:
@@ -122,6 +128,9 @@ class CommandTest : public CommonCommand
   bool member_{false};
 };
 
+/**
+ * @brief Example of factory.
+ */
 class Factory : public llgc::pattern::AbstractFactory<
                     llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>
 {

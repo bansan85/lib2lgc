@@ -17,14 +17,13 @@
 #ifndef PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
 #define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
 
-#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 /**
  * @brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
@@ -108,7 +107,7 @@ class SubscriberServerTcp : public SubscriberInterface<T>
   const int socket_;  // NS
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_H_
 

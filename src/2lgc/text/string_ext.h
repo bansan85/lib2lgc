@@ -17,15 +17,14 @@
 #ifndef TEXT_STRING_EXT_H_
 #define TEXT_STRING_EXT_H_
 
-#include <2lgc/compat.h>
 #include <string>
 #include <vector>
 
 /**
  * @brief Namespace that have all function that override classic classes.
  */
-namespace llgc::text {
-
+namespace llgc::text
+{
 /**
  * @brief This class extend std::string.
  */
@@ -47,7 +46,7 @@ class StringExt
                           const std::string& delimiter);
 };
 
-}
+}  // namespace llgc::text
 
 #endif  // TEXT_STRING_EXT_H_
 

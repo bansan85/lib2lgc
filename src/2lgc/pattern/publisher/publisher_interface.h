@@ -18,7 +18,7 @@
 #define PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/utils/thread/count_lock.h>
+#include <2lgc/utils/count_lock.h>
 #include <cstddef>
 #include <cstdint>
 #include <map>
@@ -30,17 +30,16 @@
 /**
  * @brief Google Protobuf stuff.
  */
-namespace google::protobuf {
-
+namespace google::protobuf
+{
 class Message;
-
 }
 
 /**
  * @brief Namespace for the pattern publisher.
  */
-namespace llgc::pattern::publisher {
-
+namespace llgc::pattern::publisher
+{
 template <typename T>
 class ConnectorInterface;
 
@@ -228,7 +227,7 @@ class PublisherInterface
           connector);
 };
 
-}
+}  // namespace llgc::pattern::publisher
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 

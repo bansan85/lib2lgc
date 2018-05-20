@@ -20,31 +20,30 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/utils/tree/node.h>
+#include <2lgc/utils/tree.h>
 
 template <typename T>
-llgc::utils::tree::Node<T>::Node(size_t id, std::unique_ptr<T> data,
-                                 Node<T>* parent)
+llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent)
     : id_(id), data_(std::move(data)), parent_(parent), children_()
 {
 }
 
 template <typename T>
-llgc::utils::tree::Node<T>* llgc::utils::tree::Node<T>::AddChild(
-    std::unique_ptr<T> child, size_t id)
+llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child,
+                                                     size_t id)
 {
   if (FindNode(id, id_) != nullptr)
   {
     return nullptr;
   }
   children_.push_back(
-      std::move(std::make_unique<Node<T>>(id, std::move(child), this)));
+      std::move(std::make_unique<Tree<T>>(id, std::move(child), this)));
   return children_.back().get();
 }
 
 template <typename T>
-bool llgc::utils::tree::Node<T>::FindPath(const Node<T>* previous, size_t end,
-                                          std::deque<T*>* path) const
+bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
+                                    std::deque<T*>* path) const
 {
   BUGPARAM(path, path != nullptr, false);
   // In case the start is the end.
@@ -84,8 +83,7 @@ bool llgc::utils::tree::Node<T>::FindPath(const Node<T>* previous, size_t end,
 }
 
 template <typename T>
-llgc::utils::tree::Node<T>* llgc::utils::tree::Node<T>::FindNode(
-    size_t id, size_t previous)
+llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id, size_t previous)
 {
   // In case the start is the end.
   if (id_ == id)
@@ -101,7 +99,7 @@ llgc::utils::tree::Node<T>* llgc::utils::tree::Node<T>::FindNode(
     {
       continue;
     }
-    Node<T>* retval = children_[i]->FindNode(id, id_);
+    Tree<T>* retval = children_[i]->FindNode(id, id_);
     if (retval != nullptr)
     {
       return retval;
@@ -115,7 +113,7 @@ llgc::utils::tree::Node<T>* llgc::utils::tree::Node<T>::FindNode(
   }
   if (parent_ != nullptr)
   {
-    Node<T>* retval = parent_->FindNode(id, id_);
+    Tree<T>* retval = parent_->FindNode(id, id_);
     if (retval != nullptr)
     {
       return retval;
