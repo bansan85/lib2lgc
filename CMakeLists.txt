@@ -25,6 +25,13 @@ include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_custom_target(check)
 
+find_program(SWIG swig)
+if (SWIG)
+  string(REPLACE "swig/swig" "swig" SWIG_INCLUDE ${SWIG})
+  add_custom_command(TARGET check
+    COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/src/swig && ${SWIG} -c++ -java -I${SWIG_INCLUDE}/Lib -I${SWIG_INCLUDE}/Lib/java -outdir ${CMAKE_CURRENT_BINARY_DIR}/src/swig lib2lgc.i)
+endif()
+
 file(GLOB_RECURSE ALL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
 
 add_subdirectory(src)

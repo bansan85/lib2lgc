@@ -1,4 +1,5 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/2lgc/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/2lgc/config.h)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/swig/lib2lgc.i.in ${CMAKE_CURRENT_BINARY_DIR}/swig/lib2lgc.i)
 
 add_subdirectory(2lgc/poco)
 
