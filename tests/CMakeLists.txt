@@ -62,6 +62,13 @@ add_dependencies(gdb4 deadbeef)
 add_executable(tree1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/utils/tree/tree1.cc)
 
+protobuf_generate_cpp(UNDO_COMMAND_ADD_PROTO_SRC UNDO_COMMAND_ADD_PROTO_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/utils/undomanager/undo_command1.proto)
+set_source_files_properties(${UNDO_COMMAND_ADD_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/utils/undomanager/undomanager1.cc
+  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
+add_executable(undomanager1 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/utils/undomanager/undomanager1.cc
+  ${UNDO_COMMAND_ADD_PROTO_SRC})
 
 target_link_libraries(files1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(compare_decimal1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
@@ -82,6 +89,8 @@ target_link_libraries(gdb2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb3 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb4 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(tree1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
+target_include_directories(undomanager1 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/utils/undomanager)
+target_link_libraries(undomanager1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 
 add_test(files1 files1)
 add_test(compare_decimal1 compare_decimal1)
@@ -102,6 +111,7 @@ add_custom_command(TARGET gdb4 PRE_BUILD
   COMMAND echo "${CMAKE_CURRENT_BINARY_DIR}/deadbeef" > "${CMAKE_CURRENT_BINARY_DIR}/deadbeef.list")
 add_test(gdb4 gdb4 "${CMAKE_CURRENT_BINARY_DIR}")
 add_test(tree1 tree1)
+add_test(undomanager1 undomanager1)
 
 if (CHECK_CODE)
   set_target_properties(files1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -120,6 +130,7 @@ if (CHECK_CODE)
   set_target_properties(deadbeef PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb4 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(tree1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  set_target_properties(undomanager1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 
 add_custom_command(TARGET check_all_tests POST_BUILD
@@ -139,6 +150,7 @@ add_dependencies(check_all_tests
   gdb2
   gdb3
   gdb4
-  tree1)
+  tree1
+  undomanager1)
 
 add_dependencies(check check_all_tests)

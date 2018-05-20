@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package llgc.protobuf.test;
+
+message UndoManager1
+{
+  message Add
+  {
+    double number = 1;
+  }
+
+  oneof data
+  {
+    Add add = 1;
+  }
+}

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_COMMAND_COMMAND_UNDO_H_
-#define PATTERN_COMMAND_COMMAND_UNDO_H_
+#ifndef PATTERN_COMMAND_UNDO_INTERFACE_H_
+#define PATTERN_COMMAND_UNDO_INTERFACE_H_
 
 #include <2lgc/compat.h>
 #include <chrono>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -36,12 +37,12 @@ class UndoInterface
   /**
    * @brief Default constructor.
    */
-  Undomanager() = default;
+  UndoInterface() : time_start_(), duration_start_(0.), done(false) {}
 
   /**
    * @brief Default destructor. Virtual because command is abstract.
    */
-  virtual ~Undomanager() = default;
+  virtual ~UndoInterface() = default;
 
   /**
    * @brief Execute the command.
@@ -58,13 +59,11 @@ class UndoInterface
   virtual bool Undo() = 0;
 
   /**
-   * @brief Return a protobuf message to redo if command is redoable.
+   * @brief Return a command if redo is possible.
    *
-   * @param[out] command Return the new command in protobuf serialize format.
-   *
-   * @return true if success. If fails, command parameter is untouched.
+   * @return Return the new command if possible. nullptr is not redoable.
    */
-  virtual bool Redo(std::string* command) = 0;
+  virtual std::unique_ptr<UndoInterface> Redo() = 0;
 
   /**
    * @brief Tell if the command change the model or just the gui (and should
@@ -79,7 +78,7 @@ class UndoInterface
    *
    * @return The description.
    */
-  virtual const std::string& GetDescription() const = 0;
+  virtual std::string GetDescription() const = 0;
 
   /**
    * @brief Get the position on the data where the modification are done.
@@ -100,7 +99,7 @@ class UndoInterface
    *
    * @return The protobuf string.
    */
-  virtual const std::string& ToProtobuf() const = 0;
+  virtual std::string ToProtobuf() const = 0;
 
  protected:
   /**
@@ -112,10 +111,15 @@ class UndoInterface
    * @brief Duration of the execution of the command.
    */
   std::chrono::duration<double> duration_start_;
+
+  /**
+   * @brief Tell if the command was executed.
+   */
+  bool done;
 };
 
 }  // namespace llgc::pattern::command
 
-#endif  // PATTERN_COMMAND_COMMAND_UNDO_H_
+#endif  // PATTERN_COMMAND_UNDO_INTERFACE_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -24,12 +24,18 @@
 #include <string>
 #include <vector>
 
+/**
+ * @brief 
+ */
 namespace llgc::pattern
 {
 template <typename T, typename U>
 class AbstractFactory;
 }
 
+/**
+ * @brief 
+ */
 namespace llgc::utils::tree
 {
 template <typename T>

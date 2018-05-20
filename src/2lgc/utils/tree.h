@@ -23,6 +23,9 @@
 #include <memory>
 #include <vector>
 
+/**
+ * @brief Common namespace for miscellaneous functionality.
+ */
 namespace llgc::utils
 {
 /**
