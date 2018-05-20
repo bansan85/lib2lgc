@@ -66,7 +66,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
                                // Ugly hack to prevent strict aliasing warning.
   BUGUSER(
       inet_pton(AF_INET6, this->ip_.c_str(),
-      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
                 reinterpret_cast<struct sockaddr_in6 *>(
                     static_cast<void *>(&server.sin6_addr))) == 1,
       false, "Failed to get IP for name %.\n", this->ip_);

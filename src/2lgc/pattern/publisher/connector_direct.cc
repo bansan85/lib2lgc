@@ -17,6 +17,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher_direct.h>  // IWYU pragma: keep
 
 template <typename T>
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
