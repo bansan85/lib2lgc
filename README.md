@@ -55,3 +55,4 @@ Actually not needed but will be for https publisher.
 Missing local README.md means that the functionnality is still under development.
 
   - command pattern / undomanager.
+  - add gRPC to pattern publisher
