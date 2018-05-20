@@ -115,8 +115,8 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
         }
         else
         {
-          BUGCRIT(kill(child_pid, SIGKILL), false,
-                  "Failed to waitpid. Errno %.\n");
+          BUGCRIT(kill(child_pid, SIGKILL) == 0, false,
+                  "Failed to kill. Errno %.\n", errno);
 
           llgc::protobuf::software::Gdb messages_gdb;
           auto message = messages_gdb.add_msg();
