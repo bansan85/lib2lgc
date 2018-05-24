@@ -9,8 +9,13 @@ message UndoManager1
     double number = 1;
   }
 
+  message Fail
+  {
+  }
+
   oneof data
   {
     Add add = 1;
+    Fail fail = 2;
   }
 }

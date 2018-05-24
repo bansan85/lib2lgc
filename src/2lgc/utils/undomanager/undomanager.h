@@ -24,23 +24,19 @@
 #include <string>
 #include <vector>
 
-/**
- * @brief 
- */
-namespace llgc::pattern
+namespace llgc
+{
+namespace pattern
 {
 template <typename T, typename U>
 class AbstractFactory;
 }
-
-/**
- * @brief 
- */
-namespace llgc::utils::tree
+namespace utils
 {
 template <typename T>
-class Node;
+class Tree;
 }
+}  // namespace llgc
 
 /**
  * @brief Namespace for the pattern command.
@@ -55,6 +51,9 @@ namespace llgc::utils::undomanager
  * The goal of the undomanager is to store command to undo or redo. Because data
  * could be transfert throw PubliserTcp, the storage is done in std::string. The
  * abstract factory will be used to convert std::string to Command.
+ *
+ * @tparam T The class message from protobuf class.
+ * @tparam U The command interface.
  */
 template <typename T, typename U>
 class Undomanager
@@ -84,12 +83,20 @@ class Undomanager
    * @brief Add a command to the undomanager.
    *
    * @param[in] command The new command.
-   * @param[in] id The id of the parent command.
    *
    * @return A pointer to the new child. nullptr if AddChild fails.
    */
-  llgc::utils::tree::Node<std::string>* AddCommand(
-      std::unique_ptr<std::string> command, size_t id) CHK;
+  llgc::utils::Tree<U>* AddCommand(const std::string& command);
+
+  /**
+   * @brief Add a command to the undomanager.
+   *
+   * @param[in] id The id of the parent command.
+   * @param[in] command The new command.
+   *
+   * @return A pointer to the new child. nullptr if AddChild fails.
+   */
+  llgc::utils::Tree<U>* AddCommand(size_t id, const std::string& command);
 
   /**
    * @brief eiua
@@ -104,21 +111,40 @@ class Undomanager
                                             size_t insert);
 
   /**
-   * @brief i ei eiua ep
+   * @brief Do one command.
    *
-   * @param[in,out] id2 a eiu aeiu a
+   * @param[in] id Id of the command to do.
    *
-   * @return i a.éuàpi, à
+   * @return true if do is a success.
    */
-  bool UndoCommand(size_t id2) CHK;
+  bool DoCommand(size_t id) CHK;
 
   /**
-   * @brief eiua
+   * @brief Do one command.
    *
-   * @param[in,out] start eiua
-   * @param[in,out] end eiua
+   * @param[in] start Id of the first command to do.
+   * @param[in] end Id of the last command to do.
    *
-   * @return eiua
+   * @return true if do is a success for all commands.
+   */
+  bool DoCommands(size_t start, size_t end) CHK;
+
+  /**
+   * @brief Undo one command.
+   *
+   * @param[in] id Id of the command to undo.
+   *
+   * @return true if undo is a success.
+   */
+  bool UndoCommand(size_t id) CHK;
+
+  /**
+   * @brief Undo one command.
+   *
+   * @param[in] start Id of the first command to undo.
+   * @param[in] end Id of the last command to undo.
+   *
+   * @return true if undo is a success for all commands.
    */
   bool UndoCommands(size_t start, size_t end) CHK;
 
@@ -136,37 +162,72 @@ class Undomanager
    * @return List of element modifyed by type and description. To
    * UI undo description.
    */
-  virtual std::vector<size_t> GetType() const = 0;
+  std::vector<size_t> GetType() const;
 
   /**
-   * @brief
+   * @brief eiuae
    *
-   * @param[in,out] i
+   * @param[in] i eiu
    *
-   * @return
+   * @return eiua
    */
-  virtual std::vector<T> FindByZone(int i) const = 0;
+  std::vector<T> FindByZone(int i) const;
+
+  /**
+   * @brief Start the modification for a new set of commands.
+   *
+   * @param[in] id id of the command to append this command.
+   *
+   * @return true if no problem.
+   */
+  bool BeginNewCommand(size_t id);
+
+  /**
+   * @brief End the modification for a new set of commands.
+   *
+   * @return true if no problem.
+   */
+  bool EndNewCommand();
 
  private:
   /**
    * @brief Storage of all commands in protobuf message format.
    */
-  std::unique_ptr<llgc::utils::tree::Node<std::string>> memory_;
+  std::unique_ptr<llgc::utils::Tree<U>> memory_;
 
   /**
    * @brief Abstract factory that convert string to Command.
    */
-  std::unique_ptr<llgc::pattern::AbstractFactory<T, U>>& abstract_factory_;
+  std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory_;
 
   /**
    * @brief If user can undo action of other user.
    */
-  bool undo_local_or_global_;
+  bool undo_only_local_;
 
   /**
    * @brief Id of the user for having the description of the user.
    */
   std::map<size_t, std::string> users_;
+
+  /**
+   * @brief Add a node to the unique_ptr tree.
+   *
+   * @param[in] child The data to add.
+   *
+   * @return Return the new node.
+   */
+  llgc::utils::Tree<U>* Add(std::unique_ptr<U> child);
+
+  /**
+   * @brief Add a node to the unique_ptr tree.
+   *
+   * @param[in] id The id of the parent.
+   * @param[in] child The data to add.
+   *
+   * @return Return the new node.
+   */
+  llgc::utils::Tree<U>* Add(size_t id, std::unique_ptr<U> child);
 };
 
 }  // namespace llgc::utils::undomanager

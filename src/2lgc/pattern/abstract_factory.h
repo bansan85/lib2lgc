@@ -39,6 +39,9 @@ namespace llgc::pattern
 {
 /**
  * @brief Interface that define an abstract factory.
+ *
+ * @tparam T The class message from protobuf class.
+ * @tparam U The command interface.
  */
 template <typename T, typename U>
 class AbstractFactory
@@ -49,7 +52,7 @@ class AbstractFactory
  public:
   /**
    * @brief Default constructor. The class that implement this class must fill
-   * the map_factory member.
+   * the map_factory member on constructor.
    *
    * @param[in] size Size of the map factory.
    */

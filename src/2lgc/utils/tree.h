@@ -47,12 +47,23 @@ class Tree
   Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent);
 
   /**
-   * @brief Add a child to the node.
+   * @brief Add a child to the current node.
    *
    * @param[in] child The new child.
-   * @param[in] id The id of the new node.
    *
-   * @return A pointer to the new child. nullptr if AddChild fails.
+   * @return A pointer to the new child with the new id.
+   * nullptr if AddChild fails.
+   */
+  Tree<T>* AddChild(std::unique_ptr<T> child) CHK;
+
+  /**
+   * @brief Add a child to the specific node.
+   *
+   * @param[in] child The new child.
+   * @param[in] id The id of the parent node.
+   *
+   * @return A pointer to the new child with the new id.
+   * nullptr if AddChild fails.
    */
   Tree<T>* AddChild(std::unique_ptr<T> child, size_t id) CHK;
 
@@ -61,14 +72,24 @@ class Tree
    * path.
    *
    * @param[in] end The end of the path.
-   * @param[out] path The result of the path.
+   * @param[out] path The result of the path. Unmodified if the path is not
+   * found. Clear then fill if path is found.
    *
-   * @return true if found. path is fill only if return value is true.
+   * @return true if found.
    */
-  bool FindPath(size_t end, std::deque<T*>* path) const CHK
-  {
-    return FindPath(nullptr, end, path);
-  }
+  bool FindPath(size_t end, std::deque<T*>* path) const CHK;
+
+  /**
+   * @brief Find by recursion a path between two nodes.
+   *
+   * @param[in] begin The begin of the path.
+   * @param[in] end The end of the path.
+   * @param[out] path The result of the path. Unmodified if the path is not
+   * found. Clear then fill if path is found.
+   *
+   * @return true if found.
+   */
+  bool FindPath(size_t begin, size_t end, std::deque<T*>* path) const CHK;
 
   /**
    * @brief Find a node based on the id.
@@ -77,7 +98,23 @@ class Tree
    *
    * @return The node if found. nullptr if failed.
    */
-  Tree<T>* FindNode(size_t id) { return FindNode(id, id_); }
+  const Tree<T>* FindNode(size_t id) const;
+
+  /**
+   * @brief Find a node based on the id.
+   *
+   * @param[in] id The id of the node.
+   *
+   * @return The node if found. nullptr if failed.
+   */
+  Tree<T>* FindNode(size_t id);
+
+  /**
+   * @brief Find the max id.
+   *
+   * @return Return the max id.
+   */
+  size_t FindMaxId() const;
 
   /**
    * @brief Get the id of the node.
@@ -85,6 +122,13 @@ class Tree
    * @return The id of the node.
    */
   size_t GetId() const { return id_; }
+
+  /**
+   * @brief Return the data.
+   *
+   * @return The pointer of a data.
+   */
+  T* GetData() { return data_.get(); }
 
  private:
   /**
@@ -128,7 +172,27 @@ class Tree
    *
    * @return The node if found. nullptr if failed.
    */
+  const Tree<T>* FindNode(size_t id, size_t previous) const;
+
+  /**
+   * @brief Find a node based on the id.
+   *
+   * @param[in] id The id of the node.
+   * @param[in] previous For recursion: the id caller.
+   *
+   * @return The node if found. nullptr if failed.
+   */
   Tree<T>* FindNode(size_t id, size_t previous);
+
+  /**
+   * @brief Find the max id.
+   *
+   * @param[in] max_id Previous max id.
+   * @param[in] previous Previous id of the caller.
+   *
+   * @return Return the max id.
+   */
+  size_t FindMaxId(size_t max_id, size_t previous) const;
 };
 
 }  // namespace llgc::utils
