@@ -31,9 +31,6 @@ namespace llgc::text
 class StringExt
 {
  public:
-  // Stolen from
-  // https://www.safaribooksonline.com/library/view/c-cookbook/0596007612/ch04s09.html#cplusplusckbk-CHP-4-EX-13
-
   /**
    * @brief Join function for std::vector<std::string>.
    *
