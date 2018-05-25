@@ -17,6 +17,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
+#include <iostream>
 #include <string>
 
 /**
@@ -33,8 +34,9 @@ bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
 {
   std::string message_socket;
 
-  BUGLIB(messages.SerializeToString(&message_socket), false, "protobuf");
-  BUGCONT(llgc::net::Linux::Send(socket_, message_socket), false);
+  BUGLIB(std::cout, messages.SerializeToString(&message_socket), false,
+         "protobuf");
+  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_socket), false);
 
   return true;
 }

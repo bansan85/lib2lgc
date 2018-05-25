@@ -215,8 +215,9 @@ bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
   filename_gdb->assign(filename);
   message->set_allocated_add_stack_failed(add_stack_failed.release());
   std::string add_stack_in_string;
-  BUGLIB(messages.SerializeToString(&add_stack_in_string), false, "protobuf");
-  BUGCONT(Forward(add_stack_in_string), false);
+  BUGLIB(std::cout, messages.SerializeToString(&add_stack_in_string), false,
+         "protobuf");
+  BUGCONT(std::cout, Forward(add_stack_in_string), false);
   return true;
 }
 
@@ -226,7 +227,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
 
   if (!file.is_open())
   {
-    BUGCONT(TellError(filename), false);
+    BUGCONT(std::cout, TellError(filename), false);
     return false;
   }
 
@@ -244,7 +245,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
       if (stack_gdb->GetBacktraceFromBottom(0).GetIndex() + 1 !=
           stack_gdb->NumberOfBacktraces())
       {
-        BUGCONT(TellError(filename), false);
+        BUGCONT(std::cout, TellError(filename), false);
         return false;
       }
       allow_wrong_line = false;
@@ -255,7 +256,7 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
     }
     else if (!allow_wrong_line)
     {
-      BUGCONT(TellError(filename), false);
+      BUGCONT(std::cout, TellError(filename), false);
       return false;
     }
   }
@@ -310,7 +311,7 @@ bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
     return false;
   }
 
-  BUGCONT(ParallelAdd(all_files, nthread), false);
+  BUGCONT(std::cout, ParallelAdd(all_files, nthread), false);
   return true;
 }
 
@@ -320,14 +321,14 @@ bool llgc::software::gdb::SetStack::AddList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  BUGUSER(f.is_open(), false, "Failed to open %.\n", list);
+  BUGUSER(std::cout, f.is_open(), false, "Failed to open " << list << ".\n");
 
   while (std::getline(f, line))
   {
     all_files.push_back(line);
   }
 
-  BUGCONT(ParallelAdd(all_files, nthread), false);
+  BUGCONT(std::cout, ParallelAdd(all_files, nthread), false);
   return true;
 }
 
@@ -375,7 +376,7 @@ bool llgc::software::gdb::SetStack::Forward(const std::string& message)
   {
     // If the instance if freed, GetInstance will create it.
     auto singleton_ = server_.GetInstance();
-    BUGCONT(singleton_->Forward(message), false);
+    BUGCONT(std::cout, singleton_->Forward(message), false);
   }
   return true;
 }

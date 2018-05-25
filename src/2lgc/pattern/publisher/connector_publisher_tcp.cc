@@ -67,7 +67,7 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
     uint32_t id_message)
 {
-  BUGCONT(Connect(), false);
+  BUGCONT(std::cout, Connect(), false);
 
   T messages;
   auto message = messages.add_msg();
@@ -76,8 +76,9 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
   add->set_id_message(id_message);
   message->set_allocated_add_subscriber(add.release());
   std::string messages_in_string;
-  BUGLIB(messages.SerializeToString(&messages_in_string), false, "protobuf");
-  BUGCONT(Send(messages_in_string), false);
+  BUGLIB(std::cout, messages.SerializeToString(&messages_in_string), false,
+         "protobuf");
+  BUGCONT(std::cout, Send(messages_in_string), false);
 
   return true;
 }
@@ -89,7 +90,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
   std::cout << "ConnectorPublisherTcp<T>::Send" << std::endl;
   std::cout << "Client " << socket_ << " -> serveur " << message.length()
             << std::endl;
-  BUGCONT(llgc::net::Linux::Send(socket_, message), false);
+  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message), false);
   return true;
 }
 
@@ -97,7 +98,7 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
     uint32_t id_message)
 {
-  BUGCONT(Connect(), false);
+  BUGCONT(std::cout, Connect(), false);
 
   T messages;
   auto message = messages.add_msg();
@@ -106,8 +107,9 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
   message_add->set_id_message(id_message);
   message->set_allocated_remove_subscriber(message_add.release());
   std::string messages_in_string;
-  BUGLIB(messages.SerializeToString(&messages_in_string), false, "protobuf");
-  BUGCONT(Send(messages_in_string), false);
+  BUGLIB(std::cout, messages.SerializeToString(&messages_in_string), false,
+         "protobuf");
+  BUGCONT(std::cout, Send(messages_in_string), false);
 
   return true;
 }
@@ -129,8 +131,8 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
     retval = poll(&fd, 1, 50);
 
     // Problem: stop the thread.
-    BUGCRIT(retval != -1, , "Client %, poll failed. Errno %.\n", socket_,
-            errno);
+    BUGCRIT(std::cout, retval != -1, ,
+            "Client " << socket_ << ", poll failed. Errno " << errno << ".\n");
     if (retval != 0)
     {
       char client_message[1500];
@@ -138,9 +140,9 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
       ssize_t read_size =
           recv(socket_, client_message, sizeof(client_message), 0);
 
-      BUGCRIT(read_size != -1, ,
-              "Client % recv failed. Close connection. Errno %.\n", socket_,
-              errno);
+      BUGCRIT(std::cout, read_size != -1, ,
+              "Client " << socket_ << " recv failed. Close connection. Errno "
+                        << errno << ".\n");
 
       if (read_size == 0)
       {
@@ -150,9 +152,9 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
       std::cout << "Client " << socket_ << " recv" << std::endl;
       T message;
       std::string client_string(client_message, static_cast<size_t>(read_size));
-      BUGLIB(message.ParseFromString(client_string), , "protobuf");
+      BUGLIB(std::cout, message.ParseFromString(client_string), , "protobuf");
 
-      BUGCONT(this->subscriber_->Listen(message), );
+      BUGCONT(std::cout, this->subscriber_->Listen(message), );
     }
   } while (!disposing_);
 

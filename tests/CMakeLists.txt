@@ -12,8 +12,6 @@ add_executable(compare_decimal1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/math/compare_decimal1.cc)
 add_executable(hash1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/math/hash1.cc)
-add_executable(printf1 EXCLUDE_FROM_ALL
-  ${CMAKE_CURRENT_SOURCE_DIR}/override/printf1.cc)
 add_executable(visitor1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/visitor/visitor1.cc)
 
@@ -78,7 +76,6 @@ add_executable(undomanager2 EXCLUDE_FROM_ALL
 target_link_libraries(files1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(compare_decimal1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(hash1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
-target_link_libraries(printf1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(visitor1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_include_directories(abstract_factory1 PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(abstract_factory1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
@@ -102,7 +99,6 @@ target_link_libraries(undomanager2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRAR
 add_test(files1 files1)
 add_test(compare_decimal1 compare_decimal1)
 add_test(hash1 hash1)
-add_test(printf1 printf1)
 add_test(visitor1 visitor1)
 add_test(abstract_factory1 abstract_factory1)
 add_test(publisher1 publisher1)
@@ -125,7 +121,6 @@ if (CHECK_CODE)
   set_target_properties(files1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(compare_decimal1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(hash1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(printf1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(visitor1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(abstract_factory1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -148,7 +143,6 @@ add_dependencies(check_all_tests
   files1
   compare_decimal1
   hash1
-  printf1
   visitor1
   abstract_factory1
   publisher1

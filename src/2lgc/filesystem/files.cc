@@ -18,6 +18,7 @@
 #include <2lgc/filesystem/files.h>
 #include <2lgc/text/string_ext.h>
 #include <experimental/filesystem>
+#include <iostream>
 #include <map>
 #include <regex>
 #include <sstream>
@@ -31,8 +32,8 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     // Can throw regex_error
     std::regex reg(regex);
 
-    BUGUSER(std::experimental::filesystem::is_directory(folder), false,
-            "% is not a folder.\n", folder);
+    BUGUSER(std::cout, std::experimental::filesystem::is_directory(folder),
+            false, folder << " is not a folder.\n");
 
     std::vector<std::string> error_files;
 
@@ -56,14 +57,17 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
       }
     }
 
-    BUGUSER(error_files.empty(), false, "Failed to read folder % : %.\n",
-            folder, llgc::text::StringExt::Join(error_files, ", "));
+    BUGUSER(std::cout, error_files.empty(), false,
+            "Failed to read folder "
+                << folder << " : "
+                << llgc::text::StringExt::Join(error_files, ", ") << ".\n");
 
     return true;
   }
   catch (const std::regex_error& e)
   {
-    BUGUSER(false, false, "Invalid rexeg % : %\n", regex, e.what());
+    BUGUSER(std::cout, false, false,
+            "Invalid rexeg " << regex << " : " << e.what() << "\n");
   }
 }
 

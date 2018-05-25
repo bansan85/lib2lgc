@@ -31,6 +31,7 @@
 #include <fstream>
 #include <functional>
 #include <future>
+#include <iostream>
 #include <memory>
 #include <system_error>
 #include <thread>
@@ -92,7 +93,8 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
   }
   argvbis[23 + argc] = nullptr;
   pid_t child_pid = fork();
-  BUGCRIT(child_pid != -1, false, "Failed to create fork. Errno %\n.", errno);
+  BUGCRIT(std::cout, child_pid != -1, false,
+          "Failed to create fork. Errno " << errno << "\n.");
   if (child_pid != 0)
   {
     int status;  // NS
@@ -103,7 +105,8 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
     do
     {
       wait_pid = waitpid(child_pid, &status, WNOHANG);
-      BUGCRIT(wait_pid != -1, false, "Failed to waitpid. Errno %\n.", errno);
+      BUGCRIT(std::cout, wait_pid != -1, false,
+              "Failed to waitpid. Errno " << errno << "\n.");
       end = std::chrono::system_clock::now();
       elapsed_seconds =
           std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
@@ -115,8 +118,8 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
         }
         else
         {
-          BUGCRIT(kill(child_pid, SIGKILL) == 0, false,
-                  "Failed to kill. Errno %.\n", errno);
+          BUGCRIT(std::cout, kill(child_pid, SIGKILL) == 0, false,
+                  "Failed to kill. Errno " << errno << ".\n");
 
           llgc::protobuf::software::Gdb messages_gdb;
           auto message = messages_gdb.add_msg();
@@ -127,9 +130,10 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           message->set_allocated_run_bt_full_time_out(
               run_bt_full_time_out.release());
           std::string run_bt_full_in_string;
-          BUGLIB(messages_gdb.SerializeToString(&run_bt_full_in_string), false,
+          BUGLIB(std::cout,
+                 messages_gdb.SerializeToString(&run_bt_full_in_string), false,
                  "protobuf");
-          BUGCONT(server_.Forward(run_bt_full_in_string), false);
+          BUGCONT(std::cout, server_.Forward(run_bt_full_in_string), false);
 
           return false;
         }
@@ -140,8 +144,9 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
   {
     // a const_cast is necessary.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-    BUGCRIT(execvp(argvbis[0], const_cast<char* const*>(argvbis.get())) != -1,
-            false, "Failed to run %.\n", argvbis[0]);
+    BUGCRIT(std::cout,
+            execvp(argvbis[0], const_cast<char* const*>(argvbis.get())) != -1,
+            false, "Failed to run " << argvbis[0] << ".\n");
   }
   return true;
 }
@@ -185,10 +190,12 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
 {
   std::vector<std::string> all_files;
   BUGCRIT(
+      std::cout,
       llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files),
-      false, "Failed to recursively read %.\n", folder);
+      false, "Failed to recursively read " << folder << ".\n");
 
-  BUGCONT(ParallelRun(all_files, nthread, argc, argv, timeout), false);
+  BUGCONT(std::cout, ParallelRun(all_files, nthread, argc, argv, timeout),
+          false);
   return true;
 }
 
@@ -201,14 +208,15 @@ bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  BUGUSER(f.is_open(), false, "Failed to open %.\n", list);
+  BUGUSER(std::cout, f.is_open(), false, "Failed to open " << list << ".\n");
 
   while (std::getline(f, line))
   {
     all_files.push_back(line);
   }
 
-  BUGCONT(ParallelRun(all_files, nthread, argc, argv, timeout), false);
+  BUGCONT(std::cout, ParallelRun(all_files, nthread, argc, argv, timeout),
+          false);
   return true;
 }
 

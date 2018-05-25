@@ -22,6 +22,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <cerrno>
+#include <iostream>
 #include <thread>
 #include <utility>
 
@@ -56,27 +57,27 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
   }
 
   this->socket_ = socket(AF_INET6, SOCK_STREAM, 0);
-  BUGCRIT(this->socket_ != -1, false, "Failed to run server. Errno %.\n",
-          errno);
+  BUGCRIT(std::cout, this->socket_ != -1, false,
+          "Failed to run server. Errno " << errno << ".\n");
 
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&this->socket_);
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct sockaddr_in6 server;  // NOLINT(hicpp-member-init)
-                               // Ugly hack to prevent strict aliasing warning.
-  BUGUSER(
-      inet_pton(AF_INET6, this->ip_.c_str(),
-                // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-                reinterpret_cast<struct sockaddr_in6 *>(
-                    static_cast<void *>(&server.sin6_addr))) == 1,
-      false, "Failed to get IP for name %.\n", this->ip_);
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+  BUGUSER(std::cout,
+          inet_pton(AF_INET6, this->ip_.c_str(),
+                    reinterpret_cast<struct sockaddr_in6 *>(
+                        static_cast<void *>(&server.sin6_addr))) == 1,
+          false, "Failed to get IP for name " << this->ip_ << ".\n");
   server.sin6_family = AF_INET6;
   server.sin6_port = htons(this->port_);
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-  BUGCRIT(connect(this->socket_, reinterpret_cast<struct sockaddr *>(&server),
+  BUGCRIT(std::cout,
+          connect(this->socket_, reinterpret_cast<struct sockaddr *>(&server),
                   sizeof(server)) == 0,
-          false, "Failed to start listening. Errno %.\n", errno);
+          false, "Failed to start listening. Errno " << errno << ".\n");
 
   auto_close_socket.DontDeleteSocket();
 

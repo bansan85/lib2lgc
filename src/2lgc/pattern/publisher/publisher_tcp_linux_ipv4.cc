@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <cerrno>
+#include <iostream>
 
 template <typename T>
 llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::PublisherTcpLinuxIpv4(
@@ -33,8 +35,8 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
 {
   this->sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 
-  BUGCRIT(this->sockfd_ != -1, false, "Failed to open socket. Errno %\n",
-          errno);
+  BUGCRIT(std::cout, this->sockfd_ != -1, false,
+          "Failed to open socket. Errno " << errno << "\n");
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct sockaddr_in socket_addr;  // NOLINT(hicpp-member-init)
@@ -42,15 +44,15 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
   socket_addr.sin_addr.s_addr = INADDR_ANY;
   socket_addr.sin_port = htons(this->port_);
 
-  BUGCONT(llgc::net::Linux::Bind(
-              this->sockfd_,
-              // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
-              reinterpret_cast<struct sockaddr *>(&socket_addr),
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+  BUGCONT(std::cout,
+          llgc::net::Linux::Bind(
+              this->sockfd_, reinterpret_cast<struct sockaddr *>(&socket_addr),
               sizeof(socket_addr), 4 * 60 * 1000),
           false);
 
-  BUGCRIT(listen(this->sockfd_, 3) != -1, false,
-          "Failed to listen socket. Errno %\n", errno);
+  BUGCRIT(std::cout, listen(this->sockfd_, 3) != -1, false,
+          "Failed to listen socket. Errno " << errno << "\n");
 
   return true;
 }

@@ -32,8 +32,10 @@ void llgc::net::Linux::DisableSigPipe()
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-union-access)
   sig.sa_handler = SIG_IGN;  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   sig.sa_flags = 0;
-  BUGCRIT(sigemptyset(&sig.sa_mask) == 0, , "Errno %\n", errno);
-  BUGCRIT(sigaction(SIGPIPE, &sig, nullptr) == 0, , "Errno %\n", errno);
+  BUGCRIT(std::cout, sigemptyset(&sig.sa_mask) == 0, ,
+          "Errno " << errno << "\n");
+  BUGCRIT(std::cout, sigaction(SIGPIPE, &sig, nullptr) == 0, ,
+          "Errno " << errno << "\n");
 }
 
 bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
@@ -61,8 +63,8 @@ bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
                 .count()) < timeout);
   }
 
-  BUGUSER(retval_bind == 0, false,
-          "Failed to open a TCP port socket. Errno %.\n", errno);
+  BUGUSER(std::cout, retval_bind == 0, false,
+          "Failed to open a TCP port socket. Errno " << errno << ".\n");
   return true;
 }
 
@@ -70,9 +72,12 @@ bool llgc::net::Linux::Send(int sockfd, const std::string& message)
 {
   ssize_t retval_send = send(sockfd, message.c_str(), message.length(), 0);
 
-  BUGCRIT(retval_send != -1, false, "Send failed. Errno %.\n", errno);
-  BUGCRIT(retval_send == static_cast<ssize_t>(message.length()), false,
-          "Send partial message. Length %. Errno %.\n", retval_send, errno);
+  BUGCRIT(std::cout, retval_send != -1, false,
+          "Send failed. Errno " << errno << ".\n");
+  BUGCRIT(std::cout, retval_send == static_cast<ssize_t>(message.length()),
+          false,
+          "Send partial message. Length " << retval_send << ". Errno " << errno
+                                          << ".\n");
 
   return true;
 }
@@ -105,7 +110,7 @@ llgc::net::Linux::AutoCloseSocket::~AutoCloseSocket()
   }
   int socket_tmp = *socket_;  // NS
   *socket_ = -1;
-  BUGCRIT(close(socket_tmp) == 0, , "Errno %\n", errno);
+  BUGCRIT(std::cout, close(socket_tmp) == 0, , "Errno " << errno << "\n");
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

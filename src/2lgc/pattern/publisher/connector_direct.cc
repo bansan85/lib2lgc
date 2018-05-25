@@ -18,6 +18,7 @@
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>  // IWYU pragma: keep
+#include <iostream>
 
 template <typename T>
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
@@ -49,7 +50,8 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
     uint32_t id_message)
 {
-  BUGCONT(server_->AddSubscriber(id_message, this->shared_from_this()), false);
+  BUGCONT(std::cout,
+          server_->AddSubscriber(id_message, this->shared_from_this()), false);
   return true;
 }
 
@@ -57,7 +59,7 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::Send(
     const std::string &message)
 {
-  BUGCONT(server_->Forward(message), false);
+  BUGCONT(std::cout, server_->Forward(message), false);
   return true;
 }
 
@@ -65,7 +67,8 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
     uint32_t id_message)
 {
-  BUGCONT(server_->RemoveSubscriber(id_message, this->shared_from_this()),
+  BUGCONT(std::cout,
+          server_->RemoveSubscriber(id_message, this->shared_from_this()),
           false);
   return true;
 }

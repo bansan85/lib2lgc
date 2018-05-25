@@ -17,6 +17,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep
+#include <iostream>
 
 template <typename T>
 llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
@@ -35,7 +36,7 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& messages,
   }
   else
   {
-    BUGCONT(subscriber_->Listen(messages), false);
+    BUGCONT(std::cout, subscriber_->Listen(messages), false);
   }
 
   return true;
@@ -47,7 +48,7 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
   while (!messages_.empty())
   {
     const T& it = messages_.front();
-    BUGCONT(subscriber_->Listen(it), false);
+    BUGCONT(std::cout, subscriber_->Listen(it), false);
     messages_.pop();
   }
   return true;

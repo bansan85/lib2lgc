@@ -22,6 +22,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/utils/tree.h>
 #include <algorithm>  // IWYU pragma: keep
+#include <iostream>
 
 template <typename T>
 llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent)
@@ -45,7 +46,8 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child,
   size_t max_id = FindMaxId(id_, id_);
   llgc::utils::Tree<T>* parent = FindNode(id);
 
-  BUGCRIT(parent != nullptr, nullptr, "Failed to find node %.\n", id);
+  BUGCRIT(std::cout, parent != nullptr, nullptr,
+          "Failed to find node " << id << ".\n");
   parent->children_.emplace_back(
       std::make_unique<Tree<T>>(max_id + 1, std::move(child), parent));
 
@@ -56,7 +58,7 @@ template <typename T>
 bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
                                     std::deque<T*>* path) const
 {
-  BUGPARAM(path, path != nullptr, false);
+  BUGPARAM(std::cout, path, path != nullptr, false);
 
   // Find the end.
   if (id_ == end)
@@ -97,7 +99,7 @@ bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
 template <typename T>
 bool llgc::utils::Tree<T>::FindPath(size_t end, std::deque<T*>* path) const
 {
-  BUGCONT(FindPath(nullptr, end, path), false);
+  BUGCONT(std::cout, FindPath(nullptr, end, path), false);
 
   return true;
 }
@@ -108,10 +110,10 @@ bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
 {
   const Tree<T>* begin_node = FindNode(begin);
 
-  BUGCRIT(begin_node != nullptr, false, "Failed to find the start node %.\n",
-          begin);
-  BUGCRIT(begin_node->FindPath(nullptr, end, path), false,
-          "Failed to find the end node %.\n", end);
+  BUGCRIT(std::cout, begin_node != nullptr, false,
+          "Failed to find the start node " << begin << ".\n");
+  BUGCRIT(std::cout, begin_node->FindPath(nullptr, end, path), false,
+          "Failed to find the end node " << end << ".\n");
 
   return true;
 }

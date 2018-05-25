@@ -18,6 +18,7 @@
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
 #include <2lgc/software/gdb/stack.h>
+#include <iostream>
 #include <limits>
 #include <stdexcept>
 #include <string>
@@ -34,14 +35,17 @@ llgc::software::gdb::Backtrace::Factory(const std::string& line)
 
   std::unique_ptr<Backtrace> retval = std::make_unique<Backtrace>();
 
-  BUGCONT(retval->DecodeBacktrace(line, &index, &address, &function, &file),
+  BUGCONT(std::cout,
+          retval->DecodeBacktrace(line, &index, &address, &function, &file),
           std::unique_ptr<Backtrace>(nullptr));
-  BUGCONT(retval->ReadIndex(index), std::unique_ptr<Backtrace>(nullptr));
-  BUGCONT(address.length() == 0 || retval->ReadAddress(address),
+  BUGCONT(std::cout, retval->ReadIndex(index),
           std::unique_ptr<Backtrace>(nullptr));
-  BUGCONT(function.length() == 0 || retval->ReadFunction(function),
+  BUGCONT(std::cout, address.length() == 0 || retval->ReadAddress(address),
           std::unique_ptr<Backtrace>(nullptr));
-  BUGCONT(file.length() == 0 || retval->ReadSource(file) ||
+  BUGCONT(std::cout, function.length() == 0 || retval->ReadFunction(function),
+          std::unique_ptr<Backtrace>(nullptr));
+  BUGCONT(std::cout,
+          file.length() == 0 || retval->ReadSource(file) ||
               retval->ReadSource(file),
           std::unique_ptr<Backtrace>(nullptr));
 
@@ -54,17 +58,19 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
                                                      std::string* function,
                                                      std::string* file)
 {
-  BUGPARAM(index, index != nullptr, false);
-  BUGPARAM(address, address != nullptr, false);
-  BUGPARAM(function, function != nullptr, false);
-  BUGPARAM(file, file != nullptr, false);
+  BUGPARAM(std::cout, index, index != nullptr, false);
+  BUGPARAM(std::cout, address, address != nullptr, false);
+  BUGPARAM(std::cout, function, function != nullptr, false);
+  BUGPARAM(std::cout, file, file != nullptr, false);
 
   // Regex: "^#(\\d+) *((0x.*) in )?((.*\\)) at )?(.*)$"
   // Size for the beginning #\d
   size_t line_length = line.length();
-  BUGUSER(line_length >= 2, false, "Length of line to small '%'.\n", line);
+  BUGUSER(std::cout, line_length >= 2, false,
+          "Length of line to small '" << line << "'.\n");
   // First char: '#'
-  BUGUSER(line[0] == '#', false, "Line doesn't start with '#' '%'.\n", line);
+  BUGUSER(std::cout, line[0] == '#', false,
+          "Line doesn't start with '#' '" << line << "'.\n");
 
   // Next chars: decimal until space.
   size_t i = 1;
@@ -73,16 +79,17 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
     if (line[i] == ' ')
     {
       // No decimal.
-      BUGUSER(i != 1, false, "Line doesn't have a number after '#' '%'.\n",
-              line);
+      BUGUSER(std::cout, i != 1, false,
+              "Line doesn't have a number after '#' '" << line << "'.\n");
       break;
     }
-    BUGUSER('0' <= line[i] && line[i] <= '9', false,
-            "Line doesn't have a valid number after '#' '%'.\n", line);
+    BUGUSER(std::cout, '0' <= line[i] && line[i] <= '9', false,
+            "Line doesn't have a valid number after '#' '" << line << "'.\n");
     i++;
   }
 
-  BUGUSER(i != line_length, false, "Line truncated '%'.\n", line);
+  BUGUSER(std::cout, i != line_length, false,
+          "Line truncated '" << line << "'.\n");
 
   *index = line.substr(1, i - 1);
 
@@ -99,10 +106,12 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
     size_t ibis;
     for (ibis = i + 2; ibis < inpos; ibis++)
     {
-      BUGUSER(('0' <= line[ibis] && line[ibis] <= '9') ||
-                  ('a' <= line[ibis] && line[ibis] <= 'f'),
-              false, "Line doesn't have a valid hexadecimal number '%'.\n",
-              line);
+      BUGUSER(
+          std::cout,
+          ('0' <= line[ibis] && line[ibis] <= '9') ||
+              ('a' <= line[ibis] && line[ibis] <= 'f'),
+          false,
+          "Line doesn't have a valid hexadecimal number '" << line << "'.\n");
     }
 
     *address = line.substr(i, inpos - i);
@@ -135,8 +144,8 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
   }
 
   // A function must have a '(' before ')'.
-  BUGUSER(function->find('(') != std::string::npos, false,
-          "Function doesn't have arguments '%'.\n", line);
+  BUGUSER(std::cout, function->find('(') != std::string::npos, false,
+          "Function doesn't have arguments '" << line << "'.\n");
   return true;
 }
 
@@ -148,7 +157,8 @@ bool llgc::software::gdb::Backtrace::ReadIndex(const std::string& number)
   }
   catch (const std::out_of_range&)
   {
-    BUGUSER(false, false, "Index doesn't have valid number '%'.\n", number);
+    BUGUSER(std::cout, false, false,
+            "Index doesn't have valid number '" << number << "'.\n");
   }
   return true;
 }
@@ -161,7 +171,8 @@ bool llgc::software::gdb::Backtrace::ReadAddress(const std::string& address)
   }
   catch (const std::out_of_range&)
   {
-    BUGUSER(false, false, "Address doesn't have valid number '%'.\n", address);
+    BUGUSER(std::cout, false, false,
+            "Address doesn't have valid number '" << address << "'.\n");
   }
   return true;
 }
@@ -172,8 +183,8 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   // ' ' is not enought : loader::(anonymous namespace)::createImageImpl (
   size_t pos_space = description.find(" (");
 
-  BUGUSER(pos_space != std::string::npos, false,
-          "Function doesn't have arguments '%'.\n", description);
+  BUGUSER(std::cout, pos_space != std::string::npos, false,
+          "Function doesn't have arguments '" << description << "'.\n");
 
   function_.SetName(description.substr(0, pos_space));
 
@@ -195,8 +206,8 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   {
     std::string strcomma = str.substr(0, pos_comma);
     size_t pos_last_equal = strcomma.find_last_of('=');
-    BUGUSER(pos_last_equal != std::string::npos, false,
-            "Function doesn't have valid arguments '%'.\n", description);
+    BUGUSER(std::cout, pos_last_equal != std::string::npos, false,
+            "Function doesn't have valid arguments '" << description << "'.\n");
     size_t pos_equal = strcomma.find('=');
     while (pos_equal != pos_last_equal)
     {
@@ -275,11 +286,13 @@ bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
   }
   catch (const std::invalid_argument&)
   {
-    BUGUSER(false, false, "Source line is invalid '%'.\n", file);
+    BUGUSER(std::cout, false, false,
+            "Source line is invalid '" << file << "'.\n");
   }
   catch (const std::out_of_range&)
   {
-    BUGUSER(false, false, "Source line is out of range '%'.\n", file);
+    BUGUSER(std::cout, false, false,
+            "Source line is out of range '" << file << "'.\n");
   }
 
   file_ = file.substr(0, pos);

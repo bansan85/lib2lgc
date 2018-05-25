@@ -23,14 +23,17 @@
 #include <2lgc/poco/number_visitor_value.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
+#include <iostream>
 #include <memory>
 
 bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
                                           std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
+  BUGPARAM(std::cout, static_cast<void *>(return_value),
+           return_value != nullptr, false);
 
-  BUGLIB(data.Message().constant().unit().SerializeToString(return_value),
+  BUGLIB(std::cout,
+         data.Message().constant().unit().SerializeToString(return_value),
          false, "protobuf");
 
   return true;
@@ -39,51 +42,61 @@ bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
 bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
                                           std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
+  BUGPARAM(std::cout, static_cast<void *>(return_value),
+           return_value != nullptr, false);
 
   llgc::protobuf::math::Number_Unit unit1;
   llgc::protobuf::math::Number_Unit unit2;
   llgc::protobuf::math::Number_Unit unit;
   std::string return_accept;
-  BUGCONT(data.Number1()->Accept(*this, &return_accept), false);
-  BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.Number2()->Accept(*this, &return_accept), false);
-  BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(std::cout, data.Number1()->Accept(*this, &return_accept), false);
+  BUGLIB(std::cout, unit1.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(std::cout, data.Number2()->Accept(*this, &return_accept), false);
+  BUGLIB(std::cout, unit2.ParseFromString(return_accept), false, "protobuf");
 
   switch (data.Message().number_op_number().operator_())
   {
     case llgc::protobuf::math::Number_Operator_PLUS:
     case llgc::protobuf::math::Number_Operator_MOINS:
     {
-      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+      BUGUSER(std::cout,
+              google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
-      BUGLIB(unit1.SerializeToString(return_value), false, "protobuf");
+      BUGLIB(std::cout, unit1.SerializeToString(return_value), false,
+             "protobuf");
       return true;
     }
     case llgc::protobuf::math::Number_Operator_MULTIPLICATION:
     {
-      BUGCONT(Unit::UnitOp(unit1, unit2,
+      BUGCONT(std::cout,
+              Unit::UnitOp(unit1, unit2,
                            llgc::protobuf::math::Number_Operator_MULTIPLICATION,
                            &unit),
               false);
-      BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
+      BUGLIB(std::cout, unit.SerializeToString(return_value), false,
+             "protobuf");
       return true;
     }
     case llgc::protobuf::math::Number_Operator_DIVISION:
     {
       NumberVisitorVal visitor_val;
 
-      BUGCONT(data.Number2()->Accept(visitor_val, &return_accept), false);
+      BUGCONT(std::cout, data.Number2()->Accept(visitor_val, &return_accept),
+              false);
       llgc::protobuf::math::Double double_val;
-      BUGLIB(double_val.ParseFromString(return_accept), false, "protobuf");
-      BUGUSER(!llgc::math::Compare::AlmostEqualRelativeAndAbsD(
+      BUGLIB(std::cout, double_val.ParseFromString(return_accept), false,
+             "protobuf");
+      BUGUSER(std::cout,
+              !llgc::math::Compare::AlmostEqualRelativeAndAbsD(
                   double_val.value(), 0., 1e-15, 1e-15),
               false, "Divide by zero.");
       BUGCONT(
+          std::cout,
           Unit::UnitOp(unit1, unit2,
                        llgc::protobuf::math::Number_Operator_DIVISION, &unit),
           false);
-      BUGLIB(unit.SerializeToString(return_value), false, "protobuf");
+      BUGLIB(std::cout, unit.SerializeToString(return_value), false,
+             "protobuf");
       return true;
     }
     case ::google::protobuf::kint32min:

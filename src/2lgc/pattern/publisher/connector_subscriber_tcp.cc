@@ -60,7 +60,7 @@ bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(
     const std::string &message)
 {
   std::cout << "ConnectorSubscriberTcp<T>::Send" << std::endl;
-  BUGCONT(llgc::net::Linux::Send(socket_, message), false);
+  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message), false);
   return true;
 }
 

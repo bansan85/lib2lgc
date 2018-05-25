@@ -23,54 +23,61 @@
 #include <2lgc/poco/number_visitor_value.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
+#include <iostream>
 #include <memory>
 
 bool llgc::poco::NumberVisitorVal::Visit(const Number_Constant &data,
                                          std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
+  BUGPARAM(std::cout, static_cast<void *>(return_value),
+           return_value != nullptr, false);
 
   llgc::protobuf::math::Double val;
   val.set_value(data.Message().constant().value());
 
-  BUGLIB(val.SerializeToString(return_value), false, "protobuf");
+  BUGLIB(std::cout, val.SerializeToString(return_value), false, "protobuf");
   return true;
 }
 
 bool llgc::poco::NumberVisitorVal::Visit(const Number_NumOpNum &data,
                                          std::string *return_value) const
 {
-  BUGPARAM(static_cast<void *>(return_value), return_value != nullptr, false);
+  BUGPARAM(std::cout, static_cast<void *>(return_value),
+           return_value != nullptr, false);
 
   llgc::protobuf::math::Double val1;
   llgc::protobuf::math::Double val2;
   llgc::protobuf::math::Double val;
   std::string return_accept;
-  BUGCONT(data.Number1()->Accept(*this, &return_accept), false);
-  BUGLIB(val1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.Number2()->Accept(*this, &return_accept), false);
-  BUGLIB(val2.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(std::cout, data.Number1()->Accept(*this, &return_accept), false);
+  BUGLIB(std::cout, val1.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(std::cout, data.Number2()->Accept(*this, &return_accept), false);
+  BUGLIB(std::cout, val2.ParseFromString(return_accept), false, "protobuf");
 
   NumberVisitorUnit visitor_unit;
   llgc::protobuf::math::Number_Unit unit1;
   llgc::protobuf::math::Number_Unit unit2;
-  BUGCONT(data.Number1()->Accept(visitor_unit, &return_accept), false);
-  BUGLIB(unit1.ParseFromString(return_accept), false, "protobuf");
-  BUGCONT(data.Number2()->Accept(visitor_unit, &return_accept), false);
-  BUGLIB(unit2.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(std::cout, data.Number1()->Accept(visitor_unit, &return_accept),
+          false);
+  BUGLIB(std::cout, unit1.ParseFromString(return_accept), false, "protobuf");
+  BUGCONT(std::cout, data.Number2()->Accept(visitor_unit, &return_accept),
+          false);
+  BUGLIB(std::cout, unit2.ParseFromString(return_accept), false, "protobuf");
 
   switch (data.Message().number_op_number().operator_())
   {
     case llgc::protobuf::math::Number_Operator_PLUS:
     {
-      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+      BUGUSER(std::cout,
+              google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       val.set_value(val1.value() + val2.value());
       break;
     }
     case llgc::protobuf::math::Number_Operator_MOINS:
     {
-      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+      BUGUSER(std::cout,
+              google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       val.set_value(val1.value() - val2.value());
       break;
@@ -82,7 +89,8 @@ bool llgc::poco::NumberVisitorVal::Visit(const Number_NumOpNum &data,
     }
     case llgc::protobuf::math::Number_Operator_DIVISION:
     {
-      BUGUSER(!llgc::math::Compare::AlmostEqualRelativeAndAbsD(val2.value(), 0.,
+      BUGUSER(std::cout,
+              !llgc::math::Compare::AlmostEqualRelativeAndAbsD(val2.value(), 0.,
                                                                1e-15, 1e-15),
               false, "Divide by zero.");
       val.set_value(val1.value() / val2.value());
@@ -96,7 +104,7 @@ bool llgc::poco::NumberVisitorVal::Visit(const Number_NumOpNum &data,
     }
   }
 
-  BUGLIB(val.SerializeToString(return_value), false, "protobuf");
+  BUGLIB(std::cout, val.SerializeToString(return_value), false, "protobuf");
   return true;
 }
 

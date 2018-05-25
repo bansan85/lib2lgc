@@ -93,8 +93,8 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       }
     } while (iResult >= 0 && client_sock >= 0 && !this->IsStopping());
     std::cout << "Server stop listening" << std::endl;
-    BUGCRIT(iResult != -1, , "Errno %\n", errno);
-    BUGCRIT(client_sock != -1, , "Errno %\n", errno);
+    BUGCRIT(std::cout, iResult != -1, , "Errno " << errno << "\n");
+    BUGCRIT(std::cout, client_sock != -1, , "Errno " << errno << "\n");
   });  // NS
 
   this->thread_wait_ = std::move(t);
@@ -118,9 +118,10 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
   {
     retval = poll(&fd, 1, 50);
 
-    BUGCRIT(retval != -1, ,
-            "Server client % poll failed. Close connection. Errno %.\n", socket,
-            errno);
+    BUGCRIT(std::cout, retval != -1, ,
+            "Server client "
+                << socket << " poll failed. Close connection. Errno " << errno
+                << ".\n");
 
     if (retval == 0)
     {
@@ -131,9 +132,10 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 
     ssize_t read_size = recv(socket, client_message, sizeof(client_message), 0);
 
-    BUGCRIT(read_size != -1, ,
-            "Server client % recv failed. Close connection. Errno %.\n", socket,
-            errno);
+    BUGCRIT(std::cout, read_size != -1, ,
+            "Server client "
+                << socket << " recv failed. Close connection. Errno " << errno
+                << ".\n");
     if (read_size == 0)
     {
       std::cout << "Server Client " << socket << ", empty message.\n"
@@ -145,7 +147,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
     T messages;
 
     std::string client_string(client_message, static_cast<size_t>(read_size));
-    BUGLIB(messages.ParseFromString(client_string), , "protobuf.");
+    BUGLIB(std::cout, messages.ParseFromString(client_string), , "protobuf.");
 
     for (int i = 0; i < messages.msg_size(); i++)
     {
@@ -166,7 +168,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
       }*/
     }
 
-    BUGCONT(this->Forward(client_string), );
+    BUGCONT(std::cout, this->Forward(client_string), );
   } while (!this->IsStopping());
 
   std::cout << "Server Client " << socket << " End" << std::endl;
@@ -176,7 +178,8 @@ template <typename T>
 void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
     int socket, decltype(std::declval<T>().msg(0)) message)
 {
-  BUGCRIT(message.has_add_subscriber(), , "Failed to add a subscriber.");
+  BUGCRIT(std::cout, message.has_add_subscriber(), ,
+          "Failed to add a subscriber.");
   std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
       std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
           socket);
@@ -184,7 +187,8 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
       connector =
           std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
               subscriber, socket);
-  BUGCRIT(this->AddSubscriber(message.add_subscriber().id_message(), connector),
+  BUGCRIT(std::cout,
+          this->AddSubscriber(message.add_subscriber().id_message(), connector),
           , "Failed to add a subscriber.");
 }
 

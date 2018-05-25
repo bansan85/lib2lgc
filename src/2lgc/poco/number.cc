@@ -24,6 +24,7 @@
 #include <google/protobuf/util/message_differencer.h>
 #include <cmath>
 #include <cstdint>
+#include <iostream>
 #include <limits>
 #include <memory>
 #include <string>
@@ -40,7 +41,8 @@ bool llgc::poco::Unit::UnitOp(
     case llgc::protobuf::math::Number_Operator_PLUS:
     case llgc::protobuf::math::Number_Operator_MOINS:
     {
-      BUGUSER(google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
+      BUGUSER(std::cout,
+              google::protobuf::util::MessageDifferencer::Equals(unit1, unit2),
               false, "Incompatible unit.\n");
       *return_unit = unit1;
       return true;
@@ -71,7 +73,7 @@ bool llgc::poco::Unit::UnitOp(
     case ::google::protobuf::kint32max:
     default:
     {
-      BUGPROG(false, false, "switch.\n");
+      BUGPROG(std::cout, false, false, "switch.\n");
     }
   }
 }
@@ -104,10 +106,11 @@ double llgc::poco::Number_Constant::GetVal() const
 
   std::string return_value;
   llgc::poco::NumberVisitorVal visitor_val;
-  BUGCONT(visitor_val.Visit(*this, &return_value), std::nan(""));
+  BUGCONT(std::cout, visitor_val.Visit(*this, &return_value), std::nan(""));
 
   llgc::protobuf::math::Double double_value;
-  BUGLIB(double_value.ParseFromString(return_value), std::nan(""), "protobuf");
+  BUGLIB(std::cout, double_value.ParseFromString(return_value), std::nan(""),
+         "protobuf");
 
 #ifndef DISABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
@@ -129,11 +132,11 @@ llgc::protobuf::math::Number_Unit llgc::poco::Number_Constant::GetUnit() const
 
   std::string return_unit;
   llgc::poco::NumberVisitorUnit visitor_unit;
-  BUGCONT(visitor_unit.Visit(*this, &return_unit),
+  BUGCONT(std::cout, visitor_unit.Visit(*this, &return_unit),
           llgc::protobuf::math::Number_Unit());
 
   llgc::protobuf::math::Number_Unit number_unit;
-  BUGLIB(number_unit.ParseFromString(return_unit),
+  BUGLIB(std::cout, number_unit.ParseFromString(return_unit),
          llgc::protobuf::math::Number_Unit(), "protobuf");
 
 #ifndef DISABLE_VISITABLE_CACHE
@@ -181,10 +184,11 @@ double llgc::poco::Number_NumOpNum::GetVal() const
 
   std::string return_value;
   llgc::poco::NumberVisitorVal visitor_val;
-  BUGCONT(visitor_val.Visit(*this, &return_value), std::nan(""));
+  BUGCONT(std::cout, visitor_val.Visit(*this, &return_value), std::nan(""));
 
   llgc::protobuf::math::Double double_value;
-  BUGLIB(double_value.ParseFromString(return_value), std::nan(""), "protobuf");
+  BUGLIB(std::cout, double_value.ParseFromString(return_value), std::nan(""),
+         "protobuf");
 
 #ifndef DISABLE_VISITABLE_CACHE
   cache_value_ = double_value.value();
@@ -208,11 +212,11 @@ llgc::protobuf::math::Number_Unit llgc::poco::Number_NumOpNum::GetUnit() const
 
   std::string return_unit;
   llgc::poco::NumberVisitorUnit visitor_unit;
-  BUGCONT(visitor_unit.Visit(*this, &return_unit),
+  BUGCONT(std::cout, visitor_unit.Visit(*this, &return_unit),
           llgc::protobuf::math::Number_Unit());
 
   llgc::protobuf::math::Number_Unit number_unit;
-  BUGLIB(number_unit.ParseFromString(return_unit),
+  BUGLIB(std::cout, number_unit.ParseFromString(return_unit),
          llgc::protobuf::math::Number_Unit(), "protobuf");
 
 #ifndef DISABLE_VISITABLE_CACHE

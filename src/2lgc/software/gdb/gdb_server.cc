@@ -20,6 +20,7 @@
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/singleton.h>
 #include <2lgc/software/gdb/gdb_server.h>
+#include <iostream>
 #include <memory>
 #include <string>
 
@@ -43,7 +44,7 @@ bool llgc::software::gdb::GdbServer::Forward(const std::string& message)
   {
     // If the instance if freed, GetInstance will create it.
     auto singleton_ = GetInstance();
-    BUGCONT(singleton_->Forward(message), false);
+    BUGCONT(std::cout, singleton_->Forward(message), false);
   }
 
   return true;

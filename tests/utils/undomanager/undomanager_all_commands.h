@@ -16,7 +16,6 @@
 
 #include <2lgc/math/compare_decimal.h>
 #include <2lgc/pattern/command/undo_interface.h>
-#include <2lgc/text/printf.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <cstddef>
@@ -85,7 +84,7 @@ class CommandAdd : public llgc::pattern::command::UndoInterface
   {
     std::stringstream ss;
 
-    llgc::text::Print::F(ss, "Add %", number_);
+    ss << "Add " << number_;
 
     return ss.str();
   }

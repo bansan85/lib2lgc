@@ -18,6 +18,7 @@
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
+#include <iostream>
 #include <memory>
 #include <utility>
 
@@ -30,7 +31,7 @@ bool llgc::software::gdb::Stack::InterpretLine(const std::string& line)
 {
   std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
 
-  BUGCONT(bt != nullptr, false);
+  BUGCONT(std::cout, bt != nullptr, false);
 
   backtraces_.emplace_back(bt.release());
 

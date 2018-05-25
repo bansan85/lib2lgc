@@ -20,6 +20,7 @@
 #include <2lgc/poco/software_gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/utils/count_lock.h>
 #include <functional>
+#include <iostream>
 #include <memory>
 #include <utility>
 
@@ -56,7 +57,7 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
   T messages_t;
 
-  BUGLIB(messages_t.ParseFromString(messages), false,
+  BUGLIB(std::cout, messages_t.ParseFromString(messages), false,
          "Failed to decode message.\n");
 
   // We start to store destination to avoid sending the same message multiple
@@ -92,7 +93,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
     {
       continue;
     }
-    BUGCONT(connector_subscriber->Listen(it.second, lock_forward_ != 0), false);
+    BUGCONT(std::cout,
+            connector_subscriber->Listen(it.second, lock_forward_ != 0), false);
   }
 
   return true;
@@ -116,7 +118,7 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
     {
       continue;
     }
-    BUGCONT(connector_subscriber->ListenPending(), false);
+    BUGCONT(std::cout, connector_subscriber->ListenPending(), false);
   }
 
   return true;
@@ -160,9 +162,10 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
           GetConn(subscriber);
       std::shared_ptr<ConnectorInterface<T>> connector_it = GetConn(it->second);
-      BUGCRIT(connector_subscriber != nullptr && connector_it != nullptr, false,
+      BUGCRIT(std::cout,
+              connector_subscriber != nullptr && connector_it != nullptr, false,
               "Failed to add subscriber.\n");
-      BUGCRIT(!connector_it->Equals(*connector_subscriber), false,
+      BUGCRIT(std::cout, !connector_it->Equals(*connector_subscriber), false,
               "Subscriber already exists.\n");
     }
   }
@@ -184,7 +187,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
       std::shared_ptr<ConnectorInterface<T>> connector_i = GetConn(it->second);
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
           GetConn(subscriber);
-      BUGCRIT(connector_i != nullptr && connector_subscriber != nullptr, false,
+      BUGCRIT(std::cout,
+              connector_i != nullptr && connector_subscriber != nullptr, false,
               "Failed to remove subscriber.\n");
       /*
       if (connector_i == nullptr || connector_subscriber == nullptr)
@@ -213,7 +217,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
       std::shared_ptr<ConnectorInterface<T>> connector_i = GetConn(it->second);
       std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
           GetConn(subscriber);
-      BUGCRIT(connector_i != nullptr && connector_subscriber != nullptr, false,
+      BUGCRIT(std::cout,
+              connector_i != nullptr && connector_subscriber != nullptr, false,
               "Failed to remove subscriber.\n");
       /*
       if (connector_i == nullptr || connector_subscriber == nullptr)

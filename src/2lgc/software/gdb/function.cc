@@ -18,6 +18,7 @@
 #include <2lgc/software/gdb/function.h>
 #include <algorithm>
 #include <cstddef>
+#include <iostream>
 
 static bool IsValidName(const std::string &name)
 {
@@ -33,7 +34,8 @@ static bool IsValidName(const std::string &name)
       }
       else
       {
-        BUGUSER(false, false, "Invalid name of argument '%'.\n", name);
+        BUGUSER(std::cout, false, false,
+                "Invalid name of argument '" << name << "'.\n");
       }
     }
   }
