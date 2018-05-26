@@ -43,6 +43,8 @@ make check
 
 `-DDISABLE_VISITABLE_CACHE=1` disable cache in visitor pattern.
 
+`-DGRPC_LIBRARY=...` path to GRPC library. If you want to add support for GRPC publisher.
+
 # Dependencies
 
 ## Protobuf

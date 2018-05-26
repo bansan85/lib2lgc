@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// Test ipv6 publisher
+
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
@@ -42,6 +44,7 @@
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.cc>
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
+#include <2lgc/pattern/publisher/publisher_ip.cc>
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc>
@@ -60,6 +63,7 @@ template class llgc::pattern::publisher::SubscriberDirect<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<
     llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcp<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcpLinux<
@@ -199,7 +203,6 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   } while (subscriber->value != 1);
 
   server->Stop();
-  server->JoinWait();
 
   google::protobuf::ShutdownProtobufLibrary();
 

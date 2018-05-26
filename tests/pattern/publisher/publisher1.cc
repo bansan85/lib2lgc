@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// Test direct publisher
+
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>

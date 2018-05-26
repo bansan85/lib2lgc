@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
-#define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_GRPC_H_
+#define PATTERN_PUBLISHER_PUBLISHER_GRPC_H_
 
 #include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
@@ -25,6 +25,7 @@
 #include <memory>
 #include <thread>
 #include <type_traits>
+#include <grpcpp/grpcpp.h>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -39,7 +40,7 @@ namespace llgc::pattern::publisher
  * @dotfile pattern/publisher/publisher_tcp.dot
  */
 template <typename T>
-class PublisherTcp : public PublisherIp<T>
+class PublisherGrpc : public PublisherIp<T>
 {
  public:
   /**
@@ -47,12 +48,12 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @param[in] port The port to listen from.
    */
-  explicit PublisherTcp(uint16_t port);
+  PublisherGrpc(uint16_t port, std::unique_ptr<grpc::Service> service);
 
   /**
    * @brief Destructor. Make sure that thread is finished.
    */
-  virtual ~PublisherTcp() override;
+  virtual ~PublisherGrpc() override;
 
 #ifndef SWIG
   /**
@@ -62,7 +63,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp(PublisherTcp&& other) = delete;
+  PublisherGrpc(PublisherGrpc&& other) = delete;
   /**
    * @brief Delete copy constructor.
    *
@@ -70,7 +71,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp(PublisherTcp const& other) = delete;
+  PublisherGrpc(PublisherGrpc const& other) = delete;
   /**
    * @brief Delete move operator.
    *
@@ -78,7 +79,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp& operator=(PublisherTcp&& other) & = delete;
+  PublisherGrpc& operator=(PublisherGrpc&& other) & = delete;
   /**
    * @brief Delete copy operator.
    *
@@ -86,7 +87,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp& operator=(PublisherTcp const& other) & = delete;
+  PublisherGrpc& operator=(PublisherGrpc const& other) & = delete;
 #endif  // !SWIG
 
   /**
@@ -95,35 +96,34 @@ class PublisherTcp : public PublisherIp<T>
   void JoinWait() override;
 
   /**
+   * @brief Start the server and the listening the port.
+   *
+   * @return true if no problem.
+   */
+  bool Listen() override CHK;
+
+  /**
+   * @brief Wait for client.
+   *
+   * @return true if no problem.
+   */
+  bool Wait() override CHK;
+
+  /**
    * @brief Stop the thread.
    */
   void Stop() override;
 
- protected:
-  /**
-   * @brief Store thread based on the socket file descriptor.
-   */
-  std::map<int, std::thread> thread_sockets_;  // NS
+ private:
+  grpc::ServerBuilder builder_;
 
-  /**
-   * @brief If thread in trying to stop.
-   */
-  std::atomic<bool> disposing_;
+  std::unique_ptr<grpc::Service> service_;
 
-#ifndef SWIG
-  /**
-   * @brief Internal function to subscribe a socket to an event.
-   *
-   * @param[in] socket The socket.
-   * @param[in] message The message.
-   */
-  virtual void AddSubscriberLocal(
-      int socket, decltype(std::declval<T>().msg(0)) message) = 0;
-#endif  // !SWIG
+  std::unique_ptr<grpc::Server> server_;
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_GRPC_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

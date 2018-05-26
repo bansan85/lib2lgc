@@ -206,10 +206,12 @@ Header:
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
 
 #include <2lgc/pattern/publisher/publisher_interface.cc>
+#include <2lgc/pattern/publisher/publisher_ip.cc>
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
 
+template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcp<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcpLinux<

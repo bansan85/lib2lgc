@@ -15,37 +15,40 @@
  */
 
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/publisher/publisher_tcp.h>
+#include <2lgc/pattern/publisher/publisher_ip.h>
+
+/**
+ * @brief Namespace for the pattern publisher.
+ */
+namespace llgc::pattern::publisher
+{
+template <typename T>
+class ConnectorInterface;
+}
 
 template <typename T>
-llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
-    : llgc::pattern::publisher::PublisherIp<T>(port), disposing_(false)
+llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
+    : llgc::pattern::publisher::PublisherInterface<
+          T,
+          std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(),
+      port_(port)
 {
 }
 
 template <typename T>
-llgc::pattern::publisher::PublisherTcp<T>::~PublisherTcp()
+llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 {
+  // Can't destroy a thread if it's still running.
   JoinWait();
 }
 
 template <typename T>
-void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
+void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
 {
-  PublisherIp<T>::JoinWait();
-  for (auto& thread_i : thread_sockets_)
+  if (thread_wait_.joinable())
   {
-    if (thread_i.second.joinable())
-    {
-      thread_i.second.join();
-    }
+    thread_wait_.join();
   }
-}
-
-template <typename T>
-void llgc::pattern::publisher::PublisherTcp<T>::Stop()
-{
-  disposing_ = true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

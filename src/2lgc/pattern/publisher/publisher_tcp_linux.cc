@@ -60,7 +60,7 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
   }
 
   std::thread t([this]() {
-    int iResult;          // NS
+    int iResult;  // NS
     int client_sock = 0;  // NS
     fd_set rfds;
 
@@ -68,8 +68,7 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 
     do
     {
-      // NOLINTNEXTLINE(hicpp-no-assembler)
-      FD_ZERO(&rfds);
+      FD_ZERO(&rfds);  // NOLINT(hicpp-no-assembler)
       FD_SET(sockfd_, &rfds);
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
       struct timeval tv;  // NOLINT(hicpp-member-init)
@@ -91,7 +90,7 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }
       }
-    } while (iResult >= 0 && client_sock >= 0 && !this->IsStopping());
+    } while (iResult >= 0 && client_sock >= 0 && !this->disposing_);
     std::cout << "Server stop listening" << std::endl;
     BUGCRIT(std::cout, iResult != -1, , "Errno " << errno << "\n");
     BUGCRIT(std::cout, client_sock != -1, , "Errno " << errno << "\n");
@@ -169,7 +168,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
     }
 
     BUGCONT(std::cout, this->Forward(client_string), );
-  } while (!this->IsStopping());
+  } while (!this->disposing_);
 
   std::cout << "Server Client " << socket << " End" << std::endl;
 }

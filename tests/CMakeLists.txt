@@ -44,6 +44,18 @@ add_executable(publisher3 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher3.cc
   ${PUBLISHER_TCP_PROTO_SRC})
 
+if (GRPC_LIBRARY)
+  protobuf_generate_cpp(PUBLISHER_RPC_PROTO_SRC PUBLISHER_RPC_PROTO_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/rpc.proto)
+  list(APPEND _protobuf_include_path -I ${PROJECT_SOURCE_DIR}/src/2lgc/poco)
+  grpc_generate_cpp(PUBLISHER_RPC_GRPC_SRC PUBLISHER_RPC_GRPC_HEADERS
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/rpc.proto)
+  add_executable(publisher_grpc EXCLUDE_FROM_ALL
+    ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_grpc.cc
+    ${PUBLISHER_RPC_PROTO_SRC} ${PUBLISHER_RPC_GRPC_SRC})
+endif()
+
 add_executable(poco_number EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/poco/poco_number.cc)
 add_executable(gdb1 EXCLUDE_FROM_ALL
@@ -85,6 +97,12 @@ target_include_directories(publisher2 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE
 target_link_libraries(publisher2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_include_directories(publisher3 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
 target_link_libraries(publisher3 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
+
+if (GRPC_LIBRARY)
+  target_include_directories(publisher_grpc PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
+  target_link_libraries(publisher_grpc ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${GRPC_GRPC++_LIBRARY} 2lgc)
+endif()
+
 target_link_libraries(poco_number ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb2 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
@@ -104,6 +122,9 @@ add_test(abstract_factory1 abstract_factory1)
 add_test(publisher1 publisher1)
 add_test(publisher2 publisher2)
 add_test(publisher3 publisher3)
+if (GRPC_LIBRARY)
+  add_test(publisher_grpc publisher_grpc)
+endif()
 add_test(poco_number poco_number)
 add_test(gdb1 gdb1)
 add_test(gdb2 gdb2 "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb")
@@ -126,6 +147,9 @@ if (CHECK_CODE)
   set_target_properties(publisher1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher2 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(publisher3 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  if (GRPC_LIBRARY)
+    set_target_properties(publisher_grpc PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+  endif()
   set_target_properties(poco_number PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   set_target_properties(gdb2 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
@@ -156,5 +180,8 @@ add_dependencies(check_all_tests
   tree1
   undomanager2
   undomanager1)
+if (GRPC_LIBRARY)
+  add_dependencies(check_all_tests publisher_grpc)
+endif()
 
 add_dependencies(check check_all_tests)

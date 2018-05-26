@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
-#define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#ifndef PATTERN_PUBLISHER_PUBLISHER_IP_H_
+#define PATTERN_PUBLISHER_PUBLISHER_IP_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/publisher/publisher_ip.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <atomic>
 #include <cstdint>
 #include <map>
@@ -31,6 +31,9 @@
  */
 namespace llgc::pattern::publisher
 {
+template <typename T>
+class ConnectorInterface;
+
 /**
  * @brief Interface to create a TCP server.
  *
@@ -39,7 +42,9 @@ namespace llgc::pattern::publisher
  * @dotfile pattern/publisher/publisher_tcp.dot
  */
 template <typename T>
-class PublisherTcp : public PublisherIp<T>
+class PublisherIp
+    : public llgc::pattern::publisher::PublisherInterface<
+          T, std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>
 {
  public:
   /**
@@ -47,12 +52,12 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @param[in] port The port to listen from.
    */
-  explicit PublisherTcp(uint16_t port);
+  explicit PublisherIp(uint16_t port);
 
   /**
    * @brief Destructor. Make sure that thread is finished.
    */
-  virtual ~PublisherTcp() override;
+  virtual ~PublisherIp();
 
 #ifndef SWIG
   /**
@@ -62,7 +67,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp(PublisherTcp&& other) = delete;
+  PublisherIp(PublisherIp&& other) = delete;
   /**
    * @brief Delete copy constructor.
    *
@@ -70,7 +75,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp(PublisherTcp const& other) = delete;
+  PublisherIp(PublisherIp const& other) = delete;
   /**
    * @brief Delete move operator.
    *
@@ -78,7 +83,7 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp& operator=(PublisherTcp&& other) & = delete;
+  PublisherIp& operator=(PublisherIp&& other) & = delete;
   /**
    * @brief Delete copy operator.
    *
@@ -86,44 +91,47 @@ class PublisherTcp : public PublisherIp<T>
    *
    * @return Nothing.
    */
-  PublisherTcp& operator=(PublisherTcp const& other) & = delete;
+  PublisherIp& operator=(PublisherIp const& other) & = delete;
 #endif  // !SWIG
 
   /**
-   * @brief Join the waiting thread.
+   * @brief Start the server and the listening the port.
+   *
+   * @return true if no problem.
    */
-  void JoinWait() override;
+  virtual bool Listen() CHK = 0;
+
+  /**
+   * @brief Wait for client.
+   *
+   * @return true if no problem.
+   */
+  virtual bool Wait() CHK = 0;
 
   /**
    * @brief Stop the thread.
    */
-  void Stop() override;
+  virtual void Stop() = 0;
+
+  /**
+   * @brief Join the waiting thread.
+   */
+  virtual void JoinWait();
 
  protected:
   /**
-   * @brief Store thread based on the socket file descriptor.
+   * @brief Port to listen from.
    */
-  std::map<int, std::thread> thread_sockets_;  // NS
+  uint16_t port_;
 
   /**
-   * @brief If thread in trying to stop.
+   * @brief Thread that run the Wait function and add socket to thread_sockets_.
    */
-  std::atomic<bool> disposing_;
-
-#ifndef SWIG
-  /**
-   * @brief Internal function to subscribe a socket to an event.
-   *
-   * @param[in] socket The socket.
-   * @param[in] message The message.
-   */
-  virtual void AddSubscriberLocal(
-      int socket, decltype(std::declval<T>().msg(0)) message) = 0;
-#endif  // !SWIG
+  std::thread thread_wait_;
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#endif  // PATTERN_PUBLISHER_PUBLISHER_IP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
