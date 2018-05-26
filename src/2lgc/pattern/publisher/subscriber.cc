@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/pattern/publisher/subscriber.h>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -26,19 +26,18 @@ class SubscriberInterface;
 }
 
 template <typename T>
-bool llgc::pattern::publisher::SubscriberDirect<T>::Equals(
+bool llgc::pattern::publisher::Subscriber<T>::Equals(
     const SubscriberInterface<T> &connector) const
 {
-  const auto *subscriber_direct_cast =
-      dynamic_cast<const SubscriberDirect<T> *>(&connector);
+  const auto *subscriber_cast = dynamic_cast<const Subscriber<T> *>(&connector);
 
   // Not the same type.
-  if (subscriber_direct_cast == nullptr)
+  if (subscriber_cast == nullptr)
   {
     return false;
   }
 
-  return subscriber_direct_cast->id_ == id_;
+  return subscriber_cast->id_ == id_;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

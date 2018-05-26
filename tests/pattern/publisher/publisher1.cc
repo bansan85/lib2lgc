@@ -20,7 +20,7 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/pattern/publisher/subscriber.h>
 #include <2lgc/utils/count_lock.h>
 #include <direct.pb.h>
 #include <google/protobuf/stubs/common.h>
@@ -37,7 +37,7 @@
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
-#include <2lgc/pattern/publisher/subscriber_direct.cc>
+#include <2lgc/pattern/publisher/subscriber.cc>
 
 template class llgc::pattern::publisher::PublisherInterface<
     llgc::protobuf::test::Direct,
@@ -47,13 +47,13 @@ template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::test::Direct>;
 template class llgc::pattern::publisher::ConnectorDirect<
     llgc::protobuf::test::Direct>;
-template class llgc::pattern::publisher::SubscriberDirect<
+template class llgc::pattern::publisher::Subscriber<
     llgc::protobuf::test::Direct>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
+class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
                                  llgc::protobuf::test::Direct>
 {
  public:
@@ -63,7 +63,7 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
    * @param[in] id Id of the subscriber.
    */
   explicit SubscriberBase(uint32_t id)
-      : SubscriberDirect(id),
+      : Subscriber(id),
         value(0),
         message_vector(llgc::protobuf::test::Direct_Msg::DataCase::kTest + 1)
   {

@@ -108,15 +108,15 @@ Declaration:
 Header:
 
 ```
-#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/pattern/publisher/subscriber.h>
 
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 
-template class llgc::pattern::publisher::SubscriberDirect<
+template class llgc::pattern::publisher::Subscriber<
     llgc::protobuf::test::Direct>;
 ```
 
-Declaration with SubscriberBase based on SubscriberDirect:
+Declaration with SubscriberBase based on Subscriber:
 
 ```
   auto subscriber = std::make_shared<SubscriberBase>(1);
@@ -127,13 +127,13 @@ You must implement the subscriber with the Listen function.
 In this example, a function is create for each action. They are stored in a vector and the good index in found with the function `data_case()`.
 
 ```
-class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
+class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
                                  llgc::protobuf::test::Direct>
 {
  public:
   // The id is used to compare subscriber by the publisher.
   explicit SubscriberBase(uint32_t id)
-      : SubscriberDirect(id),
+      : Subscriber(id),
         // Here, the kTest has the highest id.
         message_vector(llgc::protobuf::test::Direct_Msg::DataCase::kTest + 1)
   {
@@ -233,14 +233,13 @@ Declaration:
 Header:
 
 ```
-#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/pattern/publisher/subscriber.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 
-#include <2lgc/pattern/publisher/subscriber_direct.cc>
+#include <2lgc/pattern/publisher/subscriber.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
-template class llgc::pattern::publisher::SubscriberDirect<
-    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<
     llgc::protobuf::test::Tcp>;
 ```

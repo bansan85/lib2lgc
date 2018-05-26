@@ -45,7 +45,7 @@ class ConnectorInterface
   /**
    * @brief Default constructor.
    *
-   * @param[in,out] subscriber Subscriber.
+   * @param[in] subscriber Subscriber.
    */
   explicit ConnectorInterface(
       std::shared_ptr<SubscriberInterface<T>> subscriber);

@@ -33,7 +33,7 @@ namespace llgc::pattern::publisher
  * one is connected throw TCP/IP.
  */
 template <typename T>
-class SubscriberDirect : public SubscriberInterface<T>
+class Subscriber : public SubscriberInterface<T>
 {
  public:
   /**
@@ -41,7 +41,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @param[in] id The id of the constructor.
    */
-  explicit SubscriberDirect(uint32_t id) : id_(id) {}
+  explicit Subscriber(uint32_t id) : id_(id) {}
 
 #ifndef SWIG
   /**
@@ -51,7 +51,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect(SubscriberDirect&& other) = delete;
+  Subscriber(Subscriber&& other) = delete;
   /**
    * @brief Delete copy constructor.
    *
@@ -59,7 +59,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect(SubscriberDirect const& other) = delete;
+  Subscriber(Subscriber const& other) = delete;
   /**
    * @brief Delete move operator.
    *
@@ -67,7 +67,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect& operator=(SubscriberDirect&& other) & = delete;
+  Subscriber& operator=(Subscriber&& other) & = delete;
   /**
    * @brief Delete copy operator.
    *
@@ -75,7 +75,7 @@ class SubscriberDirect : public SubscriberInterface<T>
    *
    * @return Nothing.
    */
-  SubscriberDirect& operator=(SubscriberDirect const& other) & = delete;
+  Subscriber& operator=(Subscriber const& other) & = delete;
 #endif  // !SWIG
 
   /**
@@ -90,7 +90,7 @@ class SubscriberDirect : public SubscriberInterface<T>
   /**
    * @brief Default virtual destructor.
    */
-  ~SubscriberDirect() override {}
+  ~Subscriber() override {}
 
  private:
   /**

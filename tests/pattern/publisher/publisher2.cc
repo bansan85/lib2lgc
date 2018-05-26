@@ -24,7 +24,7 @@
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
-#include <2lgc/pattern/publisher/subscriber_direct.h>
+#include <2lgc/pattern/publisher/subscriber.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <google/protobuf/stubs/common.h>
 #include <tcp.pb.h>
@@ -48,7 +48,7 @@
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
-#include <2lgc/pattern/publisher/subscriber_direct.cc>
+#include <2lgc/pattern/publisher/subscriber.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
@@ -59,8 +59,7 @@ template class llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorSubscriberTcp<
     llgc::protobuf::test::Tcp>;
-template class llgc::pattern::publisher::SubscriberDirect<
-    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Tcp>;
@@ -74,7 +73,7 @@ template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
+class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
                                  llgc::protobuf::test::Tcp>
 {
  public:
@@ -83,7 +82,7 @@ class SubscriberBase final : public llgc::pattern::publisher::SubscriberDirect<
    *
    * @param[in] id Id of the subscriber.
    */
-  explicit SubscriberBase(uint32_t id) : SubscriberDirect(id), value(0) {}
+  explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
   /**
    * @brief Default constructor for debug.
    */

@@ -45,16 +45,16 @@ template <typename T>
 bool llgc::pattern::publisher::SubscriberServerTcp<T>::Equals(
     const SubscriberInterface<T> &connector) const
 {
-  const auto *subscriber_direct_cast =
+  const auto *subscriber_cast =
       dynamic_cast<const SubscriberServerTcp<T> *>(&connector);
 
   // Not the same type.
-  if (subscriber_direct_cast == nullptr)
+  if (subscriber_cast == nullptr)
   {
     return false;
   }
 
-  return subscriber_direct_cast->socket_ == socket_;
+  return subscriber_cast->socket_ == socket_;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
