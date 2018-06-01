@@ -5,6 +5,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake;${CMAKE_MODULE_PAT
 include(2lgc)
 include(GNUInstallDirs)
 include(FindOpenSSL)
+include(FindSWIG)
 
 find_package(Protobuf REQUIRED)
 find_package(Doxygen)
@@ -24,11 +25,13 @@ include_directories(SYSTEM ${CMAKE_CURRENT_BINARY_DIR}/src)
 
 add_custom_target(check)
 
-find_program(SWIG swig)
-if (SWIG)
-  string(REPLACE "swig/swig" "swig" SWIG_INCLUDE ${SWIG})
-  add_custom_command(TARGET check
-    COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/src/swig && ${SWIG} -c++ -java -I${SWIG_INCLUDE}/Lib -I${SWIG_INCLUDE}/Lib/java -outdir ${CMAKE_CURRENT_BINARY_DIR}/src/swig lib2lgc.i)
+if (SWIG_FOUND)
+  if (SWIG_VERSION VERSION_LESS "4.0.0")
+    message("Swig minimum version required 4.0.0. Found: ${SWIG_VERSION}. Skipped.")
+  else()
+    add_custom_command(TARGET check
+      COMMAND cd ${CMAKE_CURRENT_BINARY_DIR}/src/swig && ${SWIG_EXECUTABLE} -c++ -java -I${SWIG_DIR} -I${SWIG_DIR}/java -outdir ${CMAKE_CURRENT_BINARY_DIR}/src/swig lib2lgc.i)
+  endif()
 endif()
 
 file(GLOB_RECURSE ALL_SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)

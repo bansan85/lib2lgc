@@ -47,7 +47,6 @@
 #include "@PROJECT_SOURCE_DIR@/src/2lgc/software/gdb/gdb_server.h"
 #include "@PROJECT_SOURCE_DIR@/src/2lgc/software/gdb/set_stack.h"
 #include "@PROJECT_SOURCE_DIR@/src/2lgc/software/gdb/stack.h"
-#include "@PROJECT_SOURCE_DIR@/src/2lgc/text/printf.h"
 #include "@PROJECT_SOURCE_DIR@/src/2lgc/text/string_ext.h"
 #include "@PROJECT_SOURCE_DIR@/src/2lgc/utils/thread/count_lock.h"
 #include "@PROJECT_SOURCE_DIR@/src/2lgc/utils/tree/tree.h"
@@ -112,7 +111,6 @@
 %template(iterator_set_stack_stack) llgc::pattern::Iterator<llgc::software::gdb::SetStack, llgc::software::gdb::Stack>;
 
 %include "@PROJECT_SOURCE_DIR@/src/2lgc/software/gdb/stack.h"
-%include "@PROJECT_SOURCE_DIR@/src/2lgc/text/printf.h"
 %include "@PROJECT_SOURCE_DIR@/src/2lgc/text/string_ext.h"
 %include "@PROJECT_SOURCE_DIR@/src/2lgc/utils/count_lock.h"
 %include "@PROJECT_SOURCE_DIR@/src/2lgc/utils/tree.h"
