@@ -35,17 +35,58 @@ template class llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc
 
 class GreeterServiceImpl final : public llgc::protobuf::test::Greeter::Service
 {
-  grpc::Status Talk(grpc::ServerContext* context, const llgc::protobuf::test::Rpc* request, llgc::protobuf::test::Rpc* response) override
+  grpc::Status Talk(::grpc::ServerContext* context, ::grpc::ServerReaderWriter< ::llgc::protobuf::test::Rpc, ::llgc::protobuf::test::Rpc>* stream) override
   {
     /*
-    std::string prefix("Hello ");
-    reply->set_message(prefix + request->name());
+    llgc::protobuf::test::Rpc message;
+    while (stream->Read(&message)) {
+      stream->Write(message);
+    }
     */
-    // No response
+
+    // No response for now
     return grpc::Status::OK;
   }
 };
 
+/*
+class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
+                                 llgc::protobuf::test::Tcp>
+{
+ public:
+  explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
+  ~SubscriberBase() override { std::cout << "DEAD IN HELL" << std::endl; }
+  SubscriberBase(SubscriberBase&& other) = delete;
+  SubscriberBase(SubscriberBase const& other) = delete;
+  SubscriberBase& operator=(SubscriberBase&& other) & = delete;
+  SubscriberBase& operator=(SubscriberBase const& other) & = delete;
+  bool Listen(const llgc::protobuf::test::Tcp& messages) override
+  {
+    std::cout << "LISTEN" << std::endl;
+    for (int i = 0; i < messages.msg_size(); i++)
+    {
+      const auto& message = messages.msg(i);
+
+      switch (message.data_case())
+      {
+        case llgc::protobuf::test::Tcp_Msg::DataCase::kTest:
+        {
+          value++;
+          std::cout << "value++" << std::endl;
+          break;
+        }
+        case llgc::protobuf::test::Tcp_Msg::DataCase::DATA_NOT_SET:
+        case llgc::protobuf::test::Tcp_Msg::DataCase::kAddSubscriber:
+        case llgc::protobuf::test::Tcp_Msg::DataCase::kRemoveSubscriber:
+        default:
+          assert(false);
+      }
+    }
+    return true;
+  }
+  size_t value;
+};
+*/
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
@@ -53,6 +94,12 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   auto service = std::make_unique<GreeterServiceImpl>();
   auto server = std::make_unique<llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc>>(8890, std::move(service));
+  /*
+  auto subscriber = std::make_shared<SubscriberBase>(1);
+  auto connector =
+      std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
+          llgc::protobuf::test::Rpc>>(subscriber, "127.0.0.1", 8890);
+          */
 
   assert(server->Listen());
   assert(server->Wait());

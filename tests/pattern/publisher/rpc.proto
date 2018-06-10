@@ -19,7 +19,7 @@ import "pattern_publisher.proto";
 package llgc.protobuf.test;
 
 service Greeter {
-  rpc Talk (Rpc) returns (Rpc) {}
+  rpc Talk (stream Rpc) returns (stream Rpc) {}
 }
 
 message Rpc
