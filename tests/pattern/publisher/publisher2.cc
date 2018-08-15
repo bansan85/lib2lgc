@@ -202,6 +202,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   } while (subscriber->value != 1);
 
   server->Stop();
+  server->JoinWait();
 
   google::protobuf::ShutdownProtobufLibrary();
 

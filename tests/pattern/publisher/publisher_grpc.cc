@@ -105,6 +105,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(server->Wait());
 
   server->Stop();
+  server->JoinWait();
 
   google::protobuf::ShutdownProtobufLibrary();
 
