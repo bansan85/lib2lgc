@@ -43,7 +43,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T>::Listen()
 {
   std::stringstream ss;
 
-  ss << "127.0.0.1:" << this->port_;
+  ss << "0.0.0.0:" << this->port_;
 
   builder_.AddListeningPort(ss.str(), grpc::InsecureServerCredentials());
   builder_.RegisterService(service_.get());
