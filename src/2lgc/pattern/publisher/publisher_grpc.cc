@@ -20,43 +20,45 @@
 #include <sstream>
 #include <iostream>
 
-template <typename T>
-llgc::pattern::publisher::PublisherGrpc<T>::PublisherGrpc(uint16_t port, std::unique_ptr<grpc::Service> service) : llgc::pattern::publisher::PublisherIp<T>(port), service_(std::move(service))
+template <typename T, typename S>
+llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port) : llgc::pattern::publisher::PublisherIp<T>(port)
 {
 }
 
-template <typename T>
-llgc::pattern::publisher::PublisherGrpc<T>::~PublisherGrpc()
+template <typename T, typename S>
+llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
 {
   Stop();
   JoinWait();
 }
 
-template <typename T>
-void llgc::pattern::publisher::PublisherGrpc<T>::JoinWait()
+template <typename T, typename S>
+void llgc::pattern::publisher::PublisherGrpc<T, S>::JoinWait()
 {
   PublisherIp<T>::JoinWait();
 }
 
-template <typename T>
-bool llgc::pattern::publisher::PublisherGrpc<T>::Listen()
+template <typename T, typename S>
+bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 {
   std::stringstream ss;
 
   ss << "0.0.0.0:" << this->port_;
 
+  grpc::ServerBuilder builder_;
+
   builder_.AddListeningPort(ss.str(), grpc::InsecureServerCredentials());
-  builder_.RegisterService(service_.get());
+  builder_.RegisterService(&service_);
 
   server_ = std::move(builder_.BuildAndStart());
 
-  BUGCRIT(std::cout, server_ != nullptr, false, "Fail to start server at port " << this->port_ << " for 127.0.0.1.\n");
+  BUGCRIT(std::cout, server_ != nullptr, false, "Fail to start server at port " << this->port_ << " for 0.0.0.0.\n");
 
   return true;
 }
 
-template <typename T>
-bool llgc::pattern::publisher::PublisherGrpc<T>::Wait()
+template <typename T, typename S>
+bool llgc::pattern::publisher::PublisherGrpc<T, S>::Wait()
 {
   std::thread t([this]() {
     if (server_ != nullptr)
@@ -70,8 +72,8 @@ bool llgc::pattern::publisher::PublisherGrpc<T>::Wait()
   return true;
 }
 
-template <typename T>
-void llgc::pattern::publisher::PublisherGrpc<T>::Stop()
+template <typename T, typename S>
+void llgc::pattern::publisher::PublisherGrpc<T, S>::Stop()
 {
   if (server_ != nullptr)
   {

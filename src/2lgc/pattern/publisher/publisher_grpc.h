@@ -26,12 +26,34 @@
 #include <thread>
 #include <type_traits>
 #include <grpcpp/grpcpp.h>
+#include <grpcpp/impl/codegen/sync_stream.h>
 
 /**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
+template <typename T, typename S> // S : class of service
+class PublisherGrpcService : public S
+{
+ public:
+  explicit PublisherGrpcService()
+  {
+  }
+
+  virtual grpc::Status Talk(grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream) override
+  {
+    T note;
+    while (stream->Read(&note))
+    {
+      // TODO
+    }
+
+    return grpc::Status::OK;
+  }
+};
+
+
 /**
  * @brief Interface to create a TCP server.
  *
@@ -39,7 +61,7 @@ namespace llgc::pattern::publisher
  *
  * @dotfile pattern/publisher/publisher_tcp.dot
  */
-template <typename T>
+template <typename T, typename S>
 class PublisherGrpc : public PublisherIp<T>
 {
  public:
@@ -48,7 +70,7 @@ class PublisherGrpc : public PublisherIp<T>
    *
    * @param[in] port The port to listen from.
    */
-  PublisherGrpc(uint16_t port, std::unique_ptr<grpc::Service> service);
+  PublisherGrpc(uint16_t port);
 
   /**
    * @brief Destructor. Make sure that thread is finished.
@@ -115,9 +137,7 @@ class PublisherGrpc : public PublisherIp<T>
   void Stop() override;
 
  private:
-  grpc::ServerBuilder builder_;
-
-  std::unique_ptr<grpc::Service> service_;
+  PublisherGrpcService<T, S> service_;
 
   std::unique_ptr<grpc::Server> server_;
 };
