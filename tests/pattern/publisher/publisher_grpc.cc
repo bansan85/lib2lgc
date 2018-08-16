@@ -36,7 +36,7 @@ template class llgc::pattern::publisher::PublisherInterface<llgc::protobuf::test
 template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
-template class llgc::pattern::publisher::ConnectorPublisherGrpc<llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::ConnectorPublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>;
 
 
 class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
@@ -89,7 +89,17 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto subscriber = std::make_shared<SubscriberBase>(1);
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
-          llgc::protobuf::test::Rpc>>(subscriber, "127.0.0.1", 8890);
+          llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(subscriber, "127.0.0.1", 8890);
+
+  assert(connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+
+  assert(subscriber->value == 0);
+
+  // Check first message.
+  llgc::protobuf::test::Rpc messages;
+  auto message = messages.add_msg();
+  auto message_test = std::make_unique<llgc::protobuf::test::Rpc_Msg_Test>();
+  message->set_allocated_test(message_test.release());
 
   assert(server->Listen());
   assert(server->Wait());
