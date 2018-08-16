@@ -45,7 +45,10 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
 {
   // Properly stop recv and close file descriptor.
   disposing_ = true;
-  receiver_.join();
+  if (receiver_.joinable())
+  {
+    receiver_.join();
+  }
 }
 
 template <typename T>
