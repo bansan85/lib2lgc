@@ -129,11 +129,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           filename_gdb->assign(filename);
           message->set_allocated_run_bt_full_time_out(
               run_bt_full_time_out.release());
-          std::string run_bt_full_in_string;
-          BUGLIB(std::cout,
-                 messages_gdb.SerializeToString(&run_bt_full_in_string), false,
-                 "protobuf");
-          BUGCONT(std::cout, server_.Forward(run_bt_full_in_string), false);
+          BUGCONT(std::cout, server_.Forward(messages_gdb), false);
 
           return false;
         }

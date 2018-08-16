@@ -187,9 +187,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto message = messages.add_msg();
   auto message_test = std::make_unique<llgc::protobuf::test::Tcp_Msg_Test>();
   message->set_allocated_test(message_test.release());
-  std::string messages_in_string;
-  messages.SerializeToString(&messages_in_string);
-  assert(connector->Send(messages_in_string));
+  assert(connector->Send(messages));
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
   do

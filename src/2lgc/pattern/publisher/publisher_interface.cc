@@ -52,21 +52,17 @@ llgc::pattern::publisher::PublisherInterface<T, U>::~PublisherInterface() =
 
 template <typename T, typename U>
 bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
-    const std::string &messages)
+    const T &messages)
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
-  T messages_t;
-
-  BUGLIB(std::cout, messages_t.ParseFromString(messages), false,
-         "Failed to decode message.\n");
 
   // We start to store destination to avoid sending the same message multiple
   // time if the subscriber is subscribe to multiple id.
   std::map<U, T, std::owner_less<U>> destination;
 
-  for (int i = 0; i < messages_t.msg_size(); i++)
+  for (int i = 0; i < messages.msg_size(); i++)
   {
-    auto message = messages_t.msg(i);
+    auto message = messages.msg(i);
 
     // Filter to keep only the data case.
     auto iterpair = subscribers_.equal_range(message.data_case());

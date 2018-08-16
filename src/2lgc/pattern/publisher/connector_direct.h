@@ -112,7 +112,7 @@ class ConnectorDirect : public ConnectorInterface<T>,
    *
    * @dotfile pattern/publisher/publisher_direct_send_message.dot
    */
-  bool Send(const std::string &message) override CHK;
+  bool Send(const T &message) override CHK;
 
   /**
    * @brief Add a subscriber.

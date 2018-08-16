@@ -135,7 +135,7 @@ class PublisherInterface
    *
    * @return true if no problem.
    */
-  bool Forward(const std::string& messages) CHK;
+  bool Forward(const T& messages) CHK;
 
   /**
    * @brief Send all pending messages of all subscribers.

@@ -106,7 +106,7 @@ class ConnectorInterface
    *
    * @return true if no problem.
    */
-  virtual bool Send(const std::string& message) CHK = 0;
+  virtual bool Send(const T& message) CHK = 0;
 
   /**
    * @brief Listen message from the publisher.

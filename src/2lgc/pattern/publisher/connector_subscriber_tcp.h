@@ -108,7 +108,7 @@ class ConnectorSubscriberTcp : public ConnectorInterface<T>
    *
    * @return true if no problem.
    */
-  bool Send(const std::string &message) override CHK;
+  bool Send(const T &message) override CHK;
 
   /**
    * @brief Add a subscriber.

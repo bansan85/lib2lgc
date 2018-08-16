@@ -78,22 +78,18 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
       std::make_unique<llgc::protobuf::pattern::publisher::AddSubscriber>();
   add->set_id_message(id_message);
   message->set_allocated_add_subscriber(add.release());
-  std::string messages_in_string;
-  BUGLIB(std::cout, messages.SerializeToString(&messages_in_string), false,
-         "protobuf");
-  BUGCONT(std::cout, Send(messages_in_string), false);
+  BUGCONT(std::cout, Send(messages), false);
 
   return true;
 }
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
-    const std::string &message)
+    const T &message)
 {
-  std::cout << "ConnectorPublisherTcp<T>::Send" << std::endl;
-  std::cout << "Client " << socket_ << " -> serveur " << message.length()
-            << std::endl;
-  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message), false);
+  std::string message_in_string;
+  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false, "protobuf");
+  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
   return true;
 }
 
@@ -109,10 +105,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
       std::make_unique<llgc::protobuf::pattern::publisher::RemoveSubscriber>();
   message_add->set_id_message(id_message);
   message->set_allocated_remove_subscriber(message_add.release());
-  std::string messages_in_string;
-  BUGLIB(std::cout, messages.SerializeToString(&messages_in_string), false,
-         "protobuf");
-  BUGCONT(std::cout, Send(messages_in_string), false);
+  BUGCONT(std::cout, Send(messages), false);
 
   return true;
 }

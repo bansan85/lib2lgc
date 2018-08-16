@@ -57,10 +57,11 @@ bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::AddSubscriber(
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(
-    const std::string &message)
+    const T &message)
 {
-  std::cout << "ConnectorSubscriberTcp<T>::Send" << std::endl;
-  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message), false);
+  std::string message_in_string;
+  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false, "protobuf");
+  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
   return true;
 }
 
@@ -68,6 +69,7 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::RemoveSubscriber(
     uint32_t /*id_message*/)
 {
+  // Can't append.
   assert(false);
 }
 

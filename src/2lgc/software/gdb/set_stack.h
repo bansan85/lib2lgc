@@ -271,7 +271,7 @@ class SetStack
    *
    * @return true if no problem.
    */
-  bool Forward(const std::string& message) CHK;
+  bool Forward(const llgc::protobuf::software::Gdb& message) CHK;
 };
 
 }  // namespace llgc::software::gdb

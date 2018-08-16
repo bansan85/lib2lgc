@@ -214,10 +214,7 @@ bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
   std::string* filename_gdb = add_stack_failed->add_file();
   filename_gdb->assign(filename);
   message->set_allocated_add_stack_failed(add_stack_failed.release());
-  std::string add_stack_in_string;
-  BUGLIB(std::cout, messages.SerializeToString(&add_stack_in_string), false,
-         "protobuf");
-  BUGCONT(std::cout, Forward(add_stack_in_string), false);
+  BUGCONT(std::cout, Forward(messages), false);
   return true;
 }
 
@@ -369,7 +366,7 @@ const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
   return **it;
 }
 
-bool llgc::software::gdb::SetStack::Forward(const std::string& message)
+bool llgc::software::gdb::SetStack::Forward(const llgc::protobuf::software::Gdb& message)
 {
   // Check if instance.
   if (server_.IsInstance())

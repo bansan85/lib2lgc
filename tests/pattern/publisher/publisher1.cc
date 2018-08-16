@@ -137,16 +137,14 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   llgc::protobuf::test::Direct_Msg* message = messages.add_msg();
   auto message_test = std::make_unique<llgc::protobuf::test::Direct_Msg_Test>();
   message->set_allocated_test(message_test.release());
-  std::string messages_in_string;
-  messages.SerializeToString(&messages_in_string);
-  assert(connector->Send(messages_in_string));
+  assert(connector->Send(messages));
   assert(subscriber->value == 1);
 
   // Test lock forward.
   subscriber->value = 0;
   {
     llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
-    assert(connector->Send(messages_in_string));
+    assert(connector->Send(messages));
     assert(subscriber->value == 0);
   }
   assert(subscriber->value == 1);
@@ -154,19 +152,19 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   // Remove the first subscriber.
   subscriber->value = 0;
   assert(connector->RemoveSubscriber(1));
-  assert(connector->Send(messages_in_string));
+  assert(connector->Send(messages));
   assert(subscriber->value == 0);
 
   // Double insert
   assert(connector->AddSubscriber(1));
   assert(connector->AddSubscriber(1));
-  assert(connector->Send(messages_in_string));
+  assert(connector->Send(messages));
   assert(subscriber->value == 2);
   assert(connector->RemoveSubscriber(1));
-  assert(connector->Send(messages_in_string));
+  assert(connector->Send(messages));
   assert(subscriber->value == 3);
   assert(connector->RemoveSubscriber(1));
-  assert(connector->Send(messages_in_string));
+  assert(connector->Send(messages));
   assert(subscriber->value == 3);
   assert(!server->GetOptionFailAlreadySubscribed());
   server->SetOptionFailAlreadySubscribed(true);

@@ -167,7 +167,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
       }*/
     }
 
-    BUGCONT(std::cout, this->Forward(client_string), );
+    BUGCONT(std::cout, this->Forward(messages), );
   } while (!this->disposing_);
 
   std::cout << "Server Client " << socket << " End" << std::endl;
