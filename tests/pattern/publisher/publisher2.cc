@@ -168,7 +168,7 @@ static void WaitUpToOneSecond(std::function<bool()> test)
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
-  constexpr size_t delay = 100;
+  constexpr size_t delay = 30;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   llgc::net::Linux::DisableSigPipe();
