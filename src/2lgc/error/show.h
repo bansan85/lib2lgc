@@ -42,7 +42,7 @@
  */
 
 #define BUGPARAM(OUT, PARAM, X, Y) \
-  BUG(OUT, X, Y, "Programmation error.", #PARAM " = " << PARAM << "%.\n")
+  BUG(OUT, X, Y, "Programmation error: ", #PARAM " = " << PARAM << "%.\n")
 /**
  * \def BUGPARAM(OUT, PARAM, X, Y)
  * \brief Macro that tell that a parameter is invalid.
