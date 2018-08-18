@@ -118,6 +118,8 @@ class PublisherIp
    */
   virtual void JoinWait();
 
+  uint16_t GetPort() {return port_;}
+
  protected:
   /**
    * @brief Port to listen from.

@@ -21,7 +21,7 @@
 #include <iostream>
 
 template <typename T, typename S>
-llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port) : llgc::pattern::publisher::PublisherIp<T>(port)
+llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port) : llgc::pattern::publisher::PublisherIp<T>(port), service_(*this)
 {
 }
 

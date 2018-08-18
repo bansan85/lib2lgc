@@ -39,8 +39,7 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
     : ConnectorInterface<T>(subscriber),
       ip_(std::move(ip)),
       port_(port),
-      stub_(nullptr),
-      disposing_(false)
+      stub_(nullptr)
 {
 }
 
@@ -48,7 +47,7 @@ template <typename T, typename S>
 llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::~ConnectorPublisherGrpc()
 {
   // Properly stop recv and close file descriptor.
-  disposing_ = true;
+  context_.TryCancel();
   if (receiver_.joinable())
   {
     receiver_.join();
@@ -91,7 +90,10 @@ template <typename T, typename S>
 bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
     const T &message)
 {
-//  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message), false);
+  BUGCONT(std::cout, Connect(), false);
+
+  BUGLIB(std::cout, stream_->Write(message), false, "grpc");
+
   return true;
 }
 
@@ -115,16 +117,14 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
 template <typename T, typename S>
 void llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
 {
-  std::cout << "Client grpc Start" << std::endl;
-
   T message;
-  while (!disposing_ && stream_->Read(&message))
+  // Will be stop with context_.TryCancel() on destructor.
+  while (stream_->Read(&message))
   {
     BUGCONT(std::cout, this->subscriber_->Listen(message), );
   }
 
-  std::cout << "Client grpc : end" << std::endl;
-
+  this->stream_.reset();
   this->stub_.reset();
 }
 
@@ -139,9 +139,9 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
   std::stringstream ss;
 
   ss << ip_ << ":" << port_;
-  stub_ = S::NewStub(grpc::CreateChannel(ss.str(), grpc::InsecureChannelCredentials()));
-  stream_ = stub_->Talk(&context);
-
+  channel_ = grpc::CreateChannel(ss.str(), grpc::InsecureChannelCredentials());
+  stub_ = S::NewStub(channel_);
+  stream_ = stub_->Talk(&context_);
 
   std::thread t(&ConnectorPublisherGrpc<T, S>::Receiver, this);
   this->receiver_ = std::move(t);

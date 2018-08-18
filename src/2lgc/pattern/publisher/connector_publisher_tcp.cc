@@ -87,6 +87,8 @@ template <typename T>
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
     const T &message)
 {
+  BUGCONT(std::cout, Connect(), false);
+
   std::string message_in_string;
   BUGLIB(std::cout, message.SerializeToString(&message_in_string), false, "protobuf");
   BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
@@ -120,8 +122,6 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
   fd.events = POLLIN;
   int retval;  // NS
 
-  std::cout << "Client " << socket_ << " Start" << std::endl;
-
   do
   {
     retval = poll(&fd, 1, 50);
@@ -145,7 +145,6 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
         continue;
       }
 
-      std::cout << "Client " << socket_ << " recv" << std::endl;
       T message;
       std::string client_string(client_message, static_cast<size_t>(read_size));
       BUGLIB(std::cout, message.ParseFromString(client_string), , "protobuf");
@@ -153,8 +152,6 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
       BUGCONT(std::cout, this->subscriber_->Listen(message), );
     }
   } while (!disposing_);
-
-  std::cout << "Client " << socket_ << " End" << std::endl;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

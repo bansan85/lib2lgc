@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_GRPC_H_
-#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_GRPC_H_
+#ifndef PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_H_
+#define PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_H_
 
 #include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <atomic>
 #include <cstdint>
 #include <memory>
 #include <string>
-#include <thread>
 #include <grpcpp/impl/codegen/sync_stream.h>
 
 /**
@@ -41,24 +39,22 @@ class SubscriberInterface;
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
-template <typename T, typename S> // T: type of message, S: service
-class ConnectorPublisherGrpc : public ConnectorInterface<T>
+template <typename T>
+class ConnectorSubscriberGrpc : public ConnectorInterface<T>
 {
  public:
   /**
    * @brief Default constructor.
    *
-   * @param[in] subscriber The subscriber.
-   * @param[in] ip The IP of the server.
-   * @param[in] port The port of the server.
+   * @param[in] subscriber Subscriber to communicate with client.
+   * @param[in] socket_fd Socket to communicate with client.
    */
-  ConnectorPublisherGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                        std::string ip, uint16_t port);
+  ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber, grpc::ServerReaderWriter<T, T>* stream);
 
   /**
    * @brief Default virtual destructor.
    */
-  ~ConnectorPublisherGrpc() override;
+  ~ConnectorSubscriberGrpc() override;
 
 #ifndef SWIG
   /**
@@ -66,14 +62,14 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    *
    * @param[in] other The original.
    */
-  ConnectorPublisherGrpc(ConnectorPublisherGrpc &&other) = delete;
+  ConnectorSubscriberGrpc(ConnectorSubscriberGrpc &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  ConnectorPublisherGrpc(ConnectorPublisherGrpc const &other) = delete;
+  ConnectorSubscriberGrpc(ConnectorSubscriberGrpc const &other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -82,7 +78,7 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    *
    * @return Delete function.
    */
-  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc &&other) = delete;
+  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc &&other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -91,14 +87,14 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    *
    * @return Delete function.
    */
-  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc const &other) & =
+  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc const &other) & =
       delete;
 #endif  // !SWIG
 
   /**
    * @brief Compare two connectors.
    *
-   * @param[in] connector The connector to compare with this.
+   * @param[in,out] connector The connector to compare with this.
    *
    * @return true if same connector.
    */
@@ -110,8 +106,6 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    * @param[in] message Data of the message in ProtoBuf, SerializeToString.
    *
    * @return true if no problem.
-   *
-   * @dotfile pattern/publisher/publisher_tcp_send_message.dot
    */
   bool Send(const T &message) override CHK;
 
@@ -133,44 +127,15 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
-  /**
-   * @brief The function used by the thread that receive message from server.
-   *
-   * Need to be public so thread can use it. Protected is not possible.
-   */
-  void Receiver();
-
  protected:
   /**
-   * @brief The IP of the server.
+   * @brief Socket to the server.
    */
-  std::string ip_;
-
-  /**
-   * @brief The port of the server.
-   */
-  uint16_t port_;
-
-  std::unique_ptr<typename S::Stub> stub_;
-  std::shared_ptr<grpc::ClientReaderWriter<T, T> > stream_;
-  std::shared_ptr<grpc::Channel> channel_;
-  grpc::ClientContext context_;
-
-  /**
-   * @brief Start connection with server.
-   *
-   * @return true if no problem.
-   */
-  bool Connect() CHK;
-
-  /**
-   * @brief Thread that listen the server.
-   */
-  std::thread receiver_;
+  grpc::ServerReaderWriter<T, T>* stream_;
 };
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_GRPC_H_
+#endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

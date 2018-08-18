@@ -30,6 +30,8 @@
 #include <2lgc/pattern/publisher/publisher_ip.cc>
 #include <2lgc/pattern/publisher/publisher_grpc.cc>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.cc>
+#include <2lgc/pattern/publisher/connector_subscriber_grpc.cc>
+#include <2lgc/pattern/publisher/subscriber_server_grpc.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherInterface<llgc::protobuf::test::Rpc, std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<llgc::protobuf::test::Rpc>>>;
@@ -37,14 +39,14 @@ template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
 template class llgc::pattern::publisher::ConnectorPublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>;
-
+template class llgc::pattern::publisher::ConnectorSubscriberGrpc<llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::SubscriberServerGrpc<llgc::protobuf::test::Rpc>;
 
 class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
                                  llgc::protobuf::test::Rpc>
 {
  public:
   explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
-  ~SubscriberBase() override { std::cout << "DEAD IN HELL" << std::endl; }
   SubscriberBase(SubscriberBase&& other) = delete;
   SubscriberBase(SubscriberBase const& other) = delete;
   SubscriberBase& operator=(SubscriberBase&& other) & = delete;
@@ -52,7 +54,6 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
 
   bool Listen(const llgc::protobuf::test::Rpc& messages) override
   {
-    std::cout << "LISTEN" << std::endl;
     for (int i = 0; i < messages.msg_size(); i++)
     {
       const auto& message = messages.msg(i);
@@ -62,7 +63,6 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
         case llgc::protobuf::test::Rpc_Msg::DataCase::kTest:
         {
           value++;
-          std::cout << "value++" << std::endl;
           break;
         }
         case llgc::protobuf::test::Rpc_Msg::DataCase::DATA_NOT_SET:
@@ -85,6 +85,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   auto server = std::make_unique<llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>>(8890);
+  assert(server->Listen());
+  assert(server->Wait());
 
   auto subscriber = std::make_shared<SubscriberBase>(1);
   auto connector =
@@ -100,10 +102,16 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto message = messages.add_msg();
   auto message_test = std::make_unique<llgc::protobuf::test::Rpc_Msg_Test>();
   message->set_allocated_test(message_test.release());
+  assert(connector->Send(messages));
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
+  do
+  {
+    end = std::chrono::system_clock::now();
+    assert(static_cast<size_t>(std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count()) < 1000);
+  } while (subscriber->value != 1);
 
-  assert(server->Listen());
-  assert(server->Wait());
-
+  connector.reset();
   server->Stop();
   server->JoinWait();
 

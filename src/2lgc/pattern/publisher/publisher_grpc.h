@@ -18,7 +18,10 @@
 #define PATTERN_PUBLISHER_PUBLISHER_GRPC_H_
 
 #include <2lgc/compat.h>
+#include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
+#include <2lgc/pattern/publisher/subscriber_server_grpc.h>
+#include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
 #include <atomic>
 #include <cstdint>
 #include <map>
@@ -34,23 +37,64 @@
 namespace llgc::pattern::publisher
 {
 template <typename T, typename S> // S : class of service
-class PublisherGrpcService : public S
+class PublisherGrpcService : public S, public PublisherIp<T>
 {
  public:
-  explicit PublisherGrpcService()
+  explicit PublisherGrpcService(PublisherIp<T>& parent) : llgc::pattern::publisher::PublisherIp<T>(parent.GetPort()), parent_(parent)
   {
   }
 
+  // One endless thread for each connexion.
+  // But same object for everyone.
   virtual grpc::Status Talk(grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream) override
   {
-    T note;
-    while (stream->Read(&note))
+    T messages;
+    while (stream->Read(&messages))
     {
-      // TODO
+      for (int i = 0; i < messages.msg_size(); i++)
+      {
+        auto& message = messages.msg(i);
+
+        auto enumeration = message.data_case();
+
+        if (enumeration ==
+            std::remove_reference<decltype(message)>::type::kAddSubscriber)
+        {
+          std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
+          std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(subscriber, stream);
+          BUGCONT(std::cout, this->AddSubscriber(message.add_subscriber().id_message(), connector), grpc::Status::CANCELLED);
+        }
+        /*
+        case message.kRemoveSubscriber:
+        {
+          AddSubscriber(socket, &message);
+          break;
+        }*/
+      }
+
+      BUGCONT(std::cout, this->Forward(messages), grpc::Status::CANCELLED);
     }
 
     return grpc::Status::OK;
   }
+
+  bool Listen() override CHK
+  {
+    return parent_.Listen();
+  }
+
+  bool Wait() override CHK
+  {
+    return parent_.Wait();
+  }
+
+  void Stop() override
+  {
+    parent_.Stop();
+  }
+
+ private:
+  PublisherIp<T>& parent_;
 };
 
 
