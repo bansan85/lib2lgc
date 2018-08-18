@@ -151,12 +151,15 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
       {
         AddSubscriberLocal(socket, message);
       }
-      /*
-      case message.kRemoveSubscriber:
+      else if (enumeration ==
+          std::remove_reference<decltype(message)>::type::kRemoveSubscriber)
       {
-        AddSubscriber(socket, &message);
-        break;
-      }*/
+        // We need to create a temporary connector with the socket
+        // because the Remover only works with connector.
+        std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(socket);
+        std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(subscriber, socket);
+        BUGCONT(std::cout, this->RemoveSubscriber(message.remove_subscriber().id_message(), connector), );
+      }
     }
 
     BUGCONT(std::cout, this->Forward(messages), );

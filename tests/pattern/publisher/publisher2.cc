@@ -37,6 +37,7 @@
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <thread>
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
@@ -151,8 +152,23 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
   size_t value;
 };
 
+static void WaitUpToOneSecond(std::function<bool()> test)
+{
+  std::chrono::time_point<std::chrono::system_clock> start, end;
+  start = std::chrono::system_clock::now();
+  do
+  {
+    end = std::chrono::system_clock::now();
+    assert(
+        static_cast<size_t>(
+            std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
+                .count()) < 1000);
+  } while (!test());
+}
+
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
+  constexpr size_t delay = 100;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   llgc::net::Linux::DisableSigPipe();
@@ -172,6 +188,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   // Add them to the server.
   assert(
       connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
   // Base test case.
   assert(subscriber->value == 0);
@@ -182,16 +199,53 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto message_test = std::make_unique<llgc::protobuf::test::Tcp_Msg_Test>();
   message->set_allocated_test(message_test.release());
   assert(connector->Send(messages));
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-  start = std::chrono::system_clock::now();
-  do
+  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 1; });
+
+  // Test lock forward.
+  subscriber->value = 0;
   {
-    end = std::chrono::system_clock::now();
-    assert(
-        static_cast<size_t>(
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-                .count()) < 1000);
-  } while (subscriber->value != 1);
+    llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
+    assert(connector->Send(messages));
+    // Wait one second to be sure that the message is not send.
+    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+    assert(subscriber->value == 0);
+  }
+  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 1; });
+
+  // Remove the first subscriber.
+  subscriber->value = 0;
+  assert(connector->RemoveSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(connector->Send(messages));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(subscriber->value == 0);
+
+  // Double insert
+  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(connector->Send(messages));
+  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 2; });
+  assert(connector->RemoveSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(connector->Send(messages));
+  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 3; });
+  assert(connector->RemoveSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(connector->Send(messages));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(subscriber->value == 3);
+  assert(!server->GetOptionFailAlreadySubscribed());
+  server->SetOptionFailAlreadySubscribed(true);
+  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  // Here, AddSubscriber will not failed because the TCP server can't return a value.
+  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(connector->Send(messages));
+  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
+  assert(subscriber->value == 4);
 
   server->Stop();
   server->JoinWait();
