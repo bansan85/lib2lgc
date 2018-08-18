@@ -75,9 +75,6 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
     return true;
   }
   size_t value;
-
- private:
-  std::unique_ptr<llgc::protobuf::test::Greeter::Stub> stub_;
 };
 
 int main(int /* argc */, char* /* argv */ [])  // NS
