@@ -54,7 +54,7 @@
  * \param Y Return value if X is wrong.
  */
 
-#define BUGLIB(OUT, X, Y, LIB) BUG(OUT, X, Y, "Library error.\n", LIB << "\n")
+#define BUGLIB(OUT, X, Y, LIB) BUG(OUT, X, Y, "Library error: ", LIB << "\n")
 /**
  * \def BUGLIB(OUT, X, Y, LIB)
  * \brief If condition X is false, tell which library then return Y.
