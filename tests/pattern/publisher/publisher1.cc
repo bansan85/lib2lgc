@@ -83,6 +83,7 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
     {
       const llgc::protobuf::test::Direct_Msg& message = messages.msg(i);
 
+      assert(message_vector[message.data_case()] != nullptr);
       message_vector[message.data_case()](*this, message);
     }
     return true;
