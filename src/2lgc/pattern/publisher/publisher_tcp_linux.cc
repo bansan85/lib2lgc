@@ -64,8 +64,6 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
     int client_sock = 0;  // NS
     fd_set rfds;
 
-    std::cout << "Server is waiting for client" << std::endl;
-
     do
     {
       FD_ZERO(&rfds);  // NOLINT(hicpp-no-assembler)
@@ -83,7 +81,6 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
             std::bind(accept4, sockfd_, nullptr, nullptr, 0));
         if (client_sock > 0)
         {
-          std::cout << "Server new client" << client_sock << std::endl;
           std::thread t2(
               std::bind(&PublisherTcpLinux<T>::WaitThread, this, client_sock));
           this->thread_sockets_.insert(
@@ -91,7 +88,6 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
         }
       }
     } while (iResult >= 0 && client_sock >= 0 && !this->disposing_);
-    std::cout << "Server stop listening" << std::endl;
     BUGCRIT(std::cout, iResult != -1, , "Errno " << errno << "\n");
     BUGCRIT(std::cout, client_sock != -1, , "Errno " << errno << "\n");
   });  // NS
@@ -110,8 +106,6 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
   fd.fd = socket;
   fd.events = POLLIN;
   int retval;  // NS
-
-  std::cout << "Server Client " << socket << " Start" << std::endl;
 
   do
   {
@@ -135,14 +129,12 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
             "Server client "
                 << socket << " recv failed. Close connection. Errno " << errno
                 << ".\n");
+    // Empty message.
     if (read_size == 0)
     {
-      std::cout << "Server Client " << socket << ", empty message.\n"
-                << std::endl;
       continue;
     }
 
-    std::cout << "Server Client " << socket << " Talk" << std::endl;
     T messages;
 
     std::string client_string(client_message, static_cast<size_t>(read_size));
@@ -169,8 +161,6 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 
     BUGCONT(std::cout, this->Forward(messages), );
   } while (!this->disposing_);
-
-  std::cout << "Server Client " << socket << " End" << std::endl;
 }
 
 template <typename T>
@@ -186,9 +176,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
       connector =
           std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
               subscriber, socket);
-  BUGCRIT(std::cout,
-          this->AddSubscriber(message.add_subscriber().id_message(), connector),
-          , "Failed to add a subscriber.");
+  BUGCONT(std::cout, this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

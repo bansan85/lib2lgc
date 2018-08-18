@@ -83,10 +83,6 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
    * @param[in] id Id of the subscriber.
    */
   explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
-  /**
-   * @brief Default constructor for debug.
-   */
-  ~SubscriberBase() override { std::cout << "DEAD IN HELL" << std::endl; }
 
   /**
    * @brief Delete move constructor.
@@ -128,7 +124,6 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
    */
   bool Listen(const llgc::protobuf::test::Tcp& messages) override
   {
-    std::cout << "LISTEN" << std::endl;
     for (int i = 0; i < messages.msg_size(); i++)
     {
       const auto& message = messages.msg(i);
@@ -138,7 +133,6 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
         case llgc::protobuf::test::Tcp_Msg::DataCase::kTest:
         {
           value++;
-          std::cout << "value++" << std::endl;
           break;
         }
         case llgc::protobuf::test::Tcp_Msg::DataCase::DATA_NOT_SET:
