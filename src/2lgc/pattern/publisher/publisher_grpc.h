@@ -45,7 +45,7 @@ class PublisherGrpcService : public S, public PublisherIp<T>
   }
 
   // One endless thread for each connexion.
-  // But same object for everyone.
+  // But same 'this' for everyone.
   virtual grpc::Status Talk(grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream) override
   {
     T messages;
