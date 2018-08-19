@@ -56,8 +56,7 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorDirect<T>::Send(
-    const T &message)
+bool llgc::pattern::publisher::ConnectorDirect<T>::Send(const T &message)
 {
   BUGCONT(std::cout, server_->Forward(message), false);
   return true;

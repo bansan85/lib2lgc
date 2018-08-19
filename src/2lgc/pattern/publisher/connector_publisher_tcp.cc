@@ -84,13 +84,13 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
-    const T &message)
+bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
 {
   BUGCONT(std::cout, Connect(), false);
 
   std::string message_in_string;
-  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false, "protobuf");
+  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false,
+         "protobuf");
   BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
   return true;
 }
@@ -120,11 +120,10 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
   struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket_;
   fd.events = POLLIN;
-  int retval;  // NS
 
   do
   {
-    retval = poll(&fd, 1, 50);
+    int retval = poll(&fd, 1, 50);  // NS
 
     // Problem: stop the thread.
     BUGCRIT(std::cout, retval != -1, ,

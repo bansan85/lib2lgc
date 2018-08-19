@@ -15,21 +15,14 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.h>
 #include <2lgc/poco/pattern_publisher.pb.h>
-#include <arpa/inet.h>
-#include <poll.h>
-#include <grpcpp/security/credentials.h>
 #include <grpcpp/create_channel.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <sstream>
-#include <cerrno>
-#include <cstddef>
+#include <grpcpp/security/credentials.h>
 #include <iostream>
 #include <memory>
+#include <sstream>
 #include <utility>
 
 template <typename T, typename S>
@@ -44,7 +37,8 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
 }
 
 template <typename T, typename S>
-llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::~ConnectorPublisherGrpc()
+llgc::pattern::publisher::ConnectorPublisherGrpc<T,
+                                                 S>::~ConnectorPublisherGrpc()
 {
   // Properly stop recv and close file descriptor.
   context_.TryCancel();

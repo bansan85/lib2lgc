@@ -16,37 +16,61 @@
 
 // Test ipv6 publisher
 
-#include <google/protobuf/stubs/common.h>
-#include <2lgc/pattern/publisher/publisher_grpc.h>
-#include "rpc.pb.h"
-#include "rpc.grpc.pb.h"
-#include <cassert>
-#include <2lgc/pattern/publisher/subscriber.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.h>
+#include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
+#include <2lgc/pattern/publisher/publisher_grpc.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
+#include <2lgc/pattern/publisher/publisher_ip.h>
+#include <2lgc/pattern/publisher/subscriber.h>
+#include <2lgc/pattern/publisher/subscriber_server_grpc.h>
+#include <2lgc/utils/count_lock.h>
+#include <google/protobuf/stubs/common.h>
+#include <grpcpp/impl/codegen/status.h>
+#include <cassert>
+#include <chrono>
+#include <cstddef>
+#include <cstdint>
+#include <functional>
+#include <map>
+#include <memory>
+#include <thread>
+#include <type_traits>
+#include "rpc.grpc.pb.h"
+#include "rpc.pb.h"
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
-#include <2lgc/pattern/publisher/publisher_interface.cc>
-#include <2lgc/pattern/publisher/subscriber.cc>
-#include <2lgc/pattern/publisher/publisher_ip.cc>
-#include <2lgc/pattern/publisher/publisher_grpc.cc>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.cc>
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.cc>
+#include <2lgc/pattern/publisher/publisher_grpc.cc>
+#include <2lgc/pattern/publisher/publisher_interface.cc>
+#include <2lgc/pattern/publisher/publisher_ip.cc>
+#include <2lgc/pattern/publisher/subscriber.cc>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.cc>
 
-template class llgc::pattern::publisher::ConnectorInterface<llgc::protobuf::test::Rpc>;
-template class llgc::pattern::publisher::PublisherInterface<llgc::protobuf::test::Rpc, std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<llgc::protobuf::test::Rpc>>>;
+template class llgc::pattern::publisher::ConnectorInterface<
+    llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::PublisherInterface<
+    llgc::protobuf::test::Rpc,
+    std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<
+        llgc::protobuf::test::Rpc>>>;
 template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Rpc>;
-template class llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
-template class llgc::pattern::publisher::ConnectorPublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>;
-template class llgc::pattern::publisher::ConnectorSubscriberGrpc<llgc::protobuf::test::Rpc>;
-template class llgc::pattern::publisher::SubscriberServerGrpc<llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::PublisherGrpc<
+    llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
+template class llgc::pattern::publisher::ConnectorPublisherGrpc<
+    llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>;
+template class llgc::pattern::publisher::ConnectorSubscriberGrpc<
+    llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::SubscriberServerGrpc<
+    llgc::protobuf::test::Rpc>;
 
-class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
-                                 llgc::protobuf::test::Rpc>
+class SubscriberBase final
+    : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>
 {
  public:
   explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
+  virtual ~SubscriberBase() = default;
   SubscriberBase(SubscriberBase&& other) = delete;
   SubscriberBase(SubscriberBase const& other) = delete;
   SubscriberBase& operator=(SubscriberBase&& other) & = delete;
@@ -77,7 +101,7 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
   size_t value;
 };
 
-static void WaitUpToOneSecond(std::function<bool()> test)
+static void WaitUpToOneSecond(const std::function<bool()> &test)
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
@@ -96,7 +120,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   constexpr size_t delay = 30;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  auto server = std::make_unique<llgc::pattern::publisher::PublisherGrpc<llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>>(8890);
+  auto server = std::make_unique<llgc::pattern::publisher::PublisherGrpc<
+      llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>>(8890);
   assert(server->Listen());
   assert(server->Wait());
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
@@ -104,9 +129,11 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto subscriber = std::make_shared<SubscriberBase>(1);
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
-          llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(subscriber, "127.0.0.1", 8890);
+          llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(
+          subscriber, "127.0.0.1", 8890);
 
-  assert(connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
   assert(subscriber->value == 0);
@@ -132,34 +159,42 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   // Remove the first subscriber.
   subscriber->value = 0;
-  assert(connector->RemoveSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(connector->RemoveSubscriber(
+      llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 0);
 
   // Double insert
-  assert(connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   WaitUpToOneSecond([&subscriber]() { return subscriber->value == 2; });
-  assert(connector->RemoveSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(connector->RemoveSubscriber(
+      llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   WaitUpToOneSecond([&subscriber]() { return subscriber->value == 3; });
-  assert(connector->RemoveSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(connector->RemoveSubscriber(
+      llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 3);
   assert(!server->GetOptionFailAlreadySubscribed());
   server->SetOptionFailAlreadySubscribed(true);
-  assert(connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  // Here, AddSubscriber will not failed because the TCP server can't return a value.
-  assert(connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  // Here, AddSubscriber will not failed because the TCP server can't return a
+  // value.
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));

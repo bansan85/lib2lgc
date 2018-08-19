@@ -24,7 +24,6 @@
 
 #include <2lgc/compat.h>
 #include <2lgc/pattern/singleton.h>
-#include <string>
 
 /**
  * @brief Namespace for the pattern publisher.

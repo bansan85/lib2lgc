@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/publisher/publisher_grpc.h>
 #include <2lgc/error/show.h>
-#include <sstream>
+#include <2lgc/pattern/publisher/publisher_grpc.h>
+#include <2lgc/pattern/publisher/publisher_ip.h>
+#include <grpcpp/grpcpp.h>
+#include <grpcpp/security/server_credentials.h>
 #include <iostream>
+#include <sstream>
+#include <thread>
+#include <utility>
 
 template <typename T, typename S>
-llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port) : llgc::pattern::publisher::PublisherIp<T>(port), service_(*this)
+llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port)
+    : llgc::pattern::publisher::PublisherIp<T>(port), service_(this)
 {
 }
 
@@ -29,13 +34,6 @@ template <typename T, typename S>
 llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
 {
   Stop();
-  JoinWait();
-}
-
-template <typename T, typename S>
-void llgc::pattern::publisher::PublisherGrpc<T, S>::JoinWait()
-{
-  PublisherIp<T>::JoinWait();
 }
 
 template <typename T, typename S>
@@ -52,7 +50,8 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 
   server_ = std::move(builder_.BuildAndStart());
 
-  BUGCRIT(std::cout, server_ != nullptr, false, "Fail to start server at port " << this->port_ << " for 0.0.0.0.\n");
+  BUGCRIT(std::cout, server_ != nullptr, false,
+          "Fail to start server at port " << this->port_ << " for 0.0.0.0.\n");
 
   return true;
 }

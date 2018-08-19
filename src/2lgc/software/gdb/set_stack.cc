@@ -366,7 +366,8 @@ const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
   return **it;
 }
 
-bool llgc::software::gdb::SetStack::Forward(const llgc::protobuf::software::Gdb& message)
+bool llgc::software::gdb::SetStack::Forward(
+    const llgc::protobuf::software::Gdb& message)
 {
   // Check if instance.
   if (server_.IsInstance())

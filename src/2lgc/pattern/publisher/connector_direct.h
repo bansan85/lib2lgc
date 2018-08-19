@@ -21,7 +21,6 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <cstdint>
 #include <memory>
-#include <string>
 
 /**
  * @brief Namespace for the pattern publisher.

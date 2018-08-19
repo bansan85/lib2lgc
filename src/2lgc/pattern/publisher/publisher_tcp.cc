@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/publisher/publisher_interface.h>
+#include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 
 template <typename T>
@@ -26,7 +26,7 @@ llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
 template <typename T>
 llgc::pattern::publisher::PublisherTcp<T>::~PublisherTcp()
 {
-  JoinWait();
+  PublisherTcp<T>::JoinWait();
 }
 
 template <typename T>

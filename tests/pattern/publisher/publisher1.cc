@@ -31,7 +31,6 @@
 #include <functional>
 #include <map>
 #include <memory>
-#include <string>
 #include <vector>
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
@@ -53,8 +52,8 @@ template class llgc::pattern::publisher::Subscriber<
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
-                                 llgc::protobuf::test::Direct>
+class SubscriberBase final
+    : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Direct>
 {
  public:
   /**

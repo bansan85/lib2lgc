@@ -19,12 +19,20 @@
 
 #include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <atomic>
+#include <grpcpp/impl/codegen/client_context.h>
 #include <cstdint>
 #include <memory>
 #include <string>
 #include <thread>
-#include <grpcpp/impl/codegen/sync_stream.h>
+namespace grpc
+{
+class Channel;
+}
+namespace grpc
+{
+template <class W, class R>
+class ClientReaderWriter;
+}
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -41,7 +49,7 @@ class SubscriberInterface;
  * There's could be two kind of connector. First, direct connection, the other
  * one is connected throw TCP/IP.
  */
-template <typename T, typename S> // T: type of message, S: service
+template <typename T, typename S>  // T: type of message, S: service
 class ConnectorPublisherGrpc : public ConnectorInterface<T>
 {
  public:
@@ -53,7 +61,7 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    * @param[in] port The port of the server.
    */
   ConnectorPublisherGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                        std::string ip, uint16_t port);
+                         std::string ip, uint16_t port);
 
   /**
    * @brief Default virtual destructor.
@@ -152,7 +160,7 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
   uint16_t port_;
 
   std::unique_ptr<typename S::Stub> stub_;
-  std::shared_ptr<grpc::ClientReaderWriter<T, T> > stream_;
+  std::shared_ptr<grpc::ClientReaderWriter<T, T>> stream_;
   std::shared_ptr<grpc::Channel> channel_;
   grpc::ClientContext context_;
 

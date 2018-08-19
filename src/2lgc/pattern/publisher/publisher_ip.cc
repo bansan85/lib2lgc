@@ -39,7 +39,7 @@ template <typename T>
 llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 {
   // Can't destroy a thread if it's still running.
-  JoinWait();
+  PublisherIp<T>::JoinWait();
 }
 
 template <typename T>

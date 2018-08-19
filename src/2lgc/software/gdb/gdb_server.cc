@@ -22,7 +22,6 @@
 #include <2lgc/software/gdb/gdb_server.h>
 #include <iostream>
 #include <memory>
-#include <string>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
@@ -37,7 +36,8 @@ template class llgc::pattern::publisher::PublisherInterface<
 template class llgc::pattern::Singleton<
     llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 
-bool llgc::software::gdb::GdbServer::Forward(const llgc::protobuf::software::Gdb& message)
+bool llgc::software::gdb::GdbServer::Forward(
+    const llgc::protobuf::software::Gdb& message)
 {
   // Check if instance.
   if (IsInstance())

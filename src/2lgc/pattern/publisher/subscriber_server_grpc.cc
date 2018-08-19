@@ -15,10 +15,8 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>
 #include <iostream>
-#include <string>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -30,7 +28,8 @@ class SubscriberInterface;
 }
 
 template <typename T>
-bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Listen(const T &messages)
+bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Listen(
+    const T &messages)
 {
   BUGLIB(std::cout, stream_->Write(messages), false, "grpc");
 

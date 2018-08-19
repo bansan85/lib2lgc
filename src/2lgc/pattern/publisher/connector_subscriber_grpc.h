@@ -21,8 +21,11 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <cstdint>
 #include <memory>
-#include <string>
-#include <grpcpp/impl/codegen/sync_stream.h>
+namespace grpc
+{
+template <class W, class R>
+class ServerReaderWriter;
+}
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -49,7 +52,8 @@ class ConnectorSubscriberGrpc : public ConnectorInterface<T>
    * @param[in] subscriber Subscriber to communicate with client.
    * @param[in] socket_fd Socket to communicate with client.
    */
-  ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber, grpc::ServerReaderWriter<T, T>* stream);
+  ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
+                          grpc::ServerReaderWriter<T, T> *stream);
 
   /**
    * @brief Default virtual destructor.
@@ -131,7 +135,7 @@ class ConnectorSubscriberGrpc : public ConnectorInterface<T>
   /**
    * @brief Socket to the server.
    */
-  grpc::ServerReaderWriter<T, T>* stream_;
+  grpc::ServerReaderWriter<T, T> *stream_;
 };
 
 }  // namespace llgc::pattern::publisher

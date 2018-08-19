@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
-#define PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#ifndef PATTERN_PUBLISHER_SUBSCRIBER_H_
+#define PATTERN_PUBLISHER_SUBSCRIBER_H_
 
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <cstdint>
@@ -101,6 +101,6 @@ class Subscriber : public SubscriberInterface<T>
 
 }  // namespace llgc::pattern::publisher
 
-#endif  // PATTERN_PUBLISHER_SUBSCRIBER_DIRECT_H_
+#endif  // PATTERN_PUBLISHER_SUBSCRIBER_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

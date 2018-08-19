@@ -19,12 +19,9 @@
 
 #include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <atomic>
 #include <cstdint>
-#include <map>
 #include <memory>
 #include <thread>
-#include <type_traits>
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -118,7 +115,7 @@ class PublisherIp
    */
   virtual void JoinWait();
 
-  uint16_t GetPort() {return port_;}
+  uint16_t GetPort() { return port_; }
 
  protected:
   /**

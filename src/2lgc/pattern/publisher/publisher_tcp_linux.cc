@@ -60,7 +60,7 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
   }
 
   std::thread t([this]() {
-    int iResult;  // NS
+    int iResult;          // NS
     int client_sock = 0;  // NS
     fd_set rfds;
 
@@ -105,11 +105,10 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
   struct pollfd fd;  // NOLINT(hicpp-member-init)
   fd.fd = socket;
   fd.events = POLLIN;
-  int retval;  // NS
 
   do
   {
-    retval = poll(&fd, 1, 50);
+    int retval = poll(&fd, 1, 50);  // NS
 
     BUGCRIT(std::cout, retval != -1, ,
             "Server client "
@@ -151,14 +150,21 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
       {
         AddSubscriberLocal(socket, message);
       }
-      else if (enumeration ==
-          std::remove_reference<decltype(message)>::type::kRemoveSubscriber)
+      else if (enumeration == std::remove_reference<decltype(
+                                  message)>::type::kRemoveSubscriber)
       {
         // We need to create a temporary connector with the socket
         // because the Remover only works with connector.
-        std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(socket);
-        std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(subscriber, socket);
-        BUGCONT(std::cout, this->RemoveSubscriber(message.remove_subscriber().id_message(), connector), );
+        std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>>
+            subscriber = std::make_shared<
+                llgc::pattern::publisher::SubscriberServerTcp<T>>(socket);
+        std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
+            connector = std::make_shared<
+                llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(subscriber,
+                                                                     socket);
+        BUGCONT(std::cout,
+                this->RemoveSubscriber(message.remove_subscriber().id_message(),
+                                       connector), );
       }
     }
 
@@ -179,7 +185,9 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
       connector =
           std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
               subscriber, socket);
-  BUGCONT(std::cout, this->AddSubscriber(message.add_subscriber().id_message(), connector), );
+  BUGCONT(
+      std::cout,
+      this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

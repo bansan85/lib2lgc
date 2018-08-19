@@ -21,21 +21,23 @@
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.h>
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
+#include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h>
 #include <2lgc/pattern/publisher/subscriber.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
+#include <2lgc/utils/count_lock.h>
 #include <google/protobuf/stubs/common.h>
 #include <tcp.pb.h>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
+#include <functional>
 #include <map>
 #include <memory>
-#include <string>
+#include <thread>
 #include <type_traits>
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
@@ -73,8 +75,8 @@ template class llgc::pattern::publisher::PublisherTcpLinuxIpv6<
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
-                                 llgc::protobuf::test::Tcp>
+class SubscriberBase final
+    : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Tcp>
 {
  public:
   /**
@@ -83,6 +85,11 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
    * @param[in] id Id of the subscriber.
    */
   explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
+
+  /**
+   * @brief Default destructor.
+   */
+  virtual ~SubscriberBase() = default;
 
   /**
    * @brief Delete move constructor.
@@ -151,7 +158,7 @@ class SubscriberBase final : public llgc::pattern::publisher::Subscriber<
   size_t value;
 };
 
-static void WaitUpToOneSecond(std::function<bool()> test)
+static void WaitUpToOneSecond(const std::function<bool()> &test)
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
@@ -213,34 +220,42 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   // Remove the first subscriber.
   subscriber->value = 0;
-  assert(connector->RemoveSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  assert(connector->RemoveSubscriber(
+      llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 0);
 
   // Double insert
-  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   WaitUpToOneSecond([&subscriber]() { return subscriber->value == 2; });
-  assert(connector->RemoveSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  assert(connector->RemoveSubscriber(
+      llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   WaitUpToOneSecond([&subscriber]() { return subscriber->value == 3; });
-  assert(connector->RemoveSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  assert(connector->RemoveSubscriber(
+      llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 3);
   assert(!server->GetOptionFailAlreadySubscribed());
   server->SetOptionFailAlreadySubscribed(true);
-  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  // Here, AddSubscriber will not failed because the TCP server can't return a value.
-  assert(connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
+  // Here, AddSubscriber will not failed because the TCP server can't return a
+  // value.
+  assert(
+      connector->AddSubscriber(llgc::protobuf::test::Tcp_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));

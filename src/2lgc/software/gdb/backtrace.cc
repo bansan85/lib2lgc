@@ -44,9 +44,7 @@ llgc::software::gdb::Backtrace::Factory(const std::string& line)
           std::unique_ptr<Backtrace>(nullptr));
   BUGCONT(std::cout, function.length() == 0 || retval->ReadFunction(function),
           std::unique_ptr<Backtrace>(nullptr));
-  BUGCONT(std::cout,
-          file.length() == 0 || retval->ReadSource(file) ||
-              retval->ReadSource(file),
+  BUGCONT(std::cout, file.length() == 0 || retval->ReadSource(file),
           std::unique_ptr<Backtrace>(nullptr));
 
   return retval;

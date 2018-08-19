@@ -20,6 +20,7 @@
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
 #include <cassert>
 #include <iostream>
+#include <string>
 
 template <typename T>
 llgc::pattern::publisher::ConnectorSubscriberTcp<T>::ConnectorSubscriberTcp(
@@ -56,11 +57,11 @@ bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::AddSubscriber(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(
-    const T &message)
+bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(const T &message)
 {
   std::string message_in_string;
-  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false, "protobuf");
+  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false,
+         "protobuf");
   BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
   return true;
 }

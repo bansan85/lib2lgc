@@ -17,12 +17,10 @@
 #ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 #define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
-#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <atomic>
 #include <cstdint>
 #include <map>
-#include <memory>
 #include <thread>
 #include <type_traits>
 
@@ -52,7 +50,7 @@ class PublisherTcp : public PublisherIp<T>
   /**
    * @brief Destructor. Make sure that thread is finished.
    */
-  virtual ~PublisherTcp() override;
+  ~PublisherTcp() override;
 
 #ifndef SWIG
   /**

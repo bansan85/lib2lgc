@@ -18,7 +18,11 @@
 #define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_GRPC_H_
 
 #include <2lgc/pattern/publisher/subscriber_interface.h>
-#include <grpcpp/impl/codegen/sync_stream.h>
+namespace grpc
+{
+template <class W, class R>
+class ServerReaderWriter;
+}
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -41,7 +45,10 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
    *
    * @param[in] socket Socket to communicate with server.
    */
-  explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T>* stream) : stream_(stream) {}
+  explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T>* stream)
+      : stream_(stream)
+  {
+  }
 
 #ifndef SWIG
   /**

@@ -21,7 +21,6 @@
 #include <cstdint>
 #include <memory>
 #include <queue>
-#include <string>
 
 /**
  * @brief Namespace for the pattern publisher.

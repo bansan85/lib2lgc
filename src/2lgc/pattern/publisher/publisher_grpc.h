@@ -20,33 +20,66 @@
 #include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
-#include <2lgc/pattern/publisher/subscriber_server_grpc.h>
-#include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
-#include <atomic>
+#include <grpcpp/impl/codegen/status.h>
 #include <cstdint>
-#include <map>
+#include <iostream>
 #include <memory>
-#include <thread>
 #include <type_traits>
-#include <grpcpp/grpcpp.h>
-#include <grpcpp/impl/codegen/sync_stream.h>
+namespace grpc
+{
+class Server;
+}
+namespace grpc
+{
+class ServerContext;
+}
+namespace grpc
+{
+template <class W, class R>
+class ServerReaderWriter;
+}
+namespace llgc
+{
+namespace pattern
+{
+namespace publisher
+{
+template <typename T>
+class ConnectorSubscriberGrpc;
+}
+}  // namespace pattern
+}  // namespace llgc
+namespace llgc
+{
+namespace pattern
+{
+namespace publisher
+{
+template <typename T>
+class SubscriberServerGrpc;
+}
+}  // namespace pattern
+}  // namespace llgc
 
 /**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
-template <typename T, typename S> // S : class of service
+template <typename T, typename S>  // S : class of service
 class PublisherGrpcService : public S, public PublisherIp<T>
 {
  public:
-  explicit PublisherGrpcService(PublisherIp<T>& parent) : llgc::pattern::publisher::PublisherIp<T>(parent.GetPort()), parent_(parent)
+  explicit PublisherGrpcService(PublisherIp<T>* parent)
+      : llgc::pattern::publisher::PublisherIp<T>(parent->GetPort()),
+        parent_(*parent)
   {
   }
 
   // One endless thread for each connexion.
   // But same 'this' for everyone.
-  virtual grpc::Status Talk(grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream) override
+  grpc::Status Talk(grpc::ServerContext* /*context*/,
+                    grpc::ServerReaderWriter<T, T>* stream) override
   {
     T messages;
     while (stream->Read(&messages))
@@ -60,19 +93,36 @@ class PublisherGrpcService : public S, public PublisherIp<T>
         if (enumeration ==
             std::remove_reference<decltype(message)>::type::kAddSubscriber)
         {
-          std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
-          std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(subscriber, stream);
+          std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>>
+              subscriber = std::make_shared<
+                  llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
+          std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>
+              connector = std::make_shared<
+                  llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(
+                  subscriber, stream);
           // Ignore return value.
           // Can fail if SetOptionFailAlreadySubscribed is set.
-          if (parent_.AddSubscriber(message.add_subscriber().id_message(), connector));
+          if (parent_.AddSubscriber(message.add_subscriber().id_message(),
+                                    connector))
+          {
+            // Empty body
+          }
         }
-        else if (enumeration ==
-            std::remove_reference<decltype(message)>::type::kRemoveSubscriber)
+        else if (enumeration == std::remove_reference<decltype(
+                                    message)>::type::kRemoveSubscriber)
         {
-          std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
-          std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(subscriber, stream);
+          std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>>
+              subscriber = std::make_shared<
+                  llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
+          std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>
+              connector = std::make_shared<
+                  llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(
+                  subscriber, stream);
           // Don't assert if failed because it will stop server.
-          BUGCONT(std::cout, parent_.RemoveSubscriber(message.remove_subscriber().id_message(), connector), grpc::Status::CANCELLED);
+          BUGCONT(std::cout,
+                  parent_.RemoveSubscriber(
+                      message.remove_subscriber().id_message(), connector),
+                  grpc::Status::CANCELLED);
         }
       }
 
@@ -82,25 +132,15 @@ class PublisherGrpcService : public S, public PublisherIp<T>
     return grpc::Status::OK;
   }
 
-  bool Listen() override CHK
-  {
-    return parent_.Listen();
-  }
+  bool Listen() override CHK { return parent_.Listen(); }
 
-  bool Wait() override CHK
-  {
-    return parent_.Wait();
-  }
+  bool Wait() override CHK { return parent_.Wait(); }
 
-  void Stop() override
-  {
-    parent_.Stop();
-  }
+  void Stop() override { parent_.Stop(); }
 
  private:
   PublisherIp<T>& parent_;
 };
-
 
 /**
  * @brief Interface to create a TCP server.
@@ -118,12 +158,12 @@ class PublisherGrpc : public PublisherIp<T>
    *
    * @param[in] port The port to listen from.
    */
-  PublisherGrpc(uint16_t port);
+  explicit PublisherGrpc(uint16_t port);
 
   /**
    * @brief Destructor. Make sure that thread is finished.
    */
-  virtual ~PublisherGrpc() override;
+  ~PublisherGrpc() override;
 
 #ifndef SWIG
   /**
@@ -159,11 +199,6 @@ class PublisherGrpc : public PublisherIp<T>
    */
   PublisherGrpc& operator=(PublisherGrpc const& other) & = delete;
 #endif  // !SWIG
-
-  /**
-   * @brief Join the waiting thread.
-   */
-  void JoinWait() override;
 
   /**
    * @brief Start the server and the listening the port.

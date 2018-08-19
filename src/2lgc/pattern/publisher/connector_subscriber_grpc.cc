@@ -15,20 +15,27 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
 #include <cassert>
 #include <iostream>
+namespace grpc
+{
+template <class W, class R>
+class ServerReaderWriter;
+}
 
 template <typename T>
-llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber, grpc::ServerReaderWriter<T, T>* stream) : ConnectorInterface<T>(subscriber), stream_(stream)
+llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(
+    std::shared_ptr<SubscriberInterface<T>> subscriber,
+    grpc::ServerReaderWriter<T, T> *stream)
+    : ConnectorInterface<T>(subscriber), stream_(stream)
 {
 }
 
 template <typename T>
-llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::~ConnectorSubscriberGrpc() =
-    default;
+llgc::pattern::publisher::ConnectorSubscriberGrpc<
+    T>::~ConnectorSubscriberGrpc() = default;
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Equals(
