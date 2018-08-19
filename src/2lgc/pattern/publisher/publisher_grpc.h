@@ -62,17 +62,21 @@ class PublisherGrpcService : public S, public PublisherIp<T>
         {
           std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
           std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(subscriber, stream);
-          BUGCONT(std::cout, this->AddSubscriber(message.add_subscriber().id_message(), connector), grpc::Status::CANCELLED);
+          // Ignore return value.
+          // Can fail if SetOptionFailAlreadySubscribed is set.
+          if (parent_.AddSubscriber(message.add_subscriber().id_message(), connector));
         }
-        /*
-        case message.kRemoveSubscriber:
+        else if (enumeration ==
+            std::remove_reference<decltype(message)>::type::kRemoveSubscriber)
         {
-          AddSubscriber(socket, &message);
-          break;
-        }*/
+          std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>> subscriber = std::make_shared<llgc::pattern::publisher::SubscriberServerGrpc<T>>(stream);
+          std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>> connector = std::make_shared<llgc::pattern::publisher::ConnectorSubscriberGrpc<T>>(subscriber, stream);
+          // Don't assert if failed because it will stop server.
+          BUGCONT(std::cout, parent_.RemoveSubscriber(message.remove_subscriber().id_message(), connector), grpc::Status::CANCELLED);
+        }
       }
 
-      BUGCONT(std::cout, this->Forward(messages), grpc::Status::CANCELLED);
+      BUGCONT(std::cout, parent_.Forward(messages), grpc::Status::CANCELLED);
     }
 
     return grpc::Status::OK;
