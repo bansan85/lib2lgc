@@ -89,7 +89,7 @@ class SubscriberBase final
   /**
    * @brief Default destructor.
    */
-  virtual ~SubscriberBase() = default;
+  ~SubscriberBase() override = default;
 
   /**
    * @brief Delete move constructor.
@@ -158,7 +158,7 @@ class SubscriberBase final
   size_t value;
 };
 
-static void WaitUpToOneSecond(const std::function<bool()> &test)
+static void WaitUpToOneSecond(const std::function<bool()>& test)
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();

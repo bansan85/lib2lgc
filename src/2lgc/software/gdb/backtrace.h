@@ -27,6 +27,7 @@
 #include <2lgc/software/gdb/function.h>
 #include <cstddef>
 #include <cstdint>
+#include <limits>
 #include <memory>
 #include <string>
 
@@ -63,11 +64,6 @@ class Backtrace
      */
     const Backtrace& operator*() const override;
   };
-
-  /**
-   * @brief Default constructor.
-   */
-  Backtrace();
 
   /**
    * @brief Create a Backtrace based on the line.
@@ -137,11 +133,11 @@ class Backtrace
   /**
    * @brief The nth backtrace of the stack.
    */
-  size_t index_;
+  size_t index_ = 0;
   /**
    * @brief Address in memory of the backtrace.
    */
-  uint64_t address_;
+  uint64_t address_ = 0;
   /**
    * @brief Store all informations about the function of the backtrace.
    */
@@ -153,7 +149,7 @@ class Backtrace
   /**
    * @brief The line in the source filename.
    */
-  size_t line_;
+  size_t line_ = std::numeric_limits<size_t>::max();
 
   /**
    * @brief Convert the index of the backtrace in index_.

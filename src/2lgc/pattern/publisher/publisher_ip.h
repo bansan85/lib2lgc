@@ -54,7 +54,7 @@ class PublisherIp
   /**
    * @brief Destructor. Make sure that thread is finished.
    */
-  virtual ~PublisherIp();
+  ~PublisherIp() override;
 
 #ifndef SWIG
   /**

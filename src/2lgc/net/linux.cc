@@ -33,9 +33,9 @@ void llgc::net::Linux::DisableSigPipe()
   sig.sa_handler = SIG_IGN;  // NOLINT(cppcoreguidelines-pro-type-cstyle-cast)
   sig.sa_flags = 0;
   BUGCRIT(std::cout, sigemptyset(&sig.sa_mask) == 0, ,
-          "Errno " << errno << "\n");
+          "Errno " + std::to_string(errno) + "\n");
   BUGCRIT(std::cout, sigaction(SIGPIPE, &sig, nullptr) == 0, ,
-          "Errno " << errno << "\n");
+          "Errno " + std::to_string(errno) + "\n");
 }
 
 bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
@@ -64,7 +64,8 @@ bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
   }
 
   BUGUSER(std::cout, retval_bind == 0, false,
-          "Failed to open a TCP port socket. Errno " << errno << ".\n");
+          "Failed to open a TCP port socket. Errno " + std::to_string(errno) +
+              ".\n");
   return true;
 }
 
@@ -73,11 +74,11 @@ bool llgc::net::Linux::Send(int sockfd, const std::string& message)
   ssize_t retval_send = send(sockfd, message.c_str(), message.length(), 0);
 
   BUGCRIT(std::cout, retval_send != -1, false,
-          "Send failed. Errno " << errno << ".\n");
+          "Send failed. Errno " + std::to_string(errno) + ".\n");
   BUGCRIT(std::cout, retval_send == static_cast<ssize_t>(message.length()),
           false,
-          "Send partial message. Length " << retval_send << ". Errno " << errno
-                                          << ".\n");
+          "Send partial message. Length " + std::to_string(retval_send) +
+              ". Errno " + std::to_string(errno) + ".\n");
 
   return true;
 }
@@ -110,7 +111,8 @@ llgc::net::Linux::AutoCloseSocket::~AutoCloseSocket()
   }
   int socket_tmp = *socket_;  // NS
   *socket_ = -1;
-  BUGCRIT(std::cout, close(socket_tmp) == 0, , "Errno " << errno << "\n");
+  BUGCRIT(std::cout, close(socket_tmp) == 0, ,
+          "Errno " + std::to_string(errno) + "\n");
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

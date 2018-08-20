@@ -24,6 +24,7 @@
 
 #include <2lgc/compat.h>
 #include <string>
+#include <type_traits>
 #include <utility>
 #include <vector>
 
@@ -37,11 +38,6 @@ namespace llgc::software::gdb
 class Function
 {
  public:
-  /**
-   * @brief Default constructor.
-   */
-  Function() : name_(), args_() {}
-
   /**
    * @brief Get the name of a function.
    *
@@ -62,9 +58,9 @@ class Function
    * @param[in] name Name of the argument.
    * @param[in] value Value of the argument.
    */
-  void AddArgs(const std::string& name, const std::string& value)
+  void AddArgs(std::string name, std::string value)
   {
-    args_.push_back(std::pair<std::string, std::string>(name, value));
+    args_.emplace_back(std::make_pair(std::move(name), std::move(value)));
   }
 
   /**

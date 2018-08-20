@@ -88,8 +88,10 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
         }
       }
     } while (iResult >= 0 && client_sock >= 0 && !this->disposing_);
-    BUGCRIT(std::cout, iResult != -1, , "Errno " << errno << "\n");
-    BUGCRIT(std::cout, client_sock != -1, , "Errno " << errno << "\n");
+    BUGCRIT(std::cout, iResult != -1, ,
+            "Errno " + std::to_string(errno) + "\n");
+    BUGCRIT(std::cout, client_sock != -1, ,
+            "Errno " + std::to_string(errno) + "\n");
   });  // NS
 
   this->thread_wait_ = std::move(t);
@@ -111,9 +113,9 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
     int retval = poll(&fd, 1, 50);  // NS
 
     BUGCRIT(std::cout, retval != -1, ,
-            "Server client "
-                << socket << " poll failed. Close connection. Errno " << errno
-                << ".\n");
+            "Server client " + std::to_string(socket) +
+                " poll failed. Close connection. Errno " +
+                std::to_string(errno) + ".\n");
 
     if (retval == 0)
     {
@@ -125,9 +127,9 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
     ssize_t read_size = recv(socket, client_message, sizeof(client_message), 0);
 
     BUGCRIT(std::cout, read_size != -1, ,
-            "Server client "
-                << socket << " recv failed. Close connection. Errno " << errno
-                << ".\n");
+            "Server client " + std::to_string(socket) +
+                " recv failed. Close connection. Errno " +
+                std::to_string(errno) + ".\n");
     // Empty message.
     if (read_size == 0)
     {

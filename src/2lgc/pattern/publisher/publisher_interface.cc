@@ -42,7 +42,7 @@ llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
 
 template <typename T, typename U>
 llgc::pattern::publisher::PublisherInterface<T, U>::PublisherInterface()
-    : options_(), lock_forward_(0)
+    : options_()
 {
 }
 
@@ -62,12 +62,12 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
 
   for (int i = 0; i < messages.msg_size(); i++)
   {
-    auto message = messages.msg(i);
+    const auto &message = messages.msg(i);
 
     // Filter to keep only the data case.
-    auto iterpair = subscribers_.equal_range(message.data_case());
+    const auto &iterpair = subscribers_.equal_range(message.data_case());
 
-    auto &it = iterpair.first;
+    auto it = iterpair.first;
     for (; it != iterpair.second; ++it)
     {
       auto it2 = destination.find(it->second);

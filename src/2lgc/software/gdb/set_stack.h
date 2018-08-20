@@ -84,6 +84,39 @@ class SetStack
    */
   ~SetStack();
 
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  SetStack(SetStack&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  SetStack(SetStack const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  SetStack& operator=(SetStack&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  SetStack& operator=(SetStack const& other) & = delete;
+#endif  // !SWIG
   /**
    * @brief Add a new stack. The file must contains only the full backtrace from
    * GDB.
@@ -169,7 +202,7 @@ class SetStack
      *
      * @return The backtrace. Throw an exception if out of boundary.
      */
-    typedef const Backtrace& (Stack::*FunctionGetBacktrace)(size_t i) const;
+    using FunctionGetBacktrace = const Backtrace& (Stack::*)(size_t) const;
 
     /**
      * @brief Helper to operator(). Compare two stacks from the top or from the
@@ -182,7 +215,7 @@ class SetStack
      *
      * @return -1 if i < j, 0 if i == j and -1 if i > j.
      */
-    ssize_t CompareFrom(const size_t nb_max_frames,
+    ssize_t CompareFrom(size_t nb_max_frames,
                         FunctionGetBacktrace get_backtraces,
                         const std::unique_ptr<Stack>& i,
                         const std::unique_ptr<Stack>& j);

@@ -45,7 +45,7 @@ class Unit
    */
   static bool UnitOp(const llgc::protobuf::math::Number_Unit &unit1,
                      const llgc::protobuf::math::Number_Unit &unit2,
-                     const llgc::protobuf::math::Number_Operator operator_,
+                     llgc::protobuf::math::Number_Operator operator_,
                      llgc::protobuf::math::Number_Unit *return_unit) CHK;
 };
 
@@ -59,16 +59,46 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<
   /**
    * @brief Default constructor.
    */
-  Number()
-#ifndef DISABLE_VISITABLE_CACHE
-      : cache_value_(0.), cache_unit_()
-#endif  // DISABLE_VISITABLE_CACHE
-  {
-  }
+  Number() = default;
+
   /**
    * @brief Default destructor.
    */
-  virtual ~Number() {}
+  ~Number() override = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  Number(Number &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  Number(Number const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Number &operator=(Number &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Number &operator=(Number const &other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Get the value of the number.
@@ -88,7 +118,7 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<
   /**
    * @brief If cache enabled, the value.
    */
-  mutable double cache_value_;
+  mutable double cache_value_ = 0.;
   /**
    * @brief If cache enabled, the unit.
    */

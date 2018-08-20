@@ -22,6 +22,7 @@
 #include <sys/socket.h>
 #include <cerrno>
 #include <iostream>
+#include <string>
 
 template <typename T>
 llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::PublisherTcpLinuxIpv6(
@@ -36,7 +37,7 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::Listen()
   this->sockfd_ = socket(AF_INET6, SOCK_STREAM, 0);
 
   BUGCRIT(std::cout, this->sockfd_ != -1, false,
-          "Failed to open socket. Errno " << errno << "\n");
+          "Failed to open socket. Errno " + std::to_string(errno) + "\n");
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct sockaddr_in6 socket_addr;  // NOLINT(hicpp-member-init)
@@ -52,7 +53,7 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::Listen()
           false);
 
   BUGCRIT(std::cout, listen(this->sockfd_, 3) != -1, false,
-          "Failed to listen socket. Errno " << errno << "\n");
+          "Failed to listen socket. Errno " + std::to_string(errno) + "\n");
 
   return true;
 }

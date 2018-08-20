@@ -46,7 +46,7 @@ class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
    * @param[in] port The port of the server.
    */
   ConnectorPublisherTcpIpv4(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                            const std::string ip, uint16_t port);
+                            const std::string &ip, uint16_t port);
 
   /**
    * @brief Default virtual destructor.
@@ -95,7 +95,7 @@ class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
    *
    * @return true if no problem.
    */
-  bool Connect() CHK;
+  bool Connect() override CHK;
 };
 
 }  // namespace llgc::pattern::publisher

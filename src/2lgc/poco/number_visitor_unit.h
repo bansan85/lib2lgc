@@ -40,9 +40,49 @@ class NumberVisitorUnit
 {
  public:
   /**
+   * @brief Default constructor.
+   */
+  NumberVisitorUnit() = default;
+
+  /**
    * @brief Default destructor.
    */
-  ~NumberVisitorUnit() override {}
+  ~NumberVisitorUnit() override = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  NumberVisitorUnit(NumberVisitorUnit&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  NumberVisitorUnit(NumberVisitorUnit const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  NumberVisitorUnit& operator=(NumberVisitorUnit&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  NumberVisitorUnit& operator=(NumberVisitorUnit const& other) & = delete;
+#endif  // !SWIG
+
   /**
    * @brief Return the unit of a constant number.
    *
@@ -51,8 +91,9 @@ class NumberVisitorUnit
    *
    * @return true if success, false instead.
    */
-  bool Visit(const Number_Constant &data,
-             std::string *return_value) const override CHK;
+  bool Visit(const Number_Constant& data,
+             std::string* return_value) const override CHK;
+
   /**
    * @brief Return the unit of a number based on an operation of two numbers.
    *
@@ -61,8 +102,8 @@ class NumberVisitorUnit
    *
    * @return true if success, false instead.
    */
-  bool Visit(const Number_NumOpNum &data,
-             std::string *return_value) const override CHK;
+  bool Visit(const Number_NumOpNum& data,
+             std::string* return_value) const override CHK;
 };
 
 }  // namespace llgc::poco

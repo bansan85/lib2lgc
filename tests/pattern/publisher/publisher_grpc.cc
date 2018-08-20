@@ -70,7 +70,7 @@ class SubscriberBase final
 {
  public:
   explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
-  virtual ~SubscriberBase() = default;
+  ~SubscriberBase() override = default;
   SubscriberBase(SubscriberBase&& other) = delete;
   SubscriberBase(SubscriberBase const& other) = delete;
   SubscriberBase& operator=(SubscriberBase&& other) & = delete;
@@ -101,7 +101,7 @@ class SubscriberBase final
   size_t value;
 };
 
-static void WaitUpToOneSecond(const std::function<bool()> &test)
+static void WaitUpToOneSecond(const std::function<bool()>& test)
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();

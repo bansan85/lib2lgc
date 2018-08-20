@@ -33,10 +33,50 @@ namespace llgc::pattern::visitor
 class BaseVisitor
 {
  public:
+  // class NumberVisitorVal needs it.
+  /**
+   * @brief Default constructor.
+   */
+  BaseVisitor() = default;
+
   /**
    * @brief In case of some class based on it need a virtual destructor.
    */
-  virtual ~BaseVisitor() {}
+  virtual ~BaseVisitor() = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  BaseVisitor(BaseVisitor&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  BaseVisitor(BaseVisitor const& other) = default;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  BaseVisitor& operator=(BaseVisitor&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  BaseVisitor& operator=(BaseVisitor const& other) & = delete;
+#endif  // !SWIG
 };
 
 /**
@@ -49,10 +89,51 @@ template <class T>
 class Visitor
 {
  public:
+  // class NumberVisitorVal needs it.
+  /**
+   * @brief Default constructor.
+   */
+  Visitor() = default;
+
   /**
    * @brief In case of some class based on it need a virtual destructor.
    */
-  virtual ~Visitor() {}
+  virtual ~Visitor() = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  Visitor(Visitor&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  Visitor(Visitor const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Visitor& operator=(Visitor&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Visitor& operator=(Visitor const& other) & = delete;
+#endif  // !SWIG
+
   /**
    * @brief The method that will use only data and the return will be put in
    *        retun_value.
@@ -63,7 +144,7 @@ class Visitor
    * @return false if there is a problem or if SerializeToString failed.
    *         true instead.
    */
-  virtual bool Visit(const T &data, std::string *return_value) const CHK = 0;
+  virtual bool Visit(const T& data, std::string* return_value) const CHK = 0;
 };
 
 }  // namespace llgc::pattern::visitor

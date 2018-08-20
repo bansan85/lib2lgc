@@ -40,9 +40,49 @@ class NumberVisitorVal
 {
  public:
   /**
+   * @brief Default constructor.
+   */
+  NumberVisitorVal() = default;
+
+  /**
    * @brief Default destructor.
    */
-  ~NumberVisitorVal() override {}
+  ~NumberVisitorVal() override = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  NumberVisitorVal(NumberVisitorVal &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  NumberVisitorVal(NumberVisitorVal const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  NumberVisitorVal &operator=(NumberVisitorVal &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  NumberVisitorVal &operator=(NumberVisitorVal const &other) & = delete;
+#endif  // !SWIG
+
   /**
    * @brief Return the floating value of a constant number.
    *
@@ -53,6 +93,7 @@ class NumberVisitorVal
    */
   bool Visit(const Number_Constant &data,
              std::string *return_value) const override CHK;
+
   /**
    * @brief Return the floating value of a number based on an operation of two
    *        numbers.

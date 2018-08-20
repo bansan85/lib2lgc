@@ -25,16 +25,14 @@
 #include <cmath>
 #include <cstdint>
 #include <iostream>
-#include <limits>
 #include <memory>
 #include <string>
 #include <utility>
 
-bool llgc::poco::Unit::UnitOp(
-    const llgc::protobuf::math::Number_Unit &unit1,
-    const llgc::protobuf::math::Number_Unit &unit2,
-    const llgc::protobuf::math::Number_Operator operator_,
-    llgc::protobuf::math::Number_Unit *return_unit)
+bool llgc::poco::Unit::UnitOp(const llgc::protobuf::math::Number_Unit &unit1,
+                              const llgc::protobuf::math::Number_Unit &unit2,
+                              llgc::protobuf::math::Number_Operator operator_,
+                              llgc::protobuf::math::Number_Unit *return_unit)
 {
   switch (operator_)
   {
@@ -79,12 +77,7 @@ bool llgc::poco::Unit::UnitOp(
 }
 
 llgc::poco::Number_Constant::Number_Constant(
-    const uint32_t id, const double value,
-    llgc::protobuf::math::Number_Unit *unit)
-#ifndef DISABLE_VISITABLE_CACHE
-    : cache_value_id_(std::numeric_limits<uint32_t>::max()),
-      cache_unit_id_(std::numeric_limits<uint32_t>::max())
-#endif  // DISABLE_VISITABLE_CACHE
+    uint32_t id, double value, llgc::protobuf::math::Number_Unit *unit)
 {
   auto constant = std::make_unique<llgc::protobuf::math::Number_Constant>();
   constant->set_value(value);
@@ -148,18 +141,10 @@ llgc::protobuf::math::Number_Unit llgc::poco::Number_Constant::GetUnit() const
 }
 
 llgc::poco::Number_NumOpNum::Number_NumOpNum(
-    const uint32_t id, std::shared_ptr<const Number> number1,
+    uint32_t id, std::shared_ptr<const Number> number1,
     llgc::protobuf::math::Number_Operator operator_,
     std::shared_ptr<const Number> number2)
-    : number1_(std::move(number1)),
-      number2_(std::move(number2))
-#ifndef DISABLE_VISITABLE_CACHE
-      ,
-      cache_value1_id_(std::numeric_limits<uint32_t>::max()),
-      cache_value2_id_(std::numeric_limits<uint32_t>::max()),
-      cache_unit1_id_(std::numeric_limits<uint32_t>::max()),
-      cache_unit2_id_(std::numeric_limits<uint32_t>::max())
-#endif  // DISABLE_VISITABLE_CACHE
+    : number1_(std::move(number1)), number2_(std::move(number2))
 {
   auto number_operator_number =
       std::make_unique<llgc::protobuf::math::Number_NumberOpNumber>();

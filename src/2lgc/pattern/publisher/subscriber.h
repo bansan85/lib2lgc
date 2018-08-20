@@ -43,6 +43,11 @@ class Subscriber : public SubscriberInterface<T>
    */
   explicit Subscriber(uint32_t id) : id_(id) {}
 
+  /**
+   * @brief Default virtual destructor.
+   */
+  ~Subscriber() override = default;
+
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
@@ -86,11 +91,6 @@ class Subscriber : public SubscriberInterface<T>
    * @return true if the same.
    */
   bool Equals(const SubscriberInterface<T>& connector) const override;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~Subscriber() override {}
 
  private:
   /**

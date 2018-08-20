@@ -49,7 +49,7 @@ class Linux
    *
    * @return false if timeout or failed to bind.
    */
-  static bool Bind(int sockfd, const struct sockaddr* addr, socklen_t addrlen,
+  static bool Bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen,
                    size_t timeout) CHK;
 
   /**
@@ -60,7 +60,7 @@ class Linux
    *
    * @return true if no problem.
    */
-  static bool Send(int sockfd, const std::string& message) CHK;
+  static bool Send(int sockfd, const std::string &message) CHK;
 
   /**
    * @brief Execute a function. If this function return -1, check if errno ==
@@ -71,7 +71,7 @@ class Linux
    *
    * @return The value returned by function.
    */
-  static int RepeteOnEintr(const std::function<int()>& function) CHK;  // NS
+  static int RepeteOnEintr(const std::function<int()> &function) CHK;  // NS
 
   /**
    * @brief Class that auto close a socket on destructor.
@@ -84,7 +84,41 @@ class Linux
      *
      * @param[in] socket The socket.
      */
-    explicit AutoCloseSocket(int* socket);
+    explicit AutoCloseSocket(int *socket);
+
+#ifndef SWIG
+    /**
+     * @brief Delete copy constructor.
+     *
+     * @param[in] other The original.
+     */
+    AutoCloseSocket(AutoCloseSocket &&other) = delete;
+
+    /**
+     * @brief Delete copy constructor.
+     *
+     * @param[in] other The original.
+     */
+    AutoCloseSocket(AutoCloseSocket const &other) = delete;
+
+    /**
+     * @brief Delete the copy operator.
+     *
+     * @param[in] other The original.
+     *
+     * @return Delete function.
+     */
+    AutoCloseSocket &operator=(AutoCloseSocket &&other) = delete;
+
+    /**
+     * @brief Delete the copy operator.
+     *
+     * @param[in] other The original.
+     *
+     * @return Delete function.
+     */
+    AutoCloseSocket &operator=(AutoCloseSocket const &other) & = delete;
+#endif  // !SWIG
 
     /**
      * @brief Dont delete the socket on destrutor.
@@ -100,7 +134,7 @@ class Linux
     /**
      * @brief The socket to handle.
      */
-    int* socket_;  // NS
+    int *socket_;  // NS
 
     /**
      * @brief If the socket must be deleted on destructor. True by default.

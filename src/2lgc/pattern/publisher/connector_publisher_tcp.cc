@@ -127,7 +127,8 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
 
     // Problem: stop the thread.
     BUGCRIT(std::cout, retval != -1, ,
-            "Client " << socket_ << ", poll failed. Errno " << errno << ".\n");
+            "Client " + std::to_string(socket_) + ", poll failed. Errno " +
+                std::to_string(errno) + ".\n");
     if (retval != 0)
     {
       char client_message[1500];
@@ -136,8 +137,9 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
           recv(socket_, client_message, sizeof(client_message), 0);
 
       BUGCRIT(std::cout, read_size != -1, ,
-              "Client " << socket_ << " recv failed. Close connection. Errno "
-                        << errno << ".\n");
+              "Client " + std::to_string(socket_) +
+                  " recv failed. Close connection. Errno " +
+                  std::to_string(errno) + ".\n");
 
       if (read_size == 0)
       {

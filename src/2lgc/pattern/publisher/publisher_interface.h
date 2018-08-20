@@ -62,12 +62,7 @@ class PublisherInterface
      * @brief To allow a subscriber to subscribe twice to the same message.
      *        Default: false.
      */
-    bool add_fail_if_already_subscribed;
-
-    /**
-     * @brief Default constructor.
-     */
-    Options() : add_fail_if_already_subscribed(false) {}
+    bool add_fail_if_already_subscribed = false;
   };
 
   /**
@@ -196,7 +191,7 @@ class PublisherInterface
   /**
    * @brief Lock the forward. Must be use with class CountLock.
    */
-  size_t lock_forward_;
+  size_t lock_forward_ = 0;
 
   /**
    * @brief Forward is not thread-safe.

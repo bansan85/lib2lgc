@@ -50,6 +50,40 @@ class Iterator
    */
   virtual ~Iterator() = default;
 
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  Iterator(Iterator&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  Iterator(Iterator const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Iterator& operator=(Iterator&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Iterator& operator=(Iterator const& other) & = delete;
+#endif  // !SWIG
+
   /**
    * @brief Compare operator
    *

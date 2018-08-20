@@ -116,7 +116,7 @@ class ConnectorInterface
    *
    * @return true if no problem.
    */
-  bool Listen(const T& messages, const bool hold) CHK;
+  bool Listen(const T& messages, bool hold) CHK;
 
   /**
    * @brief Listen pending messages from the publisher.

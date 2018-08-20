@@ -41,36 +41,28 @@ class PublisherDirect
    * @brief Default constructor.
    */
   PublisherDirect() = default;
+  ~PublisherDirect() override = default;
 
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
-   *
    * @param[in] other The original.
    */
   PublisherDirect(PublisherDirect&& other) = delete;
-
   /**
    * @brief Delete copy constructor.
-   *
    * @param[in] other The original.
    */
   PublisherDirect(PublisherDirect const& other) = delete;
-
   /**
    * @brief Delete the move operator.
-   *
    * @param[in] other The original.
-   *
    * @return Delete function.
    */
   PublisherDirect& operator=(PublisherDirect&& other) & = delete;
-
   /**
    * @brief Delete the copy operator.
-   *
    * @param[in] other The original.
-   *
    * @return Delete function.
    */
   PublisherDirect& operator=(PublisherDirect const& other) & = delete;

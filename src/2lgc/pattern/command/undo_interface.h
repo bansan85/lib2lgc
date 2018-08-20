@@ -37,12 +37,46 @@ class UndoInterface
   /**
    * @brief Default constructor.
    */
-  UndoInterface() : time_start_(), duration_start_(0.), done(false) {}
+  UndoInterface() : duration_start_(0.) {}
 
   /**
    * @brief Default destructor. Virtual because command is abstract.
    */
   virtual ~UndoInterface() = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  UndoInterface(UndoInterface&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  UndoInterface(UndoInterface const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  UndoInterface& operator=(UndoInterface&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  UndoInterface& operator=(UndoInterface const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Execute the command.
@@ -115,7 +149,7 @@ class UndoInterface
   /**
    * @brief Tell if the command was executed.
    */
-  bool done;
+  bool done = false;
 };
 
 }  // namespace llgc::pattern::command

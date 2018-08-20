@@ -18,18 +18,19 @@
 #define ERROR_SHOW_H_
 
 #include <iostream>
+#include <string>
 
 // BUG: for internal use only.
-#define BUG(OUT, X, Y, MSG, Z)                                               \
-  do                                                                         \
-  {                                                                          \
-    if (!(X))                                                                \
-    {                                                                        \
-      OUT << "file " << __FILE__ << ", function "                            \
-          << static_cast<const char*>(__FUNCTION__) << ", line " << __LINE__ \
-          << ", type: " << MSG << Z;                                         \
-      return Y;                                                              \
-    }                                                                        \
+#define BUG(OUT, X, Y, MSG, Z)                                                 \
+  do                                                                           \
+  {                                                                            \
+    if (!(X))                                                                  \
+    {                                                                          \
+      (OUT) << "file " << __FILE__ << ", function "                            \
+            << static_cast<const char*>(__FUNCTION__) << ", line " << __LINE__ \
+            << ", type: " << (MSG) << (Z);                                     \
+      return Y;                                                                \
+    }                                                                          \
   } while (0)
 /**
  * \def BUG(OUT, X, Y, MSG, Z)
@@ -42,7 +43,8 @@
  */
 
 #define BUGPARAM(OUT, PARAM, X, Y) \
-  BUG(OUT, X, Y, "Programmation error: ", #PARAM " = " << PARAM << "%.\n")
+  BUG(OUT, X, Y,                   \
+      "Programmation error: ", #PARAM " = " + std::to_string(PARAM) + "%.\n")
 /**
  * \def BUGPARAM(OUT, PARAM, X, Y)
  * \brief Macro that tell that a parameter is invalid.
@@ -54,7 +56,8 @@
  * \param Y Return value if X is wrong.
  */
 
-#define BUGLIB(OUT, X, Y, LIB) BUG(OUT, X, Y, "Library error: ", LIB << "\n")
+#define BUGLIB(OUT, X, Y, LIB) \
+  BUG(OUT, X, Y, "Library error: ", (LIB) + std::string("\n"))
 /**
  * \def BUGLIB(OUT, X, Y, LIB)
  * \brief If condition X is false, tell which library then return Y.

@@ -21,6 +21,7 @@
 #include <grpcpp/security/server_credentials.h>
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <thread>
 #include <utility>
 
@@ -51,7 +52,8 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
   server_ = std::move(builder_.BuildAndStart());
 
   BUGCRIT(std::cout, server_ != nullptr, false,
-          "Fail to start server at port " << this->port_ << " for 0.0.0.0.\n");
+          "Fail to start server at port " + std::to_string(this->port_) +
+              " for 0.0.0.0.\n");
 
   return true;
 }

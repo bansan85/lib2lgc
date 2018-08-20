@@ -75,7 +75,7 @@ llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
 }
 
 ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
-    const size_t nb_max_frames, FunctionGetBacktrace get_backtraces,
+    size_t nb_max_frames, FunctionGetBacktrace get_backtraces,
     const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
 {
   uint32_t ii = 0, jj = 0;
@@ -318,7 +318,7 @@ bool llgc::software::gdb::SetStack::AddList(const std::string& list,
   std::vector<std::string> all_files;
   std::string line;
   std::ifstream f(list);
-  BUGUSER(std::cout, f.is_open(), false, "Failed to open " << list << ".\n");
+  BUGUSER(std::cout, f.is_open(), false, "Failed to open " + list + ".\n");
 
   while (std::getline(f, line))
   {

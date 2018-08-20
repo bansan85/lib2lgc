@@ -22,13 +22,13 @@
 template <typename T>
 llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
     std::shared_ptr<SubscriberInterface<T>> subscriber)
-    : messages_(), next_id_(0), subscriber_(subscriber)
+    : messages_(), next_id_(0), subscriber_(std::move(subscriber))
 {
 }
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& messages,
-                                                             const bool hold)
+                                                             bool hold)
 {
   if (hold)
   {

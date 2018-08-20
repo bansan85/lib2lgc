@@ -35,7 +35,7 @@ static bool IsValidName(const std::string &name)
       else
       {
         BUGUSER(std::cout, false, false,
-                "Invalid name of argument '" << name << "'.\n");
+                "Invalid name of argument '" + name + "'.\n");
       }
     }
   }

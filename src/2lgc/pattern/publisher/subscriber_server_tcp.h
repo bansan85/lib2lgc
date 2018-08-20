@@ -98,7 +98,7 @@ class SubscriberServerTcp : public SubscriberInterface<T>
   /**
    * @brief Default virtual destructor.
    */
-  ~SubscriberServerTcp() override {}
+  ~SubscriberServerTcp() override = default;
 
  private:
   /**

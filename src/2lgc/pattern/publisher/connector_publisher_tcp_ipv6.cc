@@ -39,7 +39,7 @@ template <typename T>
 llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
     T>::ConnectorPublisherTcpIpv6(std::shared_ptr<SubscriberInterface<T>>
                                       subscriber,
-                                  const std::string ip, uint16_t port)
+                                  const std::string &ip, uint16_t port)
     : ConnectorPublisherTcp<T>(subscriber, ip, port)
 {
 }
@@ -58,7 +58,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
 
   this->socket_ = socket(AF_INET6, SOCK_STREAM, 0);
   BUGCRIT(std::cout, this->socket_ != -1, false,
-          "Failed to run server. Errno " << errno << ".\n");
+          "Failed to run server. Errno " + std::to_string(errno) + ".\n");
 
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&this->socket_);
 
@@ -69,7 +69,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
           inet_pton(AF_INET6, this->ip_.c_str(),
                     reinterpret_cast<struct sockaddr_in6 *>(
                         static_cast<void *>(&server.sin6_addr))) == 1,
-          false, "Failed to get IP for name " << this->ip_ << ".\n");
+          false, "Failed to get IP for name " + this->ip_ + ".\n");
   server.sin6_family = AF_INET6;
   server.sin6_port = htons(this->port_);
 
@@ -77,7 +77,8 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
   BUGCRIT(std::cout,
           connect(this->socket_, reinterpret_cast<struct sockaddr *>(&server),
                   sizeof(server)) == 0,
-          false, "Failed to start listening. Errno " << errno << ".\n");
+          false,
+          "Failed to start listening. Errno " + std::to_string(errno) + ".\n");
 
   auto_close_socket.DontDeleteSocket();
 

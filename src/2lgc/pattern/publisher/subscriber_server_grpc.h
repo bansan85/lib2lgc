@@ -50,6 +50,11 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
   {
   }
 
+  /**
+   * @brief Default virtual destructor.
+   */
+  ~SubscriberServerGrpc() override = default;
+
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
@@ -102,11 +107,6 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
    * @return true if the same.
    */
   bool Equals(const SubscriberInterface<T>& connector) const override;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~SubscriberServerGrpc() override {}
 
  private:
   /**

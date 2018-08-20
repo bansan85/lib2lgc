@@ -203,7 +203,7 @@ class Undomanager
   /**
    * @brief If user can undo action of other user.
    */
-  bool undo_only_local_;
+  bool undo_only_local_ = false;
 
   /**
    * @brief Id of the user for having the description of the user.

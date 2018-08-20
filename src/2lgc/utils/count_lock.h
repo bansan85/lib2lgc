@@ -44,11 +44,11 @@ class CountLock
    * @param[in] function_zero Function that be be called if on destructor, ref
    * value is zero.
    */
-  CountLock(M* ref, std::recursive_mutex* mutex_forward,
+  CountLock(M* const ref, std::recursive_mutex* mutex_forward,
             std::function<void()> function_zero)
       : ref_(*ref),
         mutex_forward_(*mutex_forward),
-        function_zero_(function_zero)
+        function_zero_(std::move(function_zero))
   {
     std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
     ref_++;

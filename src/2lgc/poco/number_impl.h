@@ -23,6 +23,7 @@
 #include <2lgc/poco/math_number.pb.h>
 #include <2lgc/poco/number.h>
 #include <cstdint>
+#include <limits>
 #include <memory>
 
 /**
@@ -47,13 +48,47 @@ class Number_Constant
    * @param unit The unit of the number. The class must be allocated on the
    * stack or in a arena.
    */
-  Number_Constant(const uint32_t id, const double value,
-                  llgc::protobuf::math::Number_Unit *unit);
+  Number_Constant(uint32_t id, double value,
+                  llgc::protobuf::math::Number_Unit* unit);
   /**
    * @brief Default destructor. No need to delete unit. It will be free
    * automatically.
    */
-  ~Number_Constant() override {}
+  ~Number_Constant() override = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  Number_Constant(Number_Constant&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  Number_Constant(Number_Constant const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Number_Constant& operator=(Number_Constant&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Number_Constant& operator=(Number_Constant const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Get the value of the number.
@@ -73,11 +108,11 @@ class Number_Constant
   /**
    * @brief The id of the cached value.
    */
-  mutable uint32_t cache_value_id_;
+  mutable uint32_t cache_value_id_ = std::numeric_limits<uint32_t>::max();
   /**
    * @brief The id of the cached unit.
    */
-  mutable uint32_t cache_unit_id_;
+  mutable uint32_t cache_unit_id_ = std::numeric_limits<uint32_t>::max();
 #endif  // DISABLE_VISITABLE_CACHE
 };
 
@@ -98,13 +133,47 @@ class Number_NumOpNum
    * @param operator_ The operator.
    * @param number2 The number two.
    */
-  Number_NumOpNum(const uint32_t id, std::shared_ptr<const Number> number1,
+  Number_NumOpNum(uint32_t id, std::shared_ptr<const Number> number1,
                   llgc::protobuf::math::Number_Operator operator_,
                   std::shared_ptr<const Number> number2);
   /**
    * @brief Default destructor.
    */
-  ~Number_NumOpNum() override {}
+  ~Number_NumOpNum() override = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  Number_NumOpNum(Number_NumOpNum&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  Number_NumOpNum(Number_NumOpNum const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Number_NumOpNum& operator=(Number_NumOpNum&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  Number_NumOpNum& operator=(Number_NumOpNum const& other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief Get the value of the number.
@@ -147,19 +216,19 @@ class Number_NumOpNum
   /**
    * @brief The id of the number 1 for the cached value.
    */
-  mutable uint32_t cache_value1_id_;
+  mutable uint32_t cache_value1_id_ = std::numeric_limits<uint32_t>::max();
   /**
    * @brief The id of the number 2 for the cached value.
    */
-  mutable uint32_t cache_value2_id_;
+  mutable uint32_t cache_value2_id_ = std::numeric_limits<uint32_t>::max();
   /**
    * @brief The id of the unit 1 for the cached unit.
    */
-  mutable uint32_t cache_unit1_id_;
+  mutable uint32_t cache_unit1_id_ = std::numeric_limits<uint32_t>::max();
   /**
    * @brief The id of the unit 2 for the cached unit.
    */
-  mutable uint32_t cache_unit2_id_;
+  mutable uint32_t cache_unit2_id_ = std::numeric_limits<uint32_t>::max();
 #endif  // DISABLE_VISITABLE_CACHE
 };
 

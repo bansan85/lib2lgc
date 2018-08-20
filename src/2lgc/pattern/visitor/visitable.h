@@ -41,9 +41,48 @@ class BaseVisitable : virtual public T
 {
  public:
   /**
+   * @brief Default constructor.
+   */
+  BaseVisitable() = default;
+
+  /**
    * @brief In case of some class based on it need a virtual destructor.
    */
-  ~BaseVisitable() override {}
+  ~BaseVisitable() override = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  BaseVisitable(BaseVisitable &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  BaseVisitable(BaseVisitable const &other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  BaseVisitable &operator=(BaseVisitable &&other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  BaseVisitable &operator=(BaseVisitable const &other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief This method is used to call the right Visit method on the visitor.
@@ -81,10 +120,45 @@ class InterfaceVisitable
    * @brief Default constructor.
    */
   InterfaceVisitable() : message_() {}
+
   /**
    * @brief In case of some class based on it need a virtual destructor.
    */
-  virtual ~InterfaceVisitable() {}
+  virtual ~InterfaceVisitable() = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  InterfaceVisitable(InterfaceVisitable &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  InterfaceVisitable(InterfaceVisitable const &other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  InterfaceVisitable &operator=(InterfaceVisitable &&other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  InterfaceVisitable &operator=(InterfaceVisitable const &other) & = delete;
+#endif  // !SWIG
 
   /**
    * @brief This method is used to call the right Visit method on the visitor.

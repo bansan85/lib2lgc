@@ -53,13 +53,57 @@ class SubscriberInterface
 
  public:
   /**
+   * @brief Default constructor.
+   */
+  SubscriberInterface() = default;
+
+  /**
+   * @brief Default virtual destructor.
+   */
+  virtual ~SubscriberInterface() = default;
+
+#ifndef SWIG
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  SubscriberInterface(SubscriberInterface &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  SubscriberInterface(SubscriberInterface const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  SubscriberInterface &operator=(SubscriberInterface &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  SubscriberInterface &operator=(SubscriberInterface const &other) & = delete;
+#endif  // !SWIG
+
+  /**
    * @brief Send message.
    *
    * @param messages Data of the message in ProtoBuf, SerializeToString.
    *
    * @return true if no problem.
    */
-  virtual bool Listen(const T& messages) CHK = 0;
+  virtual bool Listen(const T &messages) CHK = 0;
 
   /**
    * @brief Compare in connector is the same than the object.
@@ -68,12 +112,7 @@ class SubscriberInterface
    *
    * @return true if the same.
    */
-  virtual bool Equals(const SubscriberInterface<T>& connector) const = 0;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  virtual ~SubscriberInterface() {}
+  virtual bool Equals(const SubscriberInterface<T> &connector) const = 0;
 };
 
 }  // namespace llgc::pattern::publisher

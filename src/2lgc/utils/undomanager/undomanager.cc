@@ -22,10 +22,7 @@
 template <typename T, typename U>
 llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
     std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory)
-    : memory_(),
-      abstract_factory_(std::move(abstract_factory)),
-      undo_only_local_(false),
-      users_()
+    : memory_(), abstract_factory_(std::move(abstract_factory))
 {
 }
 
@@ -44,7 +41,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
   std::unique_ptr<U> new_command = abstract_factory_->Create(command);
 
   BUGCRIT(std::cout, new_command != nullptr, nullptr,
-          "Failed to decode command " << command << ".\n");
+          "Failed to decode command " + command + ".\n");
 
   Tree<U>* retval = Add(std::move(new_command));
   BUGCONT(std::cout, retval != nullptr, nullptr);
@@ -59,7 +56,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
   auto new_command = abstract_factory_->Create(command);
 
   BUGCRIT(std::cout, new_command != nullptr, nullptr,
-          "Failed to decode command " << command << ".\n");
+          "Failed to decode command " + command + ".\n");
 
   Tree<U>* retval = Add(id, std::move(new_command));
   BUGCONT(std::cout, retval != nullptr, nullptr);
@@ -84,7 +81,7 @@ bool llgc::utils::undomanager::Undomanager<T, U>::DoCommand(size_t id)
   Tree<U>* node_parent = memory_->FindNode(id);
 
   BUGCRIT(std::cout, node_parent != nullptr, false,
-          "Failed to find node " << id << ".\n");
+          "Failed to find node " + std::to_string(id) + ".\n");
   BUGCONT(std::cout, node_parent->GetData()->Do(), false);
 
   return true;
@@ -99,7 +96,8 @@ bool llgc::utils::undomanager::Undomanager<T, U>::DoCommands(size_t start,
   std::deque<U*> path;
 
   BUGCRIT(std::cout, memory_->FindPath(start, end, &path), false,
-          "Fails to find path between " << start << " and " << end << ".\n");
+          "Fails to find path between " + std::to_string(start) + " and " +
+              std::to_string(end) + ".\n");
 
   size_t i;
   bool retval = true;
@@ -117,14 +115,14 @@ bool llgc::utils::undomanager::Undomanager<T, U>::DoCommands(size_t start,
     for (size_t j = i; i > 0; i--)
     {
       BUGCRIT(std::cout, path[j - 1]->Undo(), false,
-              "Fails to rollback " << path[j - 1]->GetDescription()
-                                   << ". First fails with "
-                                   << path[i]->GetDescription() << " to do.\n");
+              "Fails to rollback " + path[j - 1]->GetDescription() +
+                  ". First fails with " + path[i]->GetDescription() +
+                  " to do.\n");
     }
     BUGCRIT(std::cout, false, false,
-            "Fails to do from " << path.front()->GetDescription() << " to "
-                                << path.back()->GetDescription()
-                                << " but rollback with success.\n");
+            "Fails to do from " + path.front()->GetDescription() + " to " +
+                path.back()->GetDescription() +
+                " but rollback with success.\n");
   }
 
   return true;
@@ -138,7 +136,7 @@ bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommand(size_t id)
   Tree<U>* node_parent = memory_->FindNode(id);
 
   BUGCRIT(std::cout, node_parent != nullptr, false,
-          "Failed to find node " << id << ".\n");
+          "Failed to find node " + std::to_string(id) + ".\n");
   BUGCONT(std::cout, node_parent->GetData()->Undo(), false);
 
   return true;
@@ -153,7 +151,8 @@ bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommands(size_t start,
   std::deque<U*> path;
 
   BUGCRIT(std::cout, memory_->FindPath(start, end, &path), false,
-          "Fails to find path between " << start << " and " << end << ".\n");
+          "Fails to find path between " + std::to_string(start) + " and " +
+              std::to_string(end) + ".\n");
 
   size_t i;
   bool retval = true;
@@ -171,14 +170,14 @@ bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommands(size_t start,
     for (size_t j = i; i > 0; i--)
     {
       BUGCRIT(std::cout, path[j - 1]->Do(), false,
-              "Fails to rollback "
-                  << path[j - 1]->GetDescription() << ". First fails with "
-                  << path[i]->GetDescription() << " to undo.\n");
+              "Fails to rollback " + path[j - 1]->GetDescription() +
+                  ". First fails with " + path[i]->GetDescription() +
+                  " to undo.\n");
     }
     BUGCRIT(std::cout, false, false,
-            "Fails to undo from " << path.front()->GetDescription() << " to "
-                                  << path.back()->GetDescription()
-                                  << " but rollback with success.\n");
+            "Fails to undo from " + path.front()->GetDescription() + " to " +
+                path.back()->GetDescription() +
+                " but rollback with success.\n");
   }
 
   return true;
@@ -241,7 +240,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::Add(
   Tree<U>* node_parent = memory_->FindNode(id);
 
   BUGCRIT(std::cout, node_parent != nullptr, nullptr,
-          "Failed to find node " << id << ".\n");
+          "Failed to find node " + std::to_string(id) + ".\n");
 
   Tree<U>* retval = node_parent->AddChild(std::move(child));
   BUGCONT(std::cout, retval != nullptr, nullptr);

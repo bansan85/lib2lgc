@@ -33,7 +33,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     std::regex reg(regex);
 
     BUGUSER(std::cout, std::experimental::filesystem::is_directory(folder),
-            false, folder << " is not a folder.\n");
+            false, folder + " is not a folder.\n");
 
     std::vector<std::string> error_files;
 
@@ -58,16 +58,15 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     }
 
     BUGUSER(std::cout, error_files.empty(), false,
-            "Failed to read folder "
-                << folder << " : "
-                << llgc::text::StringExt::Join(error_files, ", ") << ".\n");
+            "Failed to read folder " + folder + " : " +
+                llgc::text::StringExt::Join(error_files, ", ") + ".\n");
 
     return true;
   }
   catch (const std::regex_error& e)
   {
     BUGUSER(std::cout, false, false,
-            "Invalid rexeg " << regex << " : " << e.what() << "\n");
+            "Invalid rexeg " + regex + " : " + e.what() + "\n");
   }
 }
 
