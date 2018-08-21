@@ -376,16 +376,6 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
       add_custom_command(TARGET check
         COMMAND make doc)
     endif()
-    find_program(NSIQCPPSTYLE nsiqcppstyle PATHS /opt/nsiqcppstyle)
-    if (NSIQCPPSTYLE)
-      if (LIB2LGC_INCLUDE)
-        add_custom_command(TARGET check
-          COMMAND ${NSIQCPPSTYLE} -f ${LIB2LGC_INCLUDE}/util/nsiqcppstyle/filefilter.txt ${CMAKE_CURRENT_SOURCE_DIR})
-      else()
-        add_custom_command(TARGET check
-          COMMAND ${NSIQCPPSTYLE} -f ${CMAKE_CURRENT_SOURCE_DIR}/util/nsiqcppstyle/filefilter.txt ${CMAKE_CURRENT_SOURCE_DIR})
-      endif()
-    endif()
     find_program(PMD_BIN run.sh PATHS /opt/pmd/bin)
     if (PMD_BIN)
       add_custom_command(TARGET check

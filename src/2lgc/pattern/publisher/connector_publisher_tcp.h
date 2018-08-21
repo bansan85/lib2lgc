@@ -59,41 +59,6 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
    */
   ~ConnectorPublisherTcp() override;
 
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorPublisherTcp(ConnectorPublisherTcp &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorPublisherTcp(ConnectorPublisherTcp const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) & =
-      delete;
-#endif  // !SWIG
-
   /**
    * @brief Compare two connectors.
    *
@@ -139,16 +104,46 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
    */
   void Receiver();
 
- protected:
+#ifndef SWIG
   /**
-   * @brief The IP of the server.
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
    */
-  std::string ip_;
+  ConnectorPublisherTcp(ConnectorPublisherTcp &&other) = delete;
 
   /**
-   * @brief The port of the server.
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
    */
-  uint16_t port_;
+  ConnectorPublisherTcp(ConnectorPublisherTcp const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) & =
+      delete;
+#endif  // !SWIG
+
+ protected:
+  /**
+   * @brief Thread that listen the server.
+   */
+  std::thread receiver_;
 
   /**
    * @brief Socket to the server.
@@ -163,11 +158,30 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
   virtual bool Connect() CHK = 0;
 
   /**
-   * @brief Thread that listen the server.
+   * @brief Get the ip of the connector.
+   *
+   * @return The return value;
    */
-  std::thread receiver_;
+  const std::string &GetIp() { return ip_; }
+
+  /**
+   * @brief Get the port of the connector.
+   *
+   * @return The return value;
+   */
+  uint16_t GetPort() { return port_; }
 
  private:
+  /**
+   * @brief The IP of the server.
+   */
+  std::string ip_;
+
+  /**
+   * @brief The port of the server.
+   */
+  uint16_t port_;
+
   /**
    * @brief If thread in trying to stop.
    */

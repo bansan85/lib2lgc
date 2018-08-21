@@ -56,6 +56,37 @@ class PublisherIp
    */
   ~PublisherIp() override;
 
+  /**
+   * @brief Start the server and the listening the port.
+   *
+   * @return true if no problem.
+   */
+  virtual bool Listen() CHK = 0;
+
+  /**
+   * @brief Wait for client.
+   *
+   * @return true if no problem.
+   */
+  virtual bool Wait() CHK = 0;
+
+  /**
+   * @brief Stop the thread.
+   */
+  virtual void Stop() = 0;
+
+  /**
+   * @brief Join the waiting thread.
+   */
+  virtual void JoinWait();
+
+  /**
+   * @brief Return the port.
+   *
+   * @return The port.
+   */
+  uint16_t GetPort() { return port_; }
+
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
@@ -91,42 +122,17 @@ class PublisherIp
   PublisherIp& operator=(PublisherIp const& other) & = delete;
 #endif  // !SWIG
 
-  /**
-   * @brief Start the server and the listening the port.
-   *
-   * @return true if no problem.
-   */
-  virtual bool Listen() CHK = 0;
-
-  /**
-   * @brief Wait for client.
-   *
-   * @return true if no problem.
-   */
-  virtual bool Wait() CHK = 0;
-
-  /**
-   * @brief Stop the thread.
-   */
-  virtual void Stop() = 0;
-
-  /**
-   * @brief Join the waiting thread.
-   */
-  virtual void JoinWait();
-
-  uint16_t GetPort() { return port_; }
-
  protected:
-  /**
-   * @brief Port to listen from.
-   */
-  uint16_t port_;
-
   /**
    * @brief Thread that run the Wait function and add socket to thread_sockets_.
    */
   std::thread thread_wait_;
+
+ private:
+  /**
+   * @brief Port to listen from.
+   */
+  uint16_t port_;
 };
 
 }  // namespace llgc::pattern::publisher

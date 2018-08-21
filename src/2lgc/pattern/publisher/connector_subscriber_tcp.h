@@ -56,41 +56,6 @@ class ConnectorSubscriberTcp : public ConnectorInterface<T>
    */
   ~ConnectorSubscriberTcp() override;
 
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorSubscriberTcp(ConnectorSubscriberTcp &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorSubscriberTcp(ConnectorSubscriberTcp const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp const &other) & =
-      delete;
-#endif  // !SWIG
-
   /**
    * @brief Compare two connectors.
    *
@@ -127,7 +92,42 @@ class ConnectorSubscriberTcp : public ConnectorInterface<T>
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
- protected:
+#ifndef SWIG
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorSubscriberTcp(ConnectorSubscriberTcp &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorSubscriberTcp(ConnectorSubscriberTcp const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp const &other) & =
+      delete;
+#endif  // !SWIG
+
+ private:
   /**
    * @brief Socket to the server.
    */

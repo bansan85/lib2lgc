@@ -42,7 +42,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 {
   std::stringstream ss;
 
-  ss << "0.0.0.0:" << this->port_;
+  ss << "0.0.0.0:" << this->GetPort();
 
   grpc::ServerBuilder builder_;
 
@@ -52,7 +52,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
   server_ = std::move(builder_.BuildAndStart());
 
   BUGCRIT(std::cout, server_ != nullptr, false,
-          "Fail to start server at port " + std::to_string(this->port_) +
+          "Fail to start server at port " + std::to_string(this->GetPort()) +
               " for 0.0.0.0.\n");
 
   return true;

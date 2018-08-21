@@ -33,9 +33,9 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, std::string ip,
     uint16_t port)
     : ConnectorInterface<T>(subscriber),
+      socket_(-1),
       ip_(std::move(ip)),
       port_(port),
-      socket_(-1),
       disposing_(false)
 {
 }

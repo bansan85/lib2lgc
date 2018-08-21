@@ -48,6 +48,15 @@ class Subscriber : public SubscriberInterface<T>
    */
   ~Subscriber() override = default;
 
+  /**
+   * @brief Compare in connector is the same than the object.
+   *
+   * @param[in,out] connector The connector to compare with.
+   *
+   * @return true if the same.
+   */
+  bool Equals(const SubscriberInterface<T>& connector) const override;
+
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
@@ -82,15 +91,6 @@ class Subscriber : public SubscriberInterface<T>
    */
   Subscriber& operator=(Subscriber const& other) & = delete;
 #endif  // !SWIG
-
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in,out] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
-  bool Equals(const SubscriberInterface<T>& connector) const override;
 
  private:
   /**

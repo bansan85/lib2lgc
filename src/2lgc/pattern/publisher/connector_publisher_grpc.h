@@ -27,12 +27,10 @@
 namespace grpc
 {
 class Channel;
-}
-namespace grpc
-{
+
 template <class W, class R>
 class ClientReaderWriter;
-}
+}  // namespace grpc
 
 /**
  * @brief Namespace for the pattern publisher.
@@ -67,41 +65,6 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    * @brief Default virtual destructor.
    */
   ~ConnectorPublisherGrpc() override;
-
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorPublisherGrpc(ConnectorPublisherGrpc &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorPublisherGrpc(ConnectorPublisherGrpc const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc const &other) & =
-      delete;
-#endif  // !SWIG
 
   /**
    * @brief Compare two connectors.
@@ -141,14 +104,42 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
+#ifndef SWIG
   /**
-   * @brief The function used by the thread that receive message from server.
+   * @brief Delete copy constructor.
    *
-   * Need to be public so thread can use it. Protected is not possible.
+   * @param[in] other The original.
    */
-  void Receiver();
+  ConnectorPublisherGrpc(ConnectorPublisherGrpc &&other) = delete;
 
- protected:
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorPublisherGrpc(ConnectorPublisherGrpc const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc const &other) & =
+      delete;
+#endif  // !SWIG
+
+ private:
   /**
    * @brief The IP of the server.
    */
@@ -159,10 +150,30 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
    */
   uint16_t port_;
 
-  std::unique_ptr<typename S::Stub> stub_;
+  /**
+   * @brief Stream to communicate with the server.
+   */
   std::shared_ptr<grpc::ClientReaderWriter<T, T>> stream_;
+
+  /**
+   * @brief Channel of the client.
+   */
   std::shared_ptr<grpc::Channel> channel_;
+
+  /**
+   * @brief Context of the client.
+   */
   grpc::ClientContext context_;
+
+  /**
+   * @brief Necessary variable.
+   */
+  std::unique_ptr<typename S::Stub> stub_;
+
+  /**
+   * @brief Thread that listen the server.
+   */
+  std::thread receiver_;
 
   /**
    * @brief Start connection with server.
@@ -172,9 +183,11 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
   bool Connect() CHK;
 
   /**
-   * @brief Thread that listen the server.
+   * @brief The function used by the thread that receive message from server.
+   *
+   * Need to be public so thread can use it. Protected is not possible.
    */
-  std::thread receiver_;
+  void Receiver();
 };
 
 }  // namespace llgc::pattern::publisher

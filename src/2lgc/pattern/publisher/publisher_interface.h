@@ -75,40 +75,6 @@ class PublisherInterface
    */
   virtual ~PublisherInterface();
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
-  PublisherInterface(PublisherInterface&& other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  PublisherInterface(PublisherInterface const& other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  PublisherInterface& operator=(PublisherInterface&& other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  PublisherInterface& operator=(PublisherInterface const& other) & = delete;
-#endif  // !SWIG
-
   /**
    * @brief Add a subscriber to the server.
    *
@@ -171,7 +137,41 @@ class PublisherInterface
    */
   llgc::utils::thread::CountLock<size_t> LockForward() CHK;
 
- protected:
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherInterface(PublisherInterface&& other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  PublisherInterface(PublisherInterface const& other) = delete;
+
+  /**
+   * @brief Delete the move operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherInterface& operator=(PublisherInterface&& other) & = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  PublisherInterface& operator=(PublisherInterface const& other) & = delete;
+#endif  // !SWIG
+
+ private:
   /**
    * @brief Type of the map for subscribers.
    */
@@ -182,7 +182,6 @@ class PublisherInterface
    */
   SubscriberMap subscribers_;
 
- private:
   /**
    * @brief Options for the behavious of server.
    */

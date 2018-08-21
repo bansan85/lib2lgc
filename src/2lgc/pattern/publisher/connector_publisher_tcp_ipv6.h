@@ -89,7 +89,7 @@ class ConnectorPublisherTcpIpv6 : public ConnectorPublisherTcp<T>
       ConnectorPublisherTcpIpv6 const &other) & = delete;
 #endif  // !SWIG
 
- protected:
+ private:
   /**
    * @brief Start connection with server.
    *

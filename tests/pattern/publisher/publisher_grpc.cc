@@ -65,6 +65,9 @@ template class llgc::pattern::publisher::ConnectorSubscriberGrpc<
 template class llgc::pattern::publisher::SubscriberServerGrpc<
     llgc::protobuf::test::Rpc>;
 
+/**
+ * @brief Implementation of the subscriber.
+ */
 class SubscriberBase final
     : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>
 {

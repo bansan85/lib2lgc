@@ -21,6 +21,7 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <cstdint>
 #include <memory>
+
 namespace grpc
 {
 template <class W, class R>
@@ -50,7 +51,7 @@ class ConnectorSubscriberGrpc : public ConnectorInterface<T>
    * @brief Default constructor.
    *
    * @param[in] subscriber Subscriber to communicate with client.
-   * @param[in] socket_fd Socket to communicate with client.
+   * @param[in] stream Stream to communicate with client.
    */
   ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
                           grpc::ServerReaderWriter<T, T> *stream);
@@ -59,41 +60,6 @@ class ConnectorSubscriberGrpc : public ConnectorInterface<T>
    * @brief Default virtual destructor.
    */
   ~ConnectorSubscriberGrpc() override;
-
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorSubscriberGrpc(ConnectorSubscriberGrpc &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorSubscriberGrpc(ConnectorSubscriberGrpc const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc const &other) & =
-      delete;
-#endif  // !SWIG
 
   /**
    * @brief Compare two connectors.
@@ -131,7 +97,42 @@ class ConnectorSubscriberGrpc : public ConnectorInterface<T>
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
- protected:
+#ifndef SWIG
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorSubscriberGrpc(ConnectorSubscriberGrpc &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorSubscriberGrpc(ConnectorSubscriberGrpc const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc const &other) & =
+      delete;
+#endif  // !SWIG
+
+ private:
   /**
    * @brief Socket to the server.
    */

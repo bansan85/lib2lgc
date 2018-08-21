@@ -43,7 +43,7 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::Listen()
   struct sockaddr_in6 socket_addr;  // NOLINT(hicpp-member-init)
   socket_addr.sin6_family = AF_INET6;
   socket_addr.sin6_addr = in6addr_any;
-  socket_addr.sin6_port = htons(this->port_);
+  socket_addr.sin6_port = htons(this->GetPort());
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
   BUGCONT(std::cout,

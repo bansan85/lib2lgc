@@ -66,12 +66,12 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>::Connect()
   struct sockaddr_in server;  // NOLINT(hicpp-member-init)
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
   BUGUSER(std::cout,
-          inet_pton(AF_INET, this->ip_.c_str(),
+          inet_pton(AF_INET, this->GetIp().c_str(),
                     reinterpret_cast<struct sockaddr_in *>(
                         static_cast<void *>(&server.sin_addr))) == 1,
-          false, "Failed to get IP for name " + this->ip_ + ".\n");
+          false, "Failed to get IP for name " + this->GetIp() + ".\n");
   server.sin_family = AF_INET;
-  server.sin_port = htons(this->port_);
+  server.sin_port = htons(this->GetPort());
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
   BUGCRIT(std::cout,

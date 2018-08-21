@@ -54,41 +54,6 @@ class ConnectorInterface
    */
   virtual ~ConnectorInterface() = default;
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface(ConnectorInterface&& other) = delete;
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface(ConnectorInterface const& other) = delete;
-  /**
-   * @brief Delete move operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface& operator=(ConnectorInterface&& other) & = delete;
-  /**
-   * @brief Delete copy operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface& operator=(ConnectorInterface const& other) & = delete;
-#endif  // !SWIG
-
   /**
    * @brief Compare in connector is the same than the object.
    *
@@ -126,16 +91,6 @@ class ConnectorInterface
   bool ListenPending() CHK;
 
   /**
-   * @brief Get the subscriber that manager this interface.
-   *
-   * @return return the subscriber.
-   */
-  const SubscriberInterface<T>* GetSubscriber() const
-  {
-    return subscriber_.get();
-  }
-
-  /**
    * @brief Add a new subscriber.
    *
    * @param[in] id_message The add of the message.
@@ -155,7 +110,58 @@ class ConnectorInterface
    */
   virtual bool RemoveSubscriber(uint32_t id_message) CHK = 0;
 
+  /**
+   * @brief Get the subscriber that manager this interface.
+   *
+   * @return return the subscriber.
+   */
+  const SubscriberInterface<T>* GetSubscriber() const
+  {
+    return subscriber_.get();
+  }
+
+#ifndef SWIG
+  /**
+   * @brief Delete move constructor.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface(ConnectorInterface&& other) = delete;
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface(ConnectorInterface const& other) = delete;
+  /**
+   * @brief Delete move operator.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface& operator=(ConnectorInterface&& other) & = delete;
+  /**
+   * @brief Delete copy operator.
+   *
+   * @param[in] other Don't care.
+   *
+   * @return Nothing.
+   */
+  ConnectorInterface& operator=(ConnectorInterface const& other) & = delete;
+#endif  // !SWIG
+
  protected:
+  /**
+   * @brief The subscriber.
+   */
+  std::shared_ptr<SubscriberInterface<T>> subscriber_;
+
+ private:
   /**
    * @brief Messages on hold.
    */
@@ -165,11 +171,6 @@ class ConnectorInterface
    * @brief id of the next message.
    */
   uint32_t next_id_;
-
-  /**
-   * @brief The subscriber.
-   */
-  std::shared_ptr<SubscriberInterface<T>> subscriber_;
 };
 
 }  // namespace llgc::pattern::publisher

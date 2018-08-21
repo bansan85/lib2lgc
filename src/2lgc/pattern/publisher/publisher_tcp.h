@@ -52,6 +52,16 @@ class PublisherTcp : public PublisherIp<T>
    */
   ~PublisherTcp() override;
 
+  /**
+   * @brief Join the waiting thread.
+   */
+  void JoinWait() override;
+
+  /**
+   * @brief Stop the thread.
+   */
+  void Stop() override;
+
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
@@ -87,27 +97,18 @@ class PublisherTcp : public PublisherIp<T>
   PublisherTcp& operator=(PublisherTcp const& other) & = delete;
 #endif  // !SWIG
 
-  /**
-   * @brief Join the waiting thread.
-   */
-  void JoinWait() override;
-
-  /**
-   * @brief Stop the thread.
-   */
-  void Stop() override;
-
  protected:
-  /**
-   * @brief Store thread based on the socket file descriptor.
-   */
-  std::map<int, std::thread> thread_sockets_;  // NS
-
   /**
    * @brief If thread in trying to stop.
    */
   std::atomic<bool> disposing_;
 
+  /**
+   * @brief Store thread based on the socket file descriptor.
+   */
+  std::map<int, std::thread> thread_sockets_;  // NS
+
+ private:
 #ifndef SWIG
   /**
    * @brief Internal function to subscribe a socket to an event.

@@ -42,6 +42,29 @@ class SubscriberServerTcp : public SubscriberInterface<T>
    */
   explicit SubscriberServerTcp(int socket) : socket_(socket) {}
 
+  /**
+   * @brief Default virtual destructor.
+   */
+  ~SubscriberServerTcp() override = default;
+
+  /**
+   * @brief Receive message from publisher.
+   *
+   * @param[in] messages Message from the publisher in protobuf format.
+   *
+   * @return true if no problem.
+   */
+  bool Listen(const T& messages) override;
+
+  /**
+   * @brief Compare in connector is the same than the object.
+   *
+   * @param[in,out] connector The connector to compare with.
+   *
+   * @return true if the same.
+   */
+  bool Equals(const SubscriberInterface<T>& connector) const override;
+
 #ifndef SWIG
   /**
    * @brief Delete move constructor.
@@ -76,29 +99,6 @@ class SubscriberServerTcp : public SubscriberInterface<T>
    */
   SubscriberServerTcp& operator=(SubscriberServerTcp const& other) & = delete;
 #endif  // !SWIG
-
-  /**
-   * @brief Receive message from publisher.
-   *
-   * @param[in] messages Message from the publisher in protobuf format.
-   *
-   * @return true if no problem.
-   */
-  bool Listen(const T& messages) override;
-
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in,out] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
-  bool Equals(const SubscriberInterface<T>& connector) const override;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~SubscriberServerTcp() override = default;
 
  private:
   /**

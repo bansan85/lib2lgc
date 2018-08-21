@@ -43,7 +43,7 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
   struct sockaddr_in socket_addr;  // NOLINT(hicpp-member-init)
   socket_addr.sin_family = AF_INET;
   socket_addr.sin_addr.s_addr = INADDR_ANY;
-  socket_addr.sin_port = htons(this->port_);
+  socket_addr.sin_port = htons(this->GetPort());
 
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
   BUGCONT(std::cout,

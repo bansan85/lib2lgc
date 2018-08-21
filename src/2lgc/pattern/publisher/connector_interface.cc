@@ -22,7 +22,7 @@
 template <typename T>
 llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
     std::shared_ptr<SubscriberInterface<T>> subscriber)
-    : messages_(), next_id_(0), subscriber_(std::move(subscriber))
+    : subscriber_(std::move(subscriber)), messages_(), next_id_(0)
 {
 }
 

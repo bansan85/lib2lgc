@@ -28,59 +28,61 @@
 namespace grpc
 {
 class Server;
-}
-namespace grpc
-{
+
 class ServerContext;
-}
-namespace grpc
-{
+
 template <class W, class R>
 class ServerReaderWriter;
-}
-namespace llgc
-{
-namespace pattern
-{
-namespace publisher
+}  // namespace grpc
+
+namespace llgc::pattern::publisher
 {
 template <typename T>
 class ConnectorSubscriberGrpc;
-}
-}  // namespace pattern
-}  // namespace llgc
-namespace llgc
-{
-namespace pattern
-{
-namespace publisher
-{
+
 template <typename T>
 class SubscriberServerGrpc;
-}
-}  // namespace pattern
-}  // namespace llgc
+}  // namespace llgc::pattern::publisher
 
 /**
  * @brief Namespace for the pattern publisher.
  */
 namespace llgc::pattern::publisher
 {
-template <typename T, typename S>  // S : class of service
+/**
+ * @brief Service that will be run by each client.
+ *
+ * @tparam T Class of the protobuf message.
+ * @tparam S Class of the service.
+ */
+template <typename T, typename S>
 class PublisherGrpcService : public S, public PublisherIp<T>
 {
  public:
+  /**
+   * @brief Constructor.
+   *
+   * @param[in,out] parent gRPC publisher.
+   */
   explicit PublisherGrpcService(PublisherIp<T>* parent)
       : llgc::pattern::publisher::PublisherIp<T>(parent->GetPort()),
         parent_(*parent)
   {
   }
 
-  // One endless thread for each connexion.
-  // But same 'this' for everyone.
-  grpc::Status Talk(grpc::ServerContext* /*context*/,
+  /**
+   * @brief Wait, read and forward messages from a client to subscribers.
+   *
+   * @param[in] context Don't care.
+   * @param[in] stream Listen from this stream.
+   *
+   * @return The return value when the stream is closed by the server.
+   */
+  grpc::Status Talk(grpc::ServerContext* __attribute__((unused)) context,
                     grpc::ServerReaderWriter<T, T>* stream) override
   {
+    // One endless thread for each connexion.
+    // But same 'this' for everyone.
     T messages;
     while (stream->Read(&messages))
     {
@@ -132,13 +134,29 @@ class PublisherGrpcService : public S, public PublisherIp<T>
     return grpc::Status::OK;
   }
 
+  /**
+   * @brief Run the Listen function of the server.
+   *
+   * @return The return value from the server.
+   */
   bool Listen() override CHK { return parent_.Listen(); }
 
+  /**
+   * @brief Run the Wait function of the server.
+   *
+   * @return The return value from the server.
+   */
   bool Wait() override CHK { return parent_.Wait(); }
 
+  /**
+   * @brief Run the Stop function of the server.
+   */
   void Stop() override { parent_.Stop(); }
 
  private:
+  /**
+   * @brief Reference to the gRPC publisher.
+   */
   PublisherIp<T>& parent_;
 };
 
@@ -164,6 +182,25 @@ class PublisherGrpc : public PublisherIp<T>
    * @brief Destructor. Make sure that thread is finished.
    */
   ~PublisherGrpc() override;
+
+  /**
+   * @brief Start the server and the listening the port.
+   *
+   * @return true if no problem.
+   */
+  bool Listen() override CHK;
+
+  /**
+   * @brief Wait for client.
+   *
+   * @return true if no problem.
+   */
+  bool Wait() override CHK;
+
+  /**
+   * @brief Stop the thread.
+   */
+  void Stop() override;
 
 #ifndef SWIG
   /**
@@ -200,28 +237,15 @@ class PublisherGrpc : public PublisherIp<T>
   PublisherGrpc& operator=(PublisherGrpc const& other) & = delete;
 #endif  // !SWIG
 
-  /**
-   * @brief Start the server and the listening the port.
-   *
-   * @return true if no problem.
-   */
-  bool Listen() override CHK;
-
-  /**
-   * @brief Wait for client.
-   *
-   * @return true if no problem.
-   */
-  bool Wait() override CHK;
-
-  /**
-   * @brief Stop the thread.
-   */
-  void Stop() override;
-
  private:
+  /**
+   * @brief Service that will be run by the server.
+   */
   PublisherGrpcService<T, S> service_;
 
+  /**
+   * @brief Server gRPC.
+   */
   std::unique_ptr<grpc::Server> server_;
 };
 

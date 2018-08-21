@@ -54,6 +54,7 @@ class PublisherTcpLinux : public PublisherTcp<T>
    */
   int sockfd_;  // NS
 
+ private:
 #ifndef SWIG
   /**
    * @brief Internal function to subscribe a socket to an event.
@@ -65,7 +66,6 @@ class PublisherTcpLinux : public PublisherTcp<T>
                           decltype(std::declval<T>().msg(0)) message) override;
 #endif  // !SWIG
 
- private:
   /**
    * @brief Function that will be executed by the thread that wait instruction
    * from a client.

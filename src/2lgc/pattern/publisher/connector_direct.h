@@ -59,40 +59,6 @@ class ConnectorDirect : public ConnectorInterface<T>,
    */
   ~ConnectorDirect() override;
 
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorDirect(ConnectorDirect &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorDirect(ConnectorDirect const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in,out] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in,out] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
-#endif  // !SWIG
-
   /**
    * @brief Compare two connectors.
    *
@@ -130,6 +96,40 @@ class ConnectorDirect : public ConnectorInterface<T>,
    * @return true if no problem.
    */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
+
+#ifndef SWIG
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorDirect(ConnectorDirect &&other) = delete;
+
+  /**
+   * @brief Delete copy constructor.
+   *
+   * @param[in] other The original.
+   */
+  ConnectorDirect(ConnectorDirect const &other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in,out] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
+
+  /**
+   * @brief Delete the copy operator.
+   *
+   * @param[in,out] other The original.
+   *
+   * @return Delete function.
+   */
+  ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
+#endif  // !SWIG
 
  private:
   /**

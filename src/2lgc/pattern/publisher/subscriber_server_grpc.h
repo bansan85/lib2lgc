@@ -18,6 +18,7 @@
 #define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_GRPC_H_
 
 #include <2lgc/pattern/publisher/subscriber_interface.h>
+
 namespace grpc
 {
 template <class W, class R>
@@ -43,7 +44,7 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
   /**
    * @brief Default constructor
    *
-   * @param[in] socket Socket to communicate with server.
+   * @param[in] stream Stream to communicate with server.
    */
   explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T>* stream)
       : stream_(stream)
@@ -54,6 +55,24 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
    * @brief Default virtual destructor.
    */
   ~SubscriberServerGrpc() override = default;
+
+  /**
+   * @brief Receive message from publisher.
+   *
+   * @param[in] messages Message from the publisher in protobuf format.
+   *
+   * @return true if no problem.
+   */
+  bool Listen(const T& messages) override;
+
+  /**
+   * @brief Compare in connector is the same than the object.
+   *
+   * @param[in,out] connector The connector to compare with.
+   *
+   * @return true if the same.
+   */
+  bool Equals(const SubscriberInterface<T>& connector) const override;
 
 #ifndef SWIG
   /**
@@ -89,24 +108,6 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
    */
   SubscriberServerGrpc& operator=(SubscriberServerGrpc const& other) & = delete;
 #endif  // !SWIG
-
-  /**
-   * @brief Receive message from publisher.
-   *
-   * @param[in] messages Message from the publisher in protobuf format.
-   *
-   * @return true if no problem.
-   */
-  bool Listen(const T& messages) override;
-
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in,out] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
-  bool Equals(const SubscriberInterface<T>& connector) const override;
 
  private:
   /**

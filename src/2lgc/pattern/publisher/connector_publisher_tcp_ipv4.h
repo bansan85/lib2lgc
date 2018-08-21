@@ -51,7 +51,7 @@ class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
   /**
    * @brief Default virtual destructor.
    */
-  virtual ~ConnectorPublisherTcpIpv4();
+  ~ConnectorPublisherTcpIpv4() override;
 
 #ifndef SWIG
   /**
@@ -89,7 +89,7 @@ class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
       ConnectorPublisherTcpIpv4 const &other) & = delete;
 #endif  // !SWIG
 
- protected:
+ private:
   /**
    * @brief Start connection with server.
    *
