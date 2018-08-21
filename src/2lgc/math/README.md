@@ -2,7 +2,7 @@
 
 This library contains all you need for math calculation.
 
-## Compare float
+# Compare float
 
 Actually you can only compare float and double number.
 
@@ -13,7 +13,7 @@ A absolute difference in float/double mode is also used.
 Use `AlmostEqualRelativeAndAbsF` or `AlmostEqualRelativeAndAbsD` if two numbers are closed to zero.
 The float/double difference is both relative and absolute.
 
-## Hash
+# Hash
 
 Use cryptographic hash if OpenSSL is found. If not, use jbd2. The goal is to use an hash, no matter which one.
 

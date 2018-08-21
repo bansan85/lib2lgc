@@ -1,6 +1,6 @@
 # Tree
 
-## Design
+# Design
 
 Implement a simple tree based on the composite pattern.
 
@@ -8,7 +8,7 @@ A tree is composed with Node.
 
 Loop in not possible by design.
 
-## Function
+# Function
 
 There only one function to modify a tree:
   - AddChild: add a child to the current node.
@@ -17,7 +17,7 @@ There two functions to browse the tree:
   - FindPath: find a path from a node to another one.
   - FindNode: find a node based on the id.
 
-## Technical
+# Technical
 
 A node is identified with a unique id. Insertion will failed if a node already exists with the same id.
 

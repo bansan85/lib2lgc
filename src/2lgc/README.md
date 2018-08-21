@@ -1,5 +1,5 @@
 # Compatibility
 
-## compat.h
+# compat.h
 
 Compatibility between differents compilers.

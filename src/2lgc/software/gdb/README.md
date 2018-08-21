@@ -2,7 +2,7 @@
 
 This library helps you to manipulate gdb to extract backtrace of a crash and to compare a bunch of backtrace files.
 
-## Export the backtrace to file
+# Export the backtrace to file
 
 Use static function in `Gdb` class. `RunBtFull` is to extract backtrace from a single file. `RunBtFullRecursive` for folder.
 
@@ -11,7 +11,7 @@ In the command line, the file name must be replaced by `@@`.
 
 For a folder, you will need to say if you allow multiple parallel instance of `gdb` and eventually, a regex (javascript compliant) to filter filename.
 
-## Sort backtrace files
+# Sort backtrace files
 
 Create a `SetStack` class with parameters to sort backtraces.
 

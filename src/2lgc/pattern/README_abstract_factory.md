@@ -1,6 +1,6 @@
 # Abstract factory
 
-## Design
+# Design
 
 The abstract factory convert a serialize message to a command.
 
@@ -11,9 +11,9 @@ So you will need:
 
 And the factory returns a std::unique_ptr with the command instantiated casted to the common interface.
 
-## Example
+# Example
 
-### The protobuf message
+## The protobuf message
 
 ```
 // By convention, all package must be in llgc.protobuf.
@@ -35,7 +35,7 @@ message AbstractFactoryMsg
 }
 ```
 
-### Command
+## Command
 
 The interface:
 
@@ -59,7 +59,7 @@ class CommandTest : public CommonCommand
 };
 ```
 
-### The factory
+## The factory
 
 ```
 // The factory with as template the protobuf message and interface command.
@@ -98,7 +98,7 @@ class Factory
 };
 ```
 
-### Usage
+## Usage
 
 ```
 // The abstract factory.
