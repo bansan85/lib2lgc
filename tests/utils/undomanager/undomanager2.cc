@@ -85,7 +85,7 @@ class Factory : public llgc::pattern::AbstractFactory<
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
-  double number;
+  double number = 0.;
   auto factory = std::make_unique<Factory>(&number);
   llgc::utils::undomanager::Undomanager<llgc::protobuf::test::UndoManager1,
                                         llgc::pattern::command::UndoInterface>
