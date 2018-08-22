@@ -32,7 +32,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "Miscellaneous math functions"
+PROJECT_NAME           = "lib2lgc"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -135,7 +135,7 @@ ABBREVIATE_BRIEF       = "The $name class" \
 # description.
 # The default value is: NO.
 
-ALWAYS_DETAILED_SEC    = YES
+ALWAYS_DETAILED_SEC    = NO
 
 # If the INLINE_INHERITED_MEMB tag is set to YES, doxygen will show all
 # inherited members of a class in the documentation of that class as if those
@@ -310,7 +310,7 @@ MARKDOWN_SUPPORT       = YES
 # Minimum value: 0, maximum value: 99, default value: 0.
 # This tag requires that the tag MARKDOWN_SUPPORT is set to YES.
 
-TOC_INCLUDE_HEADINGS   = 0
+TOC_INCLUDE_HEADINGS   = 99
 
 # When enabled doxygen tries to link words that correspond to documented
 # classes, or namespaces to their corresponding documentation. Such a link can
@@ -551,7 +551,7 @@ SHOW_INCLUDE_FILES     = YES
 # which file to include in order to use the member.
 # The default value is: NO.
 
-SHOW_GROUPED_MEMB_INC  = NO
+SHOW_GROUPED_MEMB_INC  = YES
 
 # If the FORCE_LOCAL_INCLUDES tag is set to YES then doxygen will list include
 # files with double quotes in the documentation rather than with sharp brackets.
@@ -578,7 +578,7 @@ SORT_MEMBER_DOCS       = YES
 # this will also influence the order of the classes in the class list.
 # The default value is: NO.
 
-SORT_BRIEF_DOCS        = NO
+SORT_BRIEF_DOCS        = YES
 
 # If the SORT_MEMBERS_CTORS_1ST tag is set to YES then doxygen will sort the
 # (brief and detailed) documentation of class members so that constructors and
@@ -590,14 +590,14 @@ SORT_BRIEF_DOCS        = NO
 # detailed member documentation.
 # The default value is: NO.
 
-SORT_MEMBERS_CTORS_1ST = NO
+SORT_MEMBERS_CTORS_1ST = YES
 
 # If the SORT_GROUP_NAMES tag is set to YES then doxygen will sort the hierarchy
 # of group names into alphabetical order. If set to NO the group names will
 # appear in their defined order.
 # The default value is: NO.
 
-SORT_GROUP_NAMES       = NO
+SORT_GROUP_NAMES       = YES
 
 # If the SORT_BY_SCOPE_NAME tag is set to YES, the class list will be sorted by
 # fully-qualified names, including namespaces. If set to NO, the class list will
@@ -607,7 +607,7 @@ SORT_GROUP_NAMES       = NO
 # list.
 # The default value is: NO.
 
-SORT_BY_SCOPE_NAME     = NO
+SORT_BY_SCOPE_NAME     = YES
 
 # If the STRICT_PROTO_MATCHING option is enabled and doxygen fails to do proper
 # type resolution of all parameters of a function it will reject a match between
@@ -617,7 +617,7 @@ SORT_BY_SCOPE_NAME     = NO
 # accept a match between prototype and implementation in such cases.
 # The default value is: NO.
 
-STRICT_PROTO_MATCHING  = NO
+STRICT_PROTO_MATCHING  = YES
 
 # The GENERATE_TODOLIST tag can be used to enable (YES) or disable (NO) the todo
 # list. This list is created by putting \todo commands in the documentation.
@@ -817,48 +817,8 @@ INPUT_ENCODING         = UTF-8
 
 FILE_PATTERNS          = *.c \
                          *.cc \
-                         *.cxx \
-                         *.cpp \
-                         *.c++ \
-                         *.java \
-                         *.ii \
-                         *.ixx \
-                         *.ipp \
-                         *.i++ \
-                         *.inl \
-                         *.idl \
-                         *.ddl \
-                         *.odl \
                          *.h \
-                         *.hh \
-                         *.hxx \
-                         *.hpp \
-                         *.h++ \
-                         *.cs \
-                         *.d \
-                         *.php \
-                         *.php4 \
-                         *.php5 \
-                         *.phtml \
-                         *.inc \
-                         *.m \
-                         *.markdown \
-                         *.md \
-                         *.mm \
-                         *.dox \
-                         *.py \
-                         *.pyw \
-                         *.f90 \
-                         *.f95 \
-                         *.f03 \
-                         *.f08 \
-                         *.f \
-                         *.for \
-                         *.tcl \
-                         *.vhd \
-                         *.vhdl \
-                         *.ucf \
-                         *.qsf
+                         *.md
 
 # The RECURSIVE tag can be used to specify whether or not subdirectories should
 # be searched for input files as well.
@@ -889,7 +849,7 @@ EXCLUDE_SYMLINKS       = NO
 # Note that the wildcards are matched against the file with absolute path, so to
 # exclude all test directories for example use the pattern */test/*
 
-EXCLUDE_PATTERNS       = */build/* */test/*
+EXCLUDE_PATTERNS       =
 
 # The EXCLUDE_SYMBOLS tag can be used to specify one or more symbol names
 # (namespaces, classes, functions, etc.) that should be excluded from the
@@ -906,14 +866,14 @@ EXCLUDE_SYMBOLS        =
 # that contain example code fragments that are included (see the \include
 # command).
 
-EXAMPLE_PATH           = 
+EXAMPLE_PATH           = @PROJECT_SOURCE_DIR@/tests
 
 # If the value of the EXAMPLE_PATH tag contains directories, you can use the
 # EXAMPLE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp and
 # *.h) to filter out the source-files in the directories. If left blank all
 # files are included.
 
-EXAMPLE_PATTERNS       = *
+EXAMPLE_PATTERNS       = *.cpp *.h
 
 # If the EXAMPLE_RECURSIVE tag is set to YES then subdirectories will be
 # searched for input files to be used with the \include or \dontinclude commands
@@ -1222,7 +1182,7 @@ HTML_COLORSTYLE_GAMMA  = 80
 # The default value is: NO.
 # This tag requires that the tag GENERATE_HTML is set to YES.
 
-HTML_TIMESTAMP         = NO
+HTML_TIMESTAMP         = YES
 
 # If the HTML_DYNAMIC_SECTIONS tag is set to YES then the generated HTML
 # documentation will contain sections that can be hidden and shown after the
@@ -2040,7 +2000,7 @@ ENABLE_PREPROCESSING   = YES
 # The default value is: NO.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-MACRO_EXPANSION        = YES
+MACRO_EXPANSION        = NO
 
 # If the EXPAND_ONLY_PREDEF and MACRO_EXPANSION tags are both set to YES then
 # the macro expansion is limited to the macros specified with the PREDEFINED and
@@ -2100,7 +2060,7 @@ EXPAND_AS_DEFINED      =
 # The default value is: YES.
 # This tag requires that the tag ENABLE_PREPROCESSING is set to YES.
 
-SKIP_FUNCTION_MACROS   = YES
+SKIP_FUNCTION_MACROS   = NO
 
 #---------------------------------------------------------------------------
 # Configuration options related to external references
@@ -2423,7 +2383,7 @@ PLANTUML_INCLUDE_PATH  =
 # Minimum value: 0, maximum value: 10000, default value: 50.
 # This tag requires that the tag HAVE_DOT is set to YES.
 
-DOT_GRAPH_MAX_NODES    = 50
+DOT_GRAPH_MAX_NODES    = 1000
 
 # The MAX_DOT_GRAPH_DEPTH tag can be used to set the maximum depth of the graphs
 # generated by dot. A depth value of 3 means that only nodes reachable from the
