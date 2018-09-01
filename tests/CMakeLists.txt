@@ -17,7 +17,8 @@ add_executable(visitor1 EXCLUDE_FROM_ALL
 
 protobuf_generate_cpp(ABSTRACT_FACTORY_PROTO_SRC ABSTRACT_FACTORY_PROTO_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory.proto)
-set_source_files_properties(${ABSTRACT_FACTORY_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory1.cc
+set_source_files_properties(${ABSTRACT_FACTORY_PROTO_SRC}
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory1.cc
   PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(abstract_factory1 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory1.cc
@@ -25,7 +26,8 @@ add_executable(abstract_factory1 EXCLUDE_FROM_ALL
 
 protobuf_generate_cpp(PUBLISHER_DIRECT_PROTO_SRC PUBLISHER_PROTO_ACTIONS_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/direct.proto)
-set_source_files_properties(${PUBLISHER_DIRECT_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_direct.cc
+set_source_files_properties(${PUBLISHER_DIRECT_PROTO_SRC}
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_direct.cc
   PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(publisher_direct EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_direct.cc
@@ -33,12 +35,14 @@ add_executable(publisher_direct EXCLUDE_FROM_ALL
 
 protobuf_generate_cpp(PUBLISHER_TCP_PROTO_SRC PUBLISHER_TCP_PROTO_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/tcp.proto)
-set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv4.cc
+set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC}
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv4.cc
   PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(publisher_tcp_ipv4 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv4.cc
   ${PUBLISHER_TCP_PROTO_SRC})
-set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC} ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv6.cc
+set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC}
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv6.cc
   PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
 add_executable(publisher_tcp_ipv6 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv6.cc
@@ -51,6 +55,9 @@ if (GRPC_LIBRARY)
   grpc_generate_cpp(PUBLISHER_RPC_GRPC_SRC PUBLISHER_RPC_GRPC_HEADERS
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/rpc.proto)
+  set_source_files_properties(${PUBLISHER_RPC_PROTO_SRC} ${PUBLISHER_RPC_GRPC_SRC}
+    ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_grpc.cc
+    PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
   add_executable(publisher_grpc EXCLUDE_FROM_ALL
     ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_grpc.cc
     ${PUBLISHER_RPC_PROTO_SRC} ${PUBLISHER_RPC_GRPC_SRC})
