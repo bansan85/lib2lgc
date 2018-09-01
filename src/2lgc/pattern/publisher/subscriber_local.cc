@@ -20,6 +20,9 @@ namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
+
+template <typename T>
+class ConnectorInterface;
 }
 
 /** \class llgc::pattern::publisher::SubscriberLocal
@@ -80,7 +83,8 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::Equals(
  * \return true if connector was not previously set.
  */
 template <typename T>
-bool llgc::pattern::publisher::SubscriberLocal<T>::SetConnector(std::shared_ptr<ConnectorInterface<T>> conn)
+bool llgc::pattern::publisher::SubscriberLocal<T>::SetConnector(
+    std::shared_ptr<ConnectorInterface<T>> conn)
 {
   if (!connector_.expired())
   {
@@ -96,7 +100,7 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::SetConnector(std::shared_ptr<
  * \return true if no problem.
  */
 template <typename T>
-bool llgc::pattern::publisher::SubscriberLocal<T>::Send(const T& message)
+bool llgc::pattern::publisher::SubscriberLocal<T>::Send(const T &message)
 {
   if (auto connector = connector_.lock())
   {
@@ -110,7 +114,8 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::Send(const T& message)
  * \return true if no problem.
  */
 template <typename T>
-bool llgc::pattern::publisher::SubscriberLocal<T>::AddSubscriber(uint32_t id_message)
+bool llgc::pattern::publisher::SubscriberLocal<T>::AddSubscriber(
+    uint32_t id_message)
 {
   if (auto connector = connector_.lock())
   {
@@ -124,7 +129,8 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::AddSubscriber(uint32_t id_mes
  * \return true if no problem.
  */
 template <typename T>
-bool llgc::pattern::publisher::SubscriberLocal<T>::RemoveSubscriber(uint32_t id_message)
+bool llgc::pattern::publisher::SubscriberLocal<T>::RemoveSubscriber(
+    uint32_t id_message)
 {
   if (auto connector = connector_.lock())
   {

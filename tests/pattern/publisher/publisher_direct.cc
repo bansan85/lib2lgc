@@ -21,8 +21,6 @@
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/subscriber_local.h>
-#include <2lgc/utils/count_lock.h>
-#include <direct.pb.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <cstddef>
@@ -32,11 +30,14 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include "direct.pb.h"
+#include "publisher_all.h"
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/subscriber_local.cc>
+#include "publisher_all.cc"
 
 template class llgc::pattern::publisher::PublisherInterface<
     llgc::protobuf::test::Direct,
@@ -114,6 +115,7 @@ class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
+  constexpr size_t delay = 30;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   auto server = std::make_shared<llgc::pattern::publisher::PublisherDirect<
@@ -124,52 +126,15 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto connector = std::make_shared<
       llgc::pattern::publisher::ConnectorDirect<llgc::protobuf::test::Direct>>(
       subscriber, server);
+  assert(subscriber->SetConnector(connector));
 
-  // Add them to the server.
-  assert(connector->AddSubscriber(
-      llgc::protobuf::test::Direct_Msg::DataCase::kTest));
+  llgc::pattern::publisher::test::Publisher::All<
+      llgc::protobuf::test::Direct, Subscriber,
+      llgc::pattern::publisher::PublisherDirect<llgc::protobuf::test::Direct>>(
+      subscriber.get(), server.get(), delay);
 
-  // Base test case.
-  assert(subscriber->value == 0);
-
-  // Check first message.
-  llgc::protobuf::test::Direct messages;
-  llgc::protobuf::test::Direct_Msg* message = messages.add_msg();
-  auto message_test = std::make_unique<llgc::protobuf::test::Direct_Msg_Test>();
-  message->set_allocated_test(message_test.release());
-  assert(connector->Send(messages));
-  assert(subscriber->value == 1);
-
-  // Test lock forward.
-  subscriber->value = 0;
-  {
-    llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
-    assert(connector->Send(messages));
-    assert(subscriber->value == 0);
-  }
-  assert(subscriber->value == 1);
-
-  // Remove the first subscriber.
-  subscriber->value = 0;
-  assert(connector->RemoveSubscriber(1));
-  assert(connector->Send(messages));
-  assert(subscriber->value == 0);
-
-  // Double insert
-  assert(connector->AddSubscriber(1));
-  assert(connector->AddSubscriber(1));
-  assert(connector->Send(messages));
-  assert(subscriber->value == 2);
-  assert(connector->RemoveSubscriber(1));
-  assert(connector->Send(messages));
-  assert(subscriber->value == 3);
-  assert(connector->RemoveSubscriber(1));
-  assert(connector->Send(messages));
-  assert(subscriber->value == 3);
-  assert(!server->GetOptionFailAlreadySubscribed());
-  server->SetOptionFailAlreadySubscribed(true);
-  assert(connector->AddSubscriber(1));
-  assert(!connector->AddSubscriber(1));
+  // connector must be free. Either server->Stop never stop.
+  connector.reset();
 
   google::protobuf::ShutdownProtobufLibrary();
 

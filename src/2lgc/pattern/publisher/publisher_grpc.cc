@@ -15,10 +15,8 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
 #include <2lgc/pattern/publisher/publisher_grpc.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
-#include <2lgc/pattern/publisher/subscriber_server_grpc.h>
 #include <grpcpp/grpcpp.h>
 #include <grpcpp/security/server_credentials.h>
 #include <iostream>
@@ -26,6 +24,15 @@
 #include <string>
 #include <thread>
 #include <utility>
+
+namespace llgc::pattern::publisher {
+template <typename T>
+class ConnectorSubscriberGrpc;
+
+template <typename T>
+class SubscriberServerGrpc;
+}
+
 
 /** \class llgc::pattern::publisher::PublisherGrpc
  * \brief Interface to create a TCP server.

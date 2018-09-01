@@ -25,7 +25,6 @@
 #include <unistd.h>
 #include <cerrno>
 #include <cstddef>
-#include <functional>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -77,13 +76,17 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       tv.tv_sec = 0L;
       tv.tv_usec = 50000L;
 
-      iResult = llgc::net::Linux::RepeteOnEintr( [this,&rfds,&tv] { return select(sockfd_ + 1, &rfds, nullptr, nullptr, &tv);});
+      iResult = llgc::net::Linux::RepeteOnEintr([this, &rfds, &tv] {
+        return select(sockfd_ + 1, &rfds, nullptr, nullptr, &tv);
+      });
       if (iResult > 0)
       {
-        client_sock = llgc::net::Linux::RepeteOnEintr([=] { return accept4(sockfd_, nullptr, nullptr, 0);});
+        client_sock = llgc::net::Linux::RepeteOnEintr(
+            [=] { return accept4(sockfd_, nullptr, nullptr, 0); });
         if (client_sock > 0)
         {
-          std::thread t2([this,client_sock] { return this->WaitThread(client_sock);});
+          std::thread t2(
+              [this, client_sock] { return this->WaitThread(client_sock); });
           this->thread_sockets_.insert(
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }

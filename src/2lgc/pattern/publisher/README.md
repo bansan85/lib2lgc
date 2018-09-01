@@ -193,6 +193,7 @@ Declaration:
   auto connector = std::make_shared<
       llgc::pattern::publisher::ConnectorDirect<llgc::protobuf::test::Direct>>(
       subscriber, server);
+  subscriber->SetConnector(connector);
 ```
 
 
@@ -296,6 +297,7 @@ Declaration:
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
           llgc::protobuf::test::Tcp>>(subscriber, "127.0.0.1", 8888);
+  subscriber->SetConnector(connector);
 ```
 
 ## In gRPC mode
@@ -386,6 +388,7 @@ Declaration:
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
           llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(
           subscriber, "127.0.0.1", 8890);
+  subscriber->SetConnector(connector);
 ```
 
 # Usage
@@ -404,6 +407,7 @@ In TCP mode, you need to open the port with Listen and to wait for message.
 and before closing the application or to stop the server.
 
 ```
+  connector.reset();
   server->Stop();
   server->JoinWait();
 ```

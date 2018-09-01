@@ -19,7 +19,6 @@
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/poco/software_gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/utils/count_lock.h>
-#include <functional>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -258,7 +257,9 @@ template <typename T, typename U>
 llgc::utils::thread::CountLock<size_t>
 llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
 {
-  return llgc::utils::thread::CountLock<size_t>(&lock_forward_, &mutex_forward_, [this] { return this->ForwardPending();});
+  return llgc::utils::thread::CountLock<size_t>(
+      &lock_forward_, &mutex_forward_,
+      [this] { return this->ForwardPending(); });
 }
 
 /** \fn llgc::pattern::publisher::PublisherInterface::PublisherInterface(PublisherInterface&& other)

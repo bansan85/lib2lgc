@@ -25,17 +25,16 @@
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/subscriber_local.h>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>
-#include <2lgc/utils/count_lock.h>
 #include <google/protobuf/stubs/common.h>
 #include <grpcpp/impl/codegen/status.h>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
-#include <functional>
 #include <map>
 #include <memory>
 #include <thread>
+#include "publisher_all.h"
 #include "rpc.grpc.pb.h"
 #include "rpc.pb.h"
 
@@ -48,6 +47,7 @@
 #include <2lgc/pattern/publisher/publisher_ip.cc>
 #include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.cc>
+#include "publisher_all.cc"
 
 template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::test::Rpc>;
@@ -108,20 +108,6 @@ class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
   size_t value;
 };
 
-static void WaitUpToTenSecond(const std::function<bool()>& test)
-{
-  std::chrono::time_point<std::chrono::system_clock> start, end;
-  start = std::chrono::system_clock::now();
-  do
-  {
-    end = std::chrono::system_clock::now();
-    assert(
-        static_cast<size_t>(
-            std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-                .count()) < 10000);
-  } while (!test());
-}
-
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
   constexpr size_t delay = 30;
@@ -138,70 +124,13 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
           llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(
           subscriber, "127.0.0.1", 8890);
-  subscriber->SetConnector(connector);
+  assert(subscriber->SetConnector(connector));
 
-  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-
-  assert(subscriber->value == 0);
-
-  // Check first message.
-  llgc::protobuf::test::Rpc messages;
-  auto message = messages.add_msg();
-  auto message_test = std::make_unique<llgc::protobuf::test::Rpc_Msg_Test>();
-  message->set_allocated_test(message_test.release());
-  assert(subscriber->Send(messages));
-  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 1; });
-
-  // Test lock forward.
-  subscriber->value = 0;
-  {
-    llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
-    assert(subscriber->Send(messages));
-    // Wait one second to be sure that the message is not send.
-    std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-    assert(subscriber->value == 0);
-  }
-  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 1; });
-
-  // Remove the first subscriber.
-  subscriber->value = 0;
-  assert(subscriber->RemoveSubscriber(
-      llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->value == 0);
-
-  // Double insert
-  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
-  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 2; });
-  assert(subscriber->RemoveSubscriber(
-      llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
-  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 3; });
-  assert(subscriber->RemoveSubscriber(
-      llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->value == 3);
-  assert(!server->GetOptionFailAlreadySubscribed());
-  server->SetOptionFailAlreadySubscribed(true);
-  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  // Here, AddSubscriber will not failed because the TCP server can't return a
-  // value.
-  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
-  std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->value == 4);
+  llgc::pattern::publisher::test::Publisher::All<
+      llgc::protobuf::test::Rpc, Subscriber,
+      llgc::pattern::publisher::PublisherGrpc<
+          llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>>(
+      subscriber.get(), server.get(), delay);
 
   // connector must be free. Either server->Stop never stop.
   connector.reset();

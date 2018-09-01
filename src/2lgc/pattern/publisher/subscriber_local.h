@@ -17,8 +17,10 @@
 #ifndef PATTERN_PUBLISHER_SUBSCRIBER_LOCAL_H_
 #define PATTERN_PUBLISHER_SUBSCRIBER_LOCAL_H_
 
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <cstdint>
+#include <memory>
 #include <type_traits>
 
 namespace google::protobuf
