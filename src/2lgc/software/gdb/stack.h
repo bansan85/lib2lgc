@@ -45,6 +45,7 @@ class Stack
         : llgc::pattern::Iterator<SetStack, Stack>(set_stack, pos)
     {
     }
+    ~Iter() override = default;
 
     const Stack& operator*() const override;
   };

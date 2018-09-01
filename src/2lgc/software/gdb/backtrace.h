@@ -45,6 +45,7 @@ class Backtrace
         : llgc::pattern::Iterator<Stack, Backtrace>(stack, pos)
     {
     }
+    ~Iter() override = default;
 
     const Backtrace& operator*() const override;
   };

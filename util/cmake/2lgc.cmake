@@ -253,6 +253,16 @@ macro(llgc_init_cflags)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-disabled-macro-expansion")
   endif()
 
+  # Doxygen will take care of documentation better than clang.
+  CHECK_CXX_COMPILER_FLAG("-Wdocumentation" COMPILER_SUPPORTS_WDOCUMENTATION)
+  if(COMPILER_SUPPORTS_WDOCUMENTATION)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-documentation")
+  endif()
+  CHECK_CXX_COMPILER_FLAG("-Wdocumentation-unknown-command" COMPILER_SUPPORTS_WDOCUMENTATION_UNKNOWN_COMMAND)
+  if(COMPILER_SUPPORTS_WDOCUMENTATION_UNKNOWN_COMMAND)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-documentation-unknown-command")
+  endif()
+
   # Pure abstract class exists
   CHECK_CXX_COMPILER_FLAG("-Wweak-vtables" COMPILER_SUPPORTS_WWEAK_VTABLES)
   if(COMPILER_SUPPORTS_WWEAK_VTABLES)

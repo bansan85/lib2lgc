@@ -30,12 +30,12 @@ class Iterator
  public:
   Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
 #ifndef SWIG
-  Iterator(Iterator&& other) = delete;
+  Iterator(Iterator&& other) = default;
   Iterator(Iterator const& other) = delete;
   Iterator& operator=(Iterator&& other) = delete;
   Iterator& operator=(Iterator const& other) = delete;
 #endif  // !SWIG
-  ~Iterator() = default;
+  virtual ~Iterator() = default;
 
   bool operator!=(const Iterator& other) const { return pos_ != other.pos_; }
   virtual const U& operator*() const = 0;

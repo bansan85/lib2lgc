@@ -34,6 +34,10 @@
  * \brief The constructor.
  * \param[in] stack The stack contains the list of backtraces.
  * \param[in] pos The position of the current backtrace.
+ *
+ *
+ * \fn llgc::software::gdb::Backtrace::Iter::~Iter()
+ * \brief Virtual destructor because operator*() is virtual.
  */
 
 /** \brief Dereference an iterator return the current backtrace.

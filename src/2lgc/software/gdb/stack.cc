@@ -35,6 +35,10 @@
  * \brief The constructor.
  * \param[in] set_stack The set_stack contains the list of stack.
  * \param[in] pos The position of the current stack.
+ *
+ *
+ * \fn llgc::software::gdb::Stack::Iter::~Iter()
+ * \brief Virtual destructor because operator*() is virtual.
  */
 
 /** \brief Dereference an iterator return the current stack.
