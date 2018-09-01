@@ -60,8 +60,8 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
 
 /** \fn bool llgc::pattern::publisher::ConnectorInterface::Send(const T& message)
  * \brief Send message to the publisher.
- * \param message The protobuf
- * message. \return true if no problem.
+ * \param message The protobuf message.
+ * \return true if no problem.
  */
 
 /** \brief message from the publisher.
