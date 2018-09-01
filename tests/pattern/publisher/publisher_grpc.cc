@@ -138,9 +138,9 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
           llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(
           subscriber, "127.0.0.1", 8890);
+  subscriber->SetConnector(connector);
 
-  assert(
-      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
   assert(subscriber->value == 0);
@@ -150,14 +150,14 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto message = messages.add_msg();
   auto message_test = std::make_unique<llgc::protobuf::test::Rpc_Msg_Test>();
   message->set_allocated_test(message_test.release());
-  assert(connector->Send(messages));
+  assert(subscriber->Send(messages));
   WaitUpToTenSecond([&subscriber]() { return subscriber->value == 1; });
 
   // Test lock forward.
   subscriber->value = 0;
   {
     llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
-    assert(connector->Send(messages));
+    assert(subscriber->Send(messages));
     // Wait one second to be sure that the message is not send.
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     assert(subscriber->value == 0);
@@ -166,47 +166,44 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   // Remove the first subscriber.
   subscriber->value = 0;
-  assert(connector->RemoveSubscriber(
+  assert(subscriber->RemoveSubscriber(
       llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->Send(messages));
+  assert(subscriber->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 0);
 
   // Double insert
-  assert(
-      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(
-      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->Send(messages));
-  assert(connector->RemoveSubscriber(
+  assert(subscriber->Send(messages));
   WaitUpToTenSecond([&subscriber]() { return subscriber->value == 2; });
+  assert(subscriber->RemoveSubscriber(
       llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->Send(messages));
-  assert(connector->RemoveSubscriber(
+  assert(subscriber->Send(messages));
   WaitUpToTenSecond([&subscriber]() { return subscriber->value == 3; });
+  assert(subscriber->RemoveSubscriber(
       llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->Send(messages));
+  assert(subscriber->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 3);
   assert(!server->GetOptionFailAlreadySubscribed());
   server->SetOptionFailAlreadySubscribed(true);
-  assert(
-      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   // Here, AddSubscriber will not failed because the TCP server can't return a
   // value.
-  assert(
-      connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
+  assert(subscriber->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(connector->Send(messages));
+  assert(subscriber->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 4);
 
+  // connector must be free. Either server->Stop never stop.
   connector.reset();
   server->Stop();
   server->JoinWait();

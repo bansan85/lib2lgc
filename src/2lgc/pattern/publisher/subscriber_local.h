@@ -46,8 +46,14 @@ class SubscriberLocal : public SubscriberInterface<T>
 
   bool Equals(const SubscriberInterface<T>& connector) const override;
 
+  bool SetConnector(std::shared_ptr<ConnectorInterface<T>> conn) CHK;
+  bool Send(const T& message) CHK;
+  bool AddSubscriber(uint32_t id_message) CHK;
+  bool RemoveSubscriber(uint32_t id_message) CHK;
+
  private:
   const uint32_t id_;
+  std::weak_ptr<ConnectorInterface<T>> connector_;
 };
 
 }  // namespace llgc::pattern::publisher

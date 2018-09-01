@@ -75,6 +75,64 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::Equals(
   return subscriber_cast->id_ == id_;
 }
 
+/** \brief Set the connector. Can only be once.
+ * \param conn The new connector.
+ * \return true if connector was not previously set.
+ */
+template <typename T>
+bool llgc::pattern::publisher::SubscriberLocal<T>::SetConnector(std::shared_ptr<ConnectorInterface<T>> conn)
+{
+  if (!connector_.expired())
+  {
+    return false;
+  }
+
+  connector_ = conn;
+  return true;
+}
+
+/** \brief Send message to the connector.
+ * \param message The protobuf message.
+ * \return true if no problem.
+ */
+template <typename T>
+bool llgc::pattern::publisher::SubscriberLocal<T>::Send(const T& message)
+{
+  if (auto connector = connector_.lock())
+  {
+    return connector->Send(message);
+  }
+  return false;
+}
+
+/** \brief Add a new subscriber.
+ * \param[in] id_message The id of the message.
+ * \return true if no problem.
+ */
+template <typename T>
+bool llgc::pattern::publisher::SubscriberLocal<T>::AddSubscriber(uint32_t id_message)
+{
+  if (auto connector = connector_.lock())
+  {
+    return connector->AddSubscriber(id_message);
+  }
+  return false;
+}
+
+/** \brief Remove a subscriber.
+ * \param[in] id_message id of the message.
+ * \return true if no problem.
+ */
+template <typename T>
+bool llgc::pattern::publisher::SubscriberLocal<T>::RemoveSubscriber(uint32_t id_message)
+{
+  if (auto connector = connector_.lock())
+  {
+    return connector->RemoveSubscriber(id_message);
+  }
+  return false;
+}
+
 /** \var llgc::pattern::publisher::SubscriberLocal::id_
  * \brief The id of the connector.
  */
