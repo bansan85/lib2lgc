@@ -21,10 +21,13 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <cstdint>
 #include <memory>
+#include <type_traits>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
 template <typename T>
@@ -33,108 +36,29 @@ class SubscriberInterface;
 template <typename T>
 class PublisherDirect;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
 class ConnectorDirect : public ConnectorInterface<T>,
                         public std::enable_shared_from_this<ConnectorDirect<T>>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber The subscriber.
-   * @param[in] server The server.
-   */
   ConnectorDirect(std::shared_ptr<SubscriberInterface<T>> subscriber,
                   std::shared_ptr<PublisherDirect<T>> server);
+#ifndef SWIG
+  ConnectorDirect(ConnectorDirect &&other) = delete;
+  ConnectorDirect(ConnectorDirect const &other) = delete;
+  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
+  ConnectorDirect &operator=(ConnectorDirect const &other) = delete;
+#endif  // !SWIG
+  ~ConnectorDirect() override = default;
 
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~ConnectorDirect() override;
-
-  /**
-   * @brief Compare two connectors.
-   *
-   * @param[in,out] connector The connector to compare with this.
-   *
-   * @return true if same connector.
-   */
-  bool Equals(const ConnectorInterface<T> &connector) const override CHK;
-
-  /**
-   * @brief Send message to the publisher.
-   *
-   * @param[in] message Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   *
-   * @dotfile pattern/publisher/publisher_direct_send_message.dot
-   */
   bool Send(const T &message) override CHK;
-
-  /**
-   * @brief Add a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
   bool AddSubscriber(uint32_t id_message) override CHK;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorDirect(ConnectorDirect &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  ConnectorDirect(ConnectorDirect const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in,out] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorDirect &operator=(ConnectorDirect &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in,out] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorDirect &operator=(ConnectorDirect const &other) & = delete;
-#endif  // !SWIG
-
  private:
-  /**
-   * @brief The server.
-   */
   std::shared_ptr<PublisherDirect<T>> server_;
 };
 

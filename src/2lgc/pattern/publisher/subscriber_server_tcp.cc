@@ -20,14 +20,26 @@
 #include <iostream>
 #include <string>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 }
+
+/** \class llgc::pattern::publisher::SubscriberServerTcp
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ *
+ *
+ * \fn llgc::pattern::publisher::SubscriberServerTcp::SubscriberServerTcp(int socket)
+ * \brief Default constructor.
+ * \param[in] socket Socket to communicate with server.
+ *
+ *
+ * \fn llgc::pattern::publisher::SubscriberServerTcp::~SubscriberServerTcp()
+ * \brief Default virtual destructor.
+ */
 
 template <typename T>
 bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
@@ -56,5 +68,31 @@ bool llgc::pattern::publisher::SubscriberServerTcp<T>::Equals(
 
   return subscriber_cast->socket_ == socket_;
 }
+
+/** \fn llgc::pattern::publisher::SubscriberServerTcp::SubscriberServerTcp(SubscriberServerTcp&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::pattern::publisher::SubscriberServerTcp::SubscriberServerTcp(SubscriberServerTcp const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn SubscriberServerTcp& llgc::pattern::publisher::SubscriberServerTcp::operator=(SubscriberServerTcp&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn SubscriberServerTcp& llgc::pattern::publisher::SubscriberServerTcp::operator=(SubscriberServerTcp const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \var llgc::pattern::publisher::SubscriberServerTcp::socket_
+ * \brief The id of the connector.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

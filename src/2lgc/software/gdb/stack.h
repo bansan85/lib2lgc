@@ -35,123 +35,41 @@ namespace llgc::software::gdb
 {
 class SetStack;
 
-/**
- * @brief Store all informations about a stack.
- *
- * @details Contains all the backtrace of a dump.
- */
 class Stack
 {
  public:
-  /**
-   * @brief Iterator for Stack.
-   */
   class Iter : public llgc::pattern::Iterator<SetStack, Stack>
   {
    public:
-    /**
-     * @brief The constructor
-     *
-     * @param[in] set_stack The set_stack contains the list of stack.
-     * @param[in] pos The position of the current stack.
-     */
     Iter(const SetStack& set_stack, size_t pos)
         : llgc::pattern::Iterator<SetStack, Stack>(set_stack, pos)
     {
     }
 
-    /**
-     * @brief Dereference an iterator return the current stack.
-     *
-     * @return Return the current backtrace.
-     */
     const Stack& operator*() const override;
   };
 
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] filename Filename that contains all backtraces.
-   */
   explicit Stack(std::string filename);
 
-  /**
-   * @brief Abstract factory that convert a line into a backtrace.
-   *
-   * @param[in] line The line that contains the description of the current
-   * backtrace.
-   *
-   * @return true if convertion is successfull.
-   */
   bool InterpretLine(const std::string& line) CHK;
-
-  /**
-   * @brief Get the name of the file from where the stack is stored.
-   *
-   * @return The filename.
-   */
   const std::string& GetFilename() const CHK { return filename_; }
-
-  /**
-   * @brief Get the number of backtraces of the stack.
-   *
-   * @return The number of backtraces.
-   */
   size_t NumberOfBacktraces() const CHK { return backtraces_.size(); }
-
-  /**
-   * @brief Get the backtrace from the top. Exception if out of the range.
-   *
-   * @param[in] i The nth backtrace. 0 is the top of the stack.
-   *
-   * @return A const pointer of the backtrace.
-   */
   const Backtrace& GetBacktraceFromTop(size_t i) const CHK
   {
     return *backtraces_[i];
   }
-
-  /**
-   * @brief Get the backtrace from the bottom. Exception if out of the range.
-   *
-   * @param[in] i The nth backtrace. 0 is the bottom of the stack.
-   *
-   * @return A const pointer of the backtrace.
-   */
   const Backtrace& GetBacktraceFromBottom(size_t i) const CHK
   {
     return *backtraces_[backtraces_.size() - 1 - i];
   }
-
-  /**
-   * @brief Return of the top backtrace.
-   *
-   * @return Begin of the const iterator.
-   */
-  Backtrace::Iter begin() const  // NS
-  {
-    return Backtrace::Iter(*this, 0);
-  }
-
-  /**
-   * @brief Return after of the last backtrace.
-   *
-   * @return End of the const iterator.
-   */
-  Backtrace::Iter end() const  // NS
+  Backtrace::Iter begin() const { return Backtrace::Iter(*this, 0); }
+  Backtrace::Iter end() const
   {
     return Backtrace::Iter(*this, backtraces_.size());
   }
 
  private:
-  /**
-   * @brief Storage of the filename.
-   */
   std::string filename_;
-
-  /**
-   * @brief Vector that store all backtraces.
-   */
   std::vector<std::unique_ptr<Backtrace>> backtraces_;
 };
 

@@ -16,45 +16,53 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
-#include <cassert>
 #include <iostream>
 #include <string>
 
+/** \class llgc::pattern::publisher::ConnectorSubscriberTcp
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ */
+
+/** \brief Default constructor.
+ * \param[in] subscriber Subscriber to communicate with client.
+ * \param[in] socket_fd Socket to communicate with client.
+ */
 template <typename T>
 llgc::pattern::publisher::ConnectorSubscriberTcp<T>::ConnectorSubscriberTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, int socket_fd)
-    : ConnectorInterface<T>(subscriber), socket_(socket_fd)
+    : ConnectorSubscriber<T>(subscriber), socket_(socket_fd)
 {
 }
 
-template <typename T>
-llgc::pattern::publisher::ConnectorSubscriberTcp<T>::~ConnectorSubscriberTcp() =
-    default;
-
-template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Equals(
-    const ConnectorInterface<T> &connector) const
-{
-  const auto *connector_direct =
-      dynamic_cast<const ConnectorSubscriberTcp<T> *>(&connector);
-
-  if (connector_direct == nullptr)
-  {
-    return false;
-  }
-
-  return this->subscriber_->Equals(*connector.GetSubscriber());
-}
-
-template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::AddSubscriber(
-    uint32_t /*id_message*/)
-{
-  // Can't append.
-  assert(false);
-}
+/** \fn llgc::pattern::publisher::ConnectorSubscriberTcp::~ConnectorSubscriberTcp()
+ * \brief Default virtual destructor.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorSubscriberTcp::ConnectorSubscriberTcp(ConnectorSubscriberTcp &&other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorSubscriberTcp::ConnectorSubscriberTcp(ConnectorSubscriberTcp const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn ConnectorSubscriberTcp & llgc::pattern::publisher::ConnectorSubscriberTcp::operator=(ConnectorSubscriberTcp &&other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn ConnectorSubscriberTcp & llgc::pattern::publisher::ConnectorSubscriberTcp::operator=(ConnectorSubscriberTcp const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(const T &message)
@@ -66,12 +74,8 @@ bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(const T &message)
   return true;
 }
 
-template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::RemoveSubscriber(
-    uint32_t /*id_message*/)
-{
-  // Can't append.
-  assert(false);
-}
+/** \var llgc::pattern::publisher::ConnectorSubscriberTcp::socket_
+ * \brief Socket to the server.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

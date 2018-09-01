@@ -24,6 +24,13 @@
 #include <iostream>
 #include <string>
 
+/** \class llgc::pattern::publisher::PublisherTcpLinuxIpv6
+ * \brief Interface to create a TCP server.
+ */
+
+/** \brief Constructor with port for the TCP server.
+ * \param[in] port The port to listen from.
+ */
 template <typename T>
 llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::PublisherTcpLinuxIpv6(
     uint16_t port)

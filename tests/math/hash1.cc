@@ -16,6 +16,7 @@
 
 #include <2lgc/math/hash.h>
 #include <google/protobuf/stubs/common.h>
+#include <memory>
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {

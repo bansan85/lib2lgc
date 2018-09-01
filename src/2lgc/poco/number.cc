@@ -17,18 +17,25 @@
 #include <2lgc/error/show.h>
 #include <2lgc/poco/math_number.pb.h>
 #include <2lgc/poco/number.h>
-#include <2lgc/poco/number_impl.h>
-#include <2lgc/poco/number_visitor_unit.h>
-#include <2lgc/poco/number_visitor_value.h>
 #include <google/protobuf/stubs/port.h>
 #include <google/protobuf/util/message_differencer.h>
-#include <cmath>
-#include <cstdint>
 #include <iostream>
-#include <memory>
-#include <string>
-#include <utility>
 
+/** \namespace llgc::poco
+ * \brief Namespace that contains all classes to manipulate protobuf.
+ *
+ *
+ * \class llgc::poco::Unit
+ * \brief Class just to hold the UnitOp method.
+ */
+
+/** \brief Get the resulting unit when a operator is applied in two units.
+ * \param unit1 First unit.
+ * \param unit2 Second unit.
+ * \param operator_ The operator.
+ * \param return_unit The resulting unit. Must be already allocated.
+ * \return true if the operator is successfully applied in the two units.
+ */
 bool llgc::poco::Unit::UnitOp(const llgc::protobuf::math::Number_Unit &unit1,
                               const llgc::protobuf::math::Number_Unit &unit2,
                               llgc::protobuf::math::Number_Operator operator_,
@@ -76,141 +83,56 @@ bool llgc::poco::Unit::UnitOp(const llgc::protobuf::math::Number_Unit &unit1,
   }
 }
 
-llgc::poco::Number_Constant::Number_Constant(
-    uint32_t id, double value, llgc::protobuf::math::Number_Unit *unit)
-{
-  auto constant = std::make_unique<llgc::protobuf::math::Number_Constant>();
-  constant->set_value(value);
-  constant->set_allocated_unit(unit);
-
-  Message().set_id(id);
-  Message().set_allocated_constant(constant.release());
-}
-
-double llgc::poco::Number_Constant::GetVal() const
-{
-#ifndef DISABLE_VISITABLE_CACHE
-  // Check cache.
-  if (cache_value_id_ == Message().id())
-  {
-    return cache_value_;
-  }
-#endif  // DISABLE_VISITABLE_CACHE
-
-  std::string return_value;
-  llgc::poco::NumberVisitorVal visitor_val;
-  BUGCONT(std::cout, visitor_val.Visit(*this, &return_value), std::nan(""));
-
-  llgc::protobuf::math::Double double_value;
-  BUGLIB(std::cout, double_value.ParseFromString(return_value), std::nan(""),
-         "protobuf");
-
-#ifndef DISABLE_VISITABLE_CACHE
-  cache_value_ = double_value.value();
-  cache_value_id_ = Message().id();
-#endif  // DISABLE_VISITABLE_CACHE
-
-  return double_value.value();
-}
-
-llgc::protobuf::math::Number_Unit llgc::poco::Number_Constant::GetUnit() const
-{
-#ifndef DISABLE_VISITABLE_CACHE
-  // Check cache.
-  if (cache_unit_id_ == Message().id())
-  {
-    return cache_unit_;
-  }
-#endif  // DISABLE_VISITABLE_CACHE
-
-  std::string return_unit;
-  llgc::poco::NumberVisitorUnit visitor_unit;
-  BUGCONT(std::cout, visitor_unit.Visit(*this, &return_unit),
-          llgc::protobuf::math::Number_Unit());
-
-  llgc::protobuf::math::Number_Unit number_unit;
-  BUGLIB(std::cout, number_unit.ParseFromString(return_unit),
-         llgc::protobuf::math::Number_Unit(), "protobuf");
-
-#ifndef DISABLE_VISITABLE_CACHE
-  cache_unit_ = number_unit;
-  cache_unit_id_ = Message().id();
-#endif  // DISABLE_VISITABLE_CACHE
-
-  return number_unit;
-}
-
-llgc::poco::Number_NumOpNum::Number_NumOpNum(
-    uint32_t id, std::shared_ptr<const Number> number1,
-    llgc::protobuf::math::Number_Operator operator_,
-    std::shared_ptr<const Number> number2)
-    : number1_(std::move(number1)), number2_(std::move(number2))
-{
-  auto number_operator_number =
-      std::make_unique<llgc::protobuf::math::Number_NumberOpNumber>();
-  number_operator_number->set_id1(number1_->Message().id());
-  number_operator_number->set_operator_(operator_);
-  number_operator_number->set_id2(number2_->Message().id());
-
-  Message().set_id(id);
-  Message().set_allocated_number_op_number(number_operator_number.release());
-}
-
-double llgc::poco::Number_NumOpNum::GetVal() const
-{
-#ifndef DISABLE_VISITABLE_CACHE
-  // Check cache.
-  if ((cache_value1_id_ == number1_->Message().id()) &&
-      (cache_value2_id_ == number2_->Message().id()))
-  {
-    return cache_value_;
-  }
-#endif  // DISABLE_VISITABLE_CACHE
-
-  std::string return_value;
-  llgc::poco::NumberVisitorVal visitor_val;
-  BUGCONT(std::cout, visitor_val.Visit(*this, &return_value), std::nan(""));
-
-  llgc::protobuf::math::Double double_value;
-  BUGLIB(std::cout, double_value.ParseFromString(return_value), std::nan(""),
-         "protobuf");
-
-#ifndef DISABLE_VISITABLE_CACHE
-  cache_value_ = double_value.value();
-  cache_value1_id_ = number1_->Message().id();
-  cache_value2_id_ = number2_->Message().id();
-#endif  // DISABLE_VISITABLE_CACHE
-
-  return double_value.value();
-}
-
-llgc::protobuf::math::Number_Unit llgc::poco::Number_NumOpNum::GetUnit() const
-{
-#ifndef DISABLE_VISITABLE_CACHE
-  // Check cache.
-  if ((cache_unit1_id_ == number1_->Message().id()) &&
-      (cache_unit2_id_ == number2_->Message().id()))
-  {
-    return cache_unit_;
-  }
-#endif  // DISABLE_VISITABLE_CACHE
-
-  std::string return_unit;
-  llgc::poco::NumberVisitorUnit visitor_unit;
-  BUGCONT(std::cout, visitor_unit.Visit(*this, &return_unit),
-          llgc::protobuf::math::Number_Unit());
-
-  llgc::protobuf::math::Number_Unit number_unit;
-  BUGLIB(std::cout, number_unit.ParseFromString(return_unit),
-         llgc::protobuf::math::Number_Unit(), "protobuf");
-
-#ifndef DISABLE_VISITABLE_CACHE
-  cache_unit_ = number_unit;
-  cache_unit1_id_ = number1_->Message().id();
-  cache_unit2_id_ = number2_->Message().id();
-#endif  // DISABLE_VISITABLE_CACHE
-
-  return number_unit;
-}
+/** \class llgc::poco::Number
+ * \brief Abstract class that represent a read-only number and it's unit.
+ *
+ *
+ * \fn llgc::poco::Number::Number()
+ * \brief Default constructor.
+ *
+ *
+ * \fn llgc::poco::Number::~Number()
+ * \brief Default destructor.
+ *
+ *
+ * \fn llgc::poco::Number::Number(Number &&other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::poco::Number::Number(Number const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn Number & llgc::poco::Number::operator=(Number &&other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn Number & llgc::poco::Number::operator=(Number const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn double llgc::poco::Number::GetVal() const
+ * \brief Get the value of the number.
+ * \return The floating number. If failed, a nan number.
+ *
+ *
+ * \fn llgc::protobuf::math::Number_Unit llgc::poco::Number::GetUnit() const
+ * \brief Get the unit of the number.
+ * \return The unit. If failed, the default Number_Unit.
+ *
+ *
+ * \var llgc::poco::Number::cache_value_
+ * \brief If cache enabled, the value.
+ *
+ *
+ * \var llgc::poco::Number::cache_unit_
+ * \brief If cache enabled, the unit.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

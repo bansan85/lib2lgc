@@ -20,31 +20,24 @@
 #include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <cstdint>
+#include <type_traits>
 
-/**
- * @brief This is all about net.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
-/**
- * @brief Interface to create a TCP server.
- */
 template <typename T>
 class PublisherTcpLinuxIpv6 : public PublisherTcpLinux<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Constructor with port for the TCP server.
-   *
-   * @param[in] port The port to listen from.
-   */
   explicit PublisherTcpLinuxIpv6(uint16_t port);
 
-  /**
-   * @brief Start the server and the listening the port.
-   *
-   * @return true if no problem.
-   */
   bool Listen() override CHK;
 };
 

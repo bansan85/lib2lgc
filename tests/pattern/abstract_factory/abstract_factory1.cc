@@ -138,8 +138,7 @@ class Factory : public llgc::pattern::AbstractFactory<
   Factory()
       : AbstractFactory(llgc::protobuf::test::AbstractFactoryMsg::kTest + 1)
   {
-    map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] =
-        std::bind(&Factory::GetTest, this, std::placeholders::_1);
+    map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] = [this](auto x){return this->GetTest(x);};
   }
 
  private:

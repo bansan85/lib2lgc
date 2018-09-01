@@ -23,123 +23,35 @@
 #include <functional>
 #include <string>
 
-/**
- * @brief This is all about net.
- */
 namespace llgc::net
 {
-/**
- * @brief Class to manipulate Linux functions.
- */
 class Linux
 {
  public:
-  /**
-   * @brief Disable interrupt on signal PIPE.
-   */
-  static void DisableSigPipe();
-
-  /**
-   * @brief bind function with timeout.
-   *
-   * @param[in] sockfd Socket file descriptor.
-   * @param[in] addr Address of the socket description.
-   * @param[in] addrlen Length of the socket description.
-   * @param[in] timeout Timeout in millisecond.
-   *
-   * @return false if timeout or failed to bind.
-   */
+  static bool DisableSigPipe() CHK;
   static bool Bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen,
                    size_t timeout) CHK;
-
-  /**
-   * @brief send function with error handle.
-   *
-   * @param[in] sockfd Socket file descriptor.
-   * @param[in] message Message to send.
-   *
-   * @return true if no problem.
-   */
   static bool Send(int sockfd, const std::string &message) CHK;
+  static int RepeteOnEintr(const std::function<int()> &function) CHK;
 
-  /**
-   * @brief Execute a function. If this function return -1, check if errno ==
-   * EINTR. If so, reexecute the function.
-   * RepeteOnEintr should be used with select and accept4.
-   *
-   * @param[in] function Function to execute.
-   *
-   * @return The value returned by function.
-   */
-  static int RepeteOnEintr(const std::function<int()> &function) CHK;  // NS
-
-  /**
-   * @brief Class that auto close a socket on destructor.
-   */
   class AutoCloseSocket
   {
    public:
-    /**
-     * @brief Constructor with the socket to handle.
-     *
-     * @param[in] socket The socket.
-     */
     explicit AutoCloseSocket(int *socket);
 
 #ifndef SWIG
-    /**
-     * @brief Delete copy constructor.
-     *
-     * @param[in] other The original.
-     */
     AutoCloseSocket(AutoCloseSocket &&other) = delete;
-
-    /**
-     * @brief Delete copy constructor.
-     *
-     * @param[in] other The original.
-     */
     AutoCloseSocket(AutoCloseSocket const &other) = delete;
-
-    /**
-     * @brief Delete the copy operator.
-     *
-     * @param[in] other The original.
-     *
-     * @return Delete function.
-     */
     AutoCloseSocket &operator=(AutoCloseSocket &&other) = delete;
-
-    /**
-     * @brief Delete the copy operator.
-     *
-     * @param[in] other The original.
-     *
-     * @return Delete function.
-     */
-    AutoCloseSocket &operator=(AutoCloseSocket const &other) & = delete;
+    AutoCloseSocket &operator=(AutoCloseSocket const &other) = delete;
 #endif  // !SWIG
 
-    /**
-     * @brief Dont delete the socket on destrutor.
-     */
+    ~AutoCloseSocket();
     void DontDeleteSocket();
 
-    /**
-     * @brief Destructor that close the socket.
-     */
-    ~AutoCloseSocket();
-
    private:
-    /**
-     * @brief The socket to handle.
-     */
-    int *socket_;  // NS
-
-    /**
-     * @brief If the socket must be deleted on destructor. True by default.
-     */
-    bool delete_socket_;
+    int *socket_;
+    bool delete_socket_ = true;
   };
 };
 

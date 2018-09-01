@@ -18,120 +18,42 @@
 #define PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_TCP_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
-#include <cstdint>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <memory>
+#include <type_traits>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
-class ConnectorSubscriberTcp : public ConnectorInterface<T>
+class ConnectorSubscriberTcp : public ConnectorSubscriber<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber Subscriber to communicate with client.
-   * @param[in] socket_fd Socket to communicate with client.
-   */
-  ConnectorSubscriberTcp(
-      std::shared_ptr<SubscriberInterface<T>> subscriber,  // NS
-      int socket_fd);
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~ConnectorSubscriberTcp() override;
-
-  /**
-   * @brief Compare two connectors.
-   *
-   * @param[in,out] connector The connector to compare with this.
-   *
-   * @return true if same connector.
-   */
-  bool Equals(const ConnectorInterface<T> &connector) const override CHK;
-
-  /**
-   * @brief Send message to the publisher.
-   *
-   * @param[in] message Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   */
-  bool Send(const T &message) override CHK;
-
-  /**
-   * @brief Add a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
-  bool AddSubscriber(uint32_t id_message) override CHK;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
-  bool RemoveSubscriber(uint32_t id_message) override CHK;
-
+  ConnectorSubscriberTcp(std::shared_ptr<SubscriberInterface<T>> subscriber,
+                         int socket_fd);
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorSubscriberTcp(ConnectorSubscriberTcp &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorSubscriberTcp(ConnectorSubscriberTcp const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp const &other) & =
+  ConnectorSubscriberTcp &operator=(ConnectorSubscriberTcp const &other) =
       delete;
 #endif  // !SWIG
+  ~ConnectorSubscriberTcp() override = default;
+
+  bool Send(const T &message) override CHK;
 
  private:
-  /**
-   * @brief Socket to the server.
-   */
-  int socket_;  // NS
+  int socket_;
 };
 
 }  // namespace llgc::pattern::publisher

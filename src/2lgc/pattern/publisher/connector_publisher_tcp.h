@@ -24,167 +24,52 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <type_traits>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
 class ConnectorPublisherTcp : public ConnectorInterface<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber The subscriber.
-   * @param[in] ip The IP of the server.
-   * @param[in] port The port of the server.
-   */
   ConnectorPublisherTcp(std::shared_ptr<SubscriberInterface<T>> subscriber,
                         std::string ip, uint16_t port);
-
-  /**
-   * @brief Default virtual destructor.
-   */
   ~ConnectorPublisherTcp() override;
 
-  /**
-   * @brief Compare two connectors.
-   *
-   * @param[in] connector The connector to compare with this.
-   *
-   * @return true if same connector.
-   */
-  bool Equals(const ConnectorInterface<T> &connector) const override CHK;
-
-  /**
-   * @brief Send message to the publisher.
-   *
-   * @param[in] message Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   *
-   * @dotfile pattern/publisher/publisher_tcp_send_message.dot
-   */
   bool Send(const T &message) override CHK;
-
-  /**
-   * @brief Add a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
   bool AddSubscriber(uint32_t id_message) override CHK;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
-  /**
-   * @brief The function used by the thread that receive message from server.
-   *
-   * Need to be public so thread can use it. Protected is not possible.
-   */
   void Receiver();
 
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorPublisherTcp(ConnectorPublisherTcp &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorPublisherTcp(ConnectorPublisherTcp const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   ConnectorPublisherTcp &operator=(ConnectorPublisherTcp &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) & =
-      delete;
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) = delete;
 #endif  // !SWIG
 
  protected:
-  /**
-   * @brief Thread that listen the server.
-   */
   std::thread receiver_;
-
-  /**
-   * @brief Socket to the server.
-   */
-  int socket_;  // NS
-
-  /**
-   * @brief Start connection with server.
-   *
-   * @return true if no problem.
-   */
+  int socket_;
   virtual bool Connect() CHK = 0;
-
-  /**
-   * @brief Get the ip of the connector.
-   *
-   * @return The return value;
-   */
-  const std::string &GetIp() { return ip_; }
-
-  /**
-   * @brief Get the port of the connector.
-   *
-   * @return The return value;
-   */
-  uint16_t GetPort() { return port_; }
+  const std::string &GetIp() const { return ip_; }
+  uint16_t GetPort() const { return port_; }
 
  private:
-  /**
-   * @brief The IP of the server.
-   */
   std::string ip_;
-
-  /**
-   * @brief The port of the server.
-   */
   uint16_t port_;
-
-  /**
-   * @brief If thread in trying to stop.
-   */
   std::atomic<bool> disposing_;
 };
 

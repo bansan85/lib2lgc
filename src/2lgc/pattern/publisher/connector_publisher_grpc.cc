@@ -25,6 +25,18 @@
 #include <sstream>
 #include <utility>
 
+/** \class llgc::pattern::publisher::ConnectorPublisherGrpc
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ * \tparam S The gRPC server.
+ */
+
+/** \brief Default constructor.
+ * \param[in] subscriber The subscriber.
+ * \param[in] ip The IP of the server.
+ * \param[in] port The port of the server.
+ */
 template <typename T, typename S>
 llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
     std::shared_ptr<SubscriberInterface<T>> subscriber, std::string ip,
@@ -36,6 +48,7 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
 {
 }
 
+/// \brief Default virtual destructor.
 template <typename T, typename S>
 llgc::pattern::publisher::ConnectorPublisherGrpc<T,
                                                  S>::~ConnectorPublisherGrpc()
@@ -49,18 +62,14 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T,
 }
 
 template <typename T, typename S>
-bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Equals(
-    const ConnectorInterface<T> &connector) const
+bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
+    const T &message)
 {
-  const auto *connector_direct =
-      dynamic_cast<const ConnectorPublisherGrpc<T, S> *>(&connector);
+  BUGCONT(std::cout, Connect(), false);
 
-  if (connector_direct == nullptr)
-  {
-    return false;
-  }
+  BUGLIB(std::cout, stream_->Write(message), false, "grpc");
 
-  return this->subscriber_->Equals(*connector.GetSubscriber());
+  return true;
 }
 
 template <typename T, typename S>
@@ -76,17 +85,6 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::AddSubscriber(
   add->set_id_message(id_message);
   message->set_allocated_add_subscriber(add.release());
   BUGCONT(std::cout, Send(messages), false);
-
-  return true;
-}
-
-template <typename T, typename S>
-bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
-    const T &message)
-{
-  BUGCONT(std::cout, Connect(), false);
-
-  BUGLIB(std::cout, stream_->Write(message), false, "grpc");
 
   return true;
 }
@@ -108,20 +106,59 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
   return true;
 }
 
-template <typename T, typename S>
-void llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
-{
-  T message;
-  // Will be stop with context_.TryCancel() on destructor.
-  while (stream_->Read(&message))
-  {
-    BUGCONT(std::cout, this->subscriber_->Listen(message), );
-  }
+/** \fn llgc::pattern::publisher::ConnectorPublisherGrpc::ConnectorPublisherGrpc(ConnectorPublisherGrpc &&other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorPublisherGrpc::ConnectorPublisherGrpc(ConnectorPublisherGrpc const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn ConnectorPublisherGrpc & llgc::pattern::publisher::ConnectorPublisherGrpc::operator=(ConnectorPublisherGrpc &&other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn ConnectorPublisherGrpc & llgc::pattern::publisher::ConnectorPublisherGrpc::operator=(ConnectorPublisherGrpc const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::ip_
+ * \brief The IP of the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::port_
+ * \brief The port of the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::stream_
+ * \brief Stream to communicate with the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::channel_
+ * \brief Channel of the client.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::context_
+ * \brief Context of the client.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::stub_
+ * \brief Necessary variable.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherGrpc::receiver_
+ * \brief Thread that listen the server.
+ */
 
-  this->stream_.reset();
-  this->stub_.reset();
-}
-
+/** \brief Start connection with server.
+ * \return true if no problem.
+ */
 template <typename T, typename S>
 bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
 {
@@ -141,6 +178,23 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
   this->receiver_ = std::move(t);
 
   return true;
+}
+
+/** \brief The function used by the thread that receive message from server.
+ *         Need to be public so thread can use it. Protected is not possible.
+ */
+template <typename T, typename S>
+void llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
+{
+  T message;
+  // Will be stop with context_.TryCancel() on destructor.
+  while (stream_->Read(&message))
+  {
+    BUGCONT(std::cout, this->subscriber_->Listen(message), );
+  }
+
+  this->stream_.reset();
+  this->stub_.reset();
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

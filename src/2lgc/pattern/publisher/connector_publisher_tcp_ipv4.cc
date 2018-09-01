@@ -26,15 +26,22 @@
 #include <thread>
 #include <utility>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 }
 
+/** \class llgc::pattern::publisher::ConnectorPublisherTcpIpv4
+ * \brief IPV4 of ConnectorPublisherTcp.
+ * \tparam T The protobuf message.
+ */
+
+/** \brief Default constructor.
+ * \param[in] subscriber The subscriber.
+ * \param[in] ip The IP of the server.
+ * \param[in] port The port of the server.
+ */
 template <typename T>
 llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
     T>::ConnectorPublisherTcpIpv4(std::shared_ptr<SubscriberInterface<T>>
@@ -44,9 +51,31 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
 {
 }
 
-template <typename T>
-llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
-    T>::~ConnectorPublisherTcpIpv4() = default;
+/** \fn llgc::pattern::publisher::ConnectorPublisherTcpIpv4::~ConnectorPublisherTcpIpv4()
+ * \brief Default virtual destructor.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorPublisherTcpIpv4::ConnectorPublisherTcpIpv4(ConnectorPublisherTcpIpv4 &&other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorPublisherTcpIpv4::ConnectorPublisherTcpIpv4(ConnectorPublisherTcpIpv4 const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn ConnectorPublisherTcpIpv4 & llgc::pattern::publisher::ConnectorPublisherTcpIpv4::operator=(ConnectorPublisherTcpIpv4 &&other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn ConnectorPublisherTcpIpv4 & llgc::pattern::publisher::ConnectorPublisherTcpIpv4::operator=(ConnectorPublisherTcpIpv4 const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>::Connect()

@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-/**
- * @file hash.cc
- * @brief Use function hash based on OpenSSL presence.
+/** \file hash.h
+ * \brief Use function hash based on OpenSSL presence.
  */
 
 #include <2lgc/config.h>
@@ -28,6 +27,14 @@
 #include <openssl/sha.h>
 #endif
 
+/** \class llgc::math::Hash
+ * \brief Class that automatically choose the hash function.
+ */
+
+/** \brief Compute hash.
+ * \param[in] in The string to compute.
+ * \return The hash in binary format.
+ */
 std::vector<uint8_t> llgc::math::Hash::Calc(const std::string& in)
 {
 #ifdef OPENSSL_FOUND
@@ -37,6 +44,10 @@ std::vector<uint8_t> llgc::math::Hash::Calc(const std::string& in)
 #endif
 }
 
+/** \brief Compute Jdb2 hash.
+ * \param[in] in The string to compute.
+ * \return The hash in binary format.
+ */
 std::vector<uint8_t> llgc::math::Hash::Jdb2(const std::string& in)
 {
   std::vector<uint8_t> retval(8);
@@ -55,9 +66,13 @@ std::vector<uint8_t> llgc::math::Hash::Jdb2(const std::string& in)
   return retval;
 }
 
+/** \brief Compute Sha512 hash.
+ * \param[in] in The string to compute.
+ * \return The hash in binary format.
+ */
+#ifdef OPENSSL_FOUND
 std::vector<uint8_t> llgc::math::Hash::Sha512(const std::string& in)
 {
-#ifdef OPENSSL_FOUND
   uint8_t hash[SHA512_DIGEST_LENGTH];
 
   // Don't use SHA512 that need an reinterpret_cast because c_str() is
@@ -69,9 +84,7 @@ std::vector<uint8_t> llgc::math::Hash::Sha512(const std::string& in)
   BUGLIB(std::cout, SHA512_Final(hash, &ctx) == 1, std::vector<uint8_t>(),
          "openssl");
   return std::vector<uint8_t>(hash, hash + SHA512_DIGEST_LENGTH);
-#else
-  return std::vector<uint8_t>();
-#endif
 }
+#endif
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

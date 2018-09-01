@@ -14,29 +14,73 @@
  * limitations under the License.
  */
 
+/// \file abstract_factory.cc
+
 #include <2lgc/pattern/abstract_factory.h>
 
-#include <iostream>
+/** \namespace llgc::pattern
+ * \brief Namespace for patterns.
+ *
+ * \class llgc::pattern::AbstractFactory
+ * \brief Interface that define an abstract factory.
+ * \tparam T The class message that inherit from protobuf class.
+ * \tparam U The command interface.
+ */
 
+/** \fn llgc::pattern::AbstractFactory::AbstractFactory(size_t size)
+ * \brief Default constructor. The class that implement this class must fill the
+ *        map_factory member on constructor.
+ * \param[in] size Size of the map factory.
+ *
+ *
+ * \fn llgc::pattern::AbstractFactory::AbstractFactory(AbstractFactory&& other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::AbstractFactory::AbstractFactory(AbstractFactory const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn AbstractFactory& llgc::pattern::AbstractFactory::operator=(AbstractFactory&& other);
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn AbstractFactory& llgc::pattern::AbstractFactory::operator=(AbstractFactory const& other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn llgc::pattern::AbstractFactory::~AbstractFactory()
+ * \brief Default destructor. Virtual because command is abstract.
+ */
+
+/** \brief Create the command.
+ * \param[in] message The message in protobuf serialization format.
+ * \return The instance is success, nullptr instead.
+ */
 template <typename T, typename U>
 std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
     const std::string& message)
 {
   T message_t;
 
-  if (!message_t.ParseFromString(message))
-  {
-    return nullptr;
-  }
-  if (static_cast<size_t>(message_t.data_case()) >= map_factory_.size())
-  {
-    return nullptr;
-  }
-  if (map_factory_[message_t.data_case()] == nullptr)
+  if (!message_t.ParseFromString(message) ||
+      static_cast<size_t>(message_t.data_case()) >= map_factory_.size() ||
+      map_factory_[message_t.data_case()] == nullptr)
   {
     return nullptr;
   }
 
-  std::cout << "Create " << message_t.data_case() << std::endl;
   return std::move(map_factory_[message_t.data_case()](message_t));
 }
+
+/** \var llgc::pattern::AbstractFactory::map_factory_
+ * \brief Map of functions to create an instance of T. The index used to create
+ *        the object is the return of the `data_case()` method from the
+ *        protobuf message.
+ */

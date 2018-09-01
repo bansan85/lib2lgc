@@ -22,56 +22,33 @@
 #include <cstdint>
 #include <type_traits>
 
-/**
- * @brief This is all about net.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
-/**
- * @brief Interface to create a TCP server.
- */
 template <typename T>
 class PublisherTcpLinux : public PublisherTcp<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Constructor with port for the TCP server.
-   *
-   * @param[in] port The port to listen from.
-   */
   explicit PublisherTcpLinux(uint16_t port);
 
-  /**
-   * @brief Wait for client.
-   *
-   * @return true if no problem.
-   */
   bool Wait() override CHK;
 
  protected:
-  /**
-   * @brief Socket file descriptor.
-   */
-  int sockfd_;  // NS
+  int sockfd_;
 
  private:
 #ifndef SWIG
-  /**
-   * @brief Internal function to subscribe a socket to an event.
-   *
-   * @param[in] socket The socket.
-   * @param[in] message The message.
-   */
   void AddSubscriberLocal(int socket,
                           decltype(std::declval<T>().msg(0)) message) override;
 #endif  // !SWIG
 
-  /**
-   * @brief Function that will be executed by the thread that wait instruction
-   * from a client.
-   *
-   * @param[in] socket The socket to the client.
-   */
   void WaitThread(int socket);
 };
 

@@ -20,25 +20,11 @@
 #include <string>
 #include <vector>
 
-/**
- * @brief Namespace that have all function that override classic classes.
- */
 namespace llgc::text
 {
-/**
- * @brief This class extend std::string.
- */
 class StringExt
 {
  public:
-  /**
-   * @brief Join function for std::vector<std::string>.
-   *
-   * @param[in] v The vector to join.
-   * @param[in] delimiter The delimeter.
-   *
-   * @return The return value.
-   */
   static std::string Join(const std::vector<std::string>& v,
                           const std::string& delimiter);
 };

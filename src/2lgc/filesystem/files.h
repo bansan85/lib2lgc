@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/** \file files.h
+ * Extend manipulation of filesystem.
+ */
+
 #ifndef FILESYSTEM_FILES_H_
 #define FILESYSTEM_FILES_H_
 
@@ -23,21 +27,9 @@
 
 namespace llgc::filesystem
 {
-/**
- * @brief Class that manipulate the filesystem.
- */
 class Files
 {
  public:
-  /**
-   * @brief List all files from a folder.
-   *
-   * @param[in] folder The root folder.
-   * @param[in] regex The regex in javascript regex.
-   * @param[out] files All the files. files is not clear if not empty.
-   *
-   * @return true if no problem.
-   */
   static bool SearchRecursiveFiles(const std::string& folder,
                                    const std::string& regex,
                                    std::vector<std::string>* files) CHK;

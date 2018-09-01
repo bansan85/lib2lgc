@@ -26,6 +26,44 @@
 #include <iostream>
 #include <memory>
 
+/** \class llgc::poco::NumberVisitorVal
+ * \brief The visitor that will return the floating value.
+ *
+ * \fn llgc::poco::NumberVisitorVal::NumberVisitorVal()
+ * \brief Default constructor.
+ *
+ *
+ * \fn llgc::poco::NumberVisitorVal::~NumberVisitorVal()
+ * \brief Default destructor.
+ *
+ *
+ * \fn llgc::poco::NumberVisitorVal::NumberVisitorVal(NumberVisitorVal&& other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::poco::NumberVisitorVal::NumberVisitorVal(NumberVisitorVal const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn NumberVisitorVal& llgc::poco::NumberVisitorVal::operator=(NumberVisitorVal&& other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn NumberVisitorVal& llgc::poco::NumberVisitorVal::operator=(NumberVisitorVal const& other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
+
+/** \brief Return the floating value of a constant number.
+ * \param data The constant number.
+ * \param return_value This parameter will be changed only if Visit success.
+ * \return true if success, false instead.
+ */
 bool llgc::poco::NumberVisitorVal::Visit(const Number_Constant &data,
                                          std::string *return_value) const
 {
@@ -38,6 +76,12 @@ bool llgc::poco::NumberVisitorVal::Visit(const Number_Constant &data,
   return true;
 }
 
+/** \brief Return the floating value of a number based on an operation of two
+ *         numbers.
+ * \param data The number.
+ * \param return_value This parameter will be changed only if Visit success.
+ * \return true if success, false instead.
+ */
 bool llgc::poco::NumberVisitorVal::Visit(const Number_NumOpNum &data,
                                          std::string *return_value) const
 {

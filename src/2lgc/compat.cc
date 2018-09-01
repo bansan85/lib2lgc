@@ -14,30 +14,21 @@
  * limitations under the License.
  */
 
-#include <2lgc/pattern/publisher/subscriber.h>
-
 /**
- * @brief Namespace for the pattern publisher.
+ * \file compat.h
+ * Various define for compatibility between Visual Studio and GCC.
+ *
+ *
+ * \def CHK
+ * Compatible `__attribute__((__warn_unused_result__))` for VS and GCC.
+ *
+ *
+ * \def SSCANF
+ * Compatible `sscanf` for VS and GCC.
+ *
+ *
+ * \def DllExport
+ * Compatible `dllexport` for VS and GCC.
  */
-namespace llgc::pattern::publisher
-{
-template <typename T>
-class SubscriberInterface;
-}
-
-template <typename T>
-bool llgc::pattern::publisher::Subscriber<T>::Equals(
-    const SubscriberInterface<T> &connector) const
-{
-  const auto *subscriber_cast = dynamic_cast<const Subscriber<T> *>(&connector);
-
-  // Not the same type.
-  if (subscriber_cast == nullptr)
-  {
-    return false;
-  }
-
-  return subscriber_cast->id_ == id_;
-}
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

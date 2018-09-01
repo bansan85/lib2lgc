@@ -14,10 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * @file iterator.h
- * @brief Interface for the ranged-base loop iterator.
- */
+/// \file iterator.h
 
 #ifndef PATTERN_ITERATOR_H_
 #define PATTERN_ITERATOR_H_
@@ -27,84 +24,21 @@
 
 namespace llgc::pattern
 {
-/**
- * @brief Helper class to implement range-based for loop.
- *
- * @tparam T Class that will be loop.
- * @tparam U Object that will be return by the loop.
- */
 template <class T, class U>
 class Iterator
 {
  public:
-  /**
-   * @brief The constructor
-   *
-   * @param[in] data The data contains the list of object.
-   * @param[in] pos The position of the current object.
-   */
   Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
-
-  /**
-   * @brief Default destructor.
-   */
-  virtual ~Iterator() = default;
-
 #ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
   Iterator(Iterator&& other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   Iterator(Iterator const& other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  Iterator& operator=(Iterator&& other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  Iterator& operator=(Iterator const& other) & = delete;
+  Iterator& operator=(Iterator&& other) = delete;
+  Iterator& operator=(Iterator const& other) = delete;
 #endif  // !SWIG
+  ~Iterator() = default;
 
-  /**
-   * @brief Compare operator
-   *
-   * @param[in] other The iterator to compare with.
-   *
-   * @return true if different.
-   */
   bool operator!=(const Iterator& other) const { return pos_ != other.pos_; }
-
-  /**
-   * @brief Dereference an iterator return the current object.
-   *
-   * @return Return the current object.
-   */
   virtual const U& operator*() const = 0;
-
-  /**
-   * @brief Increment the current object.
-   *
-   * @return Himself.
-   */
   const Iterator& operator++()
   {
     ++pos_;
@@ -112,14 +46,7 @@ class Iterator
   }
 
  protected:
-  /**
-   * @brief The data that contains all objects.
-   */
   const T& data_;
-
-  /**
-   * @brief The position of the current object.
-   */
   size_t pos_;
 };
 

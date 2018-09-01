@@ -21,87 +21,28 @@
 #include <2lgc/pattern/visitor/visitor.h>
 #include <string>
 
-/**
- * @brief Namespace that contains all classes to manipulate protobuf.
- */
 namespace llgc::poco
 {
-// We can't include number.h because number.h need number_visitor_unit.h.
 class Number_Constant;
 class Number_NumOpNum;
 
-/**
- * @brief The visitor that will return the unit.
- */
 class NumberVisitorUnit
     : public llgc::pattern::visitor::BaseVisitor,
       public llgc::pattern::visitor::Visitor<Number_Constant>,
       public llgc::pattern::visitor::Visitor<Number_NumOpNum>
 {
  public:
-  /**
-   * @brief Default constructor.
-   */
   NumberVisitorUnit() = default;
-
-  /**
-   * @brief Default destructor.
-   */
+#ifndef SWIG
+  NumberVisitorUnit(NumberVisitorUnit&& other) = delete;
+  NumberVisitorUnit(NumberVisitorUnit const& other) = delete;
+  NumberVisitorUnit& operator=(NumberVisitorUnit&& other) = delete;
+  NumberVisitorUnit& operator=(NumberVisitorUnit const& other) = delete;
+#endif  // !SWIG
   ~NumberVisitorUnit() override = default;
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
-  NumberVisitorUnit(NumberVisitorUnit&& other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  NumberVisitorUnit(NumberVisitorUnit const& other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  NumberVisitorUnit& operator=(NumberVisitorUnit&& other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  NumberVisitorUnit& operator=(NumberVisitorUnit const& other) & = delete;
-#endif  // !SWIG
-
-  /**
-   * @brief Return the unit of a constant number.
-   *
-   * @param data The constant number.
-   * @param return_value This parameter will be changed only if Visit success.
-   *
-   * @return true if success, false instead.
-   */
   bool Visit(const Number_Constant& data,
              std::string* return_value) const override CHK;
-
-  /**
-   * @brief Return the unit of a number based on an operation of two numbers.
-   *
-   * @param data The number.
-   * @param return_value This parameter will be changed only if Visit success.
-   *
-   * @return true if success, false instead.
-   */
   bool Visit(const Number_NumOpNum& data,
              std::string* return_value) const override CHK;
 };

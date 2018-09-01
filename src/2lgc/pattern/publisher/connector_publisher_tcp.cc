@@ -28,6 +28,17 @@
 #include <memory>
 #include <utility>
 
+/** \class llgc::pattern::publisher::ConnectorPublisherTcp
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ */
+
+/** \brief Default constructor.
+ * \param[in] subscriber The subscriber.
+ * \param[in] ip The IP of the server.
+ * \param[in] port The port of the server.
+ */
 template <typename T>
 llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, std::string ip,
@@ -40,6 +51,29 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
 {
 }
 
+/** \fn llgc::pattern::publisher::ConnectorPublisherTcp::ConnectorPublisherTcp(ConnectorPublisherTcp &&other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorPublisherTcp::ConnectorPublisherTcp(ConnectorPublisherTcp const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn ConnectorPublisherTcp & llgc::pattern::publisher::ConnectorPublisherTcp::operator=(ConnectorPublisherTcp &&other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn ConnectorPublisherTcp & llgc::pattern::publisher::ConnectorPublisherTcp::operator=(ConnectorPublisherTcp const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
+
+/// \brief Default virtual destructor.
 template <typename T>
 llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
 {
@@ -51,19 +85,21 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
   }
 }
 
+/** \brief Send message to the publisher.
+ * \param[in] message The protobuf message.
+ * \return true if no problem.
+ * \dotfile pattern/publisher/publisher_tcp_send_message.dot
+ */
 template <typename T>
-bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Equals(
-    const ConnectorInterface<T> &connector) const
+bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
 {
-  const auto *connector_direct =
-      dynamic_cast<const ConnectorPublisherTcp<T> *>(&connector);
+  BUGCONT(std::cout, Connect(), false);
 
-  if (connector_direct == nullptr)
-  {
-    return false;
-  }
-
-  return this->subscriber_->Equals(*connector.GetSubscriber());
+  std::string message_in_string;
+  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false,
+         "protobuf");
+  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
+  return true;
 }
 
 template <typename T>
@@ -84,18 +120,6 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
 }
 
 template <typename T>
-bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
-{
-  BUGCONT(std::cout, Connect(), false);
-
-  std::string message_in_string;
-  BUGLIB(std::cout, message.SerializeToString(&message_in_string), false,
-         "protobuf");
-  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
-  return true;
-}
-
-template <typename T>
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
     uint32_t id_message)
 {
@@ -112,6 +136,9 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
   return true;
 }
 
+/** \brief The function used by the thread that receive message from server.
+ * Need to be public so thread can use it. Protected is not possible.
+ */
 template <typename T>
 void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
 {
@@ -123,7 +150,7 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
 
   do
   {
-    int retval = poll(&fd, 1, 50);  // NS
+    int retval = poll(&fd, 1, 50);
 
     // Problem: stop the thread.
     BUGCRIT(std::cout, retval != -1, ,
@@ -154,5 +181,40 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
     }
   } while (!disposing_);
 }
+
+/** \var llgc::pattern::publisher::ConnectorPublisherTcp::receiver_
+ * \brief Thread that listen the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::socket_
+ * \brief Socket to the server.
+ *
+ *
+ * \fn bool llgc::pattern::publisher::ConnectorPublisherTcp::Connect()
+ * \brief Start connection with server.
+ * \return true if no problem.
+ *
+ *
+ * \fn const std::string & llgc::pattern::publisher::ConnectorPublisherTcp::GetIp() const
+ * \brief Get the ip of the connector.
+ * \return The return value;
+ *
+ *
+ * \fn uint16_t llgc::pattern::publisher::ConnectorPublisherTcp::GetPort() const
+ * \brief Get the port of the connector.
+ * \return The return value.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::ip_
+ * \brief The IP of the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::port_
+ * \brief The port of the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::disposing_
+ * \brief If thread in trying to stop.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -18,6 +18,12 @@
 #define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_GRPC_H_
 
 #include <2lgc/pattern/publisher/subscriber_interface.h>
+#include <type_traits>
+
+namespace google::protobuf
+{
+class Message;
+}
 
 namespace grpc
 {
@@ -25,94 +31,31 @@ template <class W, class R>
 class ServerReaderWriter;
 }
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
 class SubscriberServerGrpc : public SubscriberInterface<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor
-   *
-   * @param[in] stream Stream to communicate with server.
-   */
   explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T>* stream)
       : stream_(stream)
   {
   }
-
-  /**
-   * @brief Default virtual destructor.
-   */
+#ifndef SWIG
+  SubscriberServerGrpc(SubscriberServerGrpc&& other) = delete;
+  SubscriberServerGrpc(SubscriberServerGrpc const& other) = delete;
+  SubscriberServerGrpc& operator=(SubscriberServerGrpc&& other) = delete;
+  SubscriberServerGrpc& operator=(SubscriberServerGrpc const& other) = delete;
+#endif  // !SWIG
   ~SubscriberServerGrpc() override = default;
 
-  /**
-   * @brief Receive message from publisher.
-   *
-   * @param[in] messages Message from the publisher in protobuf format.
-   *
-   * @return true if no problem.
-   */
   bool Listen(const T& messages) override;
-
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in,out] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
   bool Equals(const SubscriberInterface<T>& connector) const override;
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  SubscriberServerGrpc(SubscriberServerGrpc&& other) = delete;
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  SubscriberServerGrpc(SubscriberServerGrpc const& other) = delete;
-  /**
-   * @brief Delete move operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  SubscriberServerGrpc& operator=(SubscriberServerGrpc&& other) & = delete;
-  /**
-   * @brief Delete copy operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  SubscriberServerGrpc& operator=(SubscriberServerGrpc const& other) & = delete;
-#endif  // !SWIG
-
  private:
-  /**
-   * @brief The id of the connector.
-   */
   grpc::ServerReaderWriter<T, T>* stream_;
 };
 

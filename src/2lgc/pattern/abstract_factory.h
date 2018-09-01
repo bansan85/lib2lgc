@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+/// /file abstract_factory.h
+
 #ifndef PATTERN_ABSTRACT_FACTORY_H_
 #define PATTERN_ABSTRACT_FACTORY_H_
 
@@ -24,92 +26,34 @@
 #include <type_traits>
 #include <vector>
 
-/**
- * @brief Google Protobuf stuff.
- */
 namespace google::protobuf
 {
 class Message;
 }
 
-/**
- * @brief Namespace for patterns.
- */
 namespace llgc::pattern
 {
-/**
- * @brief Interface that define an abstract factory.
- *
- * @tparam T The class message from protobuf class.
- * @tparam U The command interface.
- */
 template <typename T, typename U>
 class AbstractFactory
 {
-  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
-                "T must be a descendant of ::google::protobuf::Message.");
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must inherit from ::google::protobuf::Message.");
 
  public:
-  /**
-   * @brief Default constructor. The class that implement this class must fill
-   * the map_factory member on constructor.
-   *
-   * @param[in] size Size of the map factory.
-   */
   explicit AbstractFactory(size_t size) : map_factory_(size) {}
 
-  /**
-   * @brief Default destructor. Virtual because command is abstract.
-   */
-  virtual ~AbstractFactory() = default;
-
 #ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
   AbstractFactory(AbstractFactory&& other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   AbstractFactory(AbstractFactory const& other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  AbstractFactory& operator=(AbstractFactory&& other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  AbstractFactory& operator=(AbstractFactory const& other) & = delete;
+  AbstractFactory& operator=(AbstractFactory&& other) = delete;
+  AbstractFactory& operator=(AbstractFactory const& other) = delete;
 #endif  // !SWIG
 
-  /**
-   * @brief Create the command
-   *
-   * @param[in] message The message in protobuf serialization format.
-   *
-   * @return The instance is success, nullptr instead.
-   */
+  virtual ~AbstractFactory() = default;
+
   std::unique_ptr<U> Create(const std::string& message);
 
  protected:
-  /**
-   * @brief Map of function to create an instance of T.
-   */
   std::vector<std::function<std::unique_ptr<U>(const T&)>> map_factory_;
 };
 

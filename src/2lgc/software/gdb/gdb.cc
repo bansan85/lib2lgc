@@ -35,14 +35,27 @@
 #include <memory>
 #include <system_error>
 #include <thread>
-#include <type_traits>
 #include <vector>
 
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/singleton.cc>
 
+/** \class llgc::software::gdb::Gdb
+ * \brief Class to run gdb for various purpose.
+ */
+
+/// \brief Server to send messages to subscribers.
 llgc::software::gdb::GdbServer llgc::software::gdb::Gdb::server_;
 
+/** \brief Run gdb to get the backtrace full. The output will be saved to
+ *         filename.btfull.
+ * \param[in] filename The file that make application crashes.
+ * \param[in] argc Number of the arguments.
+ * \param[in] argv Argument to run the program where the filename replaced by
+              @@. For example: /bin/prog @@.
+ * \param[in] timeout Timeout for the run of gdb.
+ * \return true if no problem.
+ */
 bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
                                          unsigned int argc,
                                          const char* const argv[],
@@ -97,7 +110,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           "Failed to create fork. Errno " + std::to_string(errno) + "\n.");
   if (child_pid != 0)
   {
-    int status;  // NS
+    int status;
     std::chrono::time_point<std::chrono::system_clock> start, end;
     start = std::chrono::system_clock::now();
     int64_t elapsed_seconds;
@@ -147,12 +160,24 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
   return true;
 }
 
-static bool ParallelRun(const std::vector<std::string>& all_files,
-                        unsigned int nthread, unsigned int argc,
-                        const char* const argv[], int64_t timeout)
+namespace llgc::software::gdb
+{
+namespace
+{
+/** \brief Run parallel gdb for a given list of files.
+ * \param[in,out] all_files The list of files.
+ * \param[in,out] nthread The number of parallel instance of GDB.
+ * \param[in,out] argc The number of arguments.
+ * \param[in,out] argv[] The arguments.
+ * \param[in,out] timeout Timeout in second.
+ * \return true if all gdb instances are successfull.
+ */
+bool ParallelRun(const std::vector<std::string>& all_files,
+                 unsigned int nthread, unsigned int argc,
+                 const char* const argv[], int64_t timeout)
 {
   bool retval = true;
-  const unsigned int nthreads =  // NS
+  const unsigned int nthreads =
       std::min(std::min(nthread, std::thread::hardware_concurrency()),
                static_cast<unsigned int>(all_files.size()));
   std::vector<std::future<bool>> threads(nthreads);
@@ -160,17 +185,15 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
   {
     threads[t] = std::async(
         std::launch::async,
-        std::bind(
-            [&all_files, nthreads, argc, argv, timeout](const size_t i_start) {
-              bool retval2 = true;
-              for (size_t i = i_start; i < all_files.size(); i += nthreads)
-              {
-                retval2 &= llgc::software::gdb::Gdb::RunBtFull(
-                    all_files[i], argc, argv, timeout);
-              }
-              return retval2;
-            },  // NS
-            t));
+        [&all_files, nthreads, argc, argv, timeout, t] {
+          bool retval2 = true;
+          for (size_t i = t; i < all_files.size(); i += nthreads)
+          {
+            retval2 &= llgc::software::gdb::Gdb::RunBtFull(
+                all_files[i], argc, argv, timeout);
+          }
+          return retval2;
+        });
   }
   for (std::future<bool>& t : threads)
   {
@@ -180,6 +203,19 @@ static bool ParallelRun(const std::vector<std::string>& all_files,
   return retval;
 }
 
+}  // namespace
+}  // namespace llgc::software::gdb
+
+/** \brief Find recursively all files and run gdb to get the backtrace full.
+ * \param[in] folder The root folder.
+ * \param[in] nthread Number of parallel of gdb instance.
+ * \param[in] regex Regex of the filename.
+ * \param[in] argc Number of the arguments.
+ * \param[in] argv Argument to run the program with the filename replaced by
+ *            @@. For example: /bin/prog @@
+ * \param[in] timeout Timeout in second for the run of gdb.
+ * \return true if no problem.
+ */
 bool llgc::software::gdb::Gdb::RunBtFullRecursive(
     const std::string& folder, unsigned int nthread, const std::string& regex,
     unsigned int argc, const char* const argv[], int64_t timeout)
@@ -195,6 +231,15 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
   return true;
 }
 
+/** \brief Get files from a list and run gdb to get the backtrace full.
+ * \param[in] list The file that have the list of files.
+ * \param[in] nthread Number of parallel of gdb instance.
+ * \param[in] argc Number of the arguments.
+ * \param[in] argv Argument to run the program with the filename replaced by @@.
+ *            For example: /bin/prog @@
+ * \param[in] timeout Timeout in second for the run of gdb.
+ * \return true if no problem.
+ */
 bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
                                              unsigned int nthread,
                                              unsigned int argc,

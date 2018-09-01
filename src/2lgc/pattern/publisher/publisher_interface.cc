@@ -24,32 +24,71 @@
 #include <memory>
 #include <utility>
 
-template <typename T, typename U>
-std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
-llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
-    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
-{
-  return connector.lock();
-}
+/** \class llgc::pattern::publisher::PublisherInterface
+ * \brief Server that will be used to managed subscribers and to keep and send
+ *        messages.
+ * \tparam T Message from protobuf.
+ * \tparam U Type of the subscriber.
+ *
+ *
+ * \struct llgc::pattern::publisher::PublisherInterface::Options
+ * \brief Options of the server.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherInterface::Options::add_fail_if_already_subscribed
+ * \brief To allow a subscriber to subscribe twice to the same message.
+ *        Default: false.
+ */
 
-template <typename T, typename U>
-std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
-llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
-    std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
-{
-  return connector;
-}
-
+/// \brief Default constructor.
 template <typename T, typename U>
 llgc::pattern::publisher::PublisherInterface<T, U>::PublisherInterface()
     : options_()
 {
 }
 
-template <typename T, typename U>
-llgc::pattern::publisher::PublisherInterface<T, U>::~PublisherInterface() =
-    default;
+/** \fn llgc::pattern::publisher::PublisherInterface::~PublisherInterface()
+ * \brief Default destructor.
+ */
 
+/** \brief Add a subscriber to the server.
+ * \param id_message The message to subscribe.
+ * \param subscriber The subscriber. It's not a reference.
+ * \return true if success. May failed if add_fail_if_already_subscribed is
+ *         true and the subscriber is already registered.
+ * \dotfile pattern/publisher/publisher_add_subscriber.dot
+ */
+template <typename T, typename U>
+bool llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
+    uint32_t id_message, U subscriber)
+{
+  if (GetOptionFailAlreadySubscribed())
+  {
+    auto iterpair = subscribers_.equal_range(id_message);
+
+    auto &it = iterpair.first;
+    for (; it != iterpair.second; ++it)
+    {
+      std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
+          GetConn(subscriber);
+      std::shared_ptr<ConnectorInterface<T>> connector_it = GetConn(it->second);
+      BUGCRIT(std::cout,
+              connector_subscriber != nullptr && connector_it != nullptr, false,
+              "Failed to add subscriber.\n");
+      BUGCRIT(std::cout, !connector_it->Equals(*connector_subscriber), false,
+              "Subscriber already exists.\n");
+    }
+  }
+
+  subscribers_.insert(std::pair<uint32_t, U>(id_message, subscriber));
+
+  return true;
+}
+
+/** \brief Send the message to all subscribers.
+ * \param messages Message in ProtoBuf format.
+ * \return true if no problem.
+ */
 template <typename T, typename U>
 bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
     const T &messages)
@@ -96,6 +135,9 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
   return true;
 }
 
+/** \brief Send all pending messages of all subscribers.
+ * \return true if no problem.
+ */
 template <typename T, typename U>
 bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
 {
@@ -120,57 +162,12 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
   return true;
 }
 
-template <typename T, typename U>
-bool llgc::pattern::publisher::PublisherInterface<
-    T, U>::GetOptionFailAlreadySubscribed()
-{
-  return options_.add_fail_if_already_subscribed;
-}
-
-template <typename T, typename U>
-void llgc::pattern::publisher::PublisherInterface<
-    T, U>::SetOptionFailAlreadySubscribed(bool value)
-{
-  options_.add_fail_if_already_subscribed = value;
-}
-
-template <typename T, typename U>
-llgc::utils::thread::CountLock<size_t>
-llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
-{
-  return llgc::utils::thread::CountLock<size_t>(
-      &lock_forward_, &mutex_forward_,
-      std::bind(&PublisherInterface<T, U>::ForwardPending, this));
-}
-
-// Do not fail if subscriber is already subscribed in the same id_message.
-template <typename T, typename U>
-bool llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
-    uint32_t id_message, U subscriber)
-{
-  if (GetOptionFailAlreadySubscribed())
-  {
-    auto iterpair = subscribers_.equal_range(id_message);
-
-    auto &it = iterpair.first;
-    for (; it != iterpair.second; ++it)
-    {
-      std::shared_ptr<ConnectorInterface<T>> connector_subscriber =
-          GetConn(subscriber);
-      std::shared_ptr<ConnectorInterface<T>> connector_it = GetConn(it->second);
-      BUGCRIT(std::cout,
-              connector_subscriber != nullptr && connector_it != nullptr, false,
-              "Failed to add subscriber.\n");
-      BUGCRIT(std::cout, !connector_it->Equals(*connector_subscriber), false,
-              "Subscriber already exists.\n");
-    }
-  }
-
-  subscribers_.insert(std::pair<uint32_t, U>(id_message, subscriber));
-
-  return true;
-}
-
+/** \brief Remove a subscriber of the server.
+ * \param id_message The message to unsubscriber.
+ * \param subscriber The subscriber.
+ * \return true if subscriber is unsubscribed successfully.
+ *         May failed if suscriber is not subscribe to the specific message.
+ */
 template <typename T, typename U>
 bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
     uint32_t id_message, U subscriber)
@@ -231,6 +228,104 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
   }
 
   return false;
+}
+
+/** \brief Return if subscription will failed if subscriber already subscribed.
+ * \return The boolean.
+ */
+template <typename T, typename U>
+bool llgc::pattern::publisher::PublisherInterface<
+    T, U>::GetOptionFailAlreadySubscribed()
+{
+  return options_.add_fail_if_already_subscribed;
+}
+
+/** \brief Set if subscription must failed if subscriber already subscribed.
+ * \param[in] value true if must failed.
+ */
+template <typename T, typename U>
+void llgc::pattern::publisher::PublisherInterface<
+    T, U>::SetOptionFailAlreadySubscribed(bool value)
+{
+  options_.add_fail_if_already_subscribed = value;
+}
+
+/** \brief Lock forwarding message all the while the return object is not
+ *         destroyed.
+ * \return The object to keep alive.
+ */
+template <typename T, typename U>
+llgc::utils::thread::CountLock<size_t>
+llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
+{
+  return llgc::utils::thread::CountLock<size_t>(&lock_forward_, &mutex_forward_, [this] { return this->ForwardPending();});
+}
+
+/** \fn llgc::pattern::publisher::PublisherInterface::PublisherInterface(PublisherInterface&& other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::PublisherInterface::PublisherInterface(PublisherInterface const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn PublisherInterface& llgc::pattern::publisher::PublisherInterface::operator=(PublisherInterface&& other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn PublisherInterface& llgc::pattern::publisher::PublisherInterface::operator=(PublisherInterface const& other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \typedef llgc::pattern::publisher::PublisherInterface::SubscriberMap
+ * \brief Type of the map for subscribers.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherInterface::subscribers_
+ * \brief List of subscribers to send message.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherInterface::options_
+ * \brief Options for the behavious of server.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherInterface::lock_forward_
+ * \brief Lock the forward. Must be use with class CountLock.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherInterface::mutex_forward_
+ * \brief Forward is not thread-safe.
+ */
+
+/** \brief Convert a weak_ptr to shared_ptr.
+ * \param[in] connector The weak_ptr connector.
+ * \return The shared_ptr from weak_ptr connector.
+ */
+template <typename T, typename U>
+std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
+    std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
+{
+  return connector.lock();
+}
+
+/** \brief Convert a shared_ptr to shared_ptr. Exists to be compatible with
+ *         GetConn with weak_ptr.
+ * \param[in] connector The shared_ptr connector.
+ * \return connector.
+ */
+template <typename T, typename U>
+std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
+    std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
+{
+  return connector;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

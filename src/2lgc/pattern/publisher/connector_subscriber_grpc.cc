@@ -15,50 +15,59 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
-#include <cassert>
 #include <iostream>
+
 namespace grpc
 {
 template <class W, class R>
 class ServerReaderWriter;
 }
 
+/** \class llgc::pattern::publisher::ConnectorSubscriberGrpc
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ */
+
+/** \brief Default constructor.
+ * \param[in] subscriber Subscriber to communicate with client.
+ * \param[in] stream Stream to communicate with client.
+ */
 template <typename T>
 llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
     grpc::ServerReaderWriter<T, T> *stream)
-    : ConnectorInterface<T>(subscriber), stream_(stream)
+    : ConnectorSubscriber<T>(subscriber), stream_(stream)
 {
 }
 
-template <typename T>
-llgc::pattern::publisher::ConnectorSubscriberGrpc<
-    T>::~ConnectorSubscriberGrpc() = default;
-
-template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Equals(
-    const ConnectorInterface<T> &connector) const
-{
-  const auto *connector_direct =
-      dynamic_cast<const ConnectorSubscriberGrpc<T> *>(&connector);
-
-  if (connector_direct == nullptr)
-  {
-    return false;
-  }
-
-  return this->subscriber_->Equals(*connector.GetSubscriber());
-}
-
-template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::AddSubscriber(
-    uint32_t /*id_message*/)
-{
-  // Can't append.
-  assert(false);
-}
+/** \fn llgc::pattern::publisher::ConnectorSubscriberGrpc::~ConnectorSubscriberGrpc()
+ * \brief Default virtual destructor.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorSubscriberGrpc::ConnectorSubscriberGrpc(ConnectorSubscriberGrpc &&other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorSubscriberGrpc::ConnectorSubscriberGrpc(ConnectorSubscriberGrpc const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn ConnectorSubscriberGrpc & llgc::pattern::publisher::ConnectorSubscriberGrpc::operator=(ConnectorSubscriberGrpc &&other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn ConnectorSubscriberGrpc & llgc::pattern::publisher::ConnectorSubscriberGrpc::operator=(ConnectorSubscriberGrpc const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Send(
@@ -68,12 +77,8 @@ bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Send(
   return true;
 }
 
-template <typename T>
-bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::RemoveSubscriber(
-    uint32_t /*id_message*/)
-{
-  // Can't append.
-  assert(false);
-}
+/** \var llgc::pattern::publisher::ConnectorSubscriberGrpc::stream_
+ * \brief Link to the server.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

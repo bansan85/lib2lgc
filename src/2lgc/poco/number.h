@@ -22,27 +22,11 @@
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/math_number.pb.h>
 
-/**
- * @brief Namespace that contains all classes to manipulate protobuf.
- */
 namespace llgc::poco
 {
-/**
- * @brief Class just to hold the UnitOp method.
- */
 class Unit
 {
  public:
-  /**
-   * @brief Get the resulting unit when a operator is applied in two units.
-   *
-   * @param unit1 First unit.
-   * @param unit2 Second unit.
-   * @param operator_ The operator.
-   * @param return_unit The resulting unit. Must be already allocated.
-   *
-   * @return true if the operator is successfully applied in the two units.
-   */
   static bool UnitOp(const llgc::protobuf::math::Number_Unit &unit1,
                      const llgc::protobuf::math::Number_Unit &unit2,
                      llgc::protobuf::math::Number_Operator operator_,
@@ -56,72 +40,22 @@ class Number : public llgc::pattern::visitor::InterfaceVisitable<
                    llgc::protobuf::math::Number>
 {
  public:
-  /**
-   * @brief Default constructor.
-   */
   Number() = default;
-
-  /**
-   * @brief Default destructor.
-   */
   ~Number() override = default;
 
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   Number(Number &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   Number(Number const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   Number &operator=(Number &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  Number &operator=(Number const &other) & = delete;
+  Number &operator=(Number const &other) = delete;
 #endif  // !SWIG
 
-  /**
-   * @brief Get the value of the number.
-   *
-   * @return The floating number. If failed, a nan number.
-   */
   virtual double GetVal() const = 0;
-  /**
-   * @brief Get the unit of the number.
-   *
-   * @return The unit. If failed, the default Number_Unit.
-   */
   virtual llgc::protobuf::math::Number_Unit GetUnit() const = 0;
 
 #ifndef DISABLE_VISITABLE_CACHE
  protected:
-  /**
-   * @brief If cache enabled, the value.
-   */
   mutable double cache_value_ = 0.;
-  /**
-   * @brief If cache enabled, the unit.
-   */
   mutable llgc::protobuf::math::Number_Unit cache_unit_;
 #endif  // DISABLE_VISITABLE_CACHE
 };

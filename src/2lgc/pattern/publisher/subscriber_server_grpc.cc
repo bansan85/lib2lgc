@@ -18,14 +18,26 @@
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>
 #include <iostream>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 }
+
+/** \class llgc::pattern::publisher::SubscriberServerGrpc
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ *
+ *
+ * \fn llgc::pattern::publisher::SubscriberServerGrpc::SubscriberServerGrpc(grpc::ServerReaderWriter<T, T>* stream)
+ * \brief Default constructor.
+ * \param[in] stream Stream to communicate with server.
+ *
+ *
+ * \fn llgc::pattern::publisher::SubscriberServerGrpc::~SubscriberServerGrpc()
+ * \brief Default virtual destructor.
+ */
 
 template <typename T>
 bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Listen(
@@ -51,5 +63,31 @@ bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Equals(
 
   return subscriber_cast->stream_ == stream_;
 }
+
+/** \fn llgc::pattern::publisher::SubscriberServerGrpc::SubscriberServerGrpc(SubscriberServerGrpc&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::pattern::publisher::SubscriberServerGrpc::SubscriberServerGrpc(SubscriberServerGrpc const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn SubscriberServerGrpc& llgc::pattern::publisher::SubscriberServerGrpc::operator=(SubscriberServerGrpc&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn SubscriberServerGrpc& llgc::pattern::publisher::SubscriberServerGrpc::operator=(SubscriberServerGrpc const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \var llgc::pattern::publisher::SubscriberServerGrpc::stream_
+ * \brief The id of the connector.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

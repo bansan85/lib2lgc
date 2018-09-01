@@ -21,155 +21,57 @@
 #include <cstdint>
 #include <memory>
 #include <queue>
+#include <type_traits>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
 class ConnectorInterface
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber Subscriber.
-   */
   explicit ConnectorInterface(
       std::shared_ptr<SubscriberInterface<T>> subscriber);
+#ifndef SWIG
+  ConnectorInterface(ConnectorInterface&& other) = delete;
+  ConnectorInterface(ConnectorInterface const& other) = delete;
+  ConnectorInterface& operator=(ConnectorInterface&& other) = delete;
+  ConnectorInterface& operator=(ConnectorInterface const& other) = delete;
+#endif  // !SWIG
+  virtual ~ConnectorInterface()
+  {
+    // typeid of Equals needs the class to be virtual.
+    // is_polymorphic works only in destructor.
+    static_assert(std::is_polymorphic<ConnectorInterface>::value,
+                  "This should not be polymorphic.");
+  }
 
-  /**
-   * @brief Default destructor.
-   */
-  virtual ~ConnectorInterface() = default;
-
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
-  virtual bool Equals(const ConnectorInterface<T>& connector) const CHK = 0;
-
-  /**
-   * @brief Send message to the publisher.
-   *
-   * @param message Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   */
+  bool Equals(const ConnectorInterface<T>& connector) const CHK;
   virtual bool Send(const T& message) CHK = 0;
-
-  /**
-   * @brief Listen message from the publisher.
-   *
-   * @param[in] messages Data of the message in ProtoBuf, SerializeToString.
-   * @param[in] hold If true, message is not send to subscriber be will be
-   * pending until ListenPending is called.
-   *
-   * @return true if no problem.
-   */
-  bool Listen(const T& messages, bool hold) CHK;
-
-  /**
-   * @brief Listen pending messages from the publisher.
-   *
-   * @return true if no problem.
-   */
+  bool Listen(const T& message, bool hold) CHK;
   bool ListenPending() CHK;
-
-  /**
-   * @brief Add a new subscriber.
-   *
-   * @param[in] id_message The add of the message.
-   *
-   * @return true if no problem.
-   *
-   * @dotfile pattern/publisher/publisher_add_subscriber.dot
-   */
   virtual bool AddSubscriber(uint32_t id_message) CHK = 0;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message id of the message.
-   *
-   * @return true if no problem.
-   */
   virtual bool RemoveSubscriber(uint32_t id_message) CHK = 0;
-
-  /**
-   * @brief Get the subscriber that manager this interface.
-   *
-   * @return return the subscriber.
-   */
   const SubscriberInterface<T>* GetSubscriber() const
   {
     return subscriber_.get();
   }
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface(ConnectorInterface&& other) = delete;
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface(ConnectorInterface const& other) = delete;
-  /**
-   * @brief Delete move operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface& operator=(ConnectorInterface&& other) & = delete;
-  /**
-   * @brief Delete copy operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  ConnectorInterface& operator=(ConnectorInterface const& other) & = delete;
-#endif  // !SWIG
-
  protected:
-  /**
-   * @brief The subscriber.
-   */
   std::shared_ptr<SubscriberInterface<T>> subscriber_;
 
  private:
-  /**
-   * @brief Messages on hold.
-   */
   std::queue<T> messages_;
-
-  /**
-   * @brief id of the next message.
-   */
   uint32_t next_id_;
 };
 

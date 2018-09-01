@@ -33,9 +33,6 @@
 #include <type_traits>
 #include <utility>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
@@ -45,6 +42,13 @@ template <typename T>
 class SubscriberServerTcp;
 }  // namespace llgc::pattern::publisher
 
+/** \class llgc::pattern::publisher::PublisherTcpLinux
+ * \brief Interface to create a TCP server.
+ */
+
+/** \brief Constructor with port for the TCP server.
+ * \param[in] port The port to listen from.
+ */
 template <typename T>
 llgc::pattern::publisher::PublisherTcpLinux<T>::PublisherTcpLinux(uint16_t port)
     : PublisherTcp<T>(port), sockfd_(-1)
@@ -60,8 +64,8 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
   }
 
   std::thread t([this]() {
-    int iResult;          // NS
-    int client_sock = 0;  // NS
+    int iResult;
+    int client_sock = 0;
     fd_set rfds;
 
     do
@@ -73,16 +77,13 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       tv.tv_sec = 0L;
       tv.tv_usec = 50000L;
 
-      iResult = llgc::net::Linux::RepeteOnEintr(
-          std::bind(&select, sockfd_ + 1, &rfds, nullptr, nullptr, &tv));
+      iResult = llgc::net::Linux::RepeteOnEintr( [this,&rfds,&tv] { return select(sockfd_ + 1, &rfds, nullptr, nullptr, &tv);});
       if (iResult > 0)
       {
-        client_sock = llgc::net::Linux::RepeteOnEintr(
-            std::bind(accept4, sockfd_, nullptr, nullptr, 0));
+        client_sock = llgc::net::Linux::RepeteOnEintr([=] { return accept4(sockfd_, nullptr, nullptr, 0);});
         if (client_sock > 0)
         {
-          std::thread t2(
-              std::bind(&PublisherTcpLinux<T>::WaitThread, this, client_sock));
+          std::thread t2([this,client_sock] { return this->WaitThread(client_sock);});
           this->thread_sockets_.insert(
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }
@@ -92,13 +93,39 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
             "Errno " + std::to_string(errno) + "\n");
     BUGCRIT(std::cout, client_sock != -1, ,
             "Errno " + std::to_string(errno) + "\n");
-  });  // NS
+  });
 
   this->thread_wait_ = std::move(t);
 
   return true;
 }
 
+/** \var llgc::pattern::publisher::PublisherTcpLinux::sockfd_
+ * \brief Socket file descriptor.
+ */
+
+template <typename T>
+void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
+    int socket, decltype(std::declval<T>().msg(0)) message)
+{
+  BUGCRIT(std::cout, message.has_add_subscriber(), ,
+          "Failed to add a subscriber.");
+  std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
+      std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
+          socket);
+  std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
+      connector =
+          std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
+              subscriber, socket);
+  BUGCONT(
+      std::cout,
+      this->AddSubscriber(message.add_subscriber().id_message(), connector), );
+}
+
+/** \brief Function that will be executed by the thread that wait instruction
+ *         from a client.
+ * \param[in] socket The socket to the client.
+ */
 template <typename T>
 void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 {
@@ -110,7 +137,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 
   do
   {
-    int retval = poll(&fd, 1, 50);  // NS
+    int retval = poll(&fd, 1, 50);
 
     BUGCRIT(std::cout, retval != -1, ,
             "Server client " + std::to_string(socket) +
@@ -172,24 +199,6 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 
     BUGCONT(std::cout, this->Forward(messages), );
   } while (!this->disposing_);
-}
-
-template <typename T>
-void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
-    int socket, decltype(std::declval<T>().msg(0)) message)
-{
-  BUGCRIT(std::cout, message.has_add_subscriber(), ,
-          "Failed to add a subscriber.");
-  std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
-      std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
-          socket);
-  std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
-      connector =
-          std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
-              subscriber, socket);
-  BUGCONT(
-      std::cout,
-      this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

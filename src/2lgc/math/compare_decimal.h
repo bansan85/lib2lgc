@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-/**
- * @file compare_decimal.h
- * @brief Compare diff of two decimal number base on their int representation.
- * Base on idea from
- * https://randomascii.wordpress.com/2012/02/25/comparing-floating-point-numbers-2012-edition/.
+/** \file compare_decimal.h
  */
 
 #ifndef MATH_COMPARE_DECIMAL_H_
@@ -28,20 +24,17 @@
 
 namespace llgc::math
 {
-/**
- * @brief Class that extends math functionnality.
- */
 class Compare
 {
  public:
-  static bool AlmostEqualUlpsAndAbsF(float A, float B, float maxDiff,
+  static bool AlmostEqualUlpsAndAbsF(float a, float b, float maxDiff,
                                      int maxUlpsDiff) CHK;
-  static bool AlmostEqualRelativeAndAbsF(float A, float B, float maxDiff,
+  static bool AlmostEqualRelativeAndAbsF(float a, float b, float maxDiff,
                                          float maxRelDiff) CHK;
 
-  static bool AlmostEqualUlpsAndAbsD(double A, double B, double maxDiff,
+  static bool AlmostEqualUlpsAndAbsD(double a, double b, double maxDiff,
                                      int maxUlpsDiff) CHK;
-  static bool AlmostEqualRelativeAndAbsD(double A, double B, double maxDiff,
+  static bool AlmostEqualRelativeAndAbsD(double a, double b, double maxDiff,
                                          double maxRelDiff) CHK;
 };
 

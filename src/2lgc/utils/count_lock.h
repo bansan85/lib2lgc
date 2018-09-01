@@ -21,29 +21,12 @@
 #include <functional>
 #include <mutex>
 
-/**
- * @brief Namespace for all classes related with thread.
- */
 namespace llgc::utils::thread
 {
-/**
- * @brief Class that increment variable with constructor and decrease with
- * destrctor.
- */
 template <typename M>
 class CountLock
 {
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] ref Pointer to the ref variable that will be increment on
-   * constructor and decrement on destructor.
-   * @param[in] mutex_forward Pointer to the mutex that will be use to use
-   * thread-safe ref.
-   * @param[in] function_zero Function that be be called if on destructor, ref
-   * value is zero.
-   */
   CountLock(M* const ref, std::recursive_mutex* mutex_forward,
             std::function<void()> function_zero)
       : ref_(*ref),
@@ -54,9 +37,13 @@ class CountLock
     ref_++;
   }
 
-  /**
-   * @brief Default destructor.
-   */
+#ifndef SWIG
+  CountLock(CountLock&& other) = delete;
+  CountLock(CountLock const& other) = delete;
+  CountLock& operator=(CountLock&& other) = delete;
+  CountLock& operator=(CountLock const& other) = delete;
+#endif  // !SWIG
+
   ~CountLock()
   {
     std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
@@ -67,54 +54,9 @@ class CountLock
     }
   }
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
-  CountLock(CountLock&& other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  CountLock(CountLock const& other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  CountLock& operator=(CountLock&& other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  CountLock& operator=(CountLock const& other) & = delete;
-#endif  // !SWIG
-
  private:
-  /**
-   * @brief Options for the behavious of server.
-   */
   M& ref_;
-
-  /**
-   * @brief The mutex to lock ref.
-   */
   std::recursive_mutex& mutex_forward_;
-
-  /**
-   * @brief Function to execute if a destruction, the ref is zero;
-   */
   std::function<void()> function_zero_;
 };
 

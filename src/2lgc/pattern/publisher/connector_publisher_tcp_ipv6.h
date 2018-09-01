@@ -22,79 +22,39 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <type_traits>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 
-/**
- * @brief IPV4 of ConnectorPublisherTcp.
- */
 template <typename T>
 class ConnectorPublisherTcpIpv6 : public ConnectorPublisherTcp<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber The subscriber.
-   * @param[in] ip The IP of the server.
-   * @param[in] port The port of the server.
-   */
   ConnectorPublisherTcpIpv6(std::shared_ptr<SubscriberInterface<T>> subscriber,
                             const std::string &ip, uint16_t port);
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~ConnectorPublisherTcpIpv6() override;
+  ~ConnectorPublisherTcpIpv6() override = default;
 
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorPublisherTcpIpv6(ConnectorPublisherTcpIpv6 &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorPublisherTcpIpv6(ConnectorPublisherTcpIpv6 const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   ConnectorPublisherTcpIpv6 &operator=(ConnectorPublisherTcpIpv6 &&other) =
       delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherTcpIpv6 &operator=(
-      ConnectorPublisherTcpIpv6 const &other) & = delete;
+  ConnectorPublisherTcpIpv6 &operator=(ConnectorPublisherTcpIpv6 const &other) =
+      delete;
 #endif  // !SWIG
 
  private:
-  /**
-   * @brief Start connection with server.
-   *
-   * @return true if no problem.
-   */
   bool Connect() override CHK;
 };
 

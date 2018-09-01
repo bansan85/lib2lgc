@@ -21,88 +21,28 @@
 #include <2lgc/pattern/visitor/visitor.h>
 #include <string>
 
-/**
- * @brief Namespace that contains all classes to manipulate protobuf.
- */
 namespace llgc::poco
 {
-// We can't include number.h because number.h need number_visitor_value.h.
 class Number_Constant;
 class Number_NumOpNum;
 
-/**
- * @brief The visitor that will return the floating value.
- */
 class NumberVisitorVal
     : public llgc::pattern::visitor::BaseVisitor,
       public llgc::pattern::visitor::Visitor<Number_Constant>,
       public llgc::pattern::visitor::Visitor<Number_NumOpNum>
 {
  public:
-  /**
-   * @brief Default constructor.
-   */
   NumberVisitorVal() = default;
-
-  /**
-   * @brief Default destructor.
-   */
+#ifndef SWIG
+  NumberVisitorVal(NumberVisitorVal &&other) = delete;
+  NumberVisitorVal(NumberVisitorVal const &other) = delete;
+  NumberVisitorVal &operator=(NumberVisitorVal &&other) = delete;
+  NumberVisitorVal &operator=(NumberVisitorVal const &other) = delete;
+#endif  // !SWIG
   ~NumberVisitorVal() override = default;
 
-#ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  NumberVisitorVal(NumberVisitorVal &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  NumberVisitorVal(NumberVisitorVal const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  NumberVisitorVal &operator=(NumberVisitorVal &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  NumberVisitorVal &operator=(NumberVisitorVal const &other) & = delete;
-#endif  // !SWIG
-
-  /**
-   * @brief Return the floating value of a constant number.
-   *
-   * @param data The constant number.
-   * @param return_value This parameter will be changed only if Visit success.
-   *
-   * @return true if success, false instead.
-   */
   bool Visit(const Number_Constant &data,
              std::string *return_value) const override CHK;
-
-  /**
-   * @brief Return the floating value of a number based on an operation of two
-   *        numbers.
-   *
-   * @param data The number.
-   * @param return_value This parameter will be changed only if Visit success.
-   *
-   * @return true if success, false instead.
-   */
   bool Visit(const Number_NumOpNum &data,
              std::string *return_value) const override CHK;
 };

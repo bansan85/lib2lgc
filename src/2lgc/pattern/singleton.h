@@ -20,46 +20,17 @@
 #include <memory>
 #include <mutex>
 
-/**
- * @file singleton.h
- *
- * Helper to simply add a singleton to a class.
- */
-
 namespace llgc::pattern
 {
-/**
- * @brief Class that contains the getInstance for a local singleton.
- *
- * @tparam T Type of the singleton.
- */
 template <class T>
 class Singleton
 {
  public:
-  /**
-   * @brief Tell if an instance is allocated.
-   *
-   * @return true if allocated.
-   */
   bool IsInstance();
-
-  /**
-   * @brief Get the instance and allocate it if not already.
-   *
-   * @return Return an instance never null.
-   */
   std::shared_ptr<T> GetInstance();
 
  private:
-  /**
-   * @brief A mutex to implement the singleton.
-   */
   std::recursive_mutex mutex_;
-
-  /**
-   * @brief Store the instance of the singleton
-   */
   std::shared_ptr<T> instance_;
 };
 

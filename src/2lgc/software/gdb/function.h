@@ -14,11 +14,6 @@
  * limitations under the License.
  */
 
-/**
- * @file function.h
- * @brief Store all informations about functions.
- */
-
 #ifndef SOFTWARE_GDB_FUNCTION_H_
 #define SOFTWARE_GDB_FUNCTION_H_
 
@@ -30,66 +25,21 @@
 
 namespace llgc::software::gdb
 {
-/**
- * @brief Store all informations about a function.
- *
- * @details Contains the name of the function, the arguments and their value.
- */
 class Function
 {
  public:
-  /**
-   * @brief Get the name of a function.
-   *
-   * @return The name of the function.
-   */
   const std::string& GetName() const CHK { return name_; }
-
-  /**
-   * @brief Setter for the name of a function.
-   *
-   * @param[in] name The new name of a function.
-   */
   void SetName(const std::string& name) { name_.assign(name); }
-
-  /**
-   * @brief Add argument of the function.
-   *
-   * @param[in] name Name of the argument.
-   * @param[in] value Value of the argument.
-   */
   void AddArgs(std::string name, std::string value)
   {
     args_.emplace_back(std::make_pair(std::move(name), std::move(value)));
   }
 
-  /**
-   * @brief Check if a line is a valid variable line.
-   *
-   * @param[in] variable The line to check.
-   *
-   * @return true if valid variable line.
-   */
   static bool IsValidVariableLine(const std::string& variable);
-
-  /**
-   * @brief Check if a variable line is wrappable.
-   *
-   * @param[in] variable The line to check.
-   *
-   * @return true if variable line is wrappable.
-   */
   static bool IsVariableLineWrappable(const std::string& variable);
 
  private:
-  /**
-   * @brief Name of the function.
-   */
   std::string name_;
-
-  /**
-   * @brief All the arguments. Key is the name of the arg, value is the value.
-   */
   std::vector<std::pair<std::string, std::string>> args_;
 };
 

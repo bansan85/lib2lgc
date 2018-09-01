@@ -53,9 +53,9 @@ class Factory : public llgc::pattern::AbstractFactory<
         number_ref_(number_ref)
   {
     map_factory_[llgc::protobuf::test::UndoManager1::kAdd] =
-        std::bind(&Factory::Add, this, std::placeholders::_1);
+        [this](auto x){ return this->Add(x); };
     map_factory_[llgc::protobuf::test::UndoManager1::kFail] =
-        std::bind(&Factory::Fail, this, std::placeholders::_1);
+        [this](auto x){ return this->Fail(x); };
   }
 
  private:

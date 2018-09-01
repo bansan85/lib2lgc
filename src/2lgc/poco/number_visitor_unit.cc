@@ -26,6 +26,44 @@
 #include <iostream>
 #include <memory>
 
+/** \class llgc::poco::NumberVisitorUnit
+ * \brief The visitor that will return the unit.
+ *
+ * \fn llgc::poco::NumberVisitorUnit::NumberVisitorUnit()
+ * \brief Default constructor.
+ *
+ *
+ * \fn llgc::poco::NumberVisitorUnit::~NumberVisitorUnit()
+ * \brief Default destructor.
+ *
+ *
+ * \fn llgc::poco::NumberVisitorUnit::NumberVisitorUnit(NumberVisitorUnit&& other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::poco::NumberVisitorUnit::NumberVisitorUnit(NumberVisitorUnit const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn NumberVisitorUnit& llgc::poco::NumberVisitorUnit::operator=(NumberVisitorUnit&& other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn NumberVisitorUnit& llgc::poco::NumberVisitorUnit::operator=(NumberVisitorUnit const& other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
+
+/** \brief Return the unit of a constant number.
+ * \param data The constant number.
+ * \param return_value This parameter will be changed only if Visit success.
+ * \return true if success, false instead.
+ */
 bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
                                           std::string *return_value) const
 {
@@ -38,6 +76,11 @@ bool llgc::poco::NumberVisitorUnit::Visit(const Number_Constant &data,
   return true;
 }
 
+/** \brief Return the unit of a number based on an operation of two numbers.
+ * \param data The number.
+ * \param return_value This parameter will be changed only if Visit success.
+ * \return true if success, false instead.
+ */
 bool llgc::poco::NumberVisitorUnit::Visit(const Number_NumOpNum &data,
                                           std::string *return_value) const
 {

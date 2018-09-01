@@ -20,7 +20,7 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/publisher/subscriber.h>
+#include <2lgc/pattern/publisher/subscriber_local.h>
 #include <2lgc/utils/count_lock.h>
 #include <direct.pb.h>
 #include <google/protobuf/stubs/common.h>
@@ -36,7 +36,7 @@
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
-#include <2lgc/pattern/publisher/subscriber.cc>
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 
 template class llgc::pattern::publisher::PublisherInterface<
     llgc::protobuf::test::Direct,
@@ -46,14 +46,14 @@ template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::test::Direct>;
 template class llgc::pattern::publisher::ConnectorDirect<
     llgc::protobuf::test::Direct>;
-template class llgc::pattern::publisher::Subscriber<
+template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Direct>;
 
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final
-    : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Direct>
+class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
+                             llgc::protobuf::test::Direct>
 {
  public:
   /**
@@ -61,14 +61,14 @@ class SubscriberBase final
    *
    * @param[in] id Id of the subscriber.
    */
-  explicit SubscriberBase(uint32_t id)
-      : Subscriber(id),
+  explicit Subscriber(uint32_t id)
+      : SubscriberLocal(id),
         value(0),
         message_vector(llgc::protobuf::test::Direct_Msg::DataCase::kTest + 1)
   {
     message_vector[0] = nullptr;
     message_vector[llgc::protobuf::test::Direct_Msg::DataCase::kTest] =
-        &SubscriberBase::TestFct;
+        &Subscriber::TestFct;
   }
 
   /**
@@ -107,8 +107,8 @@ class SubscriberBase final
   /**
    * @brief Function to execute.
    */
-  std::vector<std::function<void(SubscriberBase&,
-                                 const llgc::protobuf::test::Direct_Msg&)>>
+  std::vector<
+      std::function<void(Subscriber&, const llgc::protobuf::test::Direct_Msg&)>>
       message_vector;
 };
 
@@ -119,7 +119,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto server = std::make_shared<llgc::pattern::publisher::PublisherDirect<
       llgc::protobuf::test::Direct>>();
 
-  auto subscriber = std::make_shared<SubscriberBase>(1);
+  auto subscriber = std::make_shared<Subscriber>(1);
 
   auto connector = std::make_shared<
       llgc::pattern::publisher::ConnectorDirect<llgc::protobuf::test::Direct>>(

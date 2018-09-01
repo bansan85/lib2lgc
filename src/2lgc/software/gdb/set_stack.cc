@@ -55,6 +55,21 @@ template class llgc::pattern::Singleton<
 template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::software::Gdb>;
 
+/** \class llgc::software::gdb::SetStack
+ * \brief Store and sort all stacks.
+ * \details Criterea of sort must be defined on constructor.
+ */
+
+/** \brief Default constructor.
+ * \param[in] with_source_only Ignore backtrace where source file is unknown.
+ * \param[in] top_frame Number of frames from the top that must be identical so
+ *            two stacks are the same. Internally, this number can not exceeded
+ *            the number of frames.
+ * \param[in] bottom_frame Number of frames from the bottom that must be
+ *            identical so two stacks are the same. Internally, this number can
+ *            not exceeded the number of frames.
+ * \param[in] print_one_by_group Keep only one identical backtrace.
+ */
 llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
                                         size_t bottom_frame,
                                         bool print_one_by_group)
@@ -63,8 +78,210 @@ llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
 {
 }
 
-llgc::software::gdb::SetStack::~SetStack() = default;
+/** \fn llgc::software::gdb::SetStack::~SetStack()
+ * \brief Default destructor.
+ *
+ *
+ * \fn llgc::software::gdb::SetStack::SetStack(SetStack&& other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::software::gdb::SetStack::SetStack(SetStack const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn SetStack& llgc::software::gdb::SetStack::operator=(SetStack&& other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn SetStack& llgc::software::gdb::SetStack::operator=(SetStack const& other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
 
+/** \brief Add a new stack. The file must contains only the full backtrace from
+ *         GDB.
+ * \param[in] filename The file to add.
+ * \return True if the file is a valid backtrace.
+ */
+bool llgc::software::gdb::SetStack::Add(const std::string& filename)
+{
+  std::ifstream file(filename);
+
+  if (!file.is_open())
+  {
+    BUGCONT(std::cout, TellError(filename), false);
+    return false;
+  }
+
+  std::unique_ptr<Stack> stack_gdb = std::make_unique<Stack>(filename);
+  std::string line;
+
+  // Wrong line is allow after a valid variable line and after an invalid line.
+  // A wrong line is possible if the variable line is wrapped.
+  bool allow_wrong_line = false;
+
+  while (getline(file, line))
+  {
+    if (!Function::IsValidVariableLine(line) && stack_gdb->InterpretLine(line))
+    {
+      if (stack_gdb->GetBacktraceFromBottom(0).GetIndex() + 1 !=
+          stack_gdb->NumberOfBacktraces())
+      {
+        BUGCONT(std::cout, TellError(filename), false);
+        return false;
+      }
+      allow_wrong_line = false;
+    }
+    else if (Function::IsValidVariableLine(line) || allow_wrong_line)
+    {
+      allow_wrong_line = Function::IsVariableLineWrappable(line);
+    }
+    else if (!allow_wrong_line)
+    {
+      BUGCONT(std::cout, TellError(filename), false);
+      return false;
+    }
+  }
+
+  std::lock_guard<std::mutex> lck(mutex_stack_);
+  if (!print_one_by_group_ || stack_.find(stack_gdb) == stack_.end())
+  {
+    stack_.insert(std::move(stack_gdb));
+  }
+
+  return true;
+}
+
+/** \brief Add new stacks based on files from a folder. All files must contains
+ *         only the full backtrace from GDB.
+ * \param[in] folder The folder where all *.btfull files are.
+ * \param[in] nthread The number of threads if parallel is allowed.
+ * \param[in] regex Regex that match file to read. If empty, all files will be
+ *            read.
+ * \return true if no problem.
+ */
+bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
+                                                 unsigned int nthread,
+                                                 const std::string& regex)
+{
+  std::vector<std::string> all_files;
+  if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
+  {
+    return false;
+  }
+
+  BUGCONT(std::cout, ParallelAdd(all_files, nthread), false);
+  return true;
+}
+
+/** \brief Add new stacks based on files from a list. All files must contains
+ *         only the full backtrace from GDB.
+ * \param[in] list The folder where all *.btfull files are.
+ * \param[in] nthread The number of threads if parallel is allowed.
+ * \return true if no problem.
+ */
+bool llgc::software::gdb::SetStack::AddList(const std::string& list,
+                                            unsigned int nthread)
+{
+  std::vector<std::string> all_files;
+  std::string line;
+  std::ifstream f(list);
+  BUGUSER(std::cout, f.is_open(), false, "Failed to open " + list + ".\n");
+
+  while (std::getline(f, line))
+  {
+    all_files.push_back(line);
+  }
+
+  BUGCONT(std::cout, ParallelAdd(all_files, nthread), false);
+  return true;
+}
+
+/** \brief Get the number of stack.
+ * \return The number of stack.
+ */
+size_t llgc::software::gdb::SetStack::Count() const
+{
+  std::lock_guard<std::mutex> lck(mutex_stack_);
+  return stack_.size();
+}
+
+/// \brief Show all stacks grouped by condition passed with the constructor.
+void llgc::software::gdb::SetStack::Print() const
+{
+  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator m_it,
+      s_it;
+
+  size_t num = 0;
+  for (m_it = stack_.begin(); m_it != stack_.end(); m_it = s_it)
+  {
+    std::pair<
+        std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator,
+        std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator>
+        keyRange = stack_.equal_range(*m_it);
+
+    std::cout << "Groupe " << num << std::endl;
+
+    for (s_it = keyRange.first; s_it != keyRange.second; ++s_it)
+    {
+      std::cout << "  " << (*s_it)->GetFilename() << std::endl;
+    }
+    num++;
+  }
+}
+
+/** \brief Get the nth stack of the set.
+ * \param[in] i the nth stack. First is at 0.
+ * \return A reference to the stack. The ith stack must exists.
+ */
+const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
+    size_t i) const
+{
+  auto it = stack_.begin();
+  std::advance(it, i);
+  return **it;
+}
+
+/** \fn Stack::Iter llgc::software::gdb::SetStack::begin() const
+ * \brief Return of the top stack.
+ * \return Begin of the const iterator.
+ *
+ *
+ * \fn Stack::Iter llgc::software::gdb::SetStack::end() const
+ * \brief Return after of the last stack.
+ * \return End of the const iterator.
+ */
+
+/** \var llgc::software::gdb::SetStack::server_
+ * \brief Server publisher.
+ */
+
+/** \struct llgc::software::gdb::SetStack::LocalCompare
+ * \brief A local class that compare to stack and says if two stack looks to be
+ *        the same.
+ *
+ *
+ * \typedef llgc::software::gdb::SetStack::LocalCompare::FunctionGetBacktrace
+ * \brief Prototype to get the backtrace from the top or from the bottom.
+ * \param[in] i The n-th backtrace.
+ * \return The backtrace. Throw an exception if out of boundary.
+ */
+
+/** \brief Constructor with parameter of comparaison.
+ * \param[in] with_source_only Ignore backtrace where source file is unknown.
+ * \param[in] top_frame Number of frames from the top that must be identical so
+ *            two stacks are the same. Internally, this number can not exceeded
+ *            the number of frames.
+ * \param[in] bottom_frame Number of frames from the bottom that must be
+ *            identical so two stacks are the same. Internally, this number can
+ *            not exceeded the number of frames.
+ */
 llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
                                                           size_t top_frame,
                                                           size_t bottom_frame)
@@ -74,9 +291,17 @@ llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
 {
 }
 
+/** \brief Helper to operator(). Compare two stacks from the top or from the
+ *         bottom.
+ * \param[in] nb_max_frames Number maximum of backtraces to compare.
+ * \param[in] get_backtraces Compare from the top or from the bottom.
+ * \param[in] i The first stack.
+ * \param[in] j The second stack.
+ * \return -1 if i < j, 0 if i == j and -1 if i > j.
+ */
 ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
     size_t nb_max_frames, FunctionGetBacktrace get_backtraces,
-    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
+    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j) const
 {
   uint32_t ii = 0, jj = 0;
 
@@ -116,7 +341,7 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
 
     const Backtrace& bti = (*i.*get_backtraces)(ii);
     const Backtrace& btj = (*j.*get_backtraces)(jj);
-    int compare = bti.GetFile().compare(btj.GetFile());  // NS
+    int compare = bti.GetFile().compare(btj.GetFile());
 
     if (compare < 0)
     {
@@ -173,8 +398,13 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
   return 0;
 }
 
+/** \brief Function that compare two stacks.
+ * \param[in] i The first stack.
+ * \param[in] j The second stack.
+ * \return If i < j based on argument from constructor.
+ */
 bool llgc::software::gdb::SetStack::LocalCompare::operator()(
-    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j)
+    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j) const
 {
   // If it's the same file.
   if (i->GetFilename() == j->GetFilename())
@@ -205,6 +435,59 @@ bool llgc::software::gdb::SetStack::LocalCompare::operator()(
   return false;
 }
 
+/** \var llgc::software::gdb::SetStack::LocalCompare::with_source_only_
+ * \brief Ignore backtrace where source file is unknown.
+ *
+ *
+ * \var llgc::software::gdb::SetStack::LocalCompare::top_frame_
+ * \brief Number of frames from the top that must be identical so two stacks
+ *        are the same. Internally, this number can not exceeded the number of
+ *        frames.
+ *
+ *
+ * \var llgc::software::gdb::SetStack::LocalCompare::bottom_frame_
+ * \brief Number of frames from the bottom that must be identical so two
+ *        stacks are the same. Internally, this number can not exceeded the
+ *        number of frames.
+ */
+
+/** \brief Read in parallel a list of files that contains gdb backtraces.
+ * \param[in] all_files The list of files that contains gdb backtraces.
+ * \param[in] nthread The number of threads with a maximum of
+ *            std::thread::hardware_concurrency().
+ * \return true if no problem.
+ */
+bool llgc::software::gdb::SetStack::ParallelAdd(
+    const std::vector<std::string>& all_files, unsigned int nthread)
+{
+  bool retval = true;
+  unsigned int nthreads = std::min(std::min(nthread, std::thread::hardware_concurrency()), static_cast<unsigned int>(all_files.size()));
+  std::vector<std::future<bool>> threads(nthreads);
+  for (size_t t = 0; t < nthreads; t++)
+  {
+    threads[t] = std::async(
+        std::launch::async,
+        [&all_files, this, nthreads, t]() {
+          bool retval2 = true;
+          for (size_t i = t; i < all_files.size(); i += nthreads)
+          {
+            retval2 &= Add(all_files[i]);
+          }
+          return retval2;
+        });
+  }
+  for (std::future<bool>& t : threads)
+  {
+    retval &= t.get();
+  }
+
+  return retval;
+}
+
+/** \brief Set a message throw the server to tell that this file is invalid.
+ * \param[in] filename The filename that failed to be read.
+ * \return true if no problem.
+ */
 bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
 {
   llgc::protobuf::software::Gdb messages;
@@ -218,154 +501,10 @@ bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
   return true;
 }
 
-bool llgc::software::gdb::SetStack::Add(const std::string& filename)
-{
-  std::ifstream file(filename);
-
-  if (!file.is_open())
-  {
-    BUGCONT(std::cout, TellError(filename), false);
-    return false;
-  }
-
-  std::unique_ptr<Stack> stack_gdb = std::make_unique<Stack>(filename);
-  std::string line;
-
-  // Wrong line is allow after a valid variable line and after an invalid line.
-  // A wrong line is possible if the variable line is wrapped.
-  bool allow_wrong_line = false;
-
-  while (getline(file, line))
-  {
-    if (stack_gdb->InterpretLine(line))
-    {
-      if (stack_gdb->GetBacktraceFromBottom(0).GetIndex() + 1 !=
-          stack_gdb->NumberOfBacktraces())
-      {
-        BUGCONT(std::cout, TellError(filename), false);
-        return false;
-      }
-      allow_wrong_line = false;
-    }
-    else if (Function::IsValidVariableLine(line) || allow_wrong_line)
-    {
-      allow_wrong_line = Function::IsVariableLineWrappable(line);
-    }
-    else if (!allow_wrong_line)
-    {
-      BUGCONT(std::cout, TellError(filename), false);
-      return false;
-    }
-  }
-
-  std::lock_guard<std::mutex> lck(mutex_stack_);
-  if (!print_one_by_group_ || stack_.find(stack_gdb) == stack_.end())
-  {
-    stack_.insert(std::move(stack_gdb));
-  }
-
-  return true;
-}
-
-bool llgc::software::gdb::SetStack::ParallelAdd(
-    const std::vector<std::string>& all_files, unsigned int nthread)
-{
-  bool retval = true;
-  const unsigned int nthreads =  // NS
-      std::min(std::min(nthread, std::thread::hardware_concurrency()),
-               static_cast<unsigned int>(all_files.size()));
-  std::vector<std::future<bool>> threads(nthreads);
-  for (size_t t = 0; t < nthreads; t++)
-  {
-    threads[t] = std::async(
-        std::launch::async,
-        std::bind(
-            [&all_files, this, nthreads](const size_t i_start) {
-              bool retval2 = true;
-              for (size_t i = i_start; i < all_files.size(); i += nthreads)
-              {
-                retval2 &= Add(all_files[i]);
-              }
-              return retval2;
-            },  // NS
-            t));
-  }
-  for (std::future<bool>& t : threads)
-  {
-    retval &= t.get();
-  }
-
-  return retval;
-}
-
-bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
-                                                 unsigned int nthread,
-                                                 const std::string& regex)
-{
-  std::vector<std::string> all_files;
-  if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
-  {
-    return false;
-  }
-
-  BUGCONT(std::cout, ParallelAdd(all_files, nthread), false);
-  return true;
-}
-
-bool llgc::software::gdb::SetStack::AddList(const std::string& list,
-                                            unsigned int nthread)
-{
-  std::vector<std::string> all_files;
-  std::string line;
-  std::ifstream f(list);
-  BUGUSER(std::cout, f.is_open(), false, "Failed to open " + list + ".\n");
-
-  while (std::getline(f, line))
-  {
-    all_files.push_back(line);
-  }
-
-  BUGCONT(std::cout, ParallelAdd(all_files, nthread), false);
-  return true;
-}
-
-void llgc::software::gdb::SetStack::Print()
-{
-  std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator m_it,
-      s_it;
-
-  size_t num = 0;
-  for (m_it = stack_.begin(); m_it != stack_.end(); m_it = s_it)
-  {
-    std::pair<
-        std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator,
-        std::multiset<std::unique_ptr<Stack>, LocalCompare>::const_iterator>
-        keyRange = stack_.equal_range(*m_it);
-
-    std::cout << "Groupe " << num << std::endl;
-
-    for (s_it = keyRange.first; s_it != keyRange.second; ++s_it)
-    {
-      std::cout << "  " << (*s_it)->GetFilename() << std::endl;
-    }
-    num++;
-  }
-}
-
-size_t llgc::software::gdb::SetStack::Count() const
-{
-  std::lock_guard<std::mutex> lck(mutex_stack_);
-  return stack_.size();
-}
-
-const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
-    size_t i) const
-{
-  auto it = stack_.begin();
-  std::advance(it, i);
-  return **it;
-}
-
+/** \brief Send the message to all subscribers.
+ * \param[in] message The message to send.
+ * \return true if no problem.
+ */
 bool llgc::software::gdb::SetStack::Forward(
     const llgc::protobuf::software::Gdb& message)
 {
@@ -378,5 +517,17 @@ bool llgc::software::gdb::SetStack::Forward(
   }
   return true;
 }
+
+/** \var llgc::software::gdb::SetStack::stack_
+ * \brief Storage of all stacks sorted with parameter given by the constructor.
+ *
+ *
+ * \var llgc::software::gdb::SetStack::mutex_stack_
+ * \brief A internal mutex to use stack_ thread-safe.
+ *
+ *
+ * \var llgc::software::gdb::SetStack::print_one_by_group_
+ * \brief Add the file only if no equivalent already added.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

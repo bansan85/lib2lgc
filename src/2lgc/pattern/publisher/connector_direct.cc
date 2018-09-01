@@ -20,6 +20,20 @@
 #include <2lgc/pattern/publisher/publisher_direct.h>  // IWYU pragma: keep
 #include <iostream>
 
+/** \namespace llgc::pattern::publisher
+ * \brief Namespace for the pattern publisher.
+ *
+ *
+ * \class llgc::pattern::publisher::ConnectorDirect
+ * \brief Interface that define functions that allow subscriber to communicate
+ *        to server and server to subscriber.
+ * \tparam T The protobuf message.
+ */
+
+/** \brief Default constructor.
+ * \param[in] subscriber The subscriber.
+ * \param[in] server The server.
+ */
 template <typename T>
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
@@ -28,23 +42,31 @@ llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
 {
 }
 
-template <typename T>
-llgc::pattern::publisher::ConnectorDirect<T>::~ConnectorDirect() = default;
-
-template <typename T>
-bool llgc::pattern::publisher::ConnectorDirect<T>::Equals(
-    const ConnectorInterface<T> &connector) const
-{
-  const auto *connector_direct =
-      dynamic_cast<const ConnectorDirect<T> *>(&connector);
-
-  if (connector_direct == nullptr)
-  {
-    return false;
-  }
-
-  return this->subscriber_->Equals(*connector.GetSubscriber());
-}
+/** \fn llgc::pattern::publisher::ConnectorDirect::~ConnectorDirect()
+ * \brief Default virtual destructor.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorDirect::ConnectorDirect(ConnectorDirect &&other)
+ * \brief Delete move constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn llgc::pattern::publisher::ConnectorDirect::ConnectorDirect(ConnectorDirect const &other)
+ * \brief Delete copy constructor.
+ * \param[in] other The original.
+ *
+ *
+ * \fn ConnectorDirect & llgc::pattern::publisher::ConnectorDirect::operator=(ConnectorDirect &&other)
+ * \brief Delete the move operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ *
+ *
+ * \fn ConnectorDirect & llgc::pattern::publisher::ConnectorDirect::operator=(ConnectorDirect const &other)
+ * \brief Delete the copy operator.
+ * \param[in] other The original.
+ * \return Delete function.
+ */
 
 template <typename T>
 bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
@@ -71,5 +93,9 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
           false);
   return true;
 }
+
+/** \var llgc::pattern::publisher::ConnectorDirect::server_
+ * \brief The server.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

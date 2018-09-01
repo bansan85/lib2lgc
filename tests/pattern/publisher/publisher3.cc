@@ -20,12 +20,14 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.h>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h>
-#include <2lgc/pattern/publisher/subscriber.h>
+#include <2lgc/pattern/publisher/subscriber_local.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <2lgc/utils/count_lock.h>
 #include <google/protobuf/stubs/common.h>
@@ -38,19 +40,18 @@
 #include <map>
 #include <memory>
 #include <thread>
-#include <type_traits>
 
-#include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.cc>
+#include <2lgc/pattern/publisher/connector_subscriber.cc>
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/publisher_ip.cc>
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc>
-#include <2lgc/pattern/publisher/subscriber.cc>
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
@@ -59,11 +60,18 @@ template class llgc::pattern::publisher::ConnectorPublisherTcp<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
     llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::ConnectorSubscriber<
+    llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorSubscriberTcp<
     llgc::protobuf::test::Tcp>;
-template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::SubscriberLocal<
+    llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<
     llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::PublisherInterface<
+    llgc::protobuf::test::Tcp,
+    std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<
+        llgc::protobuf::test::Tcp>>>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcp<
     llgc::protobuf::test::Tcp>;
@@ -75,8 +83,8 @@ template class llgc::pattern::publisher::PublisherTcpLinuxIpv6<
 /**
  * @brief Simple implementation of a direct subscriber.
  */
-class SubscriberBase final
-    : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Tcp>
+class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
+                             llgc::protobuf::test::Tcp>
 {
  public:
   /**
@@ -84,12 +92,12 @@ class SubscriberBase final
    *
    * @param[in] id Id of the subscriber.
    */
-  explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
+  explicit Subscriber(uint32_t id) : SubscriberLocal(id), value(0) {}
 
   /**
    * @brief Default destructor.
    */
-  ~SubscriberBase() override = default;
+  ~Subscriber() override = default;
 
   /**
    * @brief Delete move constructor.
@@ -98,7 +106,7 @@ class SubscriberBase final
    *
    * @return Nothing.
    */
-  SubscriberBase(SubscriberBase&& other) = delete;
+  Subscriber(Subscriber&& other) = delete;
   /**
    * @brief Delete copy constructor.
    *
@@ -106,7 +114,7 @@ class SubscriberBase final
    *
    * @return Nothing.
    */
-  SubscriberBase(SubscriberBase const& other) = delete;
+  Subscriber(Subscriber const& other) = delete;
   /**
    * @brief Delete move operator.
    *
@@ -114,7 +122,7 @@ class SubscriberBase final
    *
    * @return Nothing.
    */
-  SubscriberBase& operator=(SubscriberBase&& other) & = delete;
+  Subscriber& operator=(Subscriber&& other) & = delete;
   /**
    * @brief Delete copy operator.
    *
@@ -122,7 +130,7 @@ class SubscriberBase final
    *
    * @return Nothing.
    */
-  SubscriberBase& operator=(SubscriberBase const& other) & = delete;
+  Subscriber& operator=(Subscriber const& other) & = delete;
 
   /**
    * @brief Receive message from publisher.
@@ -177,7 +185,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   constexpr size_t delay = 30;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  llgc::net::Linux::DisableSigPipe();
+  assert(llgc::net::Linux::DisableSigPipe());
 
   auto server =
       std::make_shared<llgc::pattern::publisher::PublisherTcpLinuxIpv6<
@@ -185,7 +193,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(server->Listen());
   assert(server->Wait());
 
-  auto subscriber = std::make_shared<SubscriberBase>(1);
+  auto subscriber = std::make_shared<Subscriber>(1);
 
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv6<

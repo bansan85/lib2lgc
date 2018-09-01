@@ -21,65 +21,24 @@
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <memory>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
-/**
- * @brief Server that will be used to managed subscribers and to keep and send
- *        messages.
- *
- * @dotfile pattern/publisher/publisher_direct.dot
- */
 template <typename T>
 class PublisherDirect
     : public PublisherInterface<T, std::weak_ptr<ConnectorInterface<T>>>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   */
   PublisherDirect() = default;
-
-  /**
-   * @brief Default destructor.
-   */
-  ~PublisherDirect() override = default;
-
 #ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
   PublisherDirect(PublisherDirect&& other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   PublisherDirect(PublisherDirect const& other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  PublisherDirect& operator=(PublisherDirect&& other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  PublisherDirect& operator=(PublisherDirect const& other) & = delete;
+  PublisherDirect& operator=(PublisherDirect&& other) = delete;
+  PublisherDirect& operator=(PublisherDirect const& other) = delete;
 #endif  // !SWIG
+  ~PublisherDirect() override = default;
 };
 
 }  // namespace llgc::pattern::publisher

@@ -1,0 +1,119 @@
+digraph G
+{
+  // Need newrank so rank=same works for a whole subgraph.
+  newrank = true;
+
+  subgraph cluster_0
+  {
+    style = rounded;
+    bgcolor = "#DDDDDD"
+
+    Connector1
+    [
+      shape = box;
+      label = "Connector1";
+      style = filled;
+      fillcolor = white;
+    ]
+
+    Subscriber1
+    [
+      shape = box;
+      label = "Subscriber1";
+      style = filled;
+      fillcolor = white;
+    ]
+
+    Connector1 -> Subscriber1
+    [
+      dir = back;
+      arrowtail = odiamond;
+      headlabel = "1 ";
+      taillabel = "1  ";
+    ]
+  }
+
+  subgraph cluster_1
+  {
+    style = rounded;
+    bgcolor = "#DDDDDD";
+
+    Connector2
+    [
+      shape = box;
+      label = "Connector2";
+      style = filled;
+      fillcolor = white;
+    ]
+
+    Subscriber2
+    [
+      shape = box;
+      label = "Subscriber2";
+      style = filled;
+      fillcolor = white;
+    ]
+
+    Connector2 -> Subscriber2
+    [
+      dir = back;
+      arrowtail = odiamond;
+      headlabel = "1 ";
+      taillabel = "1  ";
+    ]
+  }
+
+  subgraph cluster_2
+  {
+    // Publisher will be on top.
+    style = rounded;
+    bgcolor = "#DDDDDD";
+
+    Publisher
+    [
+      shape = box;
+      label = "Publisher";
+      style = filled;
+      fillcolor = white;
+    ]
+
+    ConnectorSub
+    [
+      shape = box;
+      label = "ConnectorSub";
+      style = filled;
+      fillcolor = white;
+    ]
+
+    Publisher -> ConnectorSub
+    [
+      dir = back;
+      arrowtail = odiamond;
+      headlabel = "0..* ";
+      taillabel = "1  ";
+    ]
+  }
+
+  // Both subgraph will be on same level.
+  {
+    rank = same;
+    Subscriber1;
+    Subscriber2;
+  }
+
+  Publisher -> Connector1
+  [
+    dir = back;
+    style = dotted;
+    headlabel = "Send";
+    labeldistance = 2;
+    labelangle = -60;
+  ]
+
+  ConnectorSub -> Connector2
+  [
+    style = dotted;
+    taillabel = "Forward";
+    labeldistance = 1.9;
+  ]
+}

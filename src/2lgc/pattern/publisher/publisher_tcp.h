@@ -24,98 +24,38 @@
 #include <thread>
 #include <type_traits>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace llgc::pattern::publisher
 {
-/**
- * @brief Interface to create a TCP server.
- *
- * @tparam T Message from protobuf.
- *
- * @dotfile pattern/publisher/publisher_tcp.dot
- */
 template <typename T>
 class PublisherTcp : public PublisherIp<T>
 {
- public:
-  /**
-   * @brief Constructor with port for the TCP server.
-   *
-   * @param[in] port The port to listen from.
-   */
-  explicit PublisherTcp(uint16_t port);
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
 
-  /**
-   * @brief Destructor. Make sure that thread is finished.
-   */
+ public:
+  explicit PublisherTcp(uint16_t port);
+#ifndef SWIG
+  PublisherTcp(PublisherTcp&& other) = delete;
+  PublisherTcp(PublisherTcp const& other) = delete;
+  PublisherTcp& operator=(PublisherTcp&& other) = delete;
+  PublisherTcp& operator=(PublisherTcp const& other) = delete;
+#endif  // !SWIG
   ~PublisherTcp() override;
 
-  /**
-   * @brief Join the waiting thread.
-   */
   void JoinWait() override;
-
-  /**
-   * @brief Stop the thread.
-   */
   void Stop() override;
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  PublisherTcp(PublisherTcp&& other) = delete;
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  PublisherTcp(PublisherTcp const& other) = delete;
-  /**
-   * @brief Delete move operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  PublisherTcp& operator=(PublisherTcp&& other) & = delete;
-  /**
-   * @brief Delete copy operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  PublisherTcp& operator=(PublisherTcp const& other) & = delete;
-#endif  // !SWIG
-
  protected:
-  /**
-   * @brief If thread in trying to stop.
-   */
   std::atomic<bool> disposing_;
-
-  /**
-   * @brief Store thread based on the socket file descriptor.
-   */
-  std::map<int, std::thread> thread_sockets_;  // NS
+  std::map<int, std::thread> thread_sockets_;
 
  private:
 #ifndef SWIG
-  /**
-   * @brief Internal function to subscribe a socket to an event.
-   *
-   * @param[in] socket The socket.
-   * @param[in] message The message.
-   */
   virtual void AddSubscriberLocal(
       int socket, decltype(std::declval<T>().msg(0)) message) = 0;
 #endif  // !SWIG

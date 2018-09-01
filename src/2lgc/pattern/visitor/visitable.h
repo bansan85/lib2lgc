@@ -21,80 +21,21 @@
 #include <google/protobuf/message.h>
 #include <string>
 
-/**
- * @file
- *
- * This header is used has base for every class that a visitor would like to
- * visit.
- */
 namespace llgc::pattern::visitor
 {
-/**
- * @brief Common class to allow a class to be visited. This class is used to
- *        force the implementation of the Accept method with the right
- *        arguments.
- *
- * @tparam Visitable The same name of the class that is visitable.
- */
 template <class Visitable, class T>
 class BaseVisitable : virtual public T
 {
  public:
-  /**
-   * @brief Default constructor.
-   */
   BaseVisitable() = default;
-
-  /**
-   * @brief In case of some class based on it need a virtual destructor.
-   */
+#ifndef SWIG
+  BaseVisitable(BaseVisitable &&other) = delete;
+  BaseVisitable(BaseVisitable const &other) = delete;
+  BaseVisitable &operator=(BaseVisitable &&other) = delete;
+  BaseVisitable &operator=(BaseVisitable const &other) = delete;
+#endif  // !SWIG
   ~BaseVisitable() override = default;
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
-  BaseVisitable(BaseVisitable &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  BaseVisitable(BaseVisitable const &other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  BaseVisitable &operator=(BaseVisitable &&other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  BaseVisitable &operator=(BaseVisitable const &other) & = delete;
-#endif  // !SWIG
-
-  /**
-   * @brief This method is used to call the right Visit method on the visitor.
-   *
-   * @param visitor The visitor that will used the data of the class that
-   *        implement this class.
-   * @param return_value The return value from the visitor from
-   *        SerializeToString.
-   *
-   * @return false if there is a problem or if SerializeToString failed.
-   *         true instead.
-   */
   bool Accept(const BaseVisitor &visitor,
               std::string *return_value) const override CHK
   {
@@ -103,98 +44,30 @@ class BaseVisitable : virtual public T
   }
 };
 
-/**
- * @brief Common class to implement interface visitable. This class only
- *        have the pure virtual methods Accept.
- *
- * @tparam M The class that contains the data. It must be a ProtoBuf message.
- */
 template <class M>
 class InterfaceVisitable
 {
-  static_assert(std::is_base_of<::google::protobuf::Message, M>::value,  // NS
+  static_assert(std::is_base_of<::google::protobuf::Message, M>::value,
                 "M must be a descendant of ::google::protobuf::Message.");
 
  public:
-  /**
-   * @brief Default constructor.
-   */
   InterfaceVisitable() : message_() {}
-
-  /**
-   * @brief In case of some class based on it need a virtual destructor.
-   */
+#ifndef SWIG
+  InterfaceVisitable(InterfaceVisitable &&other) = delete;
+  InterfaceVisitable(InterfaceVisitable const &other) = delete;
+  InterfaceVisitable &operator=(InterfaceVisitable &&other) = delete;
+  InterfaceVisitable &operator=(InterfaceVisitable const &other) = delete;
+#endif  // !SWIG
   virtual ~InterfaceVisitable() = default;
 
-#ifndef SWIG
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other The original.
-   */
-  InterfaceVisitable(InterfaceVisitable &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
-  InterfaceVisitable(InterfaceVisitable const &other) = delete;
-
-  /**
-   * @brief Delete the move operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  InterfaceVisitable &operator=(InterfaceVisitable &&other) & = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  InterfaceVisitable &operator=(InterfaceVisitable const &other) & = delete;
-#endif  // !SWIG
-
-  /**
-   * @brief This method is used to call the right Visit method on the visitor.
-   *
-   * @param visitor The visitor that will used the data of the class that
-   *        implement this class.
-   * @param return_value The return value from the visitor from
-   *        SerializeToString. The value passed must be allocated on the stack
-   *        or on the pile.
-   *
-   * @return false if there is a problem or if SerializeToString failed.
-   *         true instead.
-   */
   virtual bool Accept(const BaseVisitor &visitor,
                       std::string *return_value) const CHK = 0;
-
-  /**
-   * @brief return a const reference of the data so the visitor may use it.
-   *
-   * @return The message in read-only format.
-   */
   const M &Message() const { return message_; }
 
  protected:
-  /**
-   * @brief return a modifiable reference of the data so the visitor may modify
-   * it.
-   *
-   * @return The message in read-write format.
-   */
   M &Message() { return message_; }
 
  private:
-  /**
-   * @brief The raw data.
-   */
   M message_;
 };
 

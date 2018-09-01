@@ -18,9 +18,14 @@
 #define PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
-#include <cstdint>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <memory>
+#include <type_traits>
+
+namespace google::protobuf
+{
+class Message;
+}
 
 namespace grpc
 {
@@ -28,114 +33,32 @@ template <class W, class R>
 class ServerReaderWriter;
 }
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
-class ConnectorSubscriberGrpc : public ConnectorInterface<T>
+class ConnectorSubscriberGrpc : public ConnectorSubscriber<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber Subscriber to communicate with client.
-   * @param[in] stream Stream to communicate with client.
-   */
   ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
                           grpc::ServerReaderWriter<T, T> *stream);
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~ConnectorSubscriberGrpc() override;
-
-  /**
-   * @brief Compare two connectors.
-   *
-   * @param[in,out] connector The connector to compare with this.
-   *
-   * @return true if same connector.
-   */
-  bool Equals(const ConnectorInterface<T> &connector) const override CHK;
-
-  /**
-   * @brief Send message to the publisher.
-   *
-   * @param[in] message Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   */
-  bool Send(const T &message) override CHK;
-
-  /**
-   * @brief Add a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
-  bool AddSubscriber(uint32_t id_message) override CHK;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
-  bool RemoveSubscriber(uint32_t id_message) override CHK;
-
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorSubscriberGrpc(ConnectorSubscriberGrpc &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorSubscriberGrpc(ConnectorSubscriberGrpc const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc const &other) & =
+  ConnectorSubscriberGrpc &operator=(ConnectorSubscriberGrpc const &other) =
       delete;
 #endif  // !SWIG
+  ~ConnectorSubscriberGrpc() override = default;
+
+  bool Send(const T &message) override CHK;
 
  private:
-  /**
-   * @brief Socket to the server.
-   */
   grpc::ServerReaderWriter<T, T> *stream_;
 };
 

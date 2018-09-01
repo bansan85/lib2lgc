@@ -16,6 +16,14 @@
 
 #include <2lgc/pattern/singleton.h>
 
+/** \class llgc::pattern::Singleton
+ * \brief Class that contains the getInstance for a local singleton.
+ * \tparam T Type of the singleton.
+ */
+
+/** \brief Tell if an instance is allocated.
+ * \return true if allocated.
+ */
 template <class T>
 bool llgc::pattern::Singleton<T>::IsInstance()
 {
@@ -24,6 +32,9 @@ bool llgc::pattern::Singleton<T>::IsInstance()
   return instance_ != nullptr;
 }
 
+/** \brief Get the instance. Allocate it if not already done. Thread-safe.
+ * \return The instance.
+ */
 template <class T>
 std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
 {
@@ -36,5 +47,13 @@ std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
 
   return instance_;
 }
+
+/** \var llgc::pattern::Singleton::mutex_
+ * \brief A mutex to implement the singleton.
+ *
+ *
+ * \var llgc::pattern::Singleton::instance_
+ * \brief Store the instance of the singleton.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

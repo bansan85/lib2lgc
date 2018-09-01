@@ -24,6 +24,13 @@
 #include <memory>
 #include <string>
 #include <thread>
+#include <type_traits>
+
+namespace google::protobuf
+{
+class Message;
+}
+
 namespace grpc
 {
 class Channel;
@@ -32,161 +39,43 @@ template <class W, class R>
 class ClientReaderWriter;
 }  // namespace grpc
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T, typename S>  // T: type of message, S: service
 class ConnectorPublisherGrpc : public ConnectorInterface<T>
 {
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
+                "T must be a descendant of ::google::protobuf::Message.");
+
  public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] subscriber The subscriber.
-   * @param[in] ip The IP of the server.
-   * @param[in] port The port of the server.
-   */
   ConnectorPublisherGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
                          std::string ip, uint16_t port);
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  ~ConnectorPublisherGrpc() override;
-
-  /**
-   * @brief Compare two connectors.
-   *
-   * @param[in] connector The connector to compare with this.
-   *
-   * @return true if same connector.
-   */
-  bool Equals(const ConnectorInterface<T> &connector) const override CHK;
-
-  /**
-   * @brief Send message to the publisher.
-   *
-   * @param[in] message Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   *
-   * @dotfile pattern/publisher/publisher_tcp_send_message.dot
-   */
-  bool Send(const T &message) override CHK;
-
-  /**
-   * @brief Add a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
-  bool AddSubscriber(uint32_t id_message) override CHK;
-
-  /**
-   * @brief Remove a subscriber.
-   *
-   * @param[in] id_message The id of the message.
-   *
-   * @return true if no problem.
-   */
-  bool RemoveSubscriber(uint32_t id_message) override CHK;
-
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorPublisherGrpc(ConnectorPublisherGrpc &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   ConnectorPublisherGrpc(ConnectorPublisherGrpc const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc const &other) & =
+  ConnectorPublisherGrpc &operator=(ConnectorPublisherGrpc const &other) =
       delete;
 #endif  // !SWIG
+  ~ConnectorPublisherGrpc() override;
+
+  bool Send(const T &message) override CHK;
+  bool AddSubscriber(uint32_t id_message) override CHK;
+  bool RemoveSubscriber(uint32_t id_message) override CHK;
 
  private:
-  /**
-   * @brief The IP of the server.
-   */
   std::string ip_;
-
-  /**
-   * @brief The port of the server.
-   */
   uint16_t port_;
-
-  /**
-   * @brief Stream to communicate with the server.
-   */
   std::shared_ptr<grpc::ClientReaderWriter<T, T>> stream_;
-
-  /**
-   * @brief Channel of the client.
-   */
   std::shared_ptr<grpc::Channel> channel_;
-
-  /**
-   * @brief Context of the client.
-   */
   grpc::ClientContext context_;
-
-  /**
-   * @brief Necessary variable.
-   */
   std::unique_ptr<typename S::Stub> stub_;
-
-  /**
-   * @brief Thread that listen the server.
-   */
   std::thread receiver_;
 
-  /**
-   * @brief Start connection with server.
-   *
-   * @return true if no problem.
-   */
   bool Connect() CHK;
-
-  /**
-   * @brief The function used by the thread that receive message from server.
-   *
-   * Need to be public so thread can use it. Protected is not possible.
-   */
   void Receiver();
 };
 

@@ -5,11 +5,11 @@
 The abstract factory convert a serialize message to a command.
 
 So you will need:
-  - a protobuf class that will convert serialize message from std::string to a class. The main message must be a union of all different simple message.
+  - a protobuf class that will convert serialize message from `std::string` to a class. The main message must be a union of all different simple message.
   - a common interface will all pure virtual function that all commands must implement,
   - one function for each simple message.
 
-And the factory returns a std::unique_ptr with the command instantiated casted to the common interface.
+And the factory returns a `std::unique_ptr` with the command instantiated casted to the common interface.
 
 # Example
 
@@ -77,7 +77,7 @@ class Factory
     // std::unique_ptr<CommonCommand> and that have one param the global
     // protobuf message.
     map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] =
-        std::bind(&Factory::GetTest, this, std::placeholders::_1);
+        [this](auto x){ return this->GetTest(x); };
   }
 
  private:

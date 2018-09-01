@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-// Test ipv6 publisher
+// Test gRPC publisher
 
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.h>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
 #include <2lgc/pattern/publisher/publisher_grpc.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
-#include <2lgc/pattern/publisher/subscriber.h>
+#include <2lgc/pattern/publisher/subscriber_local.h>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>
 #include <2lgc/utils/count_lock.h>
 #include <google/protobuf/stubs/common.h>
@@ -35,32 +36,35 @@
 #include <map>
 #include <memory>
 #include <thread>
-#include <type_traits>
 #include "rpc.grpc.pb.h"
 #include "rpc.pb.h"
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.cc>
+#include <2lgc/pattern/publisher/connector_subscriber.cc>
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.cc>
 #include <2lgc/pattern/publisher/publisher_grpc.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/publisher_ip.cc>
-#include <2lgc/pattern/publisher/subscriber.cc>
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.cc>
 
 template class llgc::pattern::publisher::ConnectorInterface<
+    llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::ConnectorPublisherGrpc<
+    llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>;
+template class llgc::pattern::publisher::ConnectorSubscriber<
+    llgc::protobuf::test::Rpc>;
+template class llgc::pattern::publisher::ConnectorSubscriberGrpc<
     llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherInterface<
     llgc::protobuf::test::Rpc,
     std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<
         llgc::protobuf::test::Rpc>>>;
-template class llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherGrpc<
     llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
-template class llgc::pattern::publisher::ConnectorPublisherGrpc<
-    llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>;
-template class llgc::pattern::publisher::ConnectorSubscriberGrpc<
+template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::SubscriberServerGrpc<
     llgc::protobuf::test::Rpc>;
@@ -68,16 +72,16 @@ template class llgc::pattern::publisher::SubscriberServerGrpc<
 /**
  * @brief Implementation of the subscriber.
  */
-class SubscriberBase final
-    : public llgc::pattern::publisher::Subscriber<llgc::protobuf::test::Rpc>
+class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
+                             llgc::protobuf::test::Rpc>
 {
  public:
-  explicit SubscriberBase(uint32_t id) : Subscriber(id), value(0) {}
-  ~SubscriberBase() override = default;
-  SubscriberBase(SubscriberBase&& other) = delete;
-  SubscriberBase(SubscriberBase const& other) = delete;
-  SubscriberBase& operator=(SubscriberBase&& other) & = delete;
-  SubscriberBase& operator=(SubscriberBase const& other) & = delete;
+  explicit Subscriber(uint32_t id) : SubscriberLocal(id), value(0) {}
+  ~Subscriber() override = default;
+  Subscriber(Subscriber&& other) = delete;
+  Subscriber(Subscriber const& other) = delete;
+  Subscriber& operator=(Subscriber&& other) & = delete;
+  Subscriber& operator=(Subscriber const& other) & = delete;
 
   bool Listen(const llgc::protobuf::test::Rpc& messages) override
   {
@@ -129,7 +133,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(server->Wait());
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
-  auto subscriber = std::make_shared<SubscriberBase>(1);
+  auto subscriber = std::make_shared<Subscriber>(1);
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
           llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(

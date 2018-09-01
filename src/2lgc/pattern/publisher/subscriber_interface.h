@@ -22,97 +22,33 @@
 #include <memory>
 #include <string>
 
-/**
- * @brief Google Protobuf stuff.
- */
 namespace google::protobuf
 {
 class Message;
 }
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class ConnectorInterface;
 
-/**
- * @brief Interface that define functions that allow subscriber to communicate
- *        to server and server to subscriber.
- *
- * There's could be two kind of connector. First, direct connection, the other
- * one is connected throw TCP/IP.
- */
 template <typename T>
 class SubscriberInterface
 {
-  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,  // NS
+  static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  /**
-   * @brief Default constructor.
-   */
   SubscriberInterface() = default;
-
-  /**
-   * @brief Default virtual destructor.
-   */
-  virtual ~SubscriberInterface() = default;
-
-  /**
-   * @brief Send message.
-   *
-   * @param messages Data of the message in ProtoBuf, SerializeToString.
-   *
-   * @return true if no problem.
-   */
-  virtual bool Listen(const T &messages) CHK = 0;
-
-  /**
-   * @brief Compare in connector is the same than the object.
-   *
-   * @param[in] connector The connector to compare with.
-   *
-   * @return true if the same.
-   */
-  virtual bool Equals(const SubscriberInterface<T> &connector) const = 0;
-
 #ifndef SWIG
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   SubscriberInterface(SubscriberInterface &&other) = delete;
-
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other The original.
-   */
   SubscriberInterface(SubscriberInterface const &other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
   SubscriberInterface &operator=(SubscriberInterface &&other) = delete;
-
-  /**
-   * @brief Delete the copy operator.
-   *
-   * @param[in] other The original.
-   *
-   * @return Delete function.
-   */
-  SubscriberInterface &operator=(SubscriberInterface const &other) & = delete;
+  SubscriberInterface &operator=(SubscriberInterface const &other) = delete;
 #endif  // !SWIG
+  virtual ~SubscriberInterface() = default;
+  virtual bool Listen(const T &messages) CHK = 0;
+  virtual bool Equals(const SubscriberInterface<T> &connector) const = 0;
 };
 
 }  // namespace llgc::pattern::publisher

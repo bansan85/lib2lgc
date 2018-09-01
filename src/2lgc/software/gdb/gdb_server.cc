@@ -36,6 +36,14 @@ template class llgc::pattern::publisher::PublisherInterface<
 template class llgc::pattern::Singleton<
     llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 
+/** \class llgc::software::gdb::GdbServer
+ * \brief Class to run gdb for various purpose.
+ */
+
+/** \brief Send the message to all subscribers.
+ * \param[in] message The message to send.
+ * \return true if no problem.
+ */
 bool llgc::software::gdb::GdbServer::Forward(
     const llgc::protobuf::software::Gdb& message)
 {

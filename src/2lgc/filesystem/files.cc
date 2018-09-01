@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+/** \file files.cc
+ * Extend manipulation of filesystem.
+ */
+
 #include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
 #include <2lgc/text/string_ext.h>
@@ -23,6 +27,22 @@
 #include <regex>
 #include <sstream>
 
+/** \namespace llgc::filesystem
+ * \brief Ease manipulation of file and folder in filesystem.
+ *
+ *
+ * \class llgc::filesystem::Files
+ * \brief Class that manipulate the filesystem.
+ */
+
+/** \brief List all files from a folder.
+ * \param[in] folder The root folder.
+ * \param[in] regex The regex in ECMAScript regular expression grammar
+ *       (javascript).
+ * \param[out] files All the files. files is not clear if not empty.
+ *       Can't be null.
+ * \return true if no problem.
+ */
 bool llgc::filesystem::Files::SearchRecursiveFiles(
     const std::string& folder, const std::string& regex,
     std::vector<std::string>* files)
@@ -33,7 +53,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     std::regex reg(regex);
 
     BUGUSER(std::cout, std::experimental::filesystem::is_directory(folder),
-            false, folder + " is not a folder.\n");
+            false, "\"" + folder + "\" is not a folder.\n");
 
     std::vector<std::string> error_files;
 
@@ -58,7 +78,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
     }
 
     BUGUSER(std::cout, error_files.empty(), false,
-            "Failed to read folder " + folder + " : " +
+            "Failed to read folder \"" + folder + "\": " +
                 llgc::text::StringExt::Join(error_files, ", ") + ".\n");
 
     return true;
@@ -66,7 +86,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
   catch (const std::regex_error& e)
   {
     BUGUSER(std::cout, false, false,
-            "Invalid rexeg " + regex + " : " + e.what() + "\n");
+            "Invalid rexeg \"" + regex + "\": " + e.what() + "\n");
   }
 }
 

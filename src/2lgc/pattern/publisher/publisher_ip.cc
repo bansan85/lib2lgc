@@ -17,15 +17,21 @@
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
 
-/**
- * @brief Namespace for the pattern publisher.
- */
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class ConnectorInterface;
 }
 
+/** \class llgc::pattern::publisher::PublisherIp
+ * \brief Interface to create a TCP server.
+ * \tparam T Message from protobuf.
+ * \dotfile pattern/publisher/publisher_tcp.dot
+ */
+
+/** \brief Constructor with port for the TCP server.
+ * \param[in] port The port to listen from.
+ */
 template <typename T>
 llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
     : llgc::pattern::publisher::PublisherInterface<
@@ -35,6 +41,7 @@ llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
 {
 }
 
+/// \brief Destructor. Make sure that thread is finished.
 template <typename T>
 llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 {
@@ -42,6 +49,21 @@ llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
   PublisherIp<T>::JoinWait();
 }
 
+/** \fn bool llgc::pattern::publisher::PublisherIp::Listen()
+ * \brief Start the server and the listening the port.
+ * \return true if no problem.
+ *
+ *
+ * \fn bool llgc::pattern::publisher::PublisherIp::Wait()
+ * \brief Wait for client.
+ * \return true if no problem.
+ *
+ *
+ * \fn void llgc::pattern::publisher::PublisherIp::Stop()
+ * \brief Stop the thread.
+ */
+
+/// \brief Join the waiting thread.
 template <typename T>
 void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
 {
@@ -50,5 +72,40 @@ void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
     thread_wait_.join();
   }
 }
+
+/** \fn uint16_t llgc::pattern::publisher::PublisherIp::GetPort()
+ * \brief Return the port.
+ * \return The port.
+ *
+ *
+ * \fn llgc::pattern::publisher::PublisherIp::PublisherIp(PublisherIp&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::pattern::publisher::PublisherIp::PublisherIp(PublisherIp const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn PublisherIp& llgc::pattern::publisher::PublisherIp::operator=(PublisherIp&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn PublisherIp& llgc::pattern::publisher::PublisherIp::operator=(PublisherIp const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherIp::thread_wait_
+ * \brief Thread that run the Wait function and add socket to thread_sockets_.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherIp::port_
+ * \brief Port to listen from.
+ */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
