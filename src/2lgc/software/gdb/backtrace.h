@@ -58,6 +58,7 @@ class Backtrace
   const std::string& GetName() const CHK { return function_.GetName(); }
   size_t GetLine() const CHK { return line_; }
   size_t GetIndex() const CHK { return index_; }
+  uint64_t GetAddress() const CHK { return address_; }
 
  private:
   size_t index_ = 0;

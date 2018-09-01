@@ -207,6 +207,11 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
  * \fn size_t llgc::software::gdb::Backtrace::GetIndex() const
  * \brief Get the index of the backtrace.
  * \return The indef of the backtrace.
+ *
+ *
+ * \fn uint64_t llgc::software::gdb::Backtrace::GetAddress() const
+ * \brief Get the memory address of the backtrace.
+ * \return  The address. Can be 0 if omitted.
  */
 
 /** \var llgc::software::gdb::Backtrace::index_
@@ -343,12 +348,27 @@ size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
   // fileFormat=std::shared_ptr (count 3, weak 0) 0x555557048130
   do
   {
-    pos_comma = args.find(", ", start_find);
 
-    if (pos_comma == std::string::npos)
+    do
     {
-      return args.length();
+      pos_comma = args.find(", ", start_find);
+
+      if (pos_comma == std::string::npos)
+      {
+        return args.length();
+      }
+
+      // other test case:
+      // "xxxx", 'y' <repeats 15 times>, "zzzz"
+      if (args.length() == pos_comma + 2)
+      {
+        return args.length();
+      }
+
+      start_find = pos_comma + 1;
     }
+    while (args[pos_comma + 2] == '\'' || args[pos_comma + 2] == '"');
+
     for (size_t i = 0; i < pos_comma; i++)
     {
       if (args[i] == '(')

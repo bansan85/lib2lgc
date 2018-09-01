@@ -31,6 +31,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
           "interface_=<optimized out>, ext=<optimized out>) at "
           "libraries/libdxfrw/src/libdxfrw.cpp:99");
   assert(bt != nullptr);
+  assert(bt->GetAddress() == 0x000055555571cb4c);
   assert(bt->HasSource());
   assert(bt->GetName() == "dxfRW::read");
   assert(bt->GetFile() == "libraries/libdxfrw/src/libdxfrw.cpp");
@@ -42,6 +43,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       "#10 0x401d7877 in gtk_marshal_NONE__NONE () "
       "from /usr/lib/libgtk-1.2.so.0");
   assert(bt != nullptr);
+  assert(bt->GetAddress() == 0x401d7877);
   assert(bt->HasSource());
   assert(bt->GetFile() == "/usr/lib/libgtk-1.2.so.0");
   assert(bt->GetName() == "gtk_marshal_NONE__NONE");
@@ -52,10 +54,33 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   bt = llgc::software::gdb::Backtrace::Factory(
       "#8  0x00002b2153382d4a in ?? ()");
   assert(bt != nullptr);
+  assert(bt->GetAddress() == 0x00002b2153382d4a);
   assert(!bt->HasSource());
   assert(bt->GetName() == "??");
   assert(bt->GetIndex() == 8);
   assert(bt->GetLine() == std::numeric_limits<size_t>::max());
+
+  // No adress
+  bt = llgc::software::gdb::Backtrace::Factory(
+      "#3  emit_page (g=0x555555607000, job=0x55555557fa50) at emit.c:3537");
+  assert(bt != nullptr);
+  assert(bt->GetAddress() == 0);
+  assert(bt->HasSource());
+  assert(bt->GetFile() == "emit.c");
+  assert(bt->GetName() == "emit_page");
+  assert(bt->GetIndex() == 3);
+  assert(bt->GetLine() == 3537);
+
+  // Complex string
+  bt = llgc::software::gdb::Backtrace::Factory("#0  findStopColor (colorlist=colorlist@entry=0x555555588c20 \"XXX\", 'p' <repeats 15 times>, \"YYY\"..., clrs=clrs@entry=0x7fffffffd270, frac=frac@entry=0x7fffffffd26c) at emit.c:4231");
+  assert(bt != nullptr);
+  assert(bt->GetAddress() == 0);
+  assert(bt->HasSource());
+  assert(bt->GetFile() == "emit.c");
+  assert(bt->GetName() == "findStopColor");
+  assert(bt->GetIndex() == 0);
+  assert(bt->GetLine() == 4231);
+
 
   // Check wrong lines.
   // Line to small
