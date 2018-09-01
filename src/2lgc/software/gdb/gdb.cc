@@ -29,7 +29,6 @@
 #include <cstring>
 #include <ext/alloc_traits.h>
 #include <fstream>
-#include <functional>
 #include <future>
 #include <iostream>
 #include <memory>
@@ -184,13 +183,12 @@ bool ParallelRun(const std::vector<std::string>& all_files,
   for (size_t t = 0; t < nthreads; t++)
   {
     threads[t] = std::async(
-        std::launch::async,
-        [&all_files, nthreads, argc, argv, timeout, t] {
+        std::launch::async, [&all_files, nthreads, argc, argv, timeout, t] {
           bool retval2 = true;
           for (size_t i = t; i < all_files.size(); i += nthreads)
           {
-            retval2 &= llgc::software::gdb::Gdb::RunBtFull(
-                all_files[i], argc, argv, timeout);
+            retval2 &= llgc::software::gdb::Gdb::RunBtFull(all_files[i], argc,
+                                                           argv, timeout);
           }
           return retval2;
         });

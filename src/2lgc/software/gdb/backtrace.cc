@@ -348,7 +348,6 @@ size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
   // fileFormat=std::shared_ptr (count 3, weak 0) 0x555557048130
   do
   {
-
     do
     {
       pos_comma = args.find(", ", start_find);
@@ -366,8 +365,7 @@ size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
       }
 
       start_find = pos_comma + 1;
-    }
-    while (args[pos_comma + 2] == '\'' || args[pos_comma + 2] == '"');
+    } while (args[pos_comma + 2] == '\'' || args[pos_comma + 2] == '"');
 
     for (size_t i = 0; i < pos_comma; i++)
     {

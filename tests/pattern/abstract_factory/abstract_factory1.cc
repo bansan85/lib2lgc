@@ -19,7 +19,6 @@
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <ext/alloc_traits.h>
-#include <functional>
 #include <memory>
 #include <string>
 #include <utility>
@@ -138,7 +137,8 @@ class Factory : public llgc::pattern::AbstractFactory<
   Factory()
       : AbstractFactory(llgc::protobuf::test::AbstractFactoryMsg::kTest + 1)
   {
-    map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] = [this](auto x){return this->GetTest(x);};
+    map_factory_[llgc::protobuf::test::AbstractFactoryMsg::kTest] =
+        [this](auto x) { return this->GetTest(x); };
   }
 
  private:

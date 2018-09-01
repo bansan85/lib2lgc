@@ -31,7 +31,6 @@
 #include <cstdint>
 #include <ext/alloc_traits.h>
 #include <fstream>
-#include <functional>
 #include <future>
 #include <iostream>
 #include <iterator>
@@ -461,13 +460,14 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
     const std::vector<std::string>& all_files, unsigned int nthread)
 {
   bool retval = true;
-  unsigned int nthreads = std::min(std::min(nthread, std::thread::hardware_concurrency()), static_cast<unsigned int>(all_files.size()));
+  unsigned int nthreads =
+      std::min(std::min(nthread, std::thread::hardware_concurrency()),
+               static_cast<unsigned int>(all_files.size()));
   std::vector<std::future<bool>> threads(nthreads);
   for (size_t t = 0; t < nthreads; t++)
   {
-    threads[t] = std::async(
-        std::launch::async,
-        [&all_files, this, nthreads, t]() {
+    threads[t] =
+        std::async(std::launch::async, [&all_files, this, nthreads, t]() {
           bool retval2 = true;
           for (size_t i = t; i < all_files.size(); i += nthreads)
           {

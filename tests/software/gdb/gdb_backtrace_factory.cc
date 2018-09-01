@@ -72,7 +72,10 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(bt->GetLine() == 3537);
 
   // Complex string
-  bt = llgc::software::gdb::Backtrace::Factory("#0  findStopColor (colorlist=colorlist@entry=0x555555588c20 \"XXX\", 'p' <repeats 15 times>, \"YYY\"..., clrs=clrs@entry=0x7fffffffd270, frac=frac@entry=0x7fffffffd26c) at emit.c:4231");
+  bt = llgc::software::gdb::Backtrace::Factory(
+      "#0  findStopColor (colorlist=colorlist@entry=0x555555588c20 \"XXX\", "
+      "'p' <repeats 15 times>, \"YYY\"..., clrs=clrs@entry=0x7fffffffd270, "
+      "frac=frac@entry=0x7fffffffd26c) at emit.c:4231");
   assert(bt != nullptr);
   assert(bt->GetAddress() == 0);
   assert(bt->HasSource());
@@ -80,7 +83,6 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(bt->GetName() == "findStopColor");
   assert(bt->GetIndex() == 0);
   assert(bt->GetLine() == 4231);
-
 
   // Check wrong lines.
   // Line to small

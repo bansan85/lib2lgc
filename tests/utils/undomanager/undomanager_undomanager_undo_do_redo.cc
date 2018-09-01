@@ -52,10 +52,12 @@ class Factory : public llgc::pattern::AbstractFactory<
       : AbstractFactory(llgc::protobuf::test::UndoManager1::kFail + 1),
         number_ref_(number_ref)
   {
-    map_factory_[llgc::protobuf::test::UndoManager1::kAdd] =
-        [this](auto x){ return this->Add(x); };
-    map_factory_[llgc::protobuf::test::UndoManager1::kFail] =
-        [this](auto x){ return this->Fail(x); };
+    map_factory_[llgc::protobuf::test::UndoManager1::kAdd] = [this](auto x) {
+      return this->Add(x);
+    };
+    map_factory_[llgc::protobuf::test::UndoManager1::kFail] = [this](auto x) {
+      return this->Fail(x);
+    };
   }
 
  private:
