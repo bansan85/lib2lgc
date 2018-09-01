@@ -108,7 +108,7 @@ class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
   size_t value;
 };
 
-static void WaitUpToOneSecond(const std::function<bool()>& test)
+static void WaitUpToTenSecond(const std::function<bool()>& test)
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();
@@ -118,7 +118,7 @@ static void WaitUpToOneSecond(const std::function<bool()>& test)
     assert(
         static_cast<size_t>(
             std::chrono::duration_cast<std::chrono::milliseconds>(end - start)
-                .count()) < 1000);
+                .count()) < 10000);
   } while (!test());
 }
 
@@ -151,7 +151,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto message_test = std::make_unique<llgc::protobuf::test::Rpc_Msg_Test>();
   message->set_allocated_test(message_test.release());
   assert(connector->Send(messages));
-  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 1; });
+  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 1; });
 
   // Test lock forward.
   subscriber->value = 0;
@@ -162,7 +162,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     assert(subscriber->value == 0);
   }
-  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 1; });
+  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 1; });
 
   // Remove the first subscriber.
   subscriber->value = 0;
@@ -181,13 +181,13 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       connector->AddSubscriber(llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
-  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 2; });
   assert(connector->RemoveSubscriber(
+  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 2; });
       llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
-  WaitUpToOneSecond([&subscriber]() { return subscriber->value == 3; });
   assert(connector->RemoveSubscriber(
+  WaitUpToTenSecond([&subscriber]() { return subscriber->value == 3; });
       llgc::protobuf::test::Rpc_Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(connector->Send(messages));
