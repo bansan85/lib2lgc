@@ -40,4 +40,4 @@ add_subdirectory(src)
 add_subdirectory(tests)
 
 set(REMOVE_COVERAGE '${CMAKE_CURRENT_SOURCE_DIR}/tests/*' '${CMAKE_CURRENT_BINARY_DIR}/*' '/usr/include/*' '*/include/g++*')
-llgc_check_all("${ALL_SOURCE_FILES}" TRUE "${REMOVE_COVERAGE}")
+llgc_check_all("${ALL_SOURCE_FILES}" FALSE "${REMOVE_COVERAGE}")
