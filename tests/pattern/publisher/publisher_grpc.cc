@@ -23,14 +23,12 @@
 #include <2lgc/pattern/publisher/publisher_grpc.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
-#include <2lgc/pattern/publisher/subscriber_local.h>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>
 #include <google/protobuf/stubs/common.h>
 #include <grpcpp/impl/codegen/status.h>
 #include <cassert>
 #include <chrono>
 #include <cstddef>
-#include <cstdint>
 #include <map>
 #include <memory>
 #include <thread>
@@ -45,7 +43,6 @@
 #include <2lgc/pattern/publisher/publisher_grpc.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/publisher_ip.cc>
-#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.cc>
 #include "publisher_all.cc"
 
@@ -64,49 +61,8 @@ template class llgc::pattern::publisher::PublisherInterface<
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherGrpc<
     llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
-template class llgc::pattern::publisher::SubscriberLocal<
-    llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::SubscriberServerGrpc<
     llgc::protobuf::test::Rpc>;
-
-/**
- * @brief Implementation of the subscriber.
- */
-class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
-                             llgc::protobuf::test::Rpc>
-{
- public:
-  explicit Subscriber(uint32_t id) : SubscriberLocal(id), value(0) {}
-  ~Subscriber() override = default;
-  Subscriber(Subscriber&& other) = delete;
-  Subscriber(Subscriber const& other) = delete;
-  Subscriber& operator=(Subscriber&& other) & = delete;
-  Subscriber& operator=(Subscriber const& other) & = delete;
-
-  bool Listen(const llgc::protobuf::test::Rpc& messages) override
-  {
-    for (int i = 0; i < messages.msg_size(); i++)
-    {
-      const auto& message = messages.msg(i);
-
-      switch (message.data_case())
-      {
-        case llgc::protobuf::test::Rpc_Msg::DataCase::kTest:
-        {
-          value++;
-          break;
-        }
-        case llgc::protobuf::test::Rpc_Msg::DataCase::DATA_NOT_SET:
-        case llgc::protobuf::test::Rpc_Msg::DataCase::kAddSubscriber:
-        case llgc::protobuf::test::Rpc_Msg::DataCase::kRemoveSubscriber:
-        default:
-          assert(false);
-      }
-    }
-    return true;
-  }
-  size_t value;
-};
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
@@ -119,7 +75,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(server->Wait());
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
-  auto subscriber = std::make_shared<Subscriber>(1);
+  auto subscriber = std::make_shared<
+      llgc::pattern::publisher::test::Subscriber<llgc::protobuf::test::Rpc>>(1);
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherGrpc<
           llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter>>(
@@ -127,7 +84,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(subscriber->SetConnector(connector));
 
   llgc::pattern::publisher::test::Publisher::All<
-      llgc::protobuf::test::Rpc, Subscriber,
+      llgc::protobuf::test::Rpc,
+      llgc::pattern::publisher::test::Subscriber<llgc::protobuf::test::Rpc>,
       llgc::pattern::publisher::PublisherGrpc<
           llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>>(
       subscriber.get(), server.get(), delay);

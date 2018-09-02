@@ -19,9 +19,72 @@
 
 #include <functional>
 #include <thread>
+#include <2lgc/pattern/publisher/subscriber_local.h>
+
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 
 namespace llgc::pattern::publisher::test
 {
+/**
+ * @brief Simple implementation of a direct subscriber.
+ */
+template <typename T>
+class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<T>
+{
+ public:
+  /**
+   * @brief Default constructor.
+   *
+   * @param[in] id Id of the subscriber.
+   */
+  explicit Subscriber(uint32_t id)
+      : SubscriberLocal<T>(id),
+        value(0),
+        message_vector(T::Msg::DataCase::kTest + 1)
+  {
+    message_vector[0] = nullptr;
+    message_vector[T::Msg::DataCase::kTest] = &Subscriber::TestFct;
+  }
+
+  /**
+   * @brief Receive message from publisher.
+   *
+   * @param[in] messages Message from the publisher in protobuf format.
+   */
+  bool Listen(const T& messages) override
+  {
+    for (int i = 0; i < messages.msg_size(); i++)
+    {
+      const typename T::Msg& message = messages.msg(i);
+
+      assert(message_vector[message.data_case()] != nullptr);
+      message_vector[message.data_case()](*this, message);
+    }
+    return true;
+  }
+
+  /**
+   * @brief Function that will be run with test event.
+   *
+   * @param[in] message Action that contains the test event.
+   */
+  void TestFct(const typename T::Msg& message)
+  {
+    (void)message;
+    value++;
+  }
+
+  /**
+   * @brief value for test.
+   */
+  size_t value;
+
+  /**
+   * @brief Function to execute.
+   */
+  std::vector<std::function<void(Subscriber&, const typename T::Msg&)>> message_vector;
+};
+
 class Publisher
 {
  public:

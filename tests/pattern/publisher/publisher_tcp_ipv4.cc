@@ -27,12 +27,10 @@
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
-#include <2lgc/pattern/publisher/subscriber_local.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <cstddef>
-#include <cstdint>
 #include <map>
 #include <memory>
 #include "publisher_all.h"
@@ -48,7 +46,6 @@
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc>
-#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 #include "publisher_all.cc"
 
@@ -61,8 +58,6 @@ template class llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
 template class llgc::pattern::publisher::ConnectorSubscriber<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::ConnectorSubscriberTcp<
-    llgc::protobuf::test::Tcp>;
-template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::SubscriberServerTcp<
     llgc::protobuf::test::Tcp>;
@@ -78,92 +73,6 @@ template class llgc::pattern::publisher::PublisherTcpLinux<
 template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<
     llgc::protobuf::test::Tcp>;
 
-/**
- * @brief Simple implementation of a direct subscriber.
- */
-class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<
-                             llgc::protobuf::test::Tcp>
-{
- public:
-  /**
-   * @brief Default constructor.
-   *
-   * @param[in] id Id of the subscriber.
-   */
-  explicit Subscriber(uint32_t id) : SubscriberLocal(id), value(0) {}
-
-  /**
-   * @brief Default destructor.
-   */
-  ~Subscriber() override = default;
-
-  /**
-   * @brief Delete move constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  Subscriber(Subscriber&& other) = delete;
-  /**
-   * @brief Delete copy constructor.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  Subscriber(Subscriber const& other) = delete;
-  /**
-   * @brief Delete move operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  Subscriber& operator=(Subscriber&& other) & = delete;
-  /**
-   * @brief Delete copy operator.
-   *
-   * @param[in] other Don't care.
-   *
-   * @return Nothing.
-   */
-  Subscriber& operator=(Subscriber const& other) & = delete;
-
-  /**
-   * @brief Receive message from publisher.
-   *
-   * @param[in] messages Message from the publisher in protobuf format.
-   */
-  bool Listen(const llgc::protobuf::test::Tcp& messages) override
-  {
-    for (int i = 0; i < messages.msg_size(); i++)
-    {
-      const auto& message = messages.msg(i);
-
-      switch (message.data_case())
-      {
-        case llgc::protobuf::test::Tcp_Msg::DataCase::kTest:
-        {
-          value++;
-          break;
-        }
-        case llgc::protobuf::test::Tcp_Msg::DataCase::DATA_NOT_SET:
-        case llgc::protobuf::test::Tcp_Msg::DataCase::kAddSubscriber:
-        case llgc::protobuf::test::Tcp_Msg::DataCase::kRemoveSubscriber:
-        default:
-          assert(false);
-      }
-    }
-    return true;
-  }
-
-  /**
-   * @brief value for test.
-   */
-  size_t value;
-};
-
 int main(int /* argc */, char* /* argv */ [])  // NS
 {
   constexpr size_t delay = 30;
@@ -177,7 +86,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(server->Listen());
   assert(server->Wait());
 
-  auto subscriber = std::make_shared<Subscriber>(1);
+  auto subscriber = std::make_shared<
+      llgc::pattern::publisher::test::Subscriber<llgc::protobuf::test::Tcp>>(1);
 
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
@@ -185,7 +95,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   assert(subscriber->SetConnector(connector));
 
   llgc::pattern::publisher::test::Publisher::All<
-      llgc::protobuf::test::Tcp, Subscriber,
+      llgc::protobuf::test::Tcp,
+      llgc::pattern::publisher::test::Subscriber<llgc::protobuf::test::Tcp>,
       llgc::pattern::publisher::PublisherTcpLinuxIpv4<
           llgc::protobuf::test::Tcp>>(subscriber.get(), server.get(), delay);
 
