@@ -18,7 +18,6 @@
 #define POCO_NUMBER_H_
 
 #include <2lgc/compat.h>
-#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/visitor/visitable.h>
 #include <2lgc/poco/math_number.pb.h>
 

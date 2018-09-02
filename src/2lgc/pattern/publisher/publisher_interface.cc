@@ -15,9 +15,7 @@
  */
 
 #include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/poco/software_gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/utils/count_lock.h>
 #include <iostream>
 #include <memory>

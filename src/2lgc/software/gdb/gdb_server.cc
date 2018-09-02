@@ -19,6 +19,7 @@
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/singleton.h>
+#include <2lgc/poco/software_gdb.pb.h>  // IWYU pragma: keep. Need by publisher_interface.cc
 #include <2lgc/software/gdb/gdb_server.h>
 #include <iostream>
 #include <memory>

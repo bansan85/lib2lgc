@@ -16,7 +16,7 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/utils/tree.h>
-#include <algorithm>  // IWYU pragma: keep
+#include <algorithm>  // IWYU pragma: keep. If missing IWYU wants it for std::max. If defined, IWYU wants to remove it.
 #include <cstddef>
 #include <iostream>
 #include <string>

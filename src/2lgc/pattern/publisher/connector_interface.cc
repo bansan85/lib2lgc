@@ -16,7 +16,7 @@
 
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep
+#include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep. IWYU wants to remove it but subscriber_->Equals will fails.
 #include <iostream>
 #include <typeinfo>
 

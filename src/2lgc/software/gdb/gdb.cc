@@ -34,6 +34,7 @@
 #include <memory>
 #include <system_error>
 #include <thread>
+#include <type_traits>  // IWYU pragma: keep. No for GCC-8. GCC-6 wants.
 #include <vector>
 
 #include <2lgc/pattern/publisher/publisher_interface.cc>

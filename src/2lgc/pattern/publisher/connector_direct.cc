@@ -17,7 +17,6 @@
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_direct.h>  // IWYU pragma: keep
 #include <iostream>
 
 /** \namespace llgc::pattern::publisher
