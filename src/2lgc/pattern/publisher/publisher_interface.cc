@@ -258,8 +258,7 @@ llgc::utils::thread::CountLock<size_t>
 llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
 {
   return llgc::utils::thread::CountLock<size_t>(
-      &lock_forward_, &mutex_forward_,
-      [this] { return ForwardPending(); });
+      &lock_forward_, &mutex_forward_, [this] { return ForwardPending(); });
 }
 
 /** \fn llgc::pattern::publisher::PublisherInterface::PublisherInterface(PublisherInterface&& other)

@@ -55,13 +55,15 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   std::unique_ptr<T> t4 = std::make_unique<T>("4");
   std::unique_ptr<T> t5 = std::make_unique<T>("5");
 
-  //  0
-  // / \
-  // 1  2
-  // |\
-  // 3 4
-  // |
-  // 5
+  /*
+   *  0
+   * / \
+   * 1  2
+   * |\
+   * 3 4
+   * |
+   * 5
+   */
 
   llgc::utils::Tree<T> root(0, std::move(t0), nullptr);
   // Number 1
@@ -96,13 +98,15 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   t4 = std::make_unique<T>("4");
   t5 = std::make_unique<T>("5");
 
-  //  0
-  // / \
-  // 1  2
-  // |\
-  // 3 4
-  // |
-  // 5
+  /*
+   *  0
+   * / \
+   * 1  2
+   * |\
+   * 3 4
+   * |
+   * 5
+   */
 
   llgc::utils::Tree<T> root2(0, std::move(t0), nullptr);
   // Number 1

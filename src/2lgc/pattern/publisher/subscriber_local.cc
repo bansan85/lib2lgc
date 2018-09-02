@@ -23,7 +23,7 @@ class SubscriberInterface;
 
 template <typename T>
 class ConnectorInterface;
-}
+}  // namespace llgc::pattern::publisher
 
 /** \class llgc::pattern::publisher::SubscriberLocal
  * \brief Interface that define functions that allow subscriber to communicate

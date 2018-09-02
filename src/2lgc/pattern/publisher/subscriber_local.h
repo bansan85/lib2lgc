@@ -31,6 +31,9 @@ class Message;
 namespace llgc::pattern::publisher
 {
 template <typename T>
+class ConnectorInterface;
+
+template <typename T>
 class SubscriberLocal : public SubscriberInterface<T>
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,

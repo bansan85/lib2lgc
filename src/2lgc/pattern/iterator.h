@@ -30,7 +30,7 @@ class Iterator
  public:
   Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
 #ifndef SWIG
-  Iterator(Iterator&& other) = default;
+  Iterator(Iterator&& other) = delete;
   Iterator(Iterator const& other) = delete;
   Iterator& operator=(Iterator&& other) = delete;
   Iterator& operator=(Iterator const& other) = delete;

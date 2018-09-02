@@ -38,7 +38,7 @@ class CountLock
   }
 
 #ifndef SWIG
-  CountLock(CountLock&& other) = default;
+  CountLock(CountLock&& other) = delete;
   CountLock(CountLock const& other) = delete;
   CountLock& operator=(CountLock&& other) = delete;
   CountLock& operator=(CountLock const& other) = delete;

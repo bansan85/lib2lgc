@@ -25,14 +25,14 @@
 #include <thread>
 #include <utility>
 
-namespace llgc::pattern::publisher {
+namespace llgc::pattern::publisher
+{
 template <typename T>
 class ConnectorSubscriberGrpc;
 
 template <typename T>
 class SubscriberServerGrpc;
-}
-
+}  // namespace llgc::pattern::publisher
 
 /** \class llgc::pattern::publisher::PublisherGrpc
  * \brief Interface to create a TCP server.
@@ -65,6 +65,7 @@ template <typename T, typename S>
 grpc::Status llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
     grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream)
 {
+  (void)!!context;
   // One endless thread for each connexion.
   // But same 'this' for everyone.
   T messages;
