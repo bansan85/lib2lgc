@@ -33,8 +33,6 @@ make check
 
 `-DCLANG_TIDY=...` path to clang-tidy program. Optional for `make check`.
 
-`-DNSIQCPPSTYLE=...` path to nsiqcppstyle program. Optional for `make check`.
-
 `-DPMD_BIN=...` path to run.sh program. Optional for `make check`.
 
 `-DSWIG=...` path to swig program. Optional for `make check`.
