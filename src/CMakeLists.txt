@@ -22,7 +22,7 @@ set_target_properties(2lgc
   PROPERTIES FRAMEWORK TRUE
   PUBLIC_HEADER "${2LGC_HEADERS} ${PROTO_HEADERS}")
 
-if (CHECK_CODE)
+if (IWYU)
   set_target_properties(2lgc PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
 endif()
 

@@ -15,29 +15,41 @@ make
 make check
 ```
 
-## Options
-
-### Compilation
+## Compilation
 
 `-DCMAKE_CXX_FLAGS=...` custom flags.
 
 `CC=clang CXX=clang++ cmake -DCMAKE_EXE_LINKER_FLAGS="-lgcc_s"` for clang support in gcc environment.
 
-`-DCHECK_CODE=1` Add optimisations and warnings and run a lot of static analyser: iwyu, coverage with lcov and genhtml, clang-format, cpplint, cppcheck, clang-tidy with run-clang-tidy.py, doxygen, nsiqcppstyle, pmd, coverity.
+## Quality
 
-`-Diwyu_path=...` path to iwyu folder. Optional for `make check`.
+`-DWALL=1` Add lots of warnings.
 
-`-DCLANG_FORMAT=...` path to clang-format program. Optional for `make check`.
+`-DCLANGFORMAT=1` Enable clang-format.
 
-`-DCPPLINT=...` path to cpplint.py program. Optional for `make check`.
+`-DCLANG_FORMAT=...` path to clang-format program.
 
-`-DCLANG_TIDY=...` path to clang-tidy program. Optional for `make check`.
+`-DIWYU=1` Enable include-what-you-use.
+
+`-Diwyu_path=...` path to iwyu folder.
+
+`-DCOVERAGE=1` Enable coverage.
+
+`-DCPP_LINT=1` Enable cpplint.
+
+`-DCPPLINT=...` path to cpplint.py program.
+
+`-DCLANGTIDY=1` Enable clang-tidy.
+
+`-DCLANG_TIDY=...` path to clang-tidy program.
+
+`-DPMD=1` Enable pmd.
 
 `-DPMD_BIN=...` path to run.sh program. Optional for `make check`.
 
 `-DSWIG=...` path to swig program. Optional for `make check`.
 
-### Behavious
+## Behavious
 
 `-DDISABLE_VISITABLE_CACHE=1` disable cache in visitor pattern.
 

@@ -13,7 +13,14 @@ find_package(GRPC)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-set(CHECK_CODE)
+set(WALL)
+set(CLANGFORMAT)
+set(IWYU)
+set(COVERAGE)
+set(CPP_LINT)
+set(CLANGTIDY)
+set(PMD)
+
 set(DISABLE_VISITABLE_CACHE)
 set(PROTOBUF_CXX_FLAGS "-Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-global-constructors -Wno-missing-variable-declarations -Wno-c++98-compat-pedantic -Wno-reserved-id-macro -Wno-sign-conversion -Wno-suggest-override")
 

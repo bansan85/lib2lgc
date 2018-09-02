@@ -145,28 +145,17 @@ add_test(tree1 tree1)
 add_test(undomanager_undo_interface_undo_do_redo undomanager_undo_interface_undo_do_redo)
 add_test(undomanager_undomanager_undo_do_redo undomanager_undomanager_undo_do_redo)
 
-if (CHECK_CODE)
-  set_target_properties(files1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(compare_decimal1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(hash1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(visitor1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(abstract_factory1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(publisher_direct PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(publisher_tcp_ipv4 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(publisher_tcp_ipv6 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
+if (IWYU)
+  set_target_properties(files1 compare_decimal1 hash1 visitor1 abstract_factory1
+    publisher_direct publisher_tcp_ipv4 publisher_tcp_ipv6 poco_number
+    gdb_backtrace_factory gdb_set_stack_add gdb_set_stack_add_multiple
+    deadbeef gdb_run_gdb tree1 undomanager_undo_interface_undo_do_redo
+    undomanager_undomanager_undo_do_redo
+    PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   if (GRPC_LIBRARY)
     set_target_properties(publisher_grpc PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   endif()
-  set_target_properties(poco_number PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(gdb_backtrace_factory PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(gdb_set_stack_add PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(gdb_set_stack_add_multiple PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(deadbeef PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(gdb_run_gdb PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(tree1 PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(undomanager_undo_interface_undo_do_redo PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-  set_target_properties(undomanager_undomanager_undo_do_redo PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
-endif()
+endif()  # IWYU
 
 add_custom_command(TARGET check_all_tests POST_BUILD
   COMMAND ${CMAKE_CTEST_COMMAND} --verbose)
