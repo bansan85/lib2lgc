@@ -22,7 +22,7 @@ set(CLANGTIDY)
 set(PMD)
 
 set(DISABLE_VISITABLE_CACHE)
-set(PROTOBUF_CXX_FLAGS "-Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-global-constructors -Wno-missing-variable-declarations -Wno-c++98-compat-pedantic -Wno-reserved-id-macro -Wno-sign-conversion -Wno-suggest-override")
+set(PROTOBUF_CXX_FLAGS "-Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-global-constructors -Wno-missing-variable-declarations -Wno-c++98-compat-pedantic -Wno-reserved-id-macro -Wno-sign-conversion -Wno-suggest-override -Wno-strict-aliasing")
 
 llgc_init_cflags()
 llgc_iwyu()

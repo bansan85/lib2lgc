@@ -31,7 +31,7 @@ class Iterator
   Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
 #ifndef SWIG
   Iterator(Iterator&& other) = delete;
-  Iterator(Iterator const& other) = delete;
+  Iterator(Iterator const& other) = default;  // gcc-6.4 needs default.
   Iterator& operator=(Iterator&& other) = delete;
   Iterator& operator=(Iterator const& other) = delete;
 #endif  // !SWIG

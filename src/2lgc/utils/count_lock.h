@@ -38,7 +38,7 @@ class CountLock
   }
 
 #ifndef SWIG
-  CountLock(CountLock&& other) = delete;
+  CountLock(CountLock&& other) = default;  // gcc-6.4 needs default.
   CountLock(CountLock const& other) = delete;
   CountLock& operator=(CountLock&& other) = delete;
   CountLock& operator=(CountLock const& other) = delete;
