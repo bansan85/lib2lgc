@@ -45,9 +45,9 @@ make check
 
 `-DPMD=1` Enable pmd.
 
-`-DPMD_BIN=...` path to run.sh program. Optional for `make check`.
+`-DPMD_BIN=...` path to run.sh program.
 
-`-DSWIG=...` path to swig program. Optional for `make check`.
+`-DSWIG=...` path to swig program.
 
 ## Behavious
 
