@@ -17,9 +17,11 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
+#cmakedefine OPENSSL_FOUND
+
 #cmakedefine DISABLE_VISITABLE_CACHE
 
-#cmakedefine OPENSSL_FOUND
+#cmakedefine TEMPLATE_CLASS
 
 #endif  // CONFIG_H_
 

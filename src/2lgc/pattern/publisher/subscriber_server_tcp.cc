@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_CC_
+#define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
@@ -42,6 +46,7 @@ class SubscriberInterface;
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
 {
   std::string message_socket;
@@ -54,6 +59,7 @@ bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberServerTcp<T>::Equals(
     const SubscriberInterface<T> &connector) const
 {
@@ -94,5 +100,7 @@ bool llgc::pattern::publisher::SubscriberServerTcp<T>::Equals(
  * \var llgc::pattern::publisher::SubscriberServerTcp::socket_
  * \brief The id of the connector.
  */
+
+#endif  // PATTERN_PUBLISHER_SUBSCRIBER_SERVER_TCP_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

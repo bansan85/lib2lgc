@@ -24,8 +24,6 @@
 #include <utility>
 #include <vector>
 
-#include <2lgc/pattern/abstract_factory.cc>
-
 /**
  * @brief Interface of a command.
  */
@@ -73,8 +71,14 @@ class CommonCommand
   virtual bool Check() = 0;
 };
 
+#ifdef TEMPLATE_CLASS
+#include <2lgc/config.h>
+
+#include <2lgc/pattern/abstract_factory.cc>
+
 template class llgc::pattern::AbstractFactory<
     llgc::protobuf::test::AbstractFactoryMsg, CommonCommand>;
+#endif
 
 /**
  * @brief Example of implementation of command.

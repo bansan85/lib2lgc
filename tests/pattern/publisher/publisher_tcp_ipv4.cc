@@ -17,17 +17,13 @@
 // Test ipv4 publisher
 
 #include <2lgc/net/linux.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.h>
-#include <2lgc/pattern/publisher/connector_subscriber.h>
-#include <2lgc/pattern/publisher/connector_subscriber_tcp.h>
+// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_subscriber_tcp.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/publisher/publisher_ip.h>
-#include <2lgc/pattern/publisher/publisher_tcp.h>
-#include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h>
-#include <2lgc/pattern/publisher/subscriber_server_tcp.h>
+// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/subscriber_server_tcp.h>  // IWYU pragma: keep
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <cstddef>
@@ -35,6 +31,15 @@
 #include <memory>
 #include "publisher_all.h"
 #include "tcp.pb.h"
+
+#ifdef TEMPLATE_CLASS
+#include <2lgc/config.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
+#include <2lgc/pattern/publisher/connector_subscriber.h>
+#include <2lgc/pattern/publisher/publisher_ip.h>
+#include <2lgc/pattern/publisher/publisher_tcp.h>
+#include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
@@ -72,6 +77,7 @@ template class llgc::pattern::publisher::PublisherTcpLinux<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<
     llgc::protobuf::test::Tcp>;
+#endif
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {

@@ -55,6 +55,8 @@ make check
 
 `-DGRPC_LIBRARY=...` path to GRPC library. If you want to add support for GRPC publisher.
 
+`-DTEMPLATE_CLASS=1` Don't use source in header file. So you will need to explicitly add symbol with `template class ...`.
+
 # Dependencies
 
 ## Protobuf

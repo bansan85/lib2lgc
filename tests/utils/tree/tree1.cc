@@ -23,8 +23,6 @@
 #include <string>
 #include <utility>
 
-#include <2lgc/utils/tree.cc>
-
 /**
  * @brief Test class.
  */
@@ -44,7 +42,13 @@ class T
   std::string nom_;
 };
 
+#ifdef TEMPLATE_CLASS
+#include <2lgc/config.h>
+
+#include <2lgc/utils/tree.cc>
+
 template class llgc::utils::Tree<T>;
+#endif
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {

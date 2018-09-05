@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_GRPC_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_GRPC_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.h>
@@ -38,6 +42,7 @@
  * \param[in] port The port of the server.
  */
 template <typename T, typename S>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
     std::shared_ptr<SubscriberInterface<T>> subscriber, std::string ip,
     uint16_t port)
@@ -50,6 +55,7 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
 
 /// \brief Default virtual destructor.
 template <typename T, typename S>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorPublisherGrpc<T,
                                                  S>::~ConnectorPublisherGrpc()
 {
@@ -62,6 +68,7 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T,
 }
 
 template <typename T, typename S>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
     const T &message)
 {
@@ -73,6 +80,7 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
 }
 
 template <typename T, typename S>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::AddSubscriber(
     uint32_t id_message)
 {
@@ -90,6 +98,7 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::AddSubscriber(
 }
 
 template <typename T, typename S>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
     uint32_t id_message)
 {
@@ -160,6 +169,7 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
  * \return true if no problem.
  */
 template <typename T, typename S>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
 {
   if (stub_ != nullptr)
@@ -184,6 +194,7 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
  *         Need to be public so thread can use it. Protected is not possible.
  */
 template <typename T, typename S>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
 {
   T message;
@@ -196,5 +207,7 @@ void llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
   this->stream_.reset();
   this->stub_.reset();
 }
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_GRPC_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

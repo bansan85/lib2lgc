@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
+#ifndef UTILS_UNDOMANAGER_UNDOMANAGER_CC_
+#define UTILS_UNDOMANAGER_UNDOMANAGER_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/utils/undomanager/undomanager.h>
 #include <deque>
 #include <iostream>
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
     std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory)
     : memory_(), abstract_factory_(std::move(abstract_factory))
@@ -27,6 +32,7 @@ llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
     std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory,
     const std::string& file)
@@ -35,6 +41,7 @@ llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
     const std::string& command)
 {
@@ -50,6 +57,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
     size_t id, const std::string& command)
 {
@@ -65,6 +73,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 std::vector<std::string>
 llgc::utils::undomanager::Undomanager<T, U>::DuplicateCommand(size_t start,
                                                               size_t end,
@@ -74,6 +83,7 @@ llgc::utils::undomanager::Undomanager<T, U>::DuplicateCommand(size_t start,
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 bool llgc::utils::undomanager::Undomanager<T, U>::DoCommand(size_t id)
 {
   BUGCRIT(std::cout, memory_ != nullptr, false, "Undomanager empty.\n");
@@ -88,6 +98,7 @@ bool llgc::utils::undomanager::Undomanager<T, U>::DoCommand(size_t id)
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 bool llgc::utils::undomanager::Undomanager<T, U>::DoCommands(size_t start,
                                                              size_t end)
 {
@@ -129,6 +140,7 @@ bool llgc::utils::undomanager::Undomanager<T, U>::DoCommands(size_t start,
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommand(size_t id)
 {
   BUGCRIT(std::cout, memory_ != nullptr, false, "Undomanager empty.\n");
@@ -143,6 +155,7 @@ bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommand(size_t id)
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommands(size_t start,
                                                                size_t end)
 {
@@ -184,18 +197,21 @@ bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommands(size_t start,
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 void llgc::utils::undomanager::Undomanager<T, U>::DrawHistory(void* before,
                                                               void* after)
 {
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 std::vector<size_t> llgc::utils::undomanager::Undomanager<T, U>::GetType() const
 {
   return std::vector<size_t>();
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 std::vector<T> llgc::utils::undomanager::Undomanager<T, U>::FindByZone(
     int i) const
 {
@@ -203,18 +219,21 @@ std::vector<T> llgc::utils::undomanager::Undomanager<T, U>::FindByZone(
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 bool llgc::utils::undomanager::Undomanager<T, U>::BeginNewCommand(size_t id)
 {
   return false;
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 bool llgc::utils::undomanager::Undomanager<T, U>::EndNewCommand()
 {
   return false;
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::Add(
     std::unique_ptr<U> child)
 {
@@ -232,6 +251,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::Add(
 }
 
 template <typename T, typename U>
+INLINE_TEMPLATE
 llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::Add(
     size_t id, std::unique_ptr<U> child)
 {
@@ -247,3 +267,7 @@ llgc::utils::Tree<U>* llgc::utils::undomanager::Undomanager<T, U>::Add(
 
   return retval;
 }
+
+#endif  // UTILS_UNDOMANAGER_UNDOMANAGER_CC_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

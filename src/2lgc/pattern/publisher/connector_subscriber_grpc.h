@@ -64,6 +64,10 @@ class ConnectorSubscriberGrpc : public ConnectorSubscriber<T>
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_subscriber_grpc.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

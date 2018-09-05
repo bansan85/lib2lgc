@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_SUBSCRIBER_LOCAL_CC_
+#define PATTERN_PUBLISHER_SUBSCRIBER_LOCAL_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/subscriber_local.h>
 
 namespace llgc::pattern::publisher
@@ -63,6 +67,7 @@ class ConnectorInterface;
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberLocal<T>::Equals(
     const SubscriberInterface<T> &connector) const
 {
@@ -83,6 +88,7 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::Equals(
  * \return true if connector was not previously set.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberLocal<T>::SetConnector(
     std::shared_ptr<ConnectorInterface<T>> conn)
 {
@@ -100,6 +106,7 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::SetConnector(
  * \return true if no problem.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberLocal<T>::Send(const T &message)
 {
   if (auto connector = connector_.lock())
@@ -114,6 +121,7 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::Send(const T &message)
  * \return true if no problem.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberLocal<T>::AddSubscriber(
     uint32_t id_message)
 {
@@ -129,6 +137,7 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::AddSubscriber(
  * \return true if no problem.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::SubscriberLocal<T>::RemoveSubscriber(
     uint32_t id_message)
 {
@@ -142,5 +151,7 @@ bool llgc::pattern::publisher::SubscriberLocal<T>::RemoveSubscriber(
 /** \var llgc::pattern::publisher::SubscriberLocal::id_
  * \brief The id of the connector.
  */
+
+#endif  // PATTERN_PUBLISHER_SUBSCRIBER_LOCAL_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

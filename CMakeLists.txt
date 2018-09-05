@@ -4,8 +4,11 @@ set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake;${CMAKE_MODULE_PAT
 
 include(2lgc)
 include(GNUInstallDirs)
-include(FindOpenSSL)
 include(FindSWIG)
+
+include(FindOpenSSL)  # OPENSSL_FOUND
+set(DISABLE_VISITABLE_CACHE)
+set(TEMPLATE_CLASS)
 
 find_package(Protobuf REQUIRED)
 find_package(Doxygen)
@@ -21,7 +24,6 @@ set(CPP_LINT)
 set(CLANGTIDY)
 set(PMD)
 
-set(DISABLE_VISITABLE_CACHE)
 set(PROTOBUF_CXX_FLAGS "-Wno-zero-as-null-pointer-constant -Wno-unused-parameter -Wno-switch-default -Wno-effc++ -Wno-float-equal -Wno-global-constructors -Wno-missing-variable-declarations -Wno-c++98-compat-pedantic -Wno-reserved-id-macro -Wno-sign-conversion -Wno-suggest-override -Wno-strict-aliasing")
 
 llgc_init_cflags()

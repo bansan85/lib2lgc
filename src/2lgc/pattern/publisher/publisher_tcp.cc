@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_CC_
+#define PATTERN_PUBLISHER_PUBLISHER_TCP_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 
@@ -27,6 +31,7 @@
  * \param[in] port The port to listen from.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
     : llgc::pattern::publisher::PublisherIp<T>(port), disposing_(false)
 {
@@ -34,12 +39,14 @@ llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
 
 /// \brief Destructor. Make sure that thread is finished.
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherTcp<T>::~PublisherTcp()
 {
   PublisherTcp<T>::JoinWait();
 }
 
 template <typename T>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
 {
   PublisherIp<T>::JoinWait();
@@ -53,6 +60,7 @@ void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
 }
 
 template <typename T>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::PublisherTcp<T>::Stop()
 {
   disposing_ = true;
@@ -93,5 +101,7 @@ void llgc::pattern::publisher::PublisherTcp<T>::Stop()
  * \param[in] socket The socket.
  * \param[in] message The message.
  */
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

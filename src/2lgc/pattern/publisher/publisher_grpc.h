@@ -68,6 +68,10 @@ class PublisherGrpc : public PublisherIp<T>, public S
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/publisher_grpc.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_PUBLISHER_GRPC_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

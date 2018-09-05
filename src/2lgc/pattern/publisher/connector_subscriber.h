@@ -56,6 +56,10 @@ class ConnectorSubscriber : public ConnectorInterface<T>
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_subscriber.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

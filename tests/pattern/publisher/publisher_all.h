@@ -17,6 +17,7 @@
 #ifndef PATTERN_PUBLISHER_PUBLISHER_ALL_H_
 #define PATTERN_PUBLISHER_PUBLISHER_ALL_H_
 
+#include <2lgc/compat.h>
 #include <functional>
 #include <thread>
 #include <2lgc/pattern/publisher/subscriber_local.h>
@@ -96,5 +97,9 @@ class Publisher
 }
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_ALL_H_
+
+#ifndef TEMPLATE_CLASS
+#include "publisher_all.cc"
+#endif
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

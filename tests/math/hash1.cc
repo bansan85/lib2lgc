@@ -16,7 +16,8 @@
 
 #include <2lgc/math/hash.h>
 #include <google/protobuf/stubs/common.h>
-#include <memory>  // IWYU pragma: keep. No for GCC-6. GCC-8 wants.
+// No for GCC-6. GCC-8 wants.
+#include <memory>  // IWYU pragma: keep
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {

@@ -43,6 +43,10 @@ class PublisherTcpLinuxIpv6 : public PublisherTcpLinux<T>
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_IPV6_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

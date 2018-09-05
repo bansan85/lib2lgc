@@ -60,6 +60,10 @@ class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

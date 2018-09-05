@@ -31,13 +31,19 @@ typedef SSIZE_T ssize_t;
 #define CHK __attribute__((__warn_unused_result__))
 #endif  // _MSC_VER
 
-#if defined(_MSC_VER)
+#ifdef _MSC_VER
 #define SSCANF sscanf_s
 #define DllExport __declspec(dllexport)
 #else  // !defined(_MSC_VER)
 #define SSCANF sscanf
 #define DllExport
 #endif  // defined(_MSC_VER)
+
+#ifdef TEMPLATE_CLASS
+#define INLINE_TEMPLATE
+#else
+#define INLINE_TEMPLATE inline
+#endif
 
 #endif  // COMPAT_H_
 

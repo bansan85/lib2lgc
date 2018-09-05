@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
+// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/math/compare_decimal.h>
 #include <2lgc/pattern/abstract_factory.h>
 #include <2lgc/pattern/command/undo_interface.h>
-#include <2lgc/utils/tree.h>
+// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
+#include <2lgc/utils/tree.h>  // IWYU pragma: keep
 #include <2lgc/utils/undomanager/undomanager.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
@@ -30,6 +33,7 @@
 #include "undo_command1.pb.h"
 #include "undomanager_all_commands.h"
 
+#ifdef TEMPLATE_CLASS
 #include <2lgc/pattern/abstract_factory.cc>
 #include <2lgc/utils/tree.cc>
 #include <2lgc/utils/undomanager/undomanager.cc>
@@ -39,6 +43,7 @@ template class llgc::pattern::AbstractFactory<
 template class llgc::utils::undomanager::Undomanager<
     llgc::protobuf::test::UndoManager1, llgc::pattern::command::UndoInterface>;
 template class llgc::utils::Tree<llgc::pattern::command::UndoInterface>;
+#endif
 
 /**
  * @brief Example of factory.

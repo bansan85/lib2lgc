@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
@@ -36,6 +40,7 @@ class ServerReaderWriter;
  * \param[in] stream Stream to communicate with client.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
     grpc::ServerReaderWriter<T, T> *stream)
@@ -70,6 +75,7 @@ llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Send(
     const T &message)
 {
@@ -80,5 +86,7 @@ bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Send(
 /** \var llgc::pattern::publisher::ConnectorSubscriberGrpc::stream_
  * \brief Link to the server.
  */
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_GRPC_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

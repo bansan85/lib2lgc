@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_TCP_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_TCP_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_subscriber.h>
@@ -32,6 +36,7 @@
  * \param[in] socket_fd Socket to communicate with client.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorSubscriberTcp<T>::ConnectorSubscriberTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, int socket_fd)
     : ConnectorSubscriber<T>(subscriber), socket_(socket_fd)
@@ -65,6 +70,7 @@ llgc::pattern::publisher::ConnectorSubscriberTcp<T>::ConnectorSubscriberTcp(
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(const T &message)
 {
   std::string message_in_string;
@@ -77,5 +83,7 @@ bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(const T &message)
 /** \var llgc::pattern::publisher::ConnectorSubscriberTcp::socket_
  * \brief Socket to the server.
  */
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_TCP_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

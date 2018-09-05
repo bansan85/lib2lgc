@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
+#ifndef TESTS_PATTERN_PUBLISHER_PUBLISHER_ALL_CC_
+#define TESTS_PATTERN_PUBLISHER_PUBLISHER_ALL_CC_
+
 #include "publisher_all.h"
 
 // T Type of protobuf message
 // U Type of subscriber
 // V Type of the server
 template <typename T, typename U, typename V>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::test::Publisher::All(U* subscriber, V* server,
                                                     size_t delay)
 {
@@ -99,3 +103,7 @@ void llgc::pattern::publisher::test::Publisher::WaitUpToTenSecond(
                 .count()) < 10000);
   } while (!test());
 }
+
+#endif  // TESTS_PATTERN_PUBLISHER_PUBLISHER_ALL_CC_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

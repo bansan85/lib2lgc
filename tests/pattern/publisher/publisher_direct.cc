@@ -17,7 +17,6 @@
 // Test direct publisher
 
 #include <2lgc/pattern/publisher/connector_direct.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <google/protobuf/stubs/common.h>
@@ -27,6 +26,10 @@
 #include <memory>
 #include "direct.pb.h"
 #include "publisher_all.h"
+
+#ifdef TEMPLATE_CLASS
+#include <2lgc/config.h>
+#include <2lgc/pattern/publisher/connector_interface.h>
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
@@ -41,6 +44,7 @@ template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::test::Direct>;
 template class llgc::pattern::publisher::ConnectorDirect<
     llgc::protobuf::test::Direct>;
+#endif
 
 int main(int /* argc */, char* /* argv */ [])  // NS
 {

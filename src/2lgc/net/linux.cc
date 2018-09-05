@@ -26,7 +26,8 @@
 #include <csignal>
 #include <iostream>
 #include <thread>
-#include <type_traits>  // IWYU pragma: keep. No for GCC-8. GCC-6 wants.
+// No for GCC-8. GCC-6 wants.
+#include <type_traits>  // IWYU pragma: keep
 
 /** \namespace llgc::net
  * \brief This is all about net.

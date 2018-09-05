@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_SINGLETON_CC_
+#define PATTERN_SINGLETON_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/pattern/singleton.h>
 
 /** \class llgc::pattern::Singleton
@@ -25,6 +29,7 @@
  * \return true if allocated.
  */
 template <class T>
+INLINE_TEMPLATE
 bool llgc::pattern::Singleton<T>::IsInstance()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_);
@@ -36,6 +41,7 @@ bool llgc::pattern::Singleton<T>::IsInstance()
  * \return The instance.
  */
 template <class T>
+INLINE_TEMPLATE
 std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_);
@@ -55,5 +61,7 @@ std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
  * \var llgc::pattern::Singleton::instance_
  * \brief Store the instance of the singleton.
  */
+
+#endif  // PATTERN_SINGLETON_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

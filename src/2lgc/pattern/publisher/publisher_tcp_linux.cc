@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_
+#define PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
@@ -49,12 +53,14 @@ class SubscriberServerTcp;
  * \param[in] port The port to listen from.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherTcpLinux<T>::PublisherTcpLinux(uint16_t port)
     : PublisherTcp<T>(port), sockfd_(-1)
 {
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 {
   if (sockfd_ == -1)
@@ -108,6 +114,7 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
  */
 
 template <typename T>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
     int socket, decltype(std::declval<T>().msg(0)) message)
 {
@@ -130,6 +137,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
  * \param[in] socket The socket to the client.
  */
 template <typename T>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket);
@@ -203,5 +211,7 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
     BUGCONT(std::cout, this->Forward(messages), );
   } while (!this->disposing_);
 }
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

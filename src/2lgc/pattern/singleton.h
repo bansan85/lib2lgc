@@ -17,6 +17,7 @@
 #ifndef PATTERN_SINGLETON_H_
 #define PATTERN_SINGLETON_H_
 
+#include <2lgc/compat.h>
 #include <memory>
 #include <mutex>
 
@@ -35,6 +36,10 @@ class Singleton
 };
 
 }  // namespace llgc::pattern
+
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/singleton.cc>
+#endif
 
 #endif  // PATTERN_SINGLETON_H_
 

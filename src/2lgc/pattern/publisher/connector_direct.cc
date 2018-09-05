@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_DIRECT_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_DIRECT_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
@@ -34,6 +38,7 @@
  * \param[in] server The server.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
     std::shared_ptr<PublisherDirect<T>> server)
@@ -68,6 +73,7 @@ llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
     uint32_t id_message)
 {
@@ -77,6 +83,7 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorDirect<T>::Send(const T &message)
 {
   BUGCONT(std::cout, server_->Forward(message), false);
@@ -84,6 +91,7 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::Send(const T &message)
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
     uint32_t id_message)
 {
@@ -96,5 +104,7 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
 /** \var llgc::pattern::publisher::ConnectorDirect::server_
  * \brief The server.
  */
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_DIRECT_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

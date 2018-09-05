@@ -19,6 +19,7 @@
 #ifndef PATTERN_ABSTRACT_FACTORY_H_
 #define PATTERN_ABSTRACT_FACTORY_H_
 
+#include <2lgc/compat.h>
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -58,6 +59,10 @@ class AbstractFactory
 };
 
 }  // namespace llgc::pattern
+
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/abstract_factory.cc>
+#endif
 
 #endif  // PATTERN_ABSTRACT_FACTORY_H_
 

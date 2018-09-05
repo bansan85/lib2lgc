@@ -16,7 +16,12 @@
 
 /// \file abstract_factory.cc
 
+#ifndef PATTERN_ABSTRACT_FACTORY_CC_
+#define PATTERN_ABSTRACT_FACTORY_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/pattern/abstract_factory.h>
+#include <memory>
 
 /** \namespace llgc::pattern
  * \brief Namespace for patterns.
@@ -64,6 +69,7 @@
  * \return The instance is success, nullptr instead.
  */
 template <typename T, typename U>
+INLINE_TEMPLATE
 std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
     const std::string& message)
 {
@@ -84,3 +90,5 @@ std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
  *        the object is the return of the `data_case()` method from the
  *        protobuf message.
  */
+
+#endif  // PATTERN_ABSTRACT_FACTORY_CC_

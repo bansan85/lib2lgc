@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
@@ -43,6 +47,7 @@ class SubscriberInterface;
  * \param[in] port The port of the server.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
     T>::ConnectorPublisherTcpIpv4(std::shared_ptr<SubscriberInterface<T>>
                                       subscriber,
@@ -78,6 +83,7 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>::Connect()
 {
   if (this->socket_ != -1)
@@ -116,5 +122,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>::Connect()
 
   return true;
 }
+
+#endif // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV4_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

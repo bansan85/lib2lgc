@@ -60,6 +60,10 @@ class Tree
 
 }  // namespace llgc::utils
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/utils/tree.cc>
+#endif
+
 #endif  // UTILS_TREE_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

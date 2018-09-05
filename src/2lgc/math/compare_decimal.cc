@@ -21,7 +21,8 @@
  */
 
 #include <2lgc/math/compare_decimal.h>
-#include <cmath>  // IWYU pragma: keep. No for GCC-8. GCC-6 wants. for abs(float/double)
+// No for GCC-8. GCC-6 wants. for abs(float/double)
+#include <cmath>  // IWYU pragma: keep
 #include <cstdint>
 #include <cstdlib>  // for abs(int/long)
 

@@ -75,6 +75,10 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

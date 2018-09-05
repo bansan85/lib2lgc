@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+#ifndef UTILS_TREE_CC_
+#define UTILS_TREE_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/utils/tree.h>
-#include <algorithm>  // IWYU pragma: keep. If missing IWYU wants it for std::max. If defined, IWYU wants to remove it.
+// If missing IWYU wants it for std::max. If defined, IWYU wants to remove it.
+#include <algorithm>  // IWYU pragma: keep
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -36,6 +41,7 @@
  * \param[in] parent Parent of the node. nullptr if root of the tree.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent)
     : id_(id), data_(std::move(data)), parent_(parent), children_()
 {
@@ -47,6 +53,7 @@ llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent)
  *         fails.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child)
 {
   size_t max_id = FindMaxId(id_, id_);
@@ -62,6 +69,7 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child)
  *         fails.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child,
                                                      size_t id)
 {
@@ -84,6 +92,7 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child,
  * \return true if found.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::utils::Tree<T>::FindPath(size_t end, std::deque<T*>* path) const
 {
   BUGCONT(std::cout, FindPath(nullptr, end, path), false);
@@ -99,6 +108,7 @@ bool llgc::utils::Tree<T>::FindPath(size_t end, std::deque<T*>* path) const
  * \return true if found.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
                                     std::deque<T*>* path) const
 {
@@ -117,6 +127,7 @@ bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
+INLINE_TEMPLATE
 const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id) const
 {
   return FindNode(id, id_);
@@ -127,6 +138,7 @@ const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id) const
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id)
 {
   return FindNode(id, id_);
@@ -136,6 +148,7 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id)
  * \return Return the max id.
  */
 template <typename T>
+INLINE_TEMPLATE
 size_t llgc::utils::Tree<T>::FindMaxId() const
 {
   return FindMaxId(id_, id_);
@@ -159,6 +172,7 @@ size_t llgc::utils::Tree<T>::FindMaxId() const
  * \return true if found. path is fill only if return value is true.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
                                     std::deque<T*>* path) const
 {
@@ -206,6 +220,7 @@ bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
+INLINE_TEMPLATE
 const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
     size_t id, size_t previous) const
 {
@@ -253,6 +268,7 @@ const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id, size_t previous)
 {
   // In case the start is the end.
@@ -299,6 +315,7 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id, size_t previous)
  * \return Return the max id.
  */
 template <typename T>
+INLINE_TEMPLATE
 size_t llgc::utils::Tree<T>::FindMaxId(size_t max_id, size_t previous) const
 {
   // Start by children
@@ -335,5 +352,7 @@ size_t llgc::utils::Tree<T>::FindMaxId(size_t max_id, size_t previous) const
  * \var llgc::utils::Tree::children_
  * \brief List of children.
  */
+
+#endif  // UTILS_TREE_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

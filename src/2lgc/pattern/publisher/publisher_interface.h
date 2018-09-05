@@ -83,6 +83,10 @@ class PublisherInterface
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/publisher_interface.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
@@ -40,6 +44,7 @@
  * \param[in] port The port of the server.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
     std::shared_ptr<SubscriberInterface<T>> subscriber, std::string ip,
     uint16_t port)
@@ -75,6 +80,7 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
 
 /// \brief Default virtual destructor.
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
 {
   // Properly stop recv and close file descriptor.
@@ -91,6 +97,7 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
  * \dotfile pattern/publisher/publisher_tcp_send_message.dot
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
 {
   BUGCONT(std::cout, Connect(), false);
@@ -103,6 +110,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
     uint32_t id_message)
 {
@@ -120,6 +128,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
     uint32_t id_message)
 {
@@ -140,6 +149,7 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
  * Need to be public so thread can use it. Protected is not possible.
  */
 template <typename T>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket_);
@@ -216,5 +226,7 @@ void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
  * \var llgc::pattern::publisher::ConnectorPublisherTcp::disposing_
  * \brief If thread in trying to stop.
  */
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

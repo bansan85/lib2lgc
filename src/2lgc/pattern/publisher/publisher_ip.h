@@ -68,6 +68,10 @@ class PublisherIp
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/publisher_ip.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_PUBLISHER_IP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

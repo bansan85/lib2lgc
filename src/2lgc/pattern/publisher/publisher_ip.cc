@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_PUBLISHER_IP_CC_
+#define PATTERN_PUBLISHER_PUBLISHER_IP_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
 
@@ -33,6 +37,7 @@ class ConnectorInterface;
  * \param[in] port The port to listen from.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
     : llgc::pattern::publisher::PublisherInterface<
           T,
@@ -43,6 +48,7 @@ llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
 
 /// \brief Destructor. Make sure that thread is finished.
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 {
   // Can't destroy a thread if it's still running.
@@ -65,6 +71,7 @@ llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 
 /// \brief Join the waiting thread.
 template <typename T>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
 {
   if (thread_wait_.joinable())
@@ -107,5 +114,7 @@ void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
  * \var llgc::pattern::publisher::PublisherIp::port_
  * \brief Port to listen from.
  */
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_IP_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

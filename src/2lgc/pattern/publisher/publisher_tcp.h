@@ -63,6 +63,10 @@ class PublisherTcp : public PublisherIp<T>
 
 }  // namespace llgc::pattern::publisher
 
+#ifndef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/publisher_tcp.cc>
+#endif
+
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

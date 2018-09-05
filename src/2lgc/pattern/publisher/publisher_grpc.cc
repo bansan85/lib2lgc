@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_PUBLISHER_GRPC_CC_
+#define PATTERN_PUBLISHER_PUBLISHER_GRPC_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/publisher_grpc.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
@@ -44,6 +48,7 @@ class SubscriberServerGrpc;
  * \param[in] port The port to listen from.
  */
 template <typename T, typename S>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port)
     : llgc::pattern::publisher::PublisherIp<T>(port)
 {
@@ -51,6 +56,7 @@ llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port)
 
 /// \brief Destructor. Make sure that thread is finished.
 template <typename T, typename S>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
 {
   Stop();
@@ -62,6 +68,7 @@ llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
  * \return The return value when the stream is closed by the server.
  */
 template <typename T, typename S>
+INLINE_TEMPLATE
 grpc::Status llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
     grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream)
 {
@@ -120,6 +127,7 @@ grpc::Status llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
 }
 
 template <typename T, typename S>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 {
   std::stringstream ss;
@@ -141,6 +149,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 }
 
 template <typename T, typename S>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::PublisherGrpc<T, S>::Wait()
 {
   std::thread t([this]() {
@@ -156,6 +165,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Wait()
 }
 
 template <typename T, typename S>
+INLINE_TEMPLATE
 void llgc::pattern::publisher::PublisherGrpc<T, S>::Stop()
 {
   if (server_ != nullptr)
@@ -189,5 +199,7 @@ void llgc::pattern::publisher::PublisherGrpc<T, S>::Stop()
  * \var llgc::pattern::publisher::PublisherGrpc::server_
  * \brief Server gRPC.
  */
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_GRPC_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

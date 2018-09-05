@@ -14,9 +14,14 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_INTERFACE_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_INTERFACE_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep. IWYU wants to remove it but subscriber_->Equals will fails.
+// IWYU wants to remove it but subscriber_->Equals will fails.
+#include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep
 #include <iostream>
 #include <typeinfo>
 
@@ -32,6 +37,7 @@
  * \param[in] subscriber Subscriber.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
     std::shared_ptr<SubscriberInterface<T>> subscriber)
     : subscriber_(std::move(subscriber)), messages_(), next_id_(0)
@@ -47,6 +53,7 @@ llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
  * \return true if the same.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
     const ConnectorInterface<T>& connector) const
 {
@@ -71,6 +78,7 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
  * \return true if no problem.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
                                                              bool hold)
 {
@@ -90,6 +98,7 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
  * \return true if no problem.
  */
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
 {
   while (!messages_.empty())
@@ -154,3 +163,7 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
  * \var llgc::pattern::publisher::ConnectorInterface::next_id_
  * \brief id of the next message.
  */
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_INTERFACE_CC_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

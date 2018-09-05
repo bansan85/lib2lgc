@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_CC_
+#define PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <cassert>
@@ -36,6 +40,7 @@ class SubscriberInterface;
  * \param[in] subscriber Subscriber to communicate with client.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorSubscriber<T>::ConnectorSubscriber(
     std::shared_ptr<SubscriberInterface<T>> subscriber)
     : ConnectorInterface<T>(subscriber)
@@ -69,6 +74,7 @@ llgc::pattern::publisher::ConnectorSubscriber<T>::ConnectorSubscriber(
  */
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorSubscriber<T>::AddSubscriber(
     uint32_t /*id_message*/)
 {
@@ -77,11 +83,14 @@ bool llgc::pattern::publisher::ConnectorSubscriber<T>::AddSubscriber(
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::ConnectorSubscriber<T>::RemoveSubscriber(
     uint32_t /*id_message*/)
 {
   // Can't append.
   assert(false);
 }
+
+#endif  // PATTERN_PUBLISHER_CONNECTOR_SUBSCRIBER_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

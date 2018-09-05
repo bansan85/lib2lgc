@@ -14,6 +14,10 @@
  * limitations under the License.
  */
 
+#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_IPV4_CC_
+#define PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_IPV4_CC_
+
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
@@ -32,6 +36,7 @@
  * \param[in] port The port to listen from.
  */
 template <typename T>
+INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::PublisherTcpLinuxIpv4(
     uint16_t port)
     : PublisherTcpLinux<T>(port)
@@ -39,6 +44,7 @@ llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::PublisherTcpLinuxIpv4(
 }
 
 template <typename T>
+INLINE_TEMPLATE
 bool llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
 {
   this->sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
@@ -64,5 +70,7 @@ bool llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
 
   return true;
 }
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_IPV4_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
