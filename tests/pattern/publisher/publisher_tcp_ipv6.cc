@@ -18,11 +18,9 @@
 
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.h>
-// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h>
-// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>  // IWYU pragma: keep
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
@@ -40,6 +38,7 @@
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
+#include <2lgc/pattern/publisher/subscriber_local.h>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.cc>
@@ -51,6 +50,7 @@
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc>
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
 #include "publisher_all.cc"
 
@@ -76,6 +76,9 @@ template class llgc::pattern::publisher::PublisherTcp<
 template class llgc::pattern::publisher::PublisherTcpLinux<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcpLinuxIpv6<
+    llgc::protobuf::test::Tcp>;
+
+template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Tcp>;
 #endif
 

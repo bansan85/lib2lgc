@@ -29,8 +29,7 @@
  * \return true if allocated.
  */
 template <class T>
-INLINE_TEMPLATE
-bool llgc::pattern::Singleton<T>::IsInstance()
+INLINE_TEMPLATE bool llgc::pattern::Singleton<T>::IsInstance()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_);
 
@@ -41,8 +40,7 @@ bool llgc::pattern::Singleton<T>::IsInstance()
  * \return The instance.
  */
 template <class T>
-INLINE_TEMPLATE
-std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
+INLINE_TEMPLATE std::shared_ptr<T> llgc::pattern::Singleton<T>::GetInstance()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_);
 

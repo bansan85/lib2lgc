@@ -74,18 +74,18 @@ llgc::pattern::publisher::ConnectorSubscriber<T>::ConnectorSubscriber(
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorSubscriber<T>::AddSubscriber(
-    uint32_t /*id_message*/)
+INLINE_TEMPLATE bool
+    llgc::pattern::publisher::ConnectorSubscriber<T>::AddSubscriber(
+        uint32_t /*id_message*/)
 {
   // Can't append.
   assert(false);
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorSubscriber<T>::RemoveSubscriber(
-    uint32_t /*id_message*/)
+INLINE_TEMPLATE bool
+    llgc::pattern::publisher::ConnectorSubscriber<T>::RemoveSubscriber(
+        uint32_t /*id_message*/)
 {
   // Can't append.
   assert(false);

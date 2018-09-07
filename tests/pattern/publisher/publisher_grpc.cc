@@ -17,11 +17,9 @@
 // Test gRPC publisher
 
 #include <2lgc/pattern/publisher/connector_publisher_grpc.h>
-// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_grpc.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
-// IWYU wants to remove it but it's needed if no TEMPLATE_CLASS
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>  // IWYU pragma: keep
 #include <google/protobuf/stubs/common.h>
 #include <grpcpp/impl/codegen/status.h>
@@ -40,6 +38,7 @@
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_subscriber.h>
 #include <2lgc/pattern/publisher/publisher_ip.h>
+#include <2lgc/pattern/publisher/subscriber_local.h>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/connector_publisher_grpc.cc>
@@ -48,6 +47,7 @@
 #include <2lgc/pattern/publisher/publisher_grpc.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/publisher/publisher_ip.cc>
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_grpc.cc>
 #include "publisher_all.cc"
 
@@ -67,6 +67,9 @@ template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Rpc>;
 template class llgc::pattern::publisher::PublisherGrpc<
     llgc::protobuf::test::Rpc, llgc::protobuf::test::Greeter::Service>;
 template class llgc::pattern::publisher::SubscriberServerGrpc<
+    llgc::protobuf::test::Rpc>;
+
+template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Rpc>;
 #endif
 

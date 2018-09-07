@@ -17,6 +17,8 @@
 #ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 #define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
 
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <atomic>
 #include <cstdint>

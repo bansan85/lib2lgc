@@ -46,8 +46,8 @@ class SubscriberInterface;
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
+INLINE_TEMPLATE bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(
+    const T &messages)
 {
   std::string message_socket;
 
@@ -59,8 +59,7 @@ bool llgc::pattern::publisher::SubscriberServerTcp<T>::Listen(const T &messages)
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::SubscriberServerTcp<T>::Equals(
+INLINE_TEMPLATE bool llgc::pattern::publisher::SubscriberServerTcp<T>::Equals(
     const SubscriberInterface<T> &connector) const
 {
   const auto *subscriber_cast =

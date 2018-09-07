@@ -44,8 +44,7 @@ class SubscriberInterface;
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Listen(
+INLINE_TEMPLATE bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Listen(
     const T &messages)
 {
   BUGLIB(std::cout, stream_->Write(messages), false, "grpc");
@@ -54,8 +53,7 @@ bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Listen(
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Equals(
+INLINE_TEMPLATE bool llgc::pattern::publisher::SubscriberServerGrpc<T>::Equals(
     const SubscriberInterface<T> &connector) const
 {
   const auto *subscriber_cast =

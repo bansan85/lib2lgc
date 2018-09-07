@@ -47,8 +47,7 @@ class SubscriberInterface;
  * \param[in] port The port of the server.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
+INLINE_TEMPLATE llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
     T>::ConnectorPublisherTcpIpv6(std::shared_ptr<SubscriberInterface<T>>
                                       subscriber,
                                   const std::string &ip, uint16_t port)
@@ -83,8 +82,8 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
 {
   if (this->socket_ != -1)
   {

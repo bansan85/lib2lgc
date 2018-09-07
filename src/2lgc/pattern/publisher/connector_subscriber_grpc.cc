@@ -75,8 +75,7 @@ llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Send(
+INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::Send(
     const T &message)
 {
   BUGLIB(std::cout, stream_->Write(message), false, "grpc");

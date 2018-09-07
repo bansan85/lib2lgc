@@ -18,6 +18,8 @@
 #define UTILS_TREE_H_
 
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <cstddef>
 #include <deque>
 #include <memory>

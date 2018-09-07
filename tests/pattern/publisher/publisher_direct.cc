@@ -30,10 +30,12 @@
 #ifdef TEMPLATE_CLASS
 #include <2lgc/config.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/subscriber_local.h>
 
 #include <2lgc/pattern/publisher/connector_direct.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
+#include <2lgc/pattern/publisher/subscriber_local.cc>
 #include "publisher_all.cc"
 
 template class llgc::pattern::publisher::PublisherInterface<
@@ -43,6 +45,9 @@ template class llgc::pattern::publisher::PublisherInterface<
 template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::test::Direct>;
 template class llgc::pattern::publisher::ConnectorDirect<
+    llgc::protobuf::test::Direct>;
+
+template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Direct>;
 #endif
 

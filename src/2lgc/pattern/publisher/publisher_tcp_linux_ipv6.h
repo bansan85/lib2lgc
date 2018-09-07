@@ -18,6 +18,8 @@
 #define PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_IPV6_H_
 
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
 #include <cstdint>
 #include <type_traits>

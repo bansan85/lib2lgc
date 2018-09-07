@@ -18,6 +18,8 @@
 #define PATTERN_PUBLISHER_CONNECTOR_INTERFACE_H_
 
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <cstdint>
 #include <memory>
 #include <queue>

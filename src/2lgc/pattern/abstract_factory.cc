@@ -69,8 +69,7 @@
  * \return The instance is success, nullptr instead.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
+INLINE_TEMPLATE std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
     const std::string& message)
 {
   T message_t;

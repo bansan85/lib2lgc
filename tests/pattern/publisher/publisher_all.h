@@ -22,8 +22,6 @@
 #include <thread>
 #include <2lgc/pattern/publisher/subscriber_local.h>
 
-#include <2lgc/pattern/publisher/subscriber_local.cc>
-
 namespace llgc::pattern::publisher::test
 {
 /**
@@ -96,10 +94,10 @@ class Publisher
 };
 }
 
-#endif  // PATTERN_PUBLISHER_PUBLISHER_ALL_H_
-
 #ifndef TEMPLATE_CLASS
 #include "publisher_all.cc"
 #endif
+
+#endif  // PATTERN_PUBLISHER_PUBLISHER_ALL_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

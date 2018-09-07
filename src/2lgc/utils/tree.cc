@@ -41,8 +41,8 @@
  * \param[in] parent Parent of the node. nullptr if root of the tree.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent)
+INLINE_TEMPLATE llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data,
+                                           Tree<T>* parent)
     : id_(id), data_(std::move(data)), parent_(parent), children_()
 {
 }
@@ -53,8 +53,8 @@ llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent)
  *         fails.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child)
+INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(
+    std::unique_ptr<T> child)
 {
   size_t max_id = FindMaxId(id_, id_);
   children_.emplace_back(
@@ -69,9 +69,8 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child)
  *         fails.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child,
-                                                     size_t id)
+INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(
+    std::unique_ptr<T> child, size_t id)
 {
   size_t max_id = FindMaxId(id_, id_);
   llgc::utils::Tree<T>* parent = FindNode(id);
@@ -92,8 +91,8 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(std::unique_ptr<T> child,
  * \return true if found.
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::utils::Tree<T>::FindPath(size_t end, std::deque<T*>* path) const
+INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(size_t end,
+                                                    std::deque<T*>* path) const
 {
   BUGCONT(std::cout, FindPath(nullptr, end, path), false);
 
@@ -108,9 +107,8 @@ bool llgc::utils::Tree<T>::FindPath(size_t end, std::deque<T*>* path) const
  * \return true if found.
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
-                                    std::deque<T*>* path) const
+INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
+                                                    std::deque<T*>* path) const
 {
   const Tree<T>* begin_node = FindNode(begin);
 
@@ -127,8 +125,8 @@ bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE
-const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id) const
+INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
+    size_t id) const
 {
   return FindNode(id, id_);
 }
@@ -138,8 +136,7 @@ const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id) const
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id)
+INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id)
 {
   return FindNode(id, id_);
 }
@@ -148,8 +145,7 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id)
  * \return Return the max id.
  */
 template <typename T>
-INLINE_TEMPLATE
-size_t llgc::utils::Tree<T>::FindMaxId() const
+INLINE_TEMPLATE size_t llgc::utils::Tree<T>::FindMaxId() const
 {
   return FindMaxId(id_, id_);
 }
@@ -172,9 +168,9 @@ size_t llgc::utils::Tree<T>::FindMaxId() const
  * \return true if found. path is fill only if return value is true.
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
-                                    std::deque<T*>* path) const
+INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous,
+                                                    size_t end,
+                                                    std::deque<T*>* path) const
 {
   BUGPARAM(std::cout, 0, path != nullptr, false);
 
@@ -220,8 +216,7 @@ bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous, size_t end,
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE
-const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
+INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
     size_t id, size_t previous) const
 {
   // In case the start is the end.
@@ -268,8 +263,8 @@ const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id, size_t previous)
+INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
+    size_t id, size_t previous)
 {
   // In case the start is the end.
   if (id_ == id)
@@ -315,8 +310,8 @@ llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id, size_t previous)
  * \return Return the max id.
  */
 template <typename T>
-INLINE_TEMPLATE
-size_t llgc::utils::Tree<T>::FindMaxId(size_t max_id, size_t previous) const
+INLINE_TEMPLATE size_t llgc::utils::Tree<T>::FindMaxId(size_t max_id,
+                                                       size_t previous) const
 {
   // Start by children
   for (size_t i = 0; i < children_.size(); i++)

@@ -60,8 +60,7 @@ llgc::pattern::publisher::PublisherTcpLinux<T>::PublisherTcpLinux(uint16_t port)
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 {
   if (sockfd_ == -1)
   {
@@ -114,8 +113,8 @@ bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
  */
 
 template <typename T>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
+INLINE_TEMPLATE void
+llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
     int socket, decltype(std::declval<T>().msg(0)) message)
 {
   BUGCRIT(std::cout, message.has_add_subscriber(), ,
@@ -137,8 +136,8 @@ void llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
  * \param[in] socket The socket to the client.
  */
 template <typename T>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(int socket)
+INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(
+    int socket)
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)

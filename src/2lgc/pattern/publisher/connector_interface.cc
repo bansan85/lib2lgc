@@ -53,8 +53,7 @@ llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
  * \return true if the same.
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
+INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
     const ConnectorInterface<T>& connector) const
 {
   if (typeid(connector) != typeid(*this))
@@ -78,9 +77,8 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
  * \return true if no problem.
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
-                                                             bool hold)
+INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(
+    const T& message, bool hold)
 {
   if (hold)
   {
@@ -98,8 +96,8 @@ bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(const T& message,
  * \return true if no problem.
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
 {
   while (!messages_.empty())
   {

@@ -81,7 +81,7 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::ConnectorPublisherTcp(
 /// \brief Default virtual destructor.
 template <typename T>
 INLINE_TEMPLATE
-llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
+    llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
 {
   // Properly stop recv and close file descriptor.
   disposing_ = true;
@@ -97,8 +97,8 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::~ConnectorPublisherTcp()
  * \dotfile pattern/publisher/publisher_tcp_send_message.dot
  */
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
+INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
+    const T &message)
 {
   BUGCONT(std::cout, Connect(), false);
 
@@ -110,8 +110,8 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(const T &message)
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
     uint32_t id_message)
 {
   BUGCONT(std::cout, Connect(), false);
@@ -128,8 +128,8 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::AddSubscriber(
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
     uint32_t id_message)
 {
   BUGCONT(std::cout, Connect(), false);
@@ -149,8 +149,8 @@ bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
  * Need to be public so thread can use it. Protected is not possible.
  */
 template <typename T>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
+INLINE_TEMPLATE void
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket_);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)

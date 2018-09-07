@@ -31,23 +31,21 @@
  * \param[in] port The port to listen from.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(uint16_t port)
+INLINE_TEMPLATE llgc::pattern::publisher::PublisherTcp<T>::PublisherTcp(
+    uint16_t port)
     : llgc::pattern::publisher::PublisherIp<T>(port), disposing_(false)
 {
 }
 
 /// \brief Destructor. Make sure that thread is finished.
 template <typename T>
-INLINE_TEMPLATE
-llgc::pattern::publisher::PublisherTcp<T>::~PublisherTcp()
+INLINE_TEMPLATE llgc::pattern::publisher::PublisherTcp<T>::~PublisherTcp()
 {
   PublisherTcp<T>::JoinWait();
 }
 
 template <typename T>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
+INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
 {
   PublisherIp<T>::JoinWait();
   for (auto& thread_i : thread_sockets_)
@@ -60,8 +58,7 @@ void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
 }
 
 template <typename T>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherTcp<T>::Stop()
+INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::Stop()
 {
   disposing_ = true;
 }

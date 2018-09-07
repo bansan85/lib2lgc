@@ -70,8 +70,8 @@ llgc::pattern::publisher::ConnectorSubscriberTcp<T>::ConnectorSubscriberTcp(
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(const T &message)
+INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorSubscriberTcp<T>::Send(
+    const T &message)
 {
   std::string message_in_string;
   BUGLIB(std::cout, message.SerializeToString(&message_in_string), false,

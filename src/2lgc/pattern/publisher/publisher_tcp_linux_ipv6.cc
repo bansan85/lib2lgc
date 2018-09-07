@@ -44,8 +44,8 @@ llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::PublisherTcpLinuxIpv6(
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::Listen()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::PublisherTcpLinuxIpv6<T>::Listen()
 {
   this->sockfd_ = socket(AF_INET6, SOCK_STREAM, 0);
 

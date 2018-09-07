@@ -17,6 +17,8 @@
 #ifndef PATTERN_PUBLISHER_SUBSCRIBER_SERVER_GRPC_H_
 #define PATTERN_PUBLISHER_SUBSCRIBER_SERVER_GRPC_H_
 
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/subscriber_interface.h>
 #include <type_traits>
 

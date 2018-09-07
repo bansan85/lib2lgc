@@ -18,6 +18,8 @@
 #define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_H_
 
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <atomic>
 #include <cstdint>

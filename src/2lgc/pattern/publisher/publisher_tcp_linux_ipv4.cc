@@ -44,8 +44,8 @@ llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::PublisherTcpLinuxIpv4(
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::PublisherTcpLinuxIpv4<T>::Listen()
 {
   this->sockfd_ = socket(AF_INET, SOCK_STREAM, 0);
 

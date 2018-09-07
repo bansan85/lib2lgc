@@ -55,9 +55,8 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::ConnectorPublisherGrpc(
 
 /// \brief Default virtual destructor.
 template <typename T, typename S>
-INLINE_TEMPLATE
-llgc::pattern::publisher::ConnectorPublisherGrpc<T,
-                                                 S>::~ConnectorPublisherGrpc()
+INLINE_TEMPLATE llgc::pattern::publisher::ConnectorPublisherGrpc<
+    T, S>::~ConnectorPublisherGrpc()
 {
   // Properly stop recv and close file descriptor.
   context_.TryCancel();
@@ -68,9 +67,8 @@ llgc::pattern::publisher::ConnectorPublisherGrpc<T,
 }
 
 template <typename T, typename S>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
-    const T &message)
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(const T &message)
 {
   BUGCONT(std::cout, Connect(), false);
 
@@ -80,8 +78,8 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Send(
 }
 
 template <typename T, typename S>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::AddSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::AddSubscriber(
     uint32_t id_message)
 {
   BUGCONT(std::cout, Connect(), false);
@@ -98,8 +96,8 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::AddSubscriber(
 }
 
 template <typename T, typename S>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
     uint32_t id_message)
 {
   BUGCONT(std::cout, Connect(), false);
@@ -169,8 +167,8 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::RemoveSubscriber(
  * \return true if no problem.
  */
 template <typename T, typename S>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
 {
   if (stub_ != nullptr)
   {
@@ -194,8 +192,8 @@ bool llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Connect()
  *         Need to be public so thread can use it. Protected is not possible.
  */
 template <typename T, typename S>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
+INLINE_TEMPLATE void
+llgc::pattern::publisher::ConnectorPublisherGrpc<T, S>::Receiver()
 {
   T message;
   // Will be stop with context_.TryCancel() on destructor.

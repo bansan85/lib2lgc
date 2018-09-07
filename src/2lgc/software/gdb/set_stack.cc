@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
-#include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/singleton.h>
 #include <2lgc/poco/software_gdb.pb.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/function.h>
@@ -41,6 +40,11 @@
 #include <utility>
 #include <vector>
 
+#ifdef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
+#include <2lgc/pattern/singleton.h>
+
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
 #include <2lgc/pattern/singleton.cc>
@@ -53,6 +57,7 @@ template class llgc::pattern::Singleton<
     llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
 template class llgc::pattern::publisher::ConnectorInterface<
     llgc::protobuf::software::Gdb>;
+#endif
 
 /** \class llgc::software::gdb::SetStack
  * \brief Store and sort all stacks.

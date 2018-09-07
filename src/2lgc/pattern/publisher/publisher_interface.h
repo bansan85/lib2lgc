@@ -18,6 +18,8 @@
 #define PATTERN_PUBLISHER_PUBLISHER_INTERFACE_H_
 
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/utils/count_lock.h>
 #include <cstddef>
 #include <cstdint>

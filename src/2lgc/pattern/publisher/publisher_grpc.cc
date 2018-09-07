@@ -48,16 +48,15 @@ class SubscriberServerGrpc;
  * \param[in] port The port to listen from.
  */
 template <typename T, typename S>
-INLINE_TEMPLATE
-llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(uint16_t port)
+INLINE_TEMPLATE llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(
+    uint16_t port)
     : llgc::pattern::publisher::PublisherIp<T>(port)
 {
 }
 
 /// \brief Destructor. Make sure that thread is finished.
 template <typename T, typename S>
-INLINE_TEMPLATE
-llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
+INLINE_TEMPLATE llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
 {
   Stop();
 }
@@ -68,8 +67,8 @@ llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
  * \return The return value when the stream is closed by the server.
  */
 template <typename T, typename S>
-INLINE_TEMPLATE
-grpc::Status llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
+INLINE_TEMPLATE grpc::Status
+llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
     grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream)
 {
   (void)!!context;
@@ -127,8 +126,7 @@ grpc::Status llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
 }
 
 template <typename T, typename S>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 {
   std::stringstream ss;
 
@@ -149,8 +147,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Listen()
 }
 
 template <typename T, typename S>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherGrpc<T, S>::Wait()
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherGrpc<T, S>::Wait()
 {
   std::thread t([this]() {
     if (server_ != nullptr)
@@ -165,8 +162,7 @@ bool llgc::pattern::publisher::PublisherGrpc<T, S>::Wait()
 }
 
 template <typename T, typename S>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherGrpc<T, S>::Stop()
+INLINE_TEMPLATE void llgc::pattern::publisher::PublisherGrpc<T, S>::Stop()
 {
   if (server_ != nullptr)
   {

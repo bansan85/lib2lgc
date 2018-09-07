@@ -37,8 +37,8 @@ class ConnectorInterface;
  * \param[in] port The port to listen from.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
+INLINE_TEMPLATE llgc::pattern::publisher::PublisherIp<T>::PublisherIp(
+    uint16_t port)
     : llgc::pattern::publisher::PublisherInterface<
           T,
           std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>>(),
@@ -48,8 +48,7 @@ llgc::pattern::publisher::PublisherIp<T>::PublisherIp(uint16_t port)
 
 /// \brief Destructor. Make sure that thread is finished.
 template <typename T>
-INLINE_TEMPLATE
-llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
+INLINE_TEMPLATE llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 {
   // Can't destroy a thread if it's still running.
   PublisherIp<T>::JoinWait();
@@ -71,8 +70,7 @@ llgc::pattern::publisher::PublisherIp<T>::~PublisherIp()
 
 /// \brief Join the waiting thread.
 template <typename T>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
+INLINE_TEMPLATE void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
 {
   if (thread_wait_.joinable())
   {

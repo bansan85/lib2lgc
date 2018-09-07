@@ -38,8 +38,7 @@
  * \param[in] server The server.
  */
 template <typename T>
-INLINE_TEMPLATE
-llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
+INLINE_TEMPLATE llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
     std::shared_ptr<PublisherDirect<T>> server)
     : ConnectorInterface<T>(std::move(subscriber)), server_(std::move(server))
@@ -73,9 +72,8 @@ llgc::pattern::publisher::ConnectorDirect<T>::ConnectorDirect(
  */
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
-    uint32_t id_message)
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(uint32_t id_message)
 {
   BUGCONT(std::cout,
           server_->AddSubscriber(id_message, this->shared_from_this()), false);
@@ -83,16 +81,16 @@ bool llgc::pattern::publisher::ConnectorDirect<T>::AddSubscriber(
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorDirect<T>::Send(const T &message)
+INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorDirect<T>::Send(
+    const T &message)
 {
   BUGCONT(std::cout, server_->Forward(message), false);
   return true;
 }
 
 template <typename T>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorDirect<T>::RemoveSubscriber(
     uint32_t id_message)
 {
   BUGCONT(std::cout,

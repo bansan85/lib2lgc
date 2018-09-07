@@ -23,9 +23,8 @@
 // U Type of subscriber
 // V Type of the server
 template <typename T, typename U, typename V>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::test::Publisher::All(U* subscriber, V* server,
-                                                    size_t delay)
+INLINE_TEMPLATE void llgc::pattern::publisher::test::Publisher::All(
+    U* subscriber, V* server, size_t delay)
 {
   assert(subscriber->AddSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));

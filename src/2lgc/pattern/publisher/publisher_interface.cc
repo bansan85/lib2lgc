@@ -61,8 +61,8 @@ llgc::pattern::publisher::PublisherInterface<T, U>::PublisherInterface()
  * \dotfile pattern/publisher/publisher_add_subscriber.dot
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
     uint32_t id_message, U subscriber)
 {
   if (GetOptionFailAlreadySubscribed())
@@ -93,9 +93,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::AddSubscriber(
  * \return true if no problem.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
-    const T &messages)
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::PublisherInterface<T, U>::Forward(const T &messages)
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
 
@@ -143,8 +142,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::Forward(
  * \return true if no problem.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
 {
   std::lock_guard<std::recursive_mutex> my_lock(mutex_forward_);
 
@@ -174,8 +173,8 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::ForwardPending()
  *         May failed if suscriber is not subscribe to the specific message.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
     uint32_t id_message, U subscriber)
 {
   // Remove the subscriber from all id_message.
@@ -240,8 +239,7 @@ bool llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
  * \return The boolean.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-bool llgc::pattern::publisher::PublisherInterface<
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherInterface<
     T, U>::GetOptionFailAlreadySubscribed()
 {
   return options_.add_fail_if_already_subscribed;
@@ -251,8 +249,7 @@ bool llgc::pattern::publisher::PublisherInterface<
  * \param[in] value true if must failed.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-void llgc::pattern::publisher::PublisherInterface<
+INLINE_TEMPLATE void llgc::pattern::publisher::PublisherInterface<
     T, U>::SetOptionFailAlreadySubscribed(bool value)
 {
   options_.add_fail_if_already_subscribed = value;
@@ -263,8 +260,7 @@ void llgc::pattern::publisher::PublisherInterface<
  * \return The object to keep alive.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-llgc::utils::thread::CountLock<size_t>
+INLINE_TEMPLATE llgc::utils::thread::CountLock<size_t>
 llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
 {
   return llgc::utils::thread::CountLock<size_t>(
@@ -318,8 +314,7 @@ llgc::pattern::publisher::PublisherInterface<T, U>::LockForward()
  * \return The shared_ptr from weak_ptr connector.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+INLINE_TEMPLATE std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
 llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
     std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
 {
@@ -332,8 +327,7 @@ llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
  * \return connector.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE
-std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+INLINE_TEMPLATE std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
 llgc::pattern::publisher::PublisherInterface<T, U>::GetConn(
     std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector)
 {

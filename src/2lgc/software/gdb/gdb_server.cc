@@ -14,16 +14,21 @@
  * limitations under the License.
  */
 
+// TEMPLATE_CLASS needs it.
+#include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/publisher_direct.h>
-#include <2lgc/pattern/publisher/publisher_interface.h>
-#include <2lgc/pattern/singleton.h>
-// Need by publisher_interface.cc
+// GetInstance()->Forward> needs it.
+#include <2lgc/pattern/publisher/publisher_direct.h>  // IWYU pragma: keep
+// GetInstance()->Forward> needs it.
 #include <2lgc/poco/software_gdb.pb.h>  // IWYU pragma: keep
 #include <2lgc/software/gdb/gdb_server.h>
 #include <iostream>
 #include <memory>
+
+#ifdef TEMPLATE_CLASS
+#include <2lgc/pattern/publisher/connector_interface.h>
+#include <2lgc/pattern/publisher/publisher_interface.h>
+#include <2lgc/pattern/singleton.h>
 
 #include <2lgc/pattern/publisher/connector_interface.cc>
 #include <2lgc/pattern/publisher/publisher_interface.cc>
@@ -37,6 +42,7 @@ template class llgc::pattern::publisher::PublisherInterface<
         llgc::protobuf::software::Gdb>>>;
 template class llgc::pattern::Singleton<
     llgc::pattern::publisher::PublisherDirect<llgc::protobuf::software::Gdb>>;
+#endif
 
 /** \class llgc::software::gdb::GdbServer
  * \brief Class to run gdb for various purpose.
@@ -53,8 +59,7 @@ bool llgc::software::gdb::GdbServer::Forward(
   if (IsInstance())
   {
     // If the instance if freed, GetInstance will create it.
-    auto singleton_ = GetInstance();
-    BUGCONT(std::cout, singleton_->Forward(message), false);
+    BUGCONT(std::cout, GetInstance()->Forward(message), false);
   }
 
   return true;

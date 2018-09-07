@@ -95,6 +95,10 @@ set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/utils/undomanager/undomanager.cc
   )
 
+if (IWYU)
+  set(2LGC_SOURCES ${2LGC_SOURCES} ${2LGC_TEMPLATE_SOURCE})
+endif()
+
 set(2LGC_HEADERS ${2LGC_HEADERS} ${2LGC_TEMPLATE_SOURCE})
 
 add_library(2lgc SHARED ${2LGC_SOURCES})
