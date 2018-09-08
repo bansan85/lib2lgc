@@ -46,10 +46,7 @@ class PublisherTcpLinux : public PublisherTcp<T>
   int sockfd_;
 
  private:
-#ifndef SWIG
-  void AddSubscriberLocal(int socket,
-                          decltype(std::declval<T>().msg(0)) message) override;
-#endif  // !SWIG
+  void AddSubscriberLocal(int socket, const typename T::Msg &message) override;
 
   void WaitThread(int socket);
 };

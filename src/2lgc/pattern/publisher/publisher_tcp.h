@@ -57,10 +57,8 @@ class PublisherTcp : public PublisherIp<T>
   std::map<int, std::thread> thread_sockets_;
 
  private:
-#ifndef SWIG
-  virtual void AddSubscriberLocal(
-      int socket, decltype(std::declval<T>().msg(0)) message) = 0;
-#endif  // !SWIG
+  virtual void AddSubscriberLocal(int socket,
+                                  const typename T::Msg& message) = 0;
 };
 
 }  // namespace llgc::pattern::publisher

@@ -115,7 +115,7 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 template <typename T>
 INLINE_TEMPLATE void
 llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
-    int socket, decltype(std::declval<T>().msg(0)) message)
+    int socket, const typename T::Msg& message)
 {
   BUGCRIT(std::cout, message.has_add_subscriber(), ,
           "Failed to add a subscriber.");
