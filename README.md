@@ -21,13 +21,9 @@ make check
 
 `CC=clang CXX=clang++ cmake -DCMAKE_EXE_LINKER_FLAGS="-lgcc_s"` for clang support in gcc environment.
 
-## Quality
+## Options
 
 `-DWALL=1` Add lots of warnings.
-
-`-DCLANGFORMAT=1` Enable clang-format.
-
-`-DCLANG_FORMAT=...` path to clang-format program.
 
 `-DIWYU=1` Enable include-what-you-use.
 
@@ -35,23 +31,20 @@ make check
 
 `-DCOVERAGE=1` Enable coverage.
 
-`-DCPP_LINT=1` Enable cpplint.
-
-`-DCPPLINT=...` path to cpplint.py program.
-
-`-DCLANGTIDY=1` Enable clang-tidy.
-
-`-DCLANG_TIDY=...` path to clang-tidy program.
-
-`-DPMD=1` Enable pmd to find duplicate code.
-
-`-DPMD_BIN=...` path to run.sh program.
-
 `-DSWIG=...` path to swig program.
 
-`-DCPPCHECK=1` Enable cppcheck.
+## make
+`make clang-format` runs clang-format. `-DCLANG_FORMAT=...` optional path to clang-format program.
 
-`-DCPPCHECK_BIN=...` path to cppcheck program.
+`make cppcheck` runs cppcheck. `-DCPPCHECK_BIN=...` optional path to cppcheck program.
+
+`make cpplint` runs cpplint.py. `-DCPPLINT=...` optional path to cpplint.py script.
+
+`make clang-tidy` runs clang-tidy. `-DCLANG_TIDY=...` optional path to clang-tidy program.
+
+`make pmd` runs pmd. `-DPMD_BIN=...` optional path to pmd program.
+
+`make doc` runs doxygen.
 
 ## Behavious
 
@@ -73,3 +66,11 @@ Actually not needed but will be for https publisher.
 Missing local README.md means that the functionnality is still under development.
 
   - pattern command / undomanager.
+  - CI:
+    - cmake ../lib2lgc -DIWYU=1 -DCOVERAGE=1 -DCMAKE_CXX_FLAGS="-DNDEBUG"; make -j9 check
+    - make clang-format
+    - make cpplint
+    - make clang-tidy
+    - make pmd
+    - make cppcheck
+    - make check

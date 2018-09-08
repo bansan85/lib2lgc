@@ -339,13 +339,13 @@ macro(llgc_iwyu)
 endmacro()  # llgc_iwyu
 
 macro(llgc_check_all sources enable_coverage remove_coverage)
-  if (CLANGFORMAT)
-    find_program(CLANG_FORMAT clang-format)
-    if (CLANG_FORMAT)
-      add_custom_command(TARGET check
-        COMMAND ${CLANG_FORMAT} -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false }, ReflowComments: false }' -i ${sources})
-    endif()
-  endif()  # CLANGFORMAT
+  add_custom_target(clang-format)
+  find_program(CLANG_FORMAT clang-format)
+  if (CLANG_FORMAT)
+    add_custom_command(TARGET clang-format
+      COMMAND ${CLANG_FORMAT} -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false }, ReflowComments: false }' -i ${sources})
+  endif()
+
   if (COVERAGE)
     if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
       if (LIB2LGC_INCLUDE)
@@ -361,53 +361,54 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
       COMMAND lcov --remove ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage.info ${remove_coverage} --rc lcov_branch_coverage=1 -o ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info
       COMMAND genhtml --output-directory ${CMAKE_CURRENT_BINARY_DIR}/coverage --demangle-cpp --num-spaces 2 --sort --function-coverage --branch-coverage --legend ${CMAKE_CURRENT_BINARY_DIR}/lib2lgc-coverage-post.info)
   endif()  # COVERAGE
-  if (CPP_LINT)
-    #-readability/braces: disabled false positive because the brace of the macro in the line after the if.
-    #-build/include_what_you_use: cpplint.py and iwyu have sometimes differents issues.
-    #-build/c++11: is for chrome project.
-    #-build/include_order: cpplint.py and iwyu have sometimes differents rules.
-    #-readability/nolint: clang -Weverything has more nolint that cpplint.
-    #-whitespace/line_length: clang-format do what he can.
-    #-build/include: implementation of template with template class in source instead of header needs include .cc.
-    #-whitespace/parens: clang-format do the job.
-    find_program(CPPLINT cpplint.py)
-    if (CPPLINT)
-      add_custom_command(TARGET check
-        COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens ${sources})
-    endif()
-  endif()  # CPP_LINT
-  if (CLANGTIDY)
-    #-llvm-include-order: Google and LLVM have differents rules.
-    #-llvm-header-guard: cpplint do the work well.
-    #-fuchsia-default-arguments: don't always write default boring arguments.
-    #-clang-diagnostic-covered-switch-default: gcc wants a default case.
-    #-cppcoreguidelines-pro-bounds-array-to-pointer-decay: warn all assert.
-    #-hicpp-no-array-decay: warn all assert.
-    #-google-readability-namespace-comments: allow namespace llgc::math
-    #-llvm-namespace-comment: allow namespace llgc::math
-    #-cppcoreguidelines-pro-bounds-pointer-arithmetic: pour utiliser avec argv
-    find_program(CLANG_TIDY clang-tidy)
-    if (CLANG_TIDY)
-      string(REPLACE "bin" "share/clang" RUN_CLANG_TIDY_ ${CLANG_TIDY})
-      string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
-      add_custom_command(TARGET check
-        COMMAND ${RUN_CLANG_TIDY} ${sources} -header-filter='^${CMAKE_CURRENT_SOURCE_DIR}/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance')
-    endif()
-  endif()  # CLANGTIDY
-  if (PMD)
-    find_program(PMD_BIN run.sh PATHS /opt/pmd/bin)
-    if (PMD_BIN)
-      add_custom_command(TARGET check
-        COMMAND ${PMD_BIN} cpd --minimum-tokens 100 --language cpp --files ${CMAKE_CURRENT_SOURCE_DIR})
-    endif()
-  endif()  # PMD
-  if (CPPCHECK)
-    find_program(CPPCHECK_BIN cppcheck)
-    if (CPPCHECK_BIN)
-      add_custom_command(TARGET check
-        COMMAND ${CPPCHECK_BIN} -I ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all --inconclusive --std=c++14 --quiet ${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR}/src)
-    endif()
-  endif()  # CPPCHECK
+
+  #-readability/braces: disabled false positive because the brace of the macro in the line after the if.
+  #-build/include_what_you_use: cpplint.py and iwyu have sometimes differents issues.
+  #-build/c++11: is for chrome project.
+  #-build/include_order: cpplint.py and iwyu have sometimes differents rules.
+  #-readability/nolint: clang -Weverything has more nolint that cpplint.
+  #-whitespace/line_length: clang-format do what he can.
+  #-build/include: implementation of template with template class in source instead of header needs include .cc.
+  #-whitespace/parens: clang-format do the job.
+  add_custom_target(cpplint)
+  find_program(CPPLINT cpplint.py)
+  if (CPPLINT)
+    add_custom_command(TARGET cpplint
+      COMMAND ${CPPLINT} --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens ${sources})
+  endif()
+
+  #-llvm-include-order: Google and LLVM have differents rules.
+  #-llvm-header-guard: cpplint do the work well.
+  #-fuchsia-default-arguments: don't always write default boring arguments.
+  #-clang-diagnostic-covered-switch-default: gcc wants a default case.
+  #-cppcoreguidelines-pro-bounds-array-to-pointer-decay: warn all assert.
+  #-hicpp-no-array-decay: warn all assert.
+  #-google-readability-namespace-comments: allow namespace llgc::math
+  #-llvm-namespace-comment: allow namespace llgc::math
+  #-cppcoreguidelines-pro-bounds-pointer-arithmetic: pour utiliser avec argv
+  add_custom_target(clang-tidy)
+  find_program(CLANG_TIDY clang-tidy)
+  if (CLANG_TIDY)
+    string(REPLACE "bin" "share/clang" RUN_CLANG_TIDY_ ${CLANG_TIDY})
+    string(REPLACE "clang-tidy" "run-clang-tidy.py" RUN_CLANG_TIDY ${RUN_CLANG_TIDY_})
+    add_custom_command(TARGET clang-tidy
+      COMMAND ${RUN_CLANG_TIDY} ${sources} -header-filter='^${CMAKE_CURRENT_SOURCE_DIR}/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance')
+  endif()
+
+  add_custom_target(pmd)
+  find_program(PMD_BIN run.sh PATHS /opt/pmd/bin)
+  if (PMD_BIN)
+    add_custom_command(TARGET pmd
+      COMMAND ${PMD_BIN} cpd --minimum-tokens 100 --language cpp --files ${CMAKE_CURRENT_SOURCE_DIR})
+  endif()
+
+  add_custom_target(cppcheck)
+  find_program(CPPCHECK_BIN cppcheck)
+  if (CPPCHECK_BIN)
+    add_custom_command(TARGET cppcheck
+      COMMAND ${CPPCHECK_BIN} -I ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all --inconclusive --std=c++14 --quiet ${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR}/src)
+  endif()
+
     #find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
     #if (COVERITY_BUILD)
     #  add_custom_command(TARGET check
