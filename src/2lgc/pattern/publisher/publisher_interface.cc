@@ -240,7 +240,7 @@ llgc::pattern::publisher::PublisherInterface<T, U>::RemoveSubscriber(
  */
 template <typename T, typename U>
 INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherInterface<
-    T, U>::GetOptionFailAlreadySubscribed()
+    T, U>::GetOptionFailAlreadySubscribed() const
 {
   return options_.add_fail_if_already_subscribed;
 }

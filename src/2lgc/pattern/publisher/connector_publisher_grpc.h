@@ -69,7 +69,7 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
  private:
-  std::string ip_;
+  const std::string ip_;
   uint16_t port_;
   std::shared_ptr<grpc::ClientReaderWriter<T, T>> stream_;
   std::shared_ptr<grpc::Channel> channel_;

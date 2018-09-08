@@ -87,11 +87,11 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       if (iResult > 0)
       {
         client_sock = llgc::net::Linux::RepeteOnEintr(
-            [=] { return accept4(sockfd_, nullptr, nullptr, 0); });
+            [=] { return accept4(sockfd_, nullptr, nullptr, SOCK_CLOEXEC); });
         if (client_sock > 0)
         {
           std::thread t2(
-              [this, client_sock] { return this->WaitThread(client_sock); });
+              [this, client_sock] { return WaitThread(client_sock); });
           this->thread_sockets_.insert(
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }

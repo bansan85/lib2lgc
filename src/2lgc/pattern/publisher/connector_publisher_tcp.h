@@ -70,7 +70,7 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
   uint16_t GetPort() const { return port_; }
 
  private:
-  std::string ip_;
+  const std::string ip_;
   uint16_t port_;
   std::atomic<bool> disposing_;
 };

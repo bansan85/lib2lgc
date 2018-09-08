@@ -35,10 +35,12 @@
  *
  * \fn llgc::utils::thread::CountLock::~CountLock()
  * \brief Default destructor.
- *
- *
- * \fn llgc::utils::thread::CountLock::CountLock(CountLock&& other)
- * \brief Delete move constructor.
+ */
+
+// gcc-6.4 needs default.
+// Move constructor must be noexcept but default doesn't support it.
+/** \fn llgc::utils::thread::CountLock::CountLock(CountLock&& other)
+ * \brief Move constructor with noexcept.
  * \param[in] other The original.
  *
  *

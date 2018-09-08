@@ -336,6 +336,42 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
   return true;
 }
 
+/** \brief Convert the filename and the number of the line of the backtrace in
+ *         file_ and line_.
+ * \param[in] file The file in format "filename.cpp:1234".
+ * \return true if parameter file has the right format.
+ */
+bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
+{
+  size_t pos = file.find_last_of(':');
+  // #10 0x401d7877 in gtk_marshal_NONE__NONE () from /usr/lib/libgtk-1.2.so.0
+  // No line because no source file but library.
+  if (pos == std::string::npos)
+  {
+    file_ = file;
+    return true;
+  }
+
+  try
+  {
+    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1)));
+  }
+  catch (const std::invalid_argument&)
+  {
+    BUGUSER(std::cout, false, false,
+            "Source line is invalid '" + file + "'.\n");
+  }
+  catch (const std::out_of_range&)
+  {
+    BUGUSER(std::cout, false, false,
+            "Source line is out of range '" + file + "'.\n");
+  }
+
+  file_ = file.substr(0, pos);
+
+  return true;
+}
+
 /** \brief Helper to find next argument.
  * \param[in] args All arguments.
  * \return Return the pos of the next argument. If failed, the length on the
@@ -387,42 +423,6 @@ size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
   } while (nb_start_parenthese != nb_end_parenthese);
 
   return pos_comma;
-}
-
-/** \brief Convert the filename and the number of the line of the backtrace in
- *         file_ and line_.
- * \param[in] file The file in format "filename.cpp:1234".
- * \return true if parameter file has the right format.
- */
-bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
-{
-  size_t pos = file.find_last_of(':');
-  // #10 0x401d7877 in gtk_marshal_NONE__NONE () from /usr/lib/libgtk-1.2.so.0
-  // No line because no source file but library.
-  if (pos == std::string::npos)
-  {
-    file_ = file;
-    return true;
-  }
-
-  try
-  {
-    line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1)));
-  }
-  catch (const std::invalid_argument&)
-  {
-    BUGUSER(std::cout, false, false,
-            "Source line is invalid '" + file + "'.\n");
-  }
-  catch (const std::out_of_range&)
-  {
-    BUGUSER(std::cout, false, false,
-            "Source line is out of range '" + file + "'.\n");
-  }
-
-  file_ = file.substr(0, pos);
-
-  return true;
 }
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

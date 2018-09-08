@@ -71,8 +71,9 @@ class Backtrace
   bool ReadIndex(const std::string& number) CHK;
   bool ReadAddress(const std::string& address) CHK;
   bool ReadFunction(const std::string& description) CHK;
-  size_t FindNextArg(const std::string& args);
   bool ReadSource(const std::string& file) CHK;
+
+  static size_t FindNextArg(const std::string& args);
 };
 
 }  // namespace llgc::software::gdb

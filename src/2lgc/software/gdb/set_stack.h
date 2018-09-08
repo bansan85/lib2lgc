@@ -76,7 +76,7 @@ class SetStack
 
     LocalCompare(bool with_source_only, size_t top_frame, size_t bottom_frame);
     ssize_t CompareFrom(size_t nb_max_frames,
-                        FunctionGetBacktrace get_backtraces,
+                        const FunctionGetBacktrace& get_backtraces,
                         const std::unique_ptr<Stack>& i,
                         const std::unique_ptr<Stack>& j) const;
     bool operator()(const std::unique_ptr<Stack>& i,

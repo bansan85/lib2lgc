@@ -38,7 +38,12 @@ class CountLock
   }
 
 #ifndef SWIG
-  CountLock(CountLock&& other) = default;  // gcc-6.4 needs default.
+  CountLock(CountLock&& other) noexcept
+      : ref_(std::move(other.ref_)),
+        mutex_forward_(std::move(other.mutex_forward_)),
+        function_zero_(std::move(other.function_zero_))
+  {
+  }
   CountLock(CountLock const& other) = delete;
   CountLock& operator=(CountLock&& other) = delete;
   CountLock& operator=(CountLock const& other) = delete;

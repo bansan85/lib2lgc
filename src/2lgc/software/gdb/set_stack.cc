@@ -304,7 +304,7 @@ llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
  * \return -1 if i < j, 0 if i == j and -1 if i > j.
  */
 ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
-    size_t nb_max_frames, FunctionGetBacktrace get_backtraces,
+    size_t nb_max_frames, const FunctionGetBacktrace& get_backtraces,
     const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j) const
 {
   uint32_t ii = 0, jj = 0;

@@ -59,7 +59,7 @@ class PublisherIp
   virtual void Stop() = 0;
 
   virtual void JoinWait();
-  uint16_t GetPort() { return port_; }
+  uint16_t GetPort() const { return port_; }
 
  protected:
   std::thread thread_wait_;

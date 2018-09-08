@@ -400,6 +400,14 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
       add_custom_command(TARGET check
         COMMAND ${PMD_BIN} cpd --minimum-tokens 100 --language cpp --files ${CMAKE_CURRENT_SOURCE_DIR})
     endif()
+  endif()  # PMD
+  if (CPPCHECK)
+    find_program(CPPCHECK_BIN cppcheck)
+    if (CPPCHECK_BIN)
+      add_custom_command(TARGET check
+        COMMAND ${CPPCHECK_BIN} -I ${CMAKE_CURRENT_SOURCE_DIR}/src --enable=all --inconclusive --std=c++14 --quiet ${CMAKE_CURRENT_SOURCE_DIR}/tests ${CMAKE_CURRENT_SOURCE_DIR}/src)
+    endif()
+  endif()  # CPPCHECK
     #find_program(COVERITY_BUILD cov-build PATHS ~/info/programmation/cov-analysis-linux64-2017.07/bin)
     #if (COVERITY_BUILD)
     #  add_custom_command(TARGET check
@@ -409,5 +417,4 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
     #endif()
     #scan-build cmake
     #scan-build make -j9
-  endif()  # PMD
 endmacro()  # llgc_check_all

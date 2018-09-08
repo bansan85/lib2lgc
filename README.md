@@ -43,11 +43,15 @@ make check
 
 `-DCLANG_TIDY=...` path to clang-tidy program.
 
-`-DPMD=1` Enable pmd.
+`-DPMD=1` Enable pmd to find duplicate code.
 
 `-DPMD_BIN=...` path to run.sh program.
 
 `-DSWIG=...` path to swig program.
+
+`-DCPPCHECK=1` Enable cppcheck.
+
+`-DCPPCHECK_BIN=...` path to cppcheck program.
 
 ## Behavious
 

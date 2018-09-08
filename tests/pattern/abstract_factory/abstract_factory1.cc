@@ -55,7 +55,7 @@ class CommonCommand
    *
    * @return Delete function.
    */
-  CommonCommand& operator=(CommonCommand&& other) & = delete;
+  CommonCommand& operator=(CommonCommand&& other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -64,7 +64,7 @@ class CommonCommand
    *
    * @return Delete function.
    */
-  CommonCommand& operator=(CommonCommand const& other) & = delete;
+  CommonCommand& operator=(CommonCommand const& other) = delete;
 #endif  // !SWIG
 
   virtual void Modify() = 0;
@@ -111,7 +111,7 @@ class CommandTest : public CommonCommand
    *
    * @return Delete function.
    */
-  CommandTest& operator=(CommandTest&& other) & = delete;
+  CommandTest& operator=(CommandTest&& other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -120,7 +120,7 @@ class CommandTest : public CommonCommand
    *
    * @return Delete function.
    */
-  CommandTest& operator=(CommandTest const& other) & = delete;
+  CommandTest& operator=(CommandTest const& other) = delete;
 #endif  // !SWIG
 
   void Modify() override { member_ = true; }

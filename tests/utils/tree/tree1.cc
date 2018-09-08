@@ -39,7 +39,7 @@ class T
   /**
    * @brief Name.
    */
-  std::string nom_;
+  const std::string nom_;
 };
 
 #ifdef TEMPLATE_CLASS

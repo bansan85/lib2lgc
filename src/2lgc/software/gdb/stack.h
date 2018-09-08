@@ -70,7 +70,7 @@ class Stack
   }
 
  private:
-  std::string filename_;
+  const std::string filename_;
   std::vector<std::unique_ptr<Backtrace>> backtraces_;
 };
 

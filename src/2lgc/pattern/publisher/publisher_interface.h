@@ -64,7 +64,7 @@ class PublisherInterface
   bool ForwardPending() CHK;
   virtual bool RemoveSubscriber(uint32_t id_message, U subscriber) CHK;
 
-  bool GetOptionFailAlreadySubscribed();
+  bool GetOptionFailAlreadySubscribed() const;
   void SetOptionFailAlreadySubscribed(bool value);
   llgc::utils::thread::CountLock<size_t> LockForward() CHK;
 
@@ -76,11 +76,12 @@ class PublisherInterface
   size_t lock_forward_ = 0;
   std::recursive_mutex mutex_forward_;
 
-  std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> GetConn(
+  static std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+  GetConn(
       std::weak_ptr<llgc::pattern::publisher::ConnectorInterface<T>> connector);
-  std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>> GetConn(
-      std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
-          connector);
+  static std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+  GetConn(std::shared_ptr<llgc::pattern::publisher::ConnectorInterface<T>>
+              connector);
 };
 
 }  // namespace llgc::pattern::publisher

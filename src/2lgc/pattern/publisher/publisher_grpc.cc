@@ -58,7 +58,7 @@ INLINE_TEMPLATE llgc::pattern::publisher::PublisherGrpc<T, S>::PublisherGrpc(
 template <typename T, typename S>
 INLINE_TEMPLATE llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
 {
-  Stop();
+  PublisherGrpc<T, S>::Stop();
 }
 
 /** \brief Wait, read and forward messages from a client to subscribers.
