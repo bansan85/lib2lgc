@@ -36,7 +36,7 @@ make check
 ## make
 `make clang-format` runs clang-format. `-DCLANG_FORMAT=...` optional path to clang-format program.
 
-`make cppcheck` runs cppcheck. `-DCPPCHECK_BIN=...` optional path to cppcheck program.
+`make cppcheck` runs cppcheck. `-DCPPCHECK_BIN=...` optional path to cppcheck program. Errors like `(performance) Function parameter 'nom' should be passed by const reference.` are ignored due to conflit with clang-tidy.
 
 `make cpplint` runs cpplint.py. `-DCPPLINT=...` optional path to cpplint.py script.
 
@@ -74,3 +74,4 @@ Missing local README.md means that the functionnality is still under development
     - make pmd
     - make cppcheck
     - make check
+    - scan-build cmake; scan-build make -j9 check

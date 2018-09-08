@@ -416,6 +416,4 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
     #    COMMAND ${COVERITY_BUILD} --dir cov-int make -j9 check
     #    COMMAND tar caf lib2lgc.lzma cov-int)
     #endif()
-    #scan-build cmake
-    #scan-build make -j9
 endmacro()  # llgc_check_all
