@@ -300,10 +300,8 @@ macro(llgc_init_cflags)
     endif()
   endif()  # WALL
 
-  if (CLANGTIDY)
-    # run-clang-tidy.py needs compile_commands.json.
-    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-  endif()  # CLANGTIDY
+  # run-clang-tidy.py needs compile_commands.json.
+  set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
   if (COVERAGE)
     set(CMAKE_EXE_LINKER_FLAGS_SAVE "${CMAKE_EXE_LINKER_FLAGS}")
