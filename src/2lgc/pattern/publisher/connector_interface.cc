@@ -54,7 +54,7 @@ llgc::pattern::publisher::ConnectorInterface<T>::ConnectorInterface(
  */
 template <typename T>
 INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
-    const ConnectorInterface<T>& connector) const
+    const ConnectorInterface<T> &connector) const
 {
   if (typeid(connector) != typeid(*this))
   {
@@ -78,7 +78,7 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorInterface<T>::Equals(
  */
 template <typename T>
 INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorInterface<T>::Listen(
-    const T& message, bool hold)
+    const T &message, bool hold)
 {
   if (hold)
   {
@@ -101,7 +101,7 @@ llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
 {
   while (!messages_.empty())
   {
-    const T& it = messages_.front();
+    const T &it = messages_.front();
     BUGCONT(std::cout, subscriber_->Listen(it), false);
     messages_.pop();
   }

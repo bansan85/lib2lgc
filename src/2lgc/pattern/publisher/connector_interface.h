@@ -45,10 +45,10 @@ class ConnectorInterface
   explicit ConnectorInterface(
       std::shared_ptr<SubscriberInterface<T>> subscriber);
 #ifndef SWIG
-  ConnectorInterface(ConnectorInterface&& other) = delete;
-  ConnectorInterface(ConnectorInterface const& other) = delete;
-  ConnectorInterface& operator=(ConnectorInterface&& other) = delete;
-  ConnectorInterface& operator=(ConnectorInterface const& other) = delete;
+  ConnectorInterface(ConnectorInterface &&other) = delete;
+  ConnectorInterface(ConnectorInterface const &other) = delete;
+  ConnectorInterface &operator=(ConnectorInterface &&other) = delete;
+  ConnectorInterface &operator=(ConnectorInterface const &other) = delete;
 #endif  // !SWIG
   virtual ~ConnectorInterface()
   {
@@ -58,13 +58,13 @@ class ConnectorInterface
                   "This should not be polymorphic.");
   }
 
-  bool Equals(const ConnectorInterface<T>& connector) const CHK;
-  virtual bool Send(const T& message) CHK = 0;
-  bool Listen(const T& message, bool hold) CHK;
+  bool Equals(const ConnectorInterface<T> &connector) const CHK;
+  virtual bool Send(const T &message) CHK = 0;
+  bool Listen(const T &message, bool hold) CHK;
   bool ListenPending() CHK;
   virtual bool AddSubscriber(uint32_t id_message) CHK = 0;
   virtual bool RemoveSubscriber(uint32_t id_message) CHK = 0;
-  const SubscriberInterface<T>* GetSubscriber() const
+  const SubscriberInterface<T> *GetSubscriber() const
   {
     return subscriber_.get();
   }

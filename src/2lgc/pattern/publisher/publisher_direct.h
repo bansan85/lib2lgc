@@ -33,10 +33,10 @@ class PublisherDirect
  public:
   PublisherDirect() = default;
 #ifndef SWIG
-  PublisherDirect(PublisherDirect&& other) = delete;
-  PublisherDirect(PublisherDirect const& other) = delete;
-  PublisherDirect& operator=(PublisherDirect&& other) = delete;
-  PublisherDirect& operator=(PublisherDirect const& other) = delete;
+  PublisherDirect(PublisherDirect &&other) = delete;
+  PublisherDirect(PublisherDirect const &other) = delete;
+  PublisherDirect &operator=(PublisherDirect &&other) = delete;
+  PublisherDirect &operator=(PublisherDirect const &other) = delete;
 #endif  // !SWIG
   ~PublisherDirect() override = default;
 };

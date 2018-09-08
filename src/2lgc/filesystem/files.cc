@@ -44,8 +44,8 @@
  * \return true if no problem.
  */
 bool llgc::filesystem::Files::SearchRecursiveFiles(
-    const std::string& folder, const std::string& regex,
-    std::vector<std::string>* files)
+    const std::string &folder, const std::string &regex,
+    std::vector<std::string> *files)
 {
   try
   {
@@ -57,7 +57,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
 
     std::vector<std::string> error_files;
 
-    for (auto& p :
+    for (auto &p :
          std::experimental::filesystem::recursive_directory_iterator(folder))
     {
       try
@@ -71,7 +71,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
           files->push_back(p.path().string());
         }
       }
-      catch (const std::experimental::filesystem::filesystem_error& e)
+      catch (const std::experimental::filesystem::filesystem_error &e)
       {
         error_files.emplace_back(e.what());
       }
@@ -83,7 +83,7 @@ bool llgc::filesystem::Files::SearchRecursiveFiles(
 
     return true;
   }
-  catch (const std::regex_error& e)
+  catch (const std::regex_error &e)
   {
     BUGUSER(std::cout, false, false,
             "Invalid rexeg \"" + regex + "\": " + e.what() + "\n");

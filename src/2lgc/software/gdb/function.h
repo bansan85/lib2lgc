@@ -28,15 +28,15 @@ namespace llgc::software::gdb
 class Function
 {
  public:
-  const std::string& GetName() const CHK { return name_; }
-  void SetName(const std::string& name) { name_.assign(name); }
+  const std::string &GetName() const CHK { return name_; }
+  void SetName(const std::string &name) { name_.assign(name); }
   void AddArgs(std::string name, std::string value)
   {
     args_.emplace_back(std::make_pair(std::move(name), std::move(value)));
   }
 
-  static bool IsValidVariableLine(const std::string& variable);
-  static bool IsVariableLineWrappable(const std::string& variable);
+  static bool IsValidVariableLine(const std::string &variable);
+  static bool IsVariableLineWrappable(const std::string &variable);
 
  private:
   std::string name_;

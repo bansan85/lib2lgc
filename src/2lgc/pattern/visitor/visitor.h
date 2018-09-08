@@ -29,10 +29,10 @@ class BaseVisitor
   virtual ~BaseVisitor() = default;
 
 #ifndef SWIG
-  BaseVisitor(BaseVisitor&& other) = delete;
-  BaseVisitor(BaseVisitor const& other) = default;
-  BaseVisitor& operator=(BaseVisitor&& other) = delete;
-  BaseVisitor& operator=(BaseVisitor const& other) = delete;
+  BaseVisitor(BaseVisitor &&other) = delete;
+  BaseVisitor(BaseVisitor const &other) = default;
+  BaseVisitor &operator=(BaseVisitor &&other) = delete;
+  BaseVisitor &operator=(BaseVisitor const &other) = delete;
 #endif  // !SWIG
 };
 
@@ -44,13 +44,13 @@ class Visitor
   virtual ~Visitor() = default;
 
 #ifndef SWIG
-  Visitor(Visitor&& other) = delete;
-  Visitor(Visitor const& other) = delete;
-  Visitor& operator=(Visitor&& other) = delete;
-  Visitor& operator=(Visitor const& other) = delete;
+  Visitor(Visitor &&other) = delete;
+  Visitor(Visitor const &other) = delete;
+  Visitor &operator=(Visitor &&other) = delete;
+  Visitor &operator=(Visitor const &other) = delete;
 #endif  // !SWIG
 
-  virtual bool Visit(const T& data, std::string* return_value) const CHK = 0;
+  virtual bool Visit(const T &data, std::string *return_value) const CHK = 0;
 };
 
 }  // namespace llgc::pattern::visitor

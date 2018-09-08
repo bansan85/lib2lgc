@@ -50,14 +50,14 @@ class UndoInterface
    *
    * @param[in] other The original.
    */
-  UndoInterface(UndoInterface&& other) = delete;
+  UndoInterface(UndoInterface &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  UndoInterface(UndoInterface const& other) = delete;
+  UndoInterface(UndoInterface const &other) = delete;
 
   /**
    * @brief Delete the move operator.
@@ -66,7 +66,7 @@ class UndoInterface
    *
    * @return Delete function.
    */
-  UndoInterface& operator=(UndoInterface&& other) & = delete;
+  UndoInterface &operator=(UndoInterface &&other) & = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -75,7 +75,7 @@ class UndoInterface
    *
    * @return Delete function.
    */
-  UndoInterface& operator=(UndoInterface const& other) & = delete;
+  UndoInterface &operator=(UndoInterface const &other) & = delete;
 #endif  // !SWIG
 
   /**

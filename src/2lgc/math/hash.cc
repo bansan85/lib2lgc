@@ -35,7 +35,7 @@
  * \param[in] in The string to compute.
  * \return The hash in binary format.
  */
-std::vector<uint8_t> llgc::math::Hash::Calc(const std::string& in)
+std::vector<uint8_t> llgc::math::Hash::Calc(const std::string &in)
 {
 #ifdef OPENSSL_FOUND
   return Sha512(in);
@@ -48,7 +48,7 @@ std::vector<uint8_t> llgc::math::Hash::Calc(const std::string& in)
  * \param[in] in The string to compute.
  * \return The hash in binary format.
  */
-std::vector<uint8_t> llgc::math::Hash::Jdb2(const std::string& in)
+std::vector<uint8_t> llgc::math::Hash::Jdb2(const std::string &in)
 {
   std::vector<uint8_t> retval(8);
   uint64_t hash = 5381;
@@ -71,7 +71,7 @@ std::vector<uint8_t> llgc::math::Hash::Jdb2(const std::string& in)
  * \return The hash in binary format.
  */
 #ifdef OPENSSL_FOUND
-std::vector<uint8_t> llgc::math::Hash::Sha512(const std::string& in)
+std::vector<uint8_t> llgc::math::Hash::Sha512(const std::string &in)
 {
   uint8_t hash[SHA512_DIGEST_LENGTH];
 

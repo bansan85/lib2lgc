@@ -27,7 +27,7 @@ template <typename M>
 class CountLock
 {
  public:
-  CountLock(M* const ref, std::recursive_mutex* mutex_forward,
+  CountLock(M *const ref, std::recursive_mutex *mutex_forward,
             std::function<void()> function_zero)
       : ref_(*ref),
         mutex_forward_(*mutex_forward),
@@ -38,15 +38,15 @@ class CountLock
   }
 
 #ifndef SWIG
-  CountLock(CountLock&& other) noexcept
+  CountLock(CountLock &&other) noexcept
       : ref_(std::move(other.ref_)),
         mutex_forward_(std::move(other.mutex_forward_)),
         function_zero_(std::move(other.function_zero_))
   {
   }
-  CountLock(CountLock const& other) = delete;
-  CountLock& operator=(CountLock&& other) = delete;
-  CountLock& operator=(CountLock const& other) = delete;
+  CountLock(CountLock const &other) = delete;
+  CountLock &operator=(CountLock &&other) = delete;
+  CountLock &operator=(CountLock const &other) = delete;
 #endif  // !SWIG
 
   ~CountLock()
@@ -60,8 +60,8 @@ class CountLock
   }
 
  private:
-  M& ref_;
-  std::recursive_mutex& mutex_forward_;
+  M &ref_;
+  std::recursive_mutex &mutex_forward_;
   std::function<void()> function_zero_;
 };
 

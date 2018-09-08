@@ -43,7 +43,7 @@ class GdbServer
           llgc::protobuf::software::Gdb>>
 {
  public:
-  bool Forward(const llgc::protobuf::software::Gdb& message) CHK;
+  bool Forward(const llgc::protobuf::software::Gdb &message) CHK;
 };
 
 }  // namespace llgc::software::gdb

@@ -60,7 +60,7 @@ class Factory : public llgc::pattern::AbstractFactory<
                     llgc::pattern::command::UndoInterface>
 {
  public:
-  explicit Factory(double* number_ref)
+  explicit Factory(double *number_ref)
       : AbstractFactory(llgc::protobuf::test::UndoManager1::kFail + 1),
         number_ref_(number_ref)
   {
@@ -73,10 +73,10 @@ class Factory : public llgc::pattern::AbstractFactory<
   }
 
  private:
-  double* number_ref_;
+  double *number_ref_;
 
   std::unique_ptr<llgc::pattern::command::UndoInterface> Add(
-      const llgc::protobuf::test::UndoManager1& message)
+      const llgc::protobuf::test::UndoManager1 &message)
   {
     assert(message.has_add());
 
@@ -87,7 +87,7 @@ class Factory : public llgc::pattern::AbstractFactory<
   }
 
   std::unique_ptr<llgc::pattern::command::UndoInterface> Fail(
-      const llgc::protobuf::test::UndoManager1& message)
+      const llgc::protobuf::test::UndoManager1 &message)
   {
     assert(message.has_fail());
 
@@ -97,7 +97,7 @@ class Factory : public llgc::pattern::AbstractFactory<
   }
 };
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   double number = 0.;
   auto factory = std::make_unique<Factory>(&number);
@@ -116,7 +116,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   EXECUTE_AND_ABORT(std::cout, undo.SerializeToString(&message_str));
 
   // Id 0
-  llgc::utils::Tree<llgc::pattern::command::UndoInterface>* undo2 =
+  llgc::utils::Tree<llgc::pattern::command::UndoInterface> *undo2 =
       undomanager.AddCommand(message_str);
   assert(undo2 != nullptr);
   EXECUTE_AND_ABORT(std::cout, undomanager.DoCommand(0));

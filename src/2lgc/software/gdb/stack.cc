@@ -44,7 +44,7 @@
 /** \brief Dereference an iterator return the current stack.
  * \return Return the current backtrace.
  */
-const llgc::software::gdb::Stack& llgc::software::gdb::Stack::Iter::operator*()
+const llgc::software::gdb::Stack &llgc::software::gdb::Stack::Iter::operator*()
     const
 {
   return data_.Get(pos_);
@@ -63,7 +63,7 @@ llgc::software::gdb::Stack::Stack(std::string filename)
  *            backtrace.
  * \return true if convertion is successfull.
  */
-bool llgc::software::gdb::Stack::InterpretLine(const std::string& line)
+bool llgc::software::gdb::Stack::InterpretLine(const std::string &line)
 {
   std::unique_ptr<Backtrace> bt = Backtrace::Factory(line);
 

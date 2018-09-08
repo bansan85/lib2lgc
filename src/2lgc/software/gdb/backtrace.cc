@@ -43,8 +43,8 @@
 /** \brief Dereference an iterator return the current backtrace.
  * \return Return the current backtrace.
  */
-const llgc::software::gdb::Backtrace& llgc::software::gdb::Backtrace::Iter::
-operator*() const
+const llgc::software::gdb::Backtrace
+    &llgc::software::gdb::Backtrace::Iter::operator*() const
 {
   return data_.GetBacktraceFromTop(pos_);
 }
@@ -60,7 +60,7 @@ operator*() const
  * \return The new backtrace and null in failed.
  */
 std::unique_ptr<llgc::software::gdb::Backtrace>
-llgc::software::gdb::Backtrace::Factory(const std::string& line)
+llgc::software::gdb::Backtrace::Factory(const std::string &line)
 {
   std::string index, address, function, file;
 
@@ -91,11 +91,11 @@ llgc::software::gdb::Backtrace::Factory(const std::string& line)
  * \param[out] file The file extracted (filename:1234).
  * \return true if no error.
  */
-bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
-                                                     std::string* index,
-                                                     std::string* address,
-                                                     std::string* function,
-                                                     std::string* file)
+bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string &line,
+                                                     std::string *index,
+                                                     std::string *address,
+                                                     std::string *function,
+                                                     std::string *file)
 {
   BUGPARAM(std::cout, 0, index != nullptr, false);
   BUGPARAM(std::cout, 0, address != nullptr, false);
@@ -242,13 +242,13 @@ bool llgc::software::gdb::Backtrace::DecodeBacktrace(const std::string& line,
  * \param[in] number The number in format "0".
  * \return true if the parameter number has the right format.
  */
-bool llgc::software::gdb::Backtrace::ReadIndex(const std::string& number)
+bool llgc::software::gdb::Backtrace::ReadIndex(const std::string &number)
 {
   try
   {
     index_ = static_cast<size_t>(std::stoi(number, nullptr, 10));
   }
-  catch (const std::out_of_range&)
+  catch (const std::out_of_range &)
   {
     BUGUSER(std::cout, false, false,
             "Index doesn't have valid number '" + number + "'.\n");
@@ -261,13 +261,13 @@ bool llgc::software::gdb::Backtrace::ReadIndex(const std::string& number)
  *            "0xDEADBEEFDEADBEEF".
  * \return true if parameter address has the right format.
  */
-bool llgc::software::gdb::Backtrace::ReadAddress(const std::string& address)
+bool llgc::software::gdb::Backtrace::ReadAddress(const std::string &address)
 {
   try
   {
     address_ = std::stoull(address, nullptr, 0);
   }
-  catch (const std::out_of_range&)
+  catch (const std::out_of_range &)
   {
     BUGUSER(std::cout, false, false,
             "Address doesn't have valid number '" + address + "'.\n");
@@ -280,7 +280,7 @@ bool llgc::software::gdb::Backtrace::ReadAddress(const std::string& address)
  * \return true if parameter description has the right format.
  */
 bool llgc::software::gdb::Backtrace::ReadFunction(
-    const std::string& description)
+    const std::string &description)
 {
   // ' ' is not enought : loader::(anonymous namespace)::createImageImpl (
   size_t pos_space = description.find(" (");
@@ -341,7 +341,7 @@ bool llgc::software::gdb::Backtrace::ReadFunction(
  * \param[in] file The file in format "filename.cpp:1234".
  * \return true if parameter file has the right format.
  */
-bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
+bool llgc::software::gdb::Backtrace::ReadSource(const std::string &file)
 {
   size_t pos = file.find_last_of(':');
   // #10 0x401d7877 in gtk_marshal_NONE__NONE () from /usr/lib/libgtk-1.2.so.0
@@ -356,12 +356,12 @@ bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
   {
     line_ = static_cast<size_t>(std::stoi(file.substr(pos + 1)));
   }
-  catch (const std::invalid_argument&)
+  catch (const std::invalid_argument &)
   {
     BUGUSER(std::cout, false, false,
             "Source line is invalid '" + file + "'.\n");
   }
-  catch (const std::out_of_range&)
+  catch (const std::out_of_range &)
   {
     BUGUSER(std::cout, false, false,
             "Source line is out of range '" + file + "'.\n");
@@ -377,7 +377,7 @@ bool llgc::software::gdb::Backtrace::ReadSource(const std::string& file)
  * \return Return the pos of the next argument. If failed, the length on the
  *         string is return.
  */
-size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string& args)
+size_t llgc::software::gdb::Backtrace::FindNextArg(const std::string &args)
 {
   size_t pos_comma;
   size_t start_find = 0;

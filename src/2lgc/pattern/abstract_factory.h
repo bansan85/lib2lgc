@@ -45,18 +45,18 @@ class AbstractFactory
   explicit AbstractFactory(size_t size) : map_factory_(size) {}
 
 #ifndef SWIG
-  AbstractFactory(AbstractFactory&& other) = delete;
-  AbstractFactory(AbstractFactory const& other) = delete;
-  AbstractFactory& operator=(AbstractFactory&& other) = delete;
-  AbstractFactory& operator=(AbstractFactory const& other) = delete;
+  AbstractFactory(AbstractFactory &&other) = delete;
+  AbstractFactory(AbstractFactory const &other) = delete;
+  AbstractFactory &operator=(AbstractFactory &&other) = delete;
+  AbstractFactory &operator=(AbstractFactory const &other) = delete;
 #endif  // !SWIG
 
   virtual ~AbstractFactory() = default;
 
-  std::unique_ptr<U> Create(const std::string& message);
+  std::unique_ptr<U> Create(const std::string &message);
 
  protected:
-  std::vector<std::function<std::unique_ptr<U>(const T&)>> map_factory_;
+  std::vector<std::function<std::unique_ptr<U>(const T &)>> map_factory_;
 };
 
 }  // namespace llgc::pattern

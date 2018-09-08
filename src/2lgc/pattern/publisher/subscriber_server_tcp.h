@@ -39,14 +39,14 @@ class SubscriberServerTcp : public SubscriberInterface<T>
   explicit SubscriberServerTcp(int socket) : socket_(socket) {}
   ~SubscriberServerTcp() override = default;
 
-  bool Listen(const T& messages) override;
-  bool Equals(const SubscriberInterface<T>& connector) const override;
+  bool Listen(const T &messages) override;
+  bool Equals(const SubscriberInterface<T> &connector) const override;
 
 #ifndef SWIG
-  SubscriberServerTcp(SubscriberServerTcp&& other) = delete;
-  SubscriberServerTcp(SubscriberServerTcp const& other) = delete;
-  SubscriberServerTcp& operator=(SubscriberServerTcp&& other) = delete;
-  SubscriberServerTcp& operator=(SubscriberServerTcp const& other) = delete;
+  SubscriberServerTcp(SubscriberServerTcp &&other) = delete;
+  SubscriberServerTcp(SubscriberServerTcp const &other) = delete;
+  SubscriberServerTcp &operator=(SubscriberServerTcp &&other) = delete;
+  SubscriberServerTcp &operator=(SubscriberServerTcp const &other) = delete;
 #endif  // !SWIG
 
  private:

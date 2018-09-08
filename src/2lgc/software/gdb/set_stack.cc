@@ -113,7 +113,7 @@ llgc::software::gdb::SetStack::SetStack(bool with_source_only, size_t top_frame,
  * \param[in] filename The file to add.
  * \return True if the file is a valid backtrace.
  */
-bool llgc::software::gdb::SetStack::Add(const std::string& filename)
+bool llgc::software::gdb::SetStack::Add(const std::string &filename)
 {
   std::ifstream file(filename);
 
@@ -170,9 +170,9 @@ bool llgc::software::gdb::SetStack::Add(const std::string& filename)
  *            read.
  * \return true if no problem.
  */
-bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
+bool llgc::software::gdb::SetStack::AddRecursive(const std::string &folder,
                                                  unsigned int nthread,
-                                                 const std::string& regex)
+                                                 const std::string &regex)
 {
   std::vector<std::string> all_files;
   if (!llgc::filesystem::Files::SearchRecursiveFiles(folder, regex, &all_files))
@@ -190,7 +190,7 @@ bool llgc::software::gdb::SetStack::AddRecursive(const std::string& folder,
  * \param[in] nthread The number of threads if parallel is allowed.
  * \return true if no problem.
  */
-bool llgc::software::gdb::SetStack::AddList(const std::string& list,
+bool llgc::software::gdb::SetStack::AddList(const std::string &list,
                                             unsigned int nthread)
 {
   std::vector<std::string> all_files;
@@ -244,7 +244,7 @@ void llgc::software::gdb::SetStack::Print() const
  * \param[in] i the nth stack. First is at 0.
  * \return A reference to the stack. The ith stack must exists.
  */
-const llgc::software::gdb::Stack& llgc::software::gdb::SetStack::Get(
+const llgc::software::gdb::Stack &llgc::software::gdb::SetStack::Get(
     size_t i) const
 {
   auto it = stack_.begin();
@@ -304,8 +304,8 @@ llgc::software::gdb::SetStack::LocalCompare::LocalCompare(bool with_source_only,
  * \return -1 if i < j, 0 if i == j and -1 if i > j.
  */
 ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
-    size_t nb_max_frames, const FunctionGetBacktrace& get_backtraces,
-    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j) const
+    size_t nb_max_frames, const FunctionGetBacktrace &get_backtraces,
+    const std::unique_ptr<Stack> &i, const std::unique_ptr<Stack> &j) const
 {
   uint32_t ii = 0, jj = 0;
 
@@ -343,8 +343,8 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
       return 1;
     }
 
-    const Backtrace& bti = (*i.*get_backtraces)(ii);
-    const Backtrace& btj = (*j.*get_backtraces)(jj);
+    const Backtrace &bti = (*i.*get_backtraces)(ii);
+    const Backtrace &btj = (*j.*get_backtraces)(jj);
     int compare = bti.GetFile().compare(btj.GetFile());
 
     if (compare < 0)
@@ -408,7 +408,7 @@ ssize_t llgc::software::gdb::SetStack::LocalCompare::CompareFrom(
  * \return If i < j based on argument from constructor.
  */
 bool llgc::software::gdb::SetStack::LocalCompare::operator()(
-    const std::unique_ptr<Stack>& i, const std::unique_ptr<Stack>& j) const
+    const std::unique_ptr<Stack> &i, const std::unique_ptr<Stack> &j) const
 {
   // If it's the same file.
   if (i->GetFilename() == j->GetFilename())
@@ -462,7 +462,7 @@ bool llgc::software::gdb::SetStack::LocalCompare::operator()(
  * \return true if no problem.
  */
 bool llgc::software::gdb::SetStack::ParallelAdd(
-    const std::vector<std::string>& all_files, unsigned int nthread)
+    const std::vector<std::string> &all_files, unsigned int nthread)
 {
   bool retval = true;
   unsigned int nthreads =
@@ -481,7 +481,7 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
           return retval2;
         });
   }
-  for (std::future<bool>& t : threads)
+  for (std::future<bool> &t : threads)
   {
     retval &= t.get();
   }
@@ -493,13 +493,13 @@ bool llgc::software::gdb::SetStack::ParallelAdd(
  * \param[in] filename The filename that failed to be read.
  * \return true if no problem.
  */
-bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
+bool llgc::software::gdb::SetStack::TellError(const std::string &filename)
 {
   llgc::protobuf::software::Gdb messages;
   auto message = messages.add_msg();
   auto add_stack_failed =
       std::make_unique<llgc::protobuf::software::Gdb::Msg::AddStackFailed>();
-  std::string* filename_gdb = add_stack_failed->add_file();
+  std::string *filename_gdb = add_stack_failed->add_file();
   filename_gdb->assign(filename);
   message->set_allocated_add_stack_failed(add_stack_failed.release());
   BUGCONT(std::cout, Forward(messages), false);
@@ -511,7 +511,7 @@ bool llgc::software::gdb::SetStack::TellError(const std::string& filename)
  * \return true if no problem.
  */
 bool llgc::software::gdb::SetStack::Forward(
-    const llgc::protobuf::software::Gdb& message)
+    const llgc::protobuf::software::Gdb &message)
 {
   // Check if instance.
   if (server_.IsInstance())

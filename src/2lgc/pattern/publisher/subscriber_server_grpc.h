@@ -42,23 +42,23 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T>* stream)
+  explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T> *stream)
       : stream_(stream)
   {
   }
 #ifndef SWIG
-  SubscriberServerGrpc(SubscriberServerGrpc&& other) = delete;
-  SubscriberServerGrpc(SubscriberServerGrpc const& other) = delete;
-  SubscriberServerGrpc& operator=(SubscriberServerGrpc&& other) = delete;
-  SubscriberServerGrpc& operator=(SubscriberServerGrpc const& other) = delete;
+  SubscriberServerGrpc(SubscriberServerGrpc &&other) = delete;
+  SubscriberServerGrpc(SubscriberServerGrpc const &other) = delete;
+  SubscriberServerGrpc &operator=(SubscriberServerGrpc &&other) = delete;
+  SubscriberServerGrpc &operator=(SubscriberServerGrpc const &other) = delete;
 #endif  // !SWIG
   ~SubscriberServerGrpc() override = default;
 
-  bool Listen(const T& messages) override;
-  bool Equals(const SubscriberInterface<T>& connector) const override;
+  bool Listen(const T &messages) override;
+  bool Equals(const SubscriberInterface<T> &connector) const override;
 
  private:
-  grpc::ServerReaderWriter<T, T>* stream_;
+  grpc::ServerReaderWriter<T, T> *stream_;
 };
 
 }  // namespace llgc::pattern::publisher

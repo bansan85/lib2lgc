@@ -48,7 +48,7 @@ template <typename T>
 INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::JoinWait()
 {
   PublisherIp<T>::JoinWait();
-  for (auto& thread_i : thread_sockets_)
+  for (auto &thread_i : thread_sockets_)
   {
     if (thread_i.second.joinable())
     {

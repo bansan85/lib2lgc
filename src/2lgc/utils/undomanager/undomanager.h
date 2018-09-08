@@ -79,7 +79,7 @@ class Undomanager
    */
   Undomanager(
       std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory,
-      const std::string& file);
+      const std::string &file);
 
   /**
    * @brief Add a command to the undomanager.
@@ -88,7 +88,7 @@ class Undomanager
    *
    * @return A pointer to the new child. nullptr if AddChild fails.
    */
-  llgc::utils::Tree<U>* AddCommand(const std::string& command);
+  llgc::utils::Tree<U> *AddCommand(const std::string &command);
 
   /**
    * @brief Add a command to the undomanager.
@@ -98,7 +98,7 @@ class Undomanager
    *
    * @return A pointer to the new child. nullptr if AddChild fails.
    */
-  llgc::utils::Tree<U>* AddCommand(size_t id, const std::string& command);
+  llgc::utils::Tree<U> *AddCommand(size_t id, const std::string &command);
 
   /**
    * @brief eiua
@@ -156,7 +156,7 @@ class Undomanager
    * @param[in,out] before eiua
    * @param[in,out] after eiau
    */
-  void DrawHistory(void* before, void* after);
+  void DrawHistory(void *before, void *after);
 
   /**
    * @brief
@@ -219,7 +219,7 @@ class Undomanager
    *
    * @return Return the new node.
    */
-  llgc::utils::Tree<U>* Add(std::unique_ptr<U> child);
+  llgc::utils::Tree<U> *Add(std::unique_ptr<U> child);
 
   /**
    * @brief Add a node to the unique_ptr tree.
@@ -229,7 +229,7 @@ class Undomanager
    *
    * @return Return the new node.
    */
-  llgc::utils::Tree<U>* Add(size_t id, std::unique_ptr<U> child);
+  llgc::utils::Tree<U> *Add(size_t id, std::unique_ptr<U> child);
 };
 
 }  // namespace llgc::utils::undomanager

@@ -49,20 +49,20 @@ class SetStack
   SetStack(bool with_source_only, size_t top_frame, size_t bottom_frame,
            bool print_one_by_group);
 #ifndef SWIG
-  SetStack(SetStack&& other) = delete;
-  SetStack(SetStack const& other) = delete;
-  SetStack& operator=(SetStack&& other) = delete;
-  SetStack& operator=(SetStack const& other) = delete;
+  SetStack(SetStack &&other) = delete;
+  SetStack(SetStack const &other) = delete;
+  SetStack &operator=(SetStack &&other) = delete;
+  SetStack &operator=(SetStack const &other) = delete;
 #endif  // !SWIG
   ~SetStack() = default;
 
-  bool Add(const std::string& filename) CHK;
-  bool AddRecursive(const std::string& folder, unsigned int nthread,
-                    const std::string& regex) CHK;
-  bool AddList(const std::string& list, unsigned int nthread) CHK;
+  bool Add(const std::string &filename) CHK;
+  bool AddRecursive(const std::string &folder, unsigned int nthread,
+                    const std::string &regex) CHK;
+  bool AddList(const std::string &list, unsigned int nthread) CHK;
   size_t Count() const;
   void Print() const;
-  const Stack& Get(size_t i) const;
+  const Stack &Get(size_t i) const;
 
   Stack::Iter begin() const { return Stack::Iter(*this, 0); }
   Stack::Iter end() const { return Stack::Iter(*this, stack_.size()); }
@@ -72,25 +72,25 @@ class SetStack
  private:
   struct LocalCompare
   {
-    using FunctionGetBacktrace = const Backtrace& (Stack::*)(size_t i) const;
+    using FunctionGetBacktrace = const Backtrace &(Stack::*)(size_t i) const;
 
     LocalCompare(bool with_source_only, size_t top_frame, size_t bottom_frame);
     ssize_t CompareFrom(size_t nb_max_frames,
-                        const FunctionGetBacktrace& get_backtraces,
-                        const std::unique_ptr<Stack>& i,
-                        const std::unique_ptr<Stack>& j) const;
-    bool operator()(const std::unique_ptr<Stack>& i,
-                    const std::unique_ptr<Stack>& j) const;
+                        const FunctionGetBacktrace &get_backtraces,
+                        const std::unique_ptr<Stack> &i,
+                        const std::unique_ptr<Stack> &j) const;
+    bool operator()(const std::unique_ptr<Stack> &i,
+                    const std::unique_ptr<Stack> &j) const;
 
     bool with_source_only_;
     size_t top_frame_;
     size_t bottom_frame_;
   };
 
-  bool ParallelAdd(const std::vector<std::string>& all_files,
+  bool ParallelAdd(const std::vector<std::string> &all_files,
                    unsigned int nthread) CHK;
-  bool TellError(const std::string& filename) CHK;
-  bool Forward(const llgc::protobuf::software::Gdb& message) CHK;
+  bool TellError(const std::string &filename) CHK;
+  bool Forward(const llgc::protobuf::software::Gdb &message) CHK;
 
   std::multiset<std::unique_ptr<Stack>, LocalCompare> stack_;
   mutable std::mutex mutex_stack_;

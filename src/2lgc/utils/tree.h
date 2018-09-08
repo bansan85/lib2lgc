@@ -31,32 +31,32 @@ template <typename T>
 class Tree
 {
  public:
-  Tree(size_t id, std::unique_ptr<T> data, Tree<T>* parent);
+  Tree(size_t id, std::unique_ptr<T> data, Tree<T> *parent);
 
-  Tree<T>* AddChild(std::unique_ptr<T> child) CHK;
-  Tree<T>* AddChild(std::unique_ptr<T> child, size_t id) CHK;
+  Tree<T> *AddChild(std::unique_ptr<T> child) CHK;
+  Tree<T> *AddChild(std::unique_ptr<T> child, size_t id) CHK;
 
-  bool FindPath(size_t end, std::deque<T*>* path) const CHK;
-  bool FindPath(size_t begin, size_t end, std::deque<T*>* path) const CHK;
+  bool FindPath(size_t end, std::deque<T *> *path) const CHK;
+  bool FindPath(size_t begin, size_t end, std::deque<T *> *path) const CHK;
 
-  const Tree<T>* FindNode(size_t id) const;
-  Tree<T>* FindNode(size_t id);
+  const Tree<T> *FindNode(size_t id) const;
+  Tree<T> *FindNode(size_t id);
 
   size_t FindMaxId() const;
   size_t GetId() const { return id_; }
-  T* GetData() { return data_.get(); }
+  T *GetData() { return data_.get(); }
 
  private:
-  bool FindPath(const Tree<T>* previous, size_t end,
-                std::deque<T*>* path) const CHK;
+  bool FindPath(const Tree<T> *previous, size_t end,
+                std::deque<T *> *path) const CHK;
 
-  const Tree<T>* FindNode(size_t id, size_t previous) const;
-  Tree<T>* FindNode(size_t id, size_t previous);
+  const Tree<T> *FindNode(size_t id, size_t previous) const;
+  Tree<T> *FindNode(size_t id, size_t previous);
   size_t FindMaxId(size_t max_id, size_t previous) const;
 
   size_t id_;
   std::unique_ptr<T> data_;
-  Tree<T>* parent_;
+  Tree<T> *parent_;
   std::vector<std::unique_ptr<Tree<T>>> children_;
 };
 

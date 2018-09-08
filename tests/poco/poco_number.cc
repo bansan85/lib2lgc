@@ -21,7 +21,7 @@
 #include <cassert>
 #include <memory>
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   auto unit = std::make_unique<llgc::protobuf::math::Number_Unit>();
   unit->set_m(1.);

@@ -25,7 +25,7 @@
 #include <memory>
 #include <string>
 
-int main(int argc, char* argv[])  // NS
+int main(int argc, char *argv[])  // NS
 {
   assert(argc == 2);
 
@@ -44,13 +44,13 @@ int main(int argc, char* argv[])  // NS
   assert(set_stack->Count() == 0);
   EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull1.success"));
   assert(set_stack->Count() == 1);
-  for (const auto& it : *set_stack)
+  for (const auto &it : *set_stack)
   {
     assert(it.GetFilename() == folder / "btfull1.success");
     assert(it.NumberOfBacktraces() == 3);
     size_t i = 0;
     // Check range-based loop
-    for (const auto& it2 : it)
+    for (const auto &it2 : it)
     {
       switch (i)
       {

@@ -42,10 +42,10 @@ class PublisherTcp : public PublisherIp<T>
  public:
   explicit PublisherTcp(uint16_t port);
 #ifndef SWIG
-  PublisherTcp(PublisherTcp&& other) = delete;
-  PublisherTcp(PublisherTcp const& other) = delete;
-  PublisherTcp& operator=(PublisherTcp&& other) = delete;
-  PublisherTcp& operator=(PublisherTcp const& other) = delete;
+  PublisherTcp(PublisherTcp &&other) = delete;
+  PublisherTcp(PublisherTcp const &other) = delete;
+  PublisherTcp &operator=(PublisherTcp &&other) = delete;
+  PublisherTcp &operator=(PublisherTcp const &other) = delete;
 #endif  // !SWIG
   ~PublisherTcp() override;
 
@@ -58,7 +58,7 @@ class PublisherTcp : public PublisherIp<T>
 
  private:
   virtual void AddSubscriberLocal(int socket,
-                                  const typename T::Msg& message) = 0;
+                                  const typename T::Msg &message) = 0;
 };
 
 }  // namespace llgc::pattern::publisher

@@ -24,7 +24,7 @@
 #include "undo_command1.pb.h"
 #include "undomanager_all_commands.h"
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   double number_test = 0.;
   CommandAdd add4(4., &number_test);

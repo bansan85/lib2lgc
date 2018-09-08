@@ -52,15 +52,15 @@ class PublisherInterface
 
   PublisherInterface();
 #ifndef SWIG
-  PublisherInterface(PublisherInterface&& other) = delete;
-  PublisherInterface(PublisherInterface const& other) = delete;
-  PublisherInterface& operator=(PublisherInterface&& other) = delete;
-  PublisherInterface& operator=(PublisherInterface const& other) = delete;
+  PublisherInterface(PublisherInterface &&other) = delete;
+  PublisherInterface(PublisherInterface const &other) = delete;
+  PublisherInterface &operator=(PublisherInterface &&other) = delete;
+  PublisherInterface &operator=(PublisherInterface const &other) = delete;
 #endif  // !SWIG
   virtual ~PublisherInterface() = default;
 
   virtual bool AddSubscriber(uint32_t id_message, U subscriber) CHK;
-  bool Forward(const T& messages) CHK;
+  bool Forward(const T &messages) CHK;
   bool ForwardPending() CHK;
   virtual bool RemoveSubscriber(uint32_t id_message, U subscriber) CHK;
 

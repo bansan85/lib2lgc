@@ -42,7 +42,7 @@
  */
 template <typename T>
 INLINE_TEMPLATE llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data,
-                                           Tree<T>* parent)
+                                           Tree<T> *parent)
     : id_(id), data_(std::move(data)), parent_(parent), children_()
 {
 }
@@ -53,7 +53,7 @@ INLINE_TEMPLATE llgc::utils::Tree<T>::Tree(size_t id, std::unique_ptr<T> data,
  *         fails.
  */
 template <typename T>
-INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(
+INLINE_TEMPLATE llgc::utils::Tree<T> *llgc::utils::Tree<T>::AddChild(
     std::unique_ptr<T> child)
 {
   size_t max_id = FindMaxId(id_, id_);
@@ -69,11 +69,11 @@ INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(
  *         fails.
  */
 template <typename T>
-INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(
+INLINE_TEMPLATE llgc::utils::Tree<T> *llgc::utils::Tree<T>::AddChild(
     std::unique_ptr<T> child, size_t id)
 {
   size_t max_id = FindMaxId(id_, id_);
-  llgc::utils::Tree<T>* parent = FindNode(id);
+  llgc::utils::Tree<T> *parent = FindNode(id);
 
   BUGCRIT(std::cout, parent != nullptr, nullptr,
           "Failed to find node " + std::to_string(id) + ".\n");
@@ -92,7 +92,7 @@ INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::AddChild(
  */
 template <typename T>
 INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(size_t end,
-                                                    std::deque<T*>* path) const
+                                                    std::deque<T *> *path) const
 {
   BUGCONT(std::cout, FindPath(nullptr, end, path), false);
 
@@ -108,9 +108,9 @@ INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(size_t end,
  */
 template <typename T>
 INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
-                                                    std::deque<T*>* path) const
+                                                    std::deque<T *> *path) const
 {
-  const Tree<T>* begin_node = FindNode(begin);
+  const Tree<T> *begin_node = FindNode(begin);
 
   BUGCRIT(std::cout, begin_node != nullptr, false,
           "Failed to find the start node " + std::to_string(begin) + ".\n");
@@ -125,7 +125,7 @@ INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(size_t begin, size_t end,
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
+INLINE_TEMPLATE const llgc::utils::Tree<T> *llgc::utils::Tree<T>::FindNode(
     size_t id) const
 {
   return FindNode(id, id_);
@@ -136,7 +136,7 @@ INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(size_t id)
+INLINE_TEMPLATE llgc::utils::Tree<T> *llgc::utils::Tree<T>::FindNode(size_t id)
 {
   return FindNode(id, id_);
 }
@@ -168,9 +168,9 @@ INLINE_TEMPLATE size_t llgc::utils::Tree<T>::FindMaxId() const
  * \return true if found. path is fill only if return value is true.
  */
 template <typename T>
-INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous,
+INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(const Tree<T> *previous,
                                                     size_t end,
-                                                    std::deque<T*>* path) const
+                                                    std::deque<T *> *path) const
 {
   BUGPARAM(std::cout, 0, path != nullptr, false);
 
@@ -216,7 +216,7 @@ INLINE_TEMPLATE bool llgc::utils::Tree<T>::FindPath(const Tree<T>* previous,
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
+INLINE_TEMPLATE const llgc::utils::Tree<T> *llgc::utils::Tree<T>::FindNode(
     size_t id, size_t previous) const
 {
   // In case the start is the end.
@@ -233,7 +233,7 @@ INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
     {
       continue;
     }
-    const Tree<T>* retval = children_[i]->FindNode(id, id_);
+    const Tree<T> *retval = children_[i]->FindNode(id, id_);
     if (retval != nullptr)
     {
       return retval;
@@ -247,7 +247,7 @@ INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
   }
   if (parent_ != nullptr)
   {
-    const Tree<T>* retval = parent_->FindNode(id, id_);
+    const Tree<T> *retval = parent_->FindNode(id, id_);
     if (retval != nullptr)
     {
       return retval;
@@ -263,7 +263,7 @@ INLINE_TEMPLATE const llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
  * \return The node if found. nullptr if failed.
  */
 template <typename T>
-INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
+INLINE_TEMPLATE llgc::utils::Tree<T> *llgc::utils::Tree<T>::FindNode(
     size_t id, size_t previous)
 {
   // In case the start is the end.
@@ -280,7 +280,7 @@ INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
     {
       continue;
     }
-    Tree<T>* retval = children_[i]->FindNode(id, id_);
+    Tree<T> *retval = children_[i]->FindNode(id, id_);
     if (retval != nullptr)
     {
       return retval;
@@ -294,7 +294,7 @@ INLINE_TEMPLATE llgc::utils::Tree<T>* llgc::utils::Tree<T>::FindNode(
   }
   if (parent_ != nullptr)
   {
-    Tree<T>* retval = parent_->FindNode(id, id_);
+    Tree<T> *retval = parent_->FindNode(id, id_);
     if (retval != nullptr)
     {
       return retval;

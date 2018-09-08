@@ -21,7 +21,7 @@
 #include <experimental/filesystem>
 #include <memory>
 
-int main(int argc, char* argv[])  // NS
+int main(int argc, char *argv[])  // NS
 {
   assert(argc == 3);
 

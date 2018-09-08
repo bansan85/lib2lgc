@@ -41,22 +41,22 @@ class Backtrace
   class Iter : public llgc::pattern::Iterator<Stack, Backtrace>
   {
    public:
-    Iter(const Stack& stack, size_t pos)
+    Iter(const Stack &stack, size_t pos)
         : llgc::pattern::Iterator<Stack, Backtrace>(stack, pos)
     {
     }
     ~Iter() override = default;
 
-    const Backtrace& operator*() const override;
+    const Backtrace &operator*() const override;
   };
 
-  static std::unique_ptr<Backtrace> Factory(const std::string& line);
-  static bool DecodeBacktrace(const std::string& line, std::string* index,
-                              std::string* address, std::string* function,
-                              std::string* file) CHK;
+  static std::unique_ptr<Backtrace> Factory(const std::string &line);
+  static bool DecodeBacktrace(const std::string &line, std::string *index,
+                              std::string *address, std::string *function,
+                              std::string *file) CHK;
   bool HasSource() const CHK { return file_.length() != 0; }
-  const std::string& GetFile() const CHK { return file_; }
-  const std::string& GetName() const CHK { return function_.GetName(); }
+  const std::string &GetFile() const CHK { return file_; }
+  const std::string &GetName() const CHK { return function_.GetName(); }
   size_t GetLine() const CHK { return line_; }
   size_t GetIndex() const CHK { return index_; }
   uint64_t GetAddress() const CHK { return address_; }
@@ -68,12 +68,12 @@ class Backtrace
   std::string file_;
   size_t line_ = std::numeric_limits<size_t>::max();
 
-  bool ReadIndex(const std::string& number) CHK;
-  bool ReadAddress(const std::string& address) CHK;
-  bool ReadFunction(const std::string& description) CHK;
-  bool ReadSource(const std::string& file) CHK;
+  bool ReadIndex(const std::string &number) CHK;
+  bool ReadAddress(const std::string &address) CHK;
+  bool ReadFunction(const std::string &description) CHK;
+  bool ReadSource(const std::string &file) CHK;
 
-  static size_t FindNextArg(const std::string& args);
+  static size_t FindNextArg(const std::string &args);
 };
 
 }  // namespace llgc::software::gdb

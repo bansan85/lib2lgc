@@ -53,7 +53,7 @@ template class llgc::pattern::Singleton<
  * \return true if no problem.
  */
 bool llgc::software::gdb::GdbServer::Forward(
-    const llgc::protobuf::software::Gdb& message)
+    const llgc::protobuf::software::Gdb &message)
 {
   // Check if instance.
   if (IsInstance())

@@ -24,7 +24,7 @@
 #include <string>
 #include <vector>
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   std::experimental::filesystem::create_directory("folder");
   std::experimental::filesystem::create_directory("folder/2");

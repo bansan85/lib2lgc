@@ -20,16 +20,16 @@
 #include <iostream>
 #include <string>
 
-#define BUG(OUT, X, Y, MSG, Z)                                                 \
-  do                                                                           \
-  {                                                                            \
-    if (!(X))                                                                  \
-    {                                                                          \
-      (OUT) << "file " << __FILE__ << ", function "                            \
-            << static_cast<const char*>(__FUNCTION__) << ", line " << __LINE__ \
-            << ", type: " << (MSG) << (Z);                                     \
-      return Y;                                                                \
-    }                                                                          \
+#define BUG(OUT, X, Y, MSG, Z)                                      \
+  do                                                                \
+  {                                                                 \
+    if (!(X))                                                       \
+    {                                                               \
+      (OUT) << "file " << __FILE__ << ", function "                 \
+            << static_cast<const char *>(__FUNCTION__) << ", line " \
+            << __LINE__ << ", type: " << (MSG) << (Z);              \
+      return Y;                                                     \
+    }                                                               \
   } while (0)
 
 #define BUGPARAM(OUT, PARAM, X, Y) \

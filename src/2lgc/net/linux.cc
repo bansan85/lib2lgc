@@ -62,7 +62,7 @@ bool llgc::net::Linux::DisableSigPipe()
  * \param[in] timeout Timeout in millisecond.
  * \return `false` if timeout or failed to bind.
  */
-bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
+bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr *addr,
                             socklen_t addrlen, size_t timeout)
 {
   int retval_bind = bind(sockfd, addr, addrlen);
@@ -98,7 +98,7 @@ bool llgc::net::Linux::Bind(int sockfd, const struct sockaddr* addr,
  * \param[in] message Message to send.
  * \return `true` if no problem.
  */
-bool llgc::net::Linux::Send(int sockfd, const std::string& message)
+bool llgc::net::Linux::Send(int sockfd, const std::string &message)
 {
   ssize_t retval_send = send(sockfd, message.c_str(), message.length(), 0);
 
@@ -118,7 +118,7 @@ bool llgc::net::Linux::Send(int sockfd, const std::string& message)
  * \param[in] function Function to execute.
  * \return The value returned by function.
  */
-int llgc::net::Linux::RepeteOnEintr(const std::function<int()>& function)
+int llgc::net::Linux::RepeteOnEintr(const std::function<int()> &function)
 {
   int retval;
   do
@@ -135,7 +135,7 @@ int llgc::net::Linux::RepeteOnEintr(const std::function<int()>& function)
 /** \brief Constructor with the socket to handle.
  * \param[in] socket The socket.
  */
-llgc::net::Linux::AutoCloseSocket::AutoCloseSocket(int* socket)
+llgc::net::Linux::AutoCloseSocket::AutoCloseSocket(int *socket)
     : socket_(socket)
 {
 }

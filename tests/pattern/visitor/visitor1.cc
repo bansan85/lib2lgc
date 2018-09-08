@@ -25,7 +25,7 @@
 #include <memory>
 #include <string>
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   google::protobuf::Arena arena;
 

@@ -57,12 +57,12 @@ llgc::software::gdb::GdbServer llgc::software::gdb::Gdb::server_;
  * \param[in] timeout Timeout for the run of gdb.
  * \return true if no problem.
  */
-bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
+bool llgc::software::gdb::Gdb::RunBtFull(const std::string &filename,
                                          unsigned int argc,
-                                         const char* const argv[],
+                                         const char *const argv[],
                                          int64_t timeout)
 {
-  auto argvbis = std::make_unique<const char* []>(argc + 24);
+  auto argvbis = std::make_unique<const char *[]>(argc + 24);
   std::string btfullfile;
   btfullfile.assign("set logging file ");
   btfullfile.append(filename);
@@ -98,7 +98,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
     {
       // a const_cast is necessary. argvbis must be not const.
       // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
-      argvbis[23 + i] = const_cast<char*>(filename.c_str());
+      argvbis[23 + i] = const_cast<char *>(filename.c_str());
     }
     else
     {
@@ -139,7 +139,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
           auto message = messages_gdb.add_msg();
           auto run_bt_full_time_out = std::make_unique<
               llgc::protobuf::software::Gdb::Msg::RunBtFullTimeOut>();
-          std::string* filename_gdb = run_bt_full_time_out->add_file();
+          std::string *filename_gdb = run_bt_full_time_out->add_file();
           filename_gdb->assign(filename);
           message->set_allocated_run_bt_full_time_out(
               run_bt_full_time_out.release());
@@ -155,7 +155,7 @@ bool llgc::software::gdb::Gdb::RunBtFull(const std::string& filename,
     // a const_cast is necessary.
     // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     BUGCRIT(std::cout,
-            execvp(argvbis[0], const_cast<char* const*>(argvbis.get())) != -1,
+            execvp(argvbis[0], const_cast<char *const *>(argvbis.get())) != -1,
             false, "Failed to run " + std::string(argvbis[0]) + ".\n");
   }
   return true;
@@ -173,9 +173,9 @@ namespace
  * \param[in,out] timeout Timeout in second.
  * \return true if all gdb instances are successfull.
  */
-bool ParallelRun(const std::vector<std::string>& all_files,
+bool ParallelRun(const std::vector<std::string> &all_files,
                  unsigned int nthread, unsigned int argc,
-                 const char* const argv[], int64_t timeout)
+                 const char *const argv[], int64_t timeout)
 {
   bool retval = true;
   const unsigned int nthreads =
@@ -195,7 +195,7 @@ bool ParallelRun(const std::vector<std::string>& all_files,
           return retval2;
         });
   }
-  for (std::future<bool>& t : threads)
+  for (std::future<bool> &t : threads)
   {
     retval &= t.get();
   }
@@ -217,8 +217,8 @@ bool ParallelRun(const std::vector<std::string>& all_files,
  * \return true if no problem.
  */
 bool llgc::software::gdb::Gdb::RunBtFullRecursive(
-    const std::string& folder, unsigned int nthread, const std::string& regex,
-    unsigned int argc, const char* const argv[], int64_t timeout)
+    const std::string &folder, unsigned int nthread, const std::string &regex,
+    unsigned int argc, const char *const argv[], int64_t timeout)
 {
   std::vector<std::string> all_files;
   BUGCRIT(
@@ -240,10 +240,10 @@ bool llgc::software::gdb::Gdb::RunBtFullRecursive(
  * \param[in] timeout Timeout in second for the run of gdb.
  * \return true if no problem.
  */
-bool llgc::software::gdb::Gdb::RunBtFullList(const std::string& list,
+bool llgc::software::gdb::Gdb::RunBtFullList(const std::string &list,
                                              unsigned int nthread,
                                              unsigned int argc,
-                                             const char* const argv[],
+                                             const char *const argv[],
                                              int64_t timeout)
 {
   std::vector<std::string> all_files;

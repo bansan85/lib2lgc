@@ -22,7 +22,7 @@
 #include <memory>
 #include <string>
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   // Check good lines
   std::unique_ptr<llgc::software::gdb::Backtrace> bt =

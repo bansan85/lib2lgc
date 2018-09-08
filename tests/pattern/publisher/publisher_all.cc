@@ -25,7 +25,7 @@
 // V Type of the server
 template <typename T, typename U, typename V>
 INLINE_TEMPLATE void llgc::pattern::publisher::test::Publisher::All(
-    U* subscriber, V* server, size_t delay)
+    U *subscriber, V *server, size_t delay)
 {
   EXECUTE_AND_ABORT(std::cout,
                     subscriber->AddSubscriber(T::Msg::DataCase::kTest));
@@ -97,7 +97,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::test::Publisher::All(
 }
 
 void llgc::pattern::publisher::test::Publisher::WaitUpToTenSecond(
-    const std::function<bool()>& test)
+    const std::function<bool()> &test)
 {
   std::chrono::time_point<std::chrono::system_clock> start, end;
   start = std::chrono::system_clock::now();

@@ -35,38 +35,38 @@ INLINE_TEMPLATE llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
 template <typename T, typename U>
 INLINE_TEMPLATE llgc::utils::undomanager::Undomanager<T, U>::Undomanager(
     std::unique_ptr<llgc::pattern::AbstractFactory<T, U>> abstract_factory,
-    const std::string& file)
+    const std::string &file)
     : Undomanager(std::move(abstract_factory))
 {
 }
 
 template <typename T, typename U>
-INLINE_TEMPLATE llgc::utils::Tree<U>*
-llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
-    const std::string& command)
+INLINE_TEMPLATE llgc::utils::Tree<U>
+    *llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
+        const std::string &command)
 {
   std::unique_ptr<U> new_command = abstract_factory_->Create(command);
 
   BUGCRIT(std::cout, new_command != nullptr, nullptr,
           "Failed to decode command " + command + ".\n");
 
-  Tree<U>* retval = Add(std::move(new_command));
+  Tree<U> *retval = Add(std::move(new_command));
   BUGCONT(std::cout, retval != nullptr, nullptr);
 
   return retval;
 }
 
 template <typename T, typename U>
-INLINE_TEMPLATE llgc::utils::Tree<U>*
-llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
-    size_t id, const std::string& command)
+INLINE_TEMPLATE llgc::utils::Tree<U>
+    *llgc::utils::undomanager::Undomanager<T, U>::AddCommand(
+        size_t id, const std::string &command)
 {
   auto new_command = abstract_factory_->Create(command);
 
   BUGCRIT(std::cout, new_command != nullptr, nullptr,
           "Failed to decode command " + command + ".\n");
 
-  Tree<U>* retval = Add(id, std::move(new_command));
+  Tree<U> *retval = Add(id, std::move(new_command));
   BUGCONT(std::cout, retval != nullptr, nullptr);
 
   return retval;
@@ -87,7 +87,7 @@ INLINE_TEMPLATE bool llgc::utils::undomanager::Undomanager<T, U>::DoCommand(
 {
   BUGCRIT(std::cout, memory_ != nullptr, false, "Undomanager empty.\n");
 
-  Tree<U>* node_parent = memory_->FindNode(id);
+  Tree<U> *node_parent = memory_->FindNode(id);
 
   BUGCRIT(std::cout, node_parent != nullptr, false,
           "Failed to find node " + std::to_string(id) + ".\n");
@@ -102,7 +102,7 @@ INLINE_TEMPLATE bool llgc::utils::undomanager::Undomanager<T, U>::DoCommands(
 {
   BUGCRIT(std::cout, memory_ != nullptr, false, "Undomanager empty.\n");
 
-  std::deque<U*> path;
+  std::deque<U *> path;
 
   BUGCRIT(std::cout, memory_->FindPath(start, end, &path), false,
           "Fails to find path between " + std::to_string(start) + " and " +
@@ -143,7 +143,7 @@ INLINE_TEMPLATE bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommand(
 {
   BUGCRIT(std::cout, memory_ != nullptr, false, "Undomanager empty.\n");
 
-  Tree<U>* node_parent = memory_->FindNode(id);
+  Tree<U> *node_parent = memory_->FindNode(id);
 
   BUGCRIT(std::cout, node_parent != nullptr, false,
           "Failed to find node " + std::to_string(id) + ".\n");
@@ -158,7 +158,7 @@ INLINE_TEMPLATE bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommands(
 {
   BUGCRIT(std::cout, memory_ != nullptr, false, "Undomanager empty.\n");
 
-  std::deque<U*> path;
+  std::deque<U *> path;
 
   BUGCRIT(std::cout, memory_->FindPath(start, end, &path), false,
           "Fails to find path between " + std::to_string(start) + " and " +
@@ -195,7 +195,7 @@ INLINE_TEMPLATE bool llgc::utils::undomanager::Undomanager<T, U>::UndoCommands(
 
 template <typename T, typename U>
 INLINE_TEMPLATE void llgc::utils::undomanager::Undomanager<T, U>::DrawHistory(
-    void* before, void* after)
+    void *before, void *after)
 {
 }
 
@@ -228,8 +228,8 @@ llgc::utils::undomanager::Undomanager<T, U>::EndNewCommand()
 }
 
 template <typename T, typename U>
-INLINE_TEMPLATE llgc::utils::Tree<U>*
-llgc::utils::undomanager::Undomanager<T, U>::Add(std::unique_ptr<U> child)
+INLINE_TEMPLATE llgc::utils::Tree<U>
+    *llgc::utils::undomanager::Undomanager<T, U>::Add(std::unique_ptr<U> child)
 {
   if (memory_ == nullptr)
   {
@@ -238,25 +238,25 @@ llgc::utils::undomanager::Undomanager<T, U>::Add(std::unique_ptr<U> child)
     return memory_.get();
   }
 
-  Tree<U>* retval = memory_->AddChild(std::move(child));
+  Tree<U> *retval = memory_->AddChild(std::move(child));
   BUGCONT(std::cout, retval != nullptr, nullptr);
 
   return retval;
 }
 
 template <typename T, typename U>
-INLINE_TEMPLATE llgc::utils::Tree<U>*
-llgc::utils::undomanager::Undomanager<T, U>::Add(size_t id,
-                                                 std::unique_ptr<U> child)
+INLINE_TEMPLATE llgc::utils::Tree<U>
+    *llgc::utils::undomanager::Undomanager<T, U>::Add(size_t id,
+                                                      std::unique_ptr<U> child)
 {
   BUGCRIT(std::cout, memory_ != nullptr, nullptr, "Undomanager empty.\n");
 
-  Tree<U>* node_parent = memory_->FindNode(id);
+  Tree<U> *node_parent = memory_->FindNode(id);
 
   BUGCRIT(std::cout, node_parent != nullptr, nullptr,
           "Failed to find node " + std::to_string(id) + ".\n");
 
-  Tree<U>* retval = node_parent->AddChild(std::move(child));
+  Tree<U> *retval = node_parent->AddChild(std::move(child));
   BUGCONT(std::cout, retval != nullptr, nullptr);
 
   return retval;

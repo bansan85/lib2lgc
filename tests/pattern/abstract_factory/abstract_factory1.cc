@@ -39,14 +39,14 @@ class CommonCommand
    *
    * @param[in] other The original.
    */
-  CommonCommand(CommonCommand&& other) = delete;
+  CommonCommand(CommonCommand &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  CommonCommand(CommonCommand const& other) = delete;
+  CommonCommand(CommonCommand const &other) = delete;
 
   /**
    * @brief Delete the move operator.
@@ -55,7 +55,7 @@ class CommonCommand
    *
    * @return Delete function.
    */
-  CommonCommand& operator=(CommonCommand&& other) = delete;
+  CommonCommand &operator=(CommonCommand &&other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -64,7 +64,7 @@ class CommonCommand
    *
    * @return Delete function.
    */
-  CommonCommand& operator=(CommonCommand const& other) = delete;
+  CommonCommand &operator=(CommonCommand const &other) = delete;
 #endif  // !SWIG
 
   virtual void Modify() = 0;
@@ -95,14 +95,14 @@ class CommandTest : public CommonCommand
    *
    * @param[in] other The original.
    */
-  CommandTest(CommandTest&& other) = delete;
+  CommandTest(CommandTest &&other) = delete;
 
   /**
    * @brief Delete copy constructor.
    *
    * @param[in] other The original.
    */
-  CommandTest(CommandTest const& other) = delete;
+  CommandTest(CommandTest const &other) = delete;
 
   /**
    * @brief Delete the move operator.
@@ -111,7 +111,7 @@ class CommandTest : public CommonCommand
    *
    * @return Delete function.
    */
-  CommandTest& operator=(CommandTest&& other) = delete;
+  CommandTest &operator=(CommandTest &&other) = delete;
 
   /**
    * @brief Delete the copy operator.
@@ -120,7 +120,7 @@ class CommandTest : public CommonCommand
    *
    * @return Delete function.
    */
-  CommandTest& operator=(CommandTest const& other) = delete;
+  CommandTest &operator=(CommandTest const &other) = delete;
 #endif  // !SWIG
 
   void Modify() override { member_ = true; }
@@ -147,7 +147,7 @@ class Factory : public llgc::pattern::AbstractFactory<
 
  private:
   std::unique_ptr<CommonCommand> GetTest(
-      const llgc::protobuf::test::AbstractFactoryMsg& message)
+      const llgc::protobuf::test::AbstractFactoryMsg &message)
   {
     assert(message.has_test());
 
@@ -157,7 +157,7 @@ class Factory : public llgc::pattern::AbstractFactory<
   }
 };
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 

@@ -51,7 +51,7 @@ class T
 template class llgc::utils::Tree<T>;
 #endif
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   std::unique_ptr<T> t0 = std::make_unique<T>("0");
   std::unique_ptr<T> t1 = std::make_unique<T>("1");
@@ -75,19 +75,19 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   EXECUTE_AND_ABORT(std::cout, root.AddChild(std::move(t1)) != nullptr);
   // Number 2
   EXECUTE_AND_ABORT(std::cout, root.AddChild(std::move(t2)) != nullptr);
-  llgc::utils::Tree<T>* n1 = root.FindNode(1);
+  llgc::utils::Tree<T> *n1 = root.FindNode(1);
   assert(n1 != nullptr);
   // Number 3
   EXECUTE_AND_ABORT(std::cout, n1->AddChild(std::move(t3)) != nullptr);
   // Number 4
   EXECUTE_AND_ABORT(std::cout, n1->AddChild(std::move(t4)) != nullptr);
-  llgc::utils::Tree<T>* n3 = root.FindNode(3);
+  llgc::utils::Tree<T> *n3 = root.FindNode(3);
   assert(n3 != nullptr);
   // Number 5
   EXECUTE_AND_ABORT(std::cout, n3->AddChild(std::move(t5)) != nullptr);
   assert(n3->FindNode(2) != nullptr);
 
-  std::deque<T*> path;
+  std::deque<T *> path;
   EXECUTE_AND_ABORT(std::cout, n3->FindPath(2, &path));
   assert(path.size() == 4);
   std::cout << path[0]->nom_ << std::endl;

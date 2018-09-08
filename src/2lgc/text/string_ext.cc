@@ -31,8 +31,8 @@
  * \param[in] delimiter The delimeter.
  * \return The return value.
  */
-std::string llgc::text::StringExt::Join(const std::vector<std::string>& v,
-                                        const std::string& delimiter)
+std::string llgc::text::StringExt::Join(const std::vector<std::string> &v,
+                                        const std::string &delimiter)
 {
   std::string retval;
   for (auto p = v.begin(); p != v.end(); ++p)

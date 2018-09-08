@@ -47,10 +47,10 @@ class PublisherIp
  public:
   explicit PublisherIp(uint16_t port);
 #ifndef SWIG
-  PublisherIp(PublisherIp&& other) = delete;
-  PublisherIp(PublisherIp const& other) = delete;
-  PublisherIp& operator=(PublisherIp&& other) = delete;
-  PublisherIp& operator=(PublisherIp const& other) = delete;
+  PublisherIp(PublisherIp &&other) = delete;
+  PublisherIp(PublisherIp const &other) = delete;
+  PublisherIp &operator=(PublisherIp &&other) = delete;
+  PublisherIp &operator=(PublisherIp const &other) = delete;
 #endif  // !SWIG
   ~PublisherIp() override;
 

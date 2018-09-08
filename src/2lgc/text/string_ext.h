@@ -25,8 +25,8 @@ namespace llgc::text
 class StringExt
 {
  public:
-  static std::string Join(const std::vector<std::string>& v,
-                          const std::string& delimiter);
+  static std::string Join(const std::vector<std::string> &v,
+                          const std::string &delimiter);
 };
 
 }  // namespace llgc::text

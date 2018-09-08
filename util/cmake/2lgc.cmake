@@ -341,7 +341,7 @@ macro(llgc_check_all sources enable_coverage remove_coverage)
   find_program(CLANG_FORMAT clang-format)
   if (CLANG_FORMAT)
     add_custom_command(TARGET clang-format
-      COMMAND ${CLANG_FORMAT} -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false }, ReflowComments: false }' -i ${sources})
+      COMMAND ${CLANG_FORMAT} -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false }, ReflowComments: false, DerivePointerAlignment: false, PointerAlignment: Right }' -i ${sources})
   endif()
 
   if (COVERAGE)

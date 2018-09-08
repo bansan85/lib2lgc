@@ -18,7 +18,7 @@
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   assert(
       llgc::math::Compare::AlmostEqualUlpsAndAbsF(0.5f, 1.f / 2.f, 1.e-10f, 4));

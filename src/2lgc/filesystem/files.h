@@ -30,9 +30,9 @@ namespace llgc::filesystem
 class Files
 {
  public:
-  static bool SearchRecursiveFiles(const std::string& folder,
-                                   const std::string& regex,
-                                   std::vector<std::string>* files) CHK;
+  static bool SearchRecursiveFiles(const std::string &folder,
+                                   const std::string &regex,
+                                   std::vector<std::string> *files) CHK;
 };
 
 }  // namespace llgc::filesystem

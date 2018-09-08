@@ -34,17 +34,17 @@ class NumberVisitorUnit
  public:
   NumberVisitorUnit() = default;
 #ifndef SWIG
-  NumberVisitorUnit(NumberVisitorUnit&& other) = delete;
-  NumberVisitorUnit(NumberVisitorUnit const& other) = delete;
-  NumberVisitorUnit& operator=(NumberVisitorUnit&& other) = delete;
-  NumberVisitorUnit& operator=(NumberVisitorUnit const& other) = delete;
+  NumberVisitorUnit(NumberVisitorUnit &&other) = delete;
+  NumberVisitorUnit(NumberVisitorUnit const &other) = delete;
+  NumberVisitorUnit &operator=(NumberVisitorUnit &&other) = delete;
+  NumberVisitorUnit &operator=(NumberVisitorUnit const &other) = delete;
 #endif  // !SWIG
   ~NumberVisitorUnit() override = default;
 
-  bool Visit(const Number_Constant& data,
-             std::string* return_value) const override CHK;
-  bool Visit(const Number_NumOpNum& data,
-             std::string* return_value) const override CHK;
+  bool Visit(const Number_Constant &data,
+             std::string *return_value) const override CHK;
+  bool Visit(const Number_NumOpNum &data,
+             std::string *return_value) const override CHK;
 };
 
 }  // namespace llgc::poco

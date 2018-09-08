@@ -44,17 +44,17 @@ class SubscriberLocal : public SubscriberInterface<T>
  public:
   explicit SubscriberLocal(uint32_t id) : id_(id) {}
 #ifndef SWIG
-  SubscriberLocal(SubscriberLocal&& other) = delete;
-  SubscriberLocal(SubscriberLocal const& other) = delete;
-  SubscriberLocal& operator=(SubscriberLocal&& other) = delete;
-  SubscriberLocal& operator=(SubscriberLocal const& other) = delete;
+  SubscriberLocal(SubscriberLocal &&other) = delete;
+  SubscriberLocal(SubscriberLocal const &other) = delete;
+  SubscriberLocal &operator=(SubscriberLocal &&other) = delete;
+  SubscriberLocal &operator=(SubscriberLocal const &other) = delete;
 #endif  // !SWIG
   ~SubscriberLocal() override = default;
 
-  bool Equals(const SubscriberInterface<T>& connector) const override;
+  bool Equals(const SubscriberInterface<T> &connector) const override;
 
   bool SetConnector(std::shared_ptr<ConnectorInterface<T>> conn) CHK;
-  bool Send(const T& message) CHK;
+  bool Send(const T &message) CHK;
   bool AddSubscriber(uint32_t id_message) CHK;
   bool RemoveSubscriber(uint32_t id_message) CHK;
 

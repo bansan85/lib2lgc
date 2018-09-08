@@ -41,25 +41,25 @@ class Stack
   class Iter : public llgc::pattern::Iterator<SetStack, Stack>
   {
    public:
-    Iter(const SetStack& set_stack, size_t pos)
+    Iter(const SetStack &set_stack, size_t pos)
         : llgc::pattern::Iterator<SetStack, Stack>(set_stack, pos)
     {
     }
     ~Iter() override = default;
 
-    const Stack& operator*() const override;
+    const Stack &operator*() const override;
   };
 
   explicit Stack(std::string filename);
 
-  bool InterpretLine(const std::string& line) CHK;
-  const std::string& GetFilename() const CHK { return filename_; }
+  bool InterpretLine(const std::string &line) CHK;
+  const std::string &GetFilename() const CHK { return filename_; }
   size_t NumberOfBacktraces() const CHK { return backtraces_.size(); }
-  const Backtrace& GetBacktraceFromTop(size_t i) const CHK
+  const Backtrace &GetBacktraceFromTop(size_t i) const CHK
   {
     return *backtraces_[i];
   }
-  const Backtrace& GetBacktraceFromBottom(size_t i) const CHK
+  const Backtrace &GetBacktraceFromBottom(size_t i) const CHK
   {
     return *backtraces_[backtraces_.size() - 1 - i];
   }

@@ -31,14 +31,14 @@ class GdbServer;
 class Gdb
 {
  public:
-  static bool RunBtFull(const std::string& filename, unsigned int argc,
-                        const char* const argv[], int64_t timeout) CHK;
-  static bool RunBtFullRecursive(const std::string& folder,
-                                 unsigned int nthread, const std::string& regex,
-                                 unsigned int argc, const char* const argv[],
+  static bool RunBtFull(const std::string &filename, unsigned int argc,
+                        const char *const argv[], int64_t timeout) CHK;
+  static bool RunBtFullRecursive(const std::string &folder,
+                                 unsigned int nthread, const std::string &regex,
+                                 unsigned int argc, const char *const argv[],
                                  int64_t timeout) CHK;
-  static bool RunBtFullList(const std::string& list, unsigned int nthread,
-                            unsigned int argc, const char* const argv[],
+  static bool RunBtFullList(const std::string &list, unsigned int nthread,
+                            unsigned int argc, const char *const argv[],
                             int64_t timeout) CHK;
 
   static GdbServer server_;

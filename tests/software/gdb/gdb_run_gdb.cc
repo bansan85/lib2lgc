@@ -27,9 +27,9 @@
 #include <string>
 #include <system_error>
 
-void CheckBtfull(const std::experimental::filesystem::path& path);
+void CheckBtfull(const std::experimental::filesystem::path &path);
 
-void CheckBtfull(const std::experimental::filesystem::path& path)
+void CheckBtfull(const std::experimental::filesystem::path &path)
 {
   assert(std::experimental::filesystem::is_regular_file(path));
 
@@ -37,16 +37,16 @@ void CheckBtfull(const std::experimental::filesystem::path& path)
       std::make_unique<llgc::software::gdb::SetStack>(false, 3, 0, false);
   EXECUTE_AND_ABORT(std::cout, set_stack->Add(path));
   assert(set_stack->Count() == 1);
-  const llgc::software::gdb::Stack& stack = set_stack->Get(0);
+  const llgc::software::gdb::Stack &stack = set_stack->Get(0);
   assert(stack.NumberOfBacktraces() == 1);
-  const llgc::software::gdb::Backtrace& backtrace =
+  const llgc::software::gdb::Backtrace &backtrace =
       stack.GetBacktraceFromTop(0);
   assert(backtrace.GetName() == "main");
   assert(backtrace.GetIndex() == 0);
   // Can't add more test if deadbeef is compiled without -g.
 }
 
-int main(int argc, char* argv[])  // NS
+int main(int argc, char *argv[])  // NS
 {
   assert(argc == 2);
 
@@ -58,7 +58,7 @@ int main(int argc, char* argv[])  // NS
   deadbeef_btfull_path += ".btfull";
 
   std::string deadbeef_file(deadbeef_path);
-  const char* const argv_gdb[1] = {deadbeef_file.c_str()};
+  const char *const argv_gdb[1] = {deadbeef_file.c_str()};
   std::error_code err;
   if (!std::experimental::filesystem::remove(deadbeef_btfull_path, err))
   {

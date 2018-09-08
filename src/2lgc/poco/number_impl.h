@@ -34,12 +34,12 @@ class Number_Constant
 {
  public:
   Number_Constant(uint32_t id, double value,
-                  llgc::protobuf::math::Number_Unit* unit);
+                  llgc::protobuf::math::Number_Unit *unit);
 #ifndef SWIG
-  Number_Constant(Number_Constant&& other) = delete;
-  Number_Constant(Number_Constant const& other) = delete;
-  Number_Constant& operator=(Number_Constant&& other) = delete;
-  Number_Constant& operator=(Number_Constant const& other) = delete;
+  Number_Constant(Number_Constant &&other) = delete;
+  Number_Constant(Number_Constant const &other) = delete;
+  Number_Constant &operator=(Number_Constant &&other) = delete;
+  Number_Constant &operator=(Number_Constant const &other) = delete;
 #endif  // !SWIG
   ~Number_Constant() override = default;
 
@@ -63,10 +63,10 @@ class Number_NumOpNum
                   llgc::protobuf::math::Number_Operator operator_,
                   std::shared_ptr<const Number> number2);
 #ifndef SWIG
-  Number_NumOpNum(Number_NumOpNum&& other) = delete;
-  Number_NumOpNum(Number_NumOpNum const& other) = delete;
-  Number_NumOpNum& operator=(Number_NumOpNum&& other) = delete;
-  Number_NumOpNum& operator=(Number_NumOpNum const& other) = delete;
+  Number_NumOpNum(Number_NumOpNum &&other) = delete;
+  Number_NumOpNum(Number_NumOpNum const &other) = delete;
+  Number_NumOpNum &operator=(Number_NumOpNum &&other) = delete;
+  Number_NumOpNum &operator=(Number_NumOpNum const &other) = delete;
 #endif  // !SWIG
   ~Number_NumOpNum() override = default;
 

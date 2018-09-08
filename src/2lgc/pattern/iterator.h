@@ -28,25 +28,25 @@ template <class T, class U>
 class Iterator
 {
  public:
-  Iterator(const T& data, size_t pos) : data_(data), pos_(pos) {}
+  Iterator(const T &data, size_t pos) : data_(data), pos_(pos) {}
 #ifndef SWIG
-  Iterator(Iterator&& other) = delete;
-  Iterator(Iterator const& other) = default;  // gcc-6.4 needs default.
-  Iterator& operator=(Iterator&& other) = delete;
-  Iterator& operator=(Iterator const& other) = delete;
+  Iterator(Iterator &&other) = delete;
+  Iterator(Iterator const &other) = default;  // gcc-6.4 needs default.
+  Iterator &operator=(Iterator &&other) = delete;
+  Iterator &operator=(Iterator const &other) = delete;
 #endif  // !SWIG
   virtual ~Iterator() = default;
 
-  bool operator!=(const Iterator& other) const { return pos_ != other.pos_; }
-  virtual const U& operator*() const = 0;
-  const Iterator& operator++()
+  bool operator!=(const Iterator &other) const { return pos_ != other.pos_; }
+  virtual const U &operator*() const = 0;
+  const Iterator &operator++()
   {
     ++pos_;
     return *this;
   }
 
  protected:
-  const T& data_;
+  const T &data_;
   size_t pos_;
 };
 

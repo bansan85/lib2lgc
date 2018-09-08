@@ -19,7 +19,7 @@
 // No for GCC-6. GCC-8 wants.
 #include <memory>  // IWYU pragma: keep
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   llgc::math::Hash::Calc("foobar");
 

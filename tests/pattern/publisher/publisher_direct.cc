@@ -52,7 +52,7 @@ template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Direct>;
 #endif
 
-int main(int /* argc */, char* /* argv */ [])  // NS
+int main(int /* argc */, char * /* argv */ [])  // NS
 {
   constexpr size_t delay = 30;
   GOOGLE_PROTOBUF_VERIFY_VERSION;

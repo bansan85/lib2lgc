@@ -51,15 +51,15 @@ class PublisherGrpc : public PublisherIp<T>, public S
  public:
   explicit PublisherGrpc(uint16_t port);
 #ifndef SWIG
-  PublisherGrpc(PublisherGrpc&& other) = delete;
-  PublisherGrpc(PublisherGrpc const& other) = delete;
-  PublisherGrpc& operator=(PublisherGrpc&& other) = delete;
-  PublisherGrpc& operator=(PublisherGrpc const& other) = delete;
+  PublisherGrpc(PublisherGrpc &&other) = delete;
+  PublisherGrpc(PublisherGrpc const &other) = delete;
+  PublisherGrpc &operator=(PublisherGrpc &&other) = delete;
+  PublisherGrpc &operator=(PublisherGrpc const &other) = delete;
 #endif  // !SWIG
   ~PublisherGrpc() override;
 
-  grpc::Status Talk(grpc::ServerContext* context,
-                    grpc::ServerReaderWriter<T, T>* stream) override CHK;
+  grpc::Status Talk(grpc::ServerContext *context,
+                    grpc::ServerReaderWriter<T, T> *stream) override CHK;
   bool Listen() override CHK;
   bool Wait() override CHK;
   void Stop() override;

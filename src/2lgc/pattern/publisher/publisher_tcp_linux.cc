@@ -115,7 +115,7 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 template <typename T>
 INLINE_TEMPLATE void
 llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
-    int socket, const typename T::Msg& message)
+    int socket, const typename T::Msg &message)
 {
   BUGCRIT(std::cout, message.has_add_subscriber(), ,
           "Failed to add a subscriber.");
@@ -180,7 +180,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(
 
     for (int i = 0; i < messages.msg_size(); i++)
     {
-      auto& message = messages.msg(i);
+      auto &message = messages.msg(i);
 
       auto enumeration = message.data_case();
 

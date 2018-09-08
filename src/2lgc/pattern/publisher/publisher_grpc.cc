@@ -69,7 +69,7 @@ INLINE_TEMPLATE llgc::pattern::publisher::PublisherGrpc<T, S>::~PublisherGrpc()
 template <typename T, typename S>
 INLINE_TEMPLATE grpc::Status
 llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
-    grpc::ServerContext* context, grpc::ServerReaderWriter<T, T>* stream)
+    grpc::ServerContext *context, grpc::ServerReaderWriter<T, T> *stream)
 {
   (void)!!context;
   // One endless thread for each connexion.
@@ -79,7 +79,7 @@ llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
   {
     for (int i = 0; i < messages.msg_size(); i++)
     {
-      auto& message = messages.msg(i);
+      auto &message = messages.msg(i);
 
       auto enumeration = message.data_case();
 

@@ -27,12 +27,12 @@ namespace llgc::math
 class Hash
 {
  public:
-  static std::vector<uint8_t> Calc(const std::string& in);
+  static std::vector<uint8_t> Calc(const std::string &in);
 
  private:
-  static std::vector<uint8_t> Jdb2(const std::string& in);
+  static std::vector<uint8_t> Jdb2(const std::string &in);
 #ifdef OPENSSL_FOUND
-  static std::vector<uint8_t> Sha512(const std::string& in);
+  static std::vector<uint8_t> Sha512(const std::string &in);
 #endif
 };
 
