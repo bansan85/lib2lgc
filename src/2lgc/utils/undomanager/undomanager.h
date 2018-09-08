@@ -234,10 +234,10 @@ class Undomanager
 
 }  // namespace llgc::utils::undomanager
 
-#endif  // UTILS_UNDOMANAGER_UNDOMANAGER_H_
-
 #ifndef TEMPLATE_CLASS
 #include <2lgc/utils/undomanager/undomanager.cc>
 #endif
+
+#endif  // UTILS_UNDOMANAGER_UNDOMANAGER_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
