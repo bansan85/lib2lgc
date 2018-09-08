@@ -16,6 +16,7 @@
 
 // Test ipv4 publisher
 
+#include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp_ipv4.h>
 #include <2lgc/pattern/publisher/connector_subscriber_tcp.h>  // IWYU pragma: keep
@@ -88,13 +89,13 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   constexpr size_t delay = 30;
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
-  assert(llgc::net::Linux::DisableSigPipe());
+  EXECUTE_AND_ABORT(std::cout, llgc::net::Linux::DisableSigPipe());
 
   auto server =
       std::make_shared<llgc::pattern::publisher::PublisherTcpLinuxIpv4<
           llgc::protobuf::test::Tcp>>(8888);
-  assert(server->Listen());
-  assert(server->Wait());
+  EXECUTE_AND_ABORT(std::cout, server->Listen());
+  EXECUTE_AND_ABORT(std::cout, server->Wait());
 
   auto subscriber = std::make_shared<
       llgc::pattern::publisher::test::Subscriber<llgc::protobuf::test::Tcp>>(1);
@@ -102,7 +103,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto connector =
       std::make_shared<llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
           llgc::protobuf::test::Tcp>>(subscriber, "127.0.0.1", 8888);
-  assert(subscriber->SetConnector(connector));
+  EXECUTE_AND_ABORT(std::cout, subscriber->SetConnector(connector));
 
   llgc::pattern::publisher::test::Publisher::All<
       llgc::protobuf::test::Tcp,

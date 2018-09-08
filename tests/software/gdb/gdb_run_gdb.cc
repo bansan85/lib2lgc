@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/gdb.h>
 #include <2lgc/software/gdb/set_stack.h>
@@ -34,7 +35,7 @@ void CheckBtfull(const std::experimental::filesystem::path& path)
 
   std::unique_ptr<llgc::software::gdb::SetStack> set_stack =
       std::make_unique<llgc::software::gdb::SetStack>(false, 3, 0, false);
-  assert(set_stack->Add(path));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(path));
   assert(set_stack->Count() == 1);
   const llgc::software::gdb::Stack& stack = set_stack->Get(0);
   assert(stack.NumberOfBacktraces() == 1);
@@ -63,25 +64,30 @@ int main(int argc, char* argv[])  // NS
   {
     std::cout << "filesystem::remove: " << err << std::endl;
   }
-  assert(llgc::software::gdb::Gdb::RunBtFull(deadbeef_file, 1, argv_gdb, 30));
+  EXECUTE_AND_ABORT(std::cout, llgc::software::gdb::Gdb::RunBtFull(
+                                   deadbeef_file, 1, argv_gdb, 30));
   CheckBtfull(deadbeef_btfull_path);
 
-  assert(std::experimental::filesystem::remove(deadbeef_btfull_path));
-  assert(!llgc::software::gdb::Gdb::RunBtFull(deadbeef_file, 1, argv_gdb, 0));
+  EXECUTE_AND_ABORT(
+      std::cout, std::experimental::filesystem::remove(deadbeef_btfull_path));
+  EXECUTE_AND_ABORT(std::cout, !llgc::software::gdb::Gdb::RunBtFull(
+                                   deadbeef_file, 1, argv_gdb, 0));
 
-  assert(!llgc::software::gdb::Gdb::RunBtFullList("not_found", 32, 1, argv_gdb,
-                                                  30));
+  EXECUTE_AND_ABORT(std::cout, !llgc::software::gdb::Gdb::RunBtFullList(
+                                   "not_found", 32, 1, argv_gdb, 30));
 
   std::experimental::filesystem::path deadbeef_list(folder_bin /
                                                     "deadbeef.list");
-  assert(llgc::software::gdb::Gdb::RunBtFullList(deadbeef_list, 32, 1, argv_gdb,
-                                                 30));
+  EXECUTE_AND_ABORT(std::cout, llgc::software::gdb::Gdb::RunBtFullList(
+                                   deadbeef_list, 32, 1, argv_gdb, 30));
   CheckBtfull(deadbeef_btfull_path);
 
-  assert(!llgc::software::gdb::Gdb::RunBtFullRecursive(
-      "not_found", 32, "deadbeef", 1, argv_gdb, 30));
-  assert(llgc::software::gdb::Gdb::RunBtFullRecursive(
-      folder_bin, 32, "deadbeef", 1, argv_gdb, 30));
+  EXECUTE_AND_ABORT(std::cout,
+                    !llgc::software::gdb::Gdb::RunBtFullRecursive(
+                        "not_found", 32, "deadbeef", 1, argv_gdb, 30));
+  EXECUTE_AND_ABORT(std::cout,
+                    llgc::software::gdb::Gdb::RunBtFullRecursive(
+                        folder_bin, 32, "deadbeef", 1, argv_gdb, 30));
   CheckBtfull(deadbeef_btfull_path);
 
   google::protobuf::ShutdownProtobufLibrary();

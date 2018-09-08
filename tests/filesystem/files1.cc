@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/filesystem/files.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
@@ -36,14 +37,14 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   std::vector<std::string> files;
   // Test standard regex
-  assert(llgc::filesystem::Files::SearchRecursiveFiles("folder", "^.*\\.btfull",
-                                                       &files));
+  EXECUTE_AND_ABORT(std::cout, llgc::filesystem::Files::SearchRecursiveFiles(
+                                   "folder", "^.*\\.btfull", &files));
   assert(files.size() == 1);
   assert(files[0] == "folder/output_1.btfull");
   // Test exclude regex
   files.clear();
-  assert(llgc::filesystem::Files::SearchRecursiveFiles(
-      "folder", "^(?!.*btfull).*$", &files));
+  EXECUTE_AND_ABORT(std::cout, llgc::filesystem::Files::SearchRecursiveFiles(
+                                   "folder", "^(?!.*btfull).*$", &files));
   assert(files.size() == 1);
   assert(files[0] == "folder/2/output_1");
 

@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/utils/tree.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
@@ -71,23 +72,23 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   llgc::utils::Tree<T> root(0, std::move(t0), nullptr);
   // Number 1
-  assert(root.AddChild(std::move(t1)) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root.AddChild(std::move(t1)) != nullptr);
   // Number 2
-  assert(root.AddChild(std::move(t2)) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root.AddChild(std::move(t2)) != nullptr);
   llgc::utils::Tree<T>* n1 = root.FindNode(1);
   assert(n1 != nullptr);
   // Number 3
-  assert(n1->AddChild(std::move(t3)) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, n1->AddChild(std::move(t3)) != nullptr);
   // Number 4
-  assert(n1->AddChild(std::move(t4)) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, n1->AddChild(std::move(t4)) != nullptr);
   llgc::utils::Tree<T>* n3 = root.FindNode(3);
   assert(n3 != nullptr);
   // Number 5
-  assert(n3->AddChild(std::move(t5)) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, n3->AddChild(std::move(t5)) != nullptr);
   assert(n3->FindNode(2) != nullptr);
 
   std::deque<T*> path;
-  assert(n3->FindPath(2, &path));
+  EXECUTE_AND_ABORT(std::cout, n3->FindPath(2, &path));
   assert(path.size() == 4);
   std::cout << path[0]->nom_ << std::endl;
   assert(path[0]->nom_ == "3");
@@ -114,17 +115,17 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   llgc::utils::Tree<T> root2(0, std::move(t0), nullptr);
   // Number 1
-  assert(root2.AddChild(std::move(t1), 0) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root2.AddChild(std::move(t1), 0) != nullptr);
   // Number 2
-  assert(root2.AddChild(std::move(t2), 0) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root2.AddChild(std::move(t2), 0) != nullptr);
   // Number 3
-  assert(root2.AddChild(std::move(t3), 1) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root2.AddChild(std::move(t3), 1) != nullptr);
   // Number 4
-  assert(root2.AddChild(std::move(t4), 1) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root2.AddChild(std::move(t4), 1) != nullptr);
   // Number 5
-  assert(root2.AddChild(std::move(t5), 3) != nullptr);
+  EXECUTE_AND_ABORT(std::cout, root2.AddChild(std::move(t5), 3) != nullptr);
 
-  assert(root2.FindPath(3, 2, &path));
+  EXECUTE_AND_ABORT(std::cout, root2.FindPath(3, 2, &path));
   assert(path.size() == 4);
   std::cout << path[0]->nom_ << std::endl;
   assert(path[0]->nom_ == "3");

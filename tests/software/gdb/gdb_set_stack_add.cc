@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/software/gdb/backtrace.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <2lgc/software/gdb/stack.h>
@@ -34,13 +35,14 @@ int main(int argc, char* argv[])  // NS
   std::unique_ptr<llgc::software::gdb::SetStack> set_stack =
       std::make_unique<llgc::software::gdb::SetStack>(true, 4, 4, true);
 
-  assert(!set_stack->Add(folder / "notfound.fail"));
+  EXECUTE_AND_ABORT(std::cout, !set_stack->Add(folder / "notfound.fail"));
   assert(set_stack->Count() == 0);
-  assert(!set_stack->Add(folder / "btfull-wrong_number.fail"));
+  EXECUTE_AND_ABORT(std::cout,
+                    !set_stack->Add(folder / "btfull-wrong_number.fail"));
   assert(set_stack->Count() == 0);
-  assert(!set_stack->Add(folder / "btfull-local.fail"));
+  EXECUTE_AND_ABORT(std::cout, !set_stack->Add(folder / "btfull-local.fail"));
   assert(set_stack->Count() == 0);
-  assert(set_stack->Add(folder / "btfull1.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull1.success"));
   assert(set_stack->Count() == 1);
   for (const auto& it : *set_stack)
   {
@@ -85,40 +87,40 @@ int main(int argc, char* argv[])  // NS
       i++;
     }
   }
-  assert(set_stack->Add(folder / "btfull2.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull2.success"));
   assert(set_stack->Count() == 1);
-  assert(set_stack->Add(folder / "btfull3.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull3.success"));
   assert(set_stack->Count() == 2);
-  assert(set_stack->Add(folder / "btfull4.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull4.success"));
   assert(set_stack->Count() == 3);
-  assert(set_stack->Add(folder / "btfull5.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull5.success"));
   assert(set_stack->Count() == 4);
-  assert(set_stack->Add(folder / "btfull6.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull6.success"));
   assert(set_stack->Count() == 5);
-  assert(set_stack->Add(folder / "btfull7.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull7.success"));
   assert(set_stack->Count() == 6);
-  assert(set_stack->Add(folder / "btfull8.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull8.success"));
   assert(set_stack->Count() == 7);
-  assert(set_stack->Add(folder / "btfull9.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull9.success"));
   assert(set_stack->Count() == 7);
-  assert(set_stack->Add(folder / "btfull1.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull1.success"));
   assert(set_stack->Count() == 7);
 
   set_stack =
       std::make_unique<llgc::software::gdb::SetStack>(false, 3, 1, true);
-  assert(set_stack->Add(folder / "btfull5.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull5.success"));
   assert(set_stack->Count() == 1);
-  assert(set_stack->Add(folder / "btfull10.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull10.success"));
   assert(set_stack->Count() == 2);
-  assert(set_stack->Add(folder / "btfull11.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull11.success"));
   assert(set_stack->Count() == 3);
-  assert(set_stack->Add(folder / "btfull8.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull8.success"));
   assert(set_stack->Count() == 4);
-  assert(set_stack->Add(folder / "btfull12.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull12.success"));
   assert(set_stack->Count() == 4);
-  assert(set_stack->Add(folder / "btfull13.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull13.success"));
   assert(set_stack->Count() == 5);
-  assert(set_stack->Add(folder / "btfull14.success"));
+  EXECUTE_AND_ABORT(std::cout, set_stack->Add(folder / "btfull14.success"));
   assert(set_stack->Count() == 6);
 
   google::protobuf::ShutdownProtobufLibrary();

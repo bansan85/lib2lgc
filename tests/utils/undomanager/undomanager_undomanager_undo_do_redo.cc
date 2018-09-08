@@ -16,6 +16,7 @@
 
 // TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
+#include <2lgc/error/show.h>
 #include <2lgc/math/compare_decimal.h>
 #include <2lgc/pattern/abstract_factory.h>
 #include <2lgc/pattern/command/undo_interface.h>
@@ -104,48 +105,48 @@ int main(int /* argc */, char* /* argv */ [])  // NS
                                         llgc::pattern::command::UndoInterface>
       undomanager(std::move(factory));
 
-  assert(undomanager.AddCommand("") == nullptr);
-  assert(undomanager.AddCommand("tatayoyo") == nullptr);
+  EXECUTE_AND_ABORT(std::cout, undomanager.AddCommand("") == nullptr);
+  EXECUTE_AND_ABORT(std::cout, undomanager.AddCommand("tatayoyo") == nullptr);
 
   std::string message_str;
   llgc::protobuf::test::UndoManager1 undo;
   auto add = std::make_unique<llgc::protobuf::test::UndoManager1_Add>();
   add->set_number(4.0);
   undo.set_allocated_add(add.release());
-  assert(undo.SerializeToString(&message_str));
+  EXECUTE_AND_ABORT(std::cout, undo.SerializeToString(&message_str));
 
   // Id 0
   llgc::utils::Tree<llgc::pattern::command::UndoInterface>* undo2 =
       undomanager.AddCommand(message_str);
   assert(undo2 != nullptr);
-  assert(undomanager.DoCommand(0));
+  EXECUTE_AND_ABORT(std::cout, undomanager.DoCommand(0));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 4., 1.e-10, 4));
-  assert(!undomanager.DoCommand(0));
+  EXECUTE_AND_ABORT(std::cout, !undomanager.DoCommand(0));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 4., 1.e-10, 4));
 
   // Id 1
   undo2 = undomanager.AddCommand(0, message_str);
   assert(undo2 != nullptr);
-  assert(undomanager.DoCommand(1));
+  EXECUTE_AND_ABORT(std::cout, undomanager.DoCommand(1));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 8., 1.e-10, 4));
-  assert(!undomanager.DoCommand(1));
+  EXECUTE_AND_ABORT(std::cout, !undomanager.DoCommand(1));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 8., 1.e-10, 4));
 
-  assert(undomanager.UndoCommand(1));
+  EXECUTE_AND_ABORT(std::cout, undomanager.UndoCommand(1));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 4., 1.e-10, 4));
-  assert(undomanager.UndoCommand(0));
+  EXECUTE_AND_ABORT(std::cout, undomanager.UndoCommand(0));
   assert(llgc::math::Compare::AlmostEqualRelativeAndAbsD(number, 0., 1.e-13,
                                                          1.e-13));
 
-  assert(undomanager.DoCommands(0, 1));
+  EXECUTE_AND_ABORT(std::cout, undomanager.DoCommands(0, 1));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 8., 1.e-10, 4));
-  assert(!undomanager.DoCommands(0, 1));
+  EXECUTE_AND_ABORT(std::cout, !undomanager.DoCommands(0, 1));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(number, 8., 1.e-10, 4));
 
-  assert(undomanager.UndoCommands(1, 0));
+  EXECUTE_AND_ABORT(std::cout, undomanager.UndoCommands(1, 0));
   assert(llgc::math::Compare::AlmostEqualRelativeAndAbsD(number, 0., 1.e-13,
                                                          1.e-13));
-  assert(!undomanager.UndoCommands(1, 0));
+  EXECUTE_AND_ABORT(std::cout, !undomanager.UndoCommands(1, 0));
   assert(llgc::math::Compare::AlmostEqualRelativeAndAbsD(number, 0., 1.e-13,
                                                          1.e-13));
 

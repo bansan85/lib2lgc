@@ -16,6 +16,7 @@
 
 // Test direct publisher
 
+#include <2lgc/error/show.h>
 #include <2lgc/pattern/publisher/connector_direct.h>
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
@@ -66,7 +67,7 @@ int main(int /* argc */, char* /* argv */ [])  // NS
   auto connector = std::make_shared<
       llgc::pattern::publisher::ConnectorDirect<llgc::protobuf::test::Direct>>(
       subscriber, server);
-  assert(subscriber->SetConnector(connector));
+  EXECUTE_AND_ABORT(std::cout, subscriber->SetConnector(connector));
 
   llgc::pattern::publisher::test::Publisher::All<
       llgc::protobuf::test::Direct,

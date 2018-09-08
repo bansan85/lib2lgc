@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/math/compare_decimal.h>
 #include <2lgc/pattern/command/undo_interface.h>
 #include <google/protobuf/stubs/common.h>
@@ -30,32 +31,32 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   assert(llgc::math::Compare::AlmostEqualRelativeAndAbsD(number_test, 0.,
                                                          1.e-13, 1.e-13));
-  assert(add4.Do());
+  EXECUTE_AND_ABORT(std::cout, add4.Do());
   assert(
       llgc::math::Compare::AlmostEqualUlpsAndAbsD(number_test, 4., 1.e-10, 4));
-  assert(!add4.Do());
+  EXECUTE_AND_ABORT(std::cout, !add4.Do());
   assert(
       llgc::math::Compare::AlmostEqualUlpsAndAbsD(number_test, 4., 1.e-10, 4));
-  assert(add4.Undo());
+  EXECUTE_AND_ABORT(std::cout, add4.Undo());
   assert(llgc::math::Compare::AlmostEqualRelativeAndAbsD(number_test, 0.,
                                                          1.e-13, 1.e-13));
-  assert(!add4.Undo());
+  EXECUTE_AND_ABORT(std::cout, !add4.Undo());
   assert(llgc::math::Compare::AlmostEqualRelativeAndAbsD(number_test, 0.,
                                                          1.e-13, 1.e-13));
-  assert(add4.Do());
+  EXECUTE_AND_ABORT(std::cout, add4.Do());
   assert(
       llgc::math::Compare::AlmostEqualUlpsAndAbsD(number_test, 4., 1.e-10, 4));
-  assert(!add4.Do());
+  EXECUTE_AND_ABORT(std::cout, !add4.Do());
   auto add4bis = add4.Redo();
-  assert(add4bis->Do());
+  EXECUTE_AND_ABORT(std::cout, add4bis->Do());
   assert(
       llgc::math::Compare::AlmostEqualUlpsAndAbsD(number_test, 8., 1.e-10, 4));
-  assert(!add4bis->Do());
+  EXECUTE_AND_ABORT(std::cout, !add4bis->Do());
 
   std::string add4serialize = add4.ToProtobuf();
   llgc::protobuf::test::UndoManager1_Add add_protobuf;
 
-  assert(add_protobuf.ParseFromString(add4serialize));
+  EXECUTE_AND_ABORT(std::cout, add_protobuf.ParseFromString(add4serialize));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(add_protobuf.number(), 4.,
                                                      1.e-10, 4));
 

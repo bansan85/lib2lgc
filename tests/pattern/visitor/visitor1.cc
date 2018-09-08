@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/math/compare_decimal.h>
 #include <2lgc/poco/math_number.pb.h>
 #include <2lgc/poco/number_impl.h>
@@ -37,9 +38,9 @@ int main(int /* argc */, char* /* argv */ [])  // NS
 
   // Check Serialization.
   std::string return_value;
-  assert(nombre->Accept(visitor, &return_value));
+  EXECUTE_AND_ABORT(std::cout, nombre->Accept(visitor, &return_value));
   llgc::protobuf::math::Double double_value;
-  assert(double_value.ParseFromString(return_value));
+  EXECUTE_AND_ABORT(std::cout, double_value.ParseFromString(return_value));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(double_value.value(), 5.,
                                                      1.e-10, 1));
 
@@ -49,8 +50,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<llgc::poco::Number_Constant>(2, 10.0, unit.release());
   llgc::poco::Number_NumOpNum nombre3(
       3, nombre, llgc::protobuf::math::Number_Operator_MULTIPLICATION, nombre2);
-  assert(nombre3.Accept(visitor, &return_value));
-  assert(double_value.ParseFromString(return_value));
+  EXECUTE_AND_ABORT(std::cout, nombre3.Accept(visitor, &return_value));
+  EXECUTE_AND_ABORT(std::cout, double_value.ParseFromString(return_value));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(double_value.value(), 50.,
                                                      1.e-10, 1));
 
@@ -60,8 +61,8 @@ int main(int /* argc */, char* /* argv */ [])  // NS
       std::make_shared<llgc::poco::Number_Constant>(4, 3.0, unit.release());
   llgc::poco::Number_NumOpNum nombre5(
       5, nombre, llgc::protobuf::math::Number_Operator_DIVISION, nombre4);
-  assert(nombre5.Accept(visitor, &return_value));
-  assert(double_value.ParseFromString(return_value));
+  EXECUTE_AND_ABORT(std::cout, nombre5.Accept(visitor, &return_value));
+  EXECUTE_AND_ABORT(std::cout, double_value.ParseFromString(return_value));
   assert(llgc::math::Compare::AlmostEqualUlpsAndAbsD(double_value.value(),
                                                      5. / 3., 1.e-10, 1));
 

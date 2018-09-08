@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <2lgc/error/show.h>
 #include <2lgc/software/gdb/set_stack.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
@@ -31,10 +32,12 @@ int main(int argc, char* argv[])  // NS
   std::unique_ptr<llgc::software::gdb::SetStack> set_stack =
       std::make_unique<llgc::software::gdb::SetStack>(false, 3, 3, true);
 
-  assert(set_stack->AddRecursive(folder, 32, "^.*\\.success$"));
-  assert(!set_stack->AddRecursive("not_found", 32, "^.*\\.success$"));
-  assert(!set_stack->AddList("not_found", 32));
-  assert(set_stack->AddList(folder_bin / "list.bt", 32));
+  EXECUTE_AND_ABORT(std::cout,
+                    set_stack->AddRecursive(folder, 32, "^.*\\.success$"));
+  EXECUTE_AND_ABORT(
+      std::cout, !set_stack->AddRecursive("not_found", 32, "^.*\\.success$"));
+  EXECUTE_AND_ABORT(std::cout, !set_stack->AddList("not_found", 32));
+  EXECUTE_AND_ABORT(std::cout, set_stack->AddList(folder_bin / "list.bt", 32));
   set_stack->Print();
 
   google::protobuf::ShutdownProtobufLibrary();

@@ -18,6 +18,7 @@
 #define TESTS_PATTERN_PUBLISHER_PUBLISHER_ALL_CC_
 
 #include "publisher_all.h"
+#include <2lgc/error/show.h>
 
 // T Type of protobuf message
 // U Type of subscriber
@@ -26,7 +27,8 @@ template <typename T, typename U, typename V>
 INLINE_TEMPLATE void llgc::pattern::publisher::test::Publisher::All(
     U* subscriber, V* server, size_t delay)
 {
-  assert(subscriber->AddSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->AddSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
   assert(subscriber->value == 0);
@@ -36,14 +38,14 @@ INLINE_TEMPLATE void llgc::pattern::publisher::test::Publisher::All(
   auto message = messages.add_msg();
   auto message_test = std::make_unique<typename T::Msg::Test>();
   message->set_allocated_test(message_test.release());
-  assert(subscriber->Send(messages));
+  EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
   WaitUpToTenSecond([&subscriber]() { return subscriber->value == 1; });
 
   // Test lock forward.
   subscriber->value = 0;
   {
     llgc::utils::thread::CountLock<size_t> lock = server->LockForward();
-    assert(subscriber->Send(messages));
+    EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
     // Wait one second to be sure that the message is not send.
     std::this_thread::sleep_for(std::chrono::milliseconds(delay));
     assert(subscriber->value == 0);
@@ -52,38 +54,44 @@ INLINE_TEMPLATE void llgc::pattern::publisher::test::Publisher::All(
 
   // Remove the first subscriber.
   subscriber->value = 0;
-  assert(subscriber->RemoveSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->RemoveSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
+  EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 0);
 
   // Double insert
-  assert(subscriber->AddSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->AddSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->AddSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->AddSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
+  EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
   WaitUpToTenSecond([&subscriber]() { return subscriber->value == 2; });
-  assert(subscriber->RemoveSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->RemoveSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
+  EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
   WaitUpToTenSecond([&subscriber]() { return subscriber->value == 3; });
-  assert(subscriber->RemoveSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->RemoveSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
+  EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 3);
   assert(!server->GetOptionFailAlreadySubscribed());
   server->SetOptionFailAlreadySubscribed(true);
-  assert(subscriber->AddSubscriber(T::Msg::DataCase::kTest));
+  EXECUTE_AND_ABORT(std::cout,
+                    subscriber->AddSubscriber(T::Msg::DataCase::kTest));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
 
   // Here, AddSubscriber will not failed because the TCP server can't return a
   // value.
   (void)!subscriber->AddSubscriber(T::Msg::DataCase::kTest);
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
-  assert(subscriber->Send(messages));
+  EXECUTE_AND_ABORT(std::cout, subscriber->Send(messages));
   std::this_thread::sleep_for(std::chrono::milliseconds(delay));
   assert(subscriber->value == 4);
 }
