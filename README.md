@@ -67,7 +67,8 @@ Missing local README.md means that the functionnality is still under development
 
   - pattern command / undomanager.
   - CI:
-    - cmake ../lib2lgc -DIWYU=1 -DCOVERAGE=1 -DCMAKE_CXX_FLAGS="-DNDEBUG"; make -j9 check
+    - cmake ../lib2lgc -DIWYU=1 -DCOVERAGE=1 -DCMAKE_CXX_FLAGS="-DNDEBUG" && make -j9 check
+    - cmake ../lib2lgc -DIWYU=1 -DTEMPLATE_CLASS=1 && make -j9 check
     - make clang-format
     - make cpplint
     - make clang-tidy

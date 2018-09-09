@@ -19,6 +19,7 @@
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
 #include <experimental/filesystem>
+#include <iostream>
 #include <memory>
 
 int main(int argc, char *argv[])  // NS

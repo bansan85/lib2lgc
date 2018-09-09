@@ -97,6 +97,7 @@ set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/utils/undomanager/undomanager.cc
   )
 
+# Run IWYU in template class.
 if (IWYU)
   set(2LGC_SOURCES ${2LGC_SOURCES} ${2LGC_TEMPLATE_SOURCE})
 endif()

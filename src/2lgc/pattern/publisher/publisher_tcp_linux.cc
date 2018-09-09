@@ -140,10 +140,12 @@ llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
  * @return true if no problem.
  */
 template <typename T>
-INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(T *messages, const char *raw_message, ssize_t length, int socket)
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
+    T *messages, const char *raw_message, ssize_t length, int socket)
 {
   std::string client_string(raw_message, static_cast<size_t>(length));
-  BUGLIB(std::cout, messages->ParseFromString(client_string), false, "protobuf.");
+  BUGLIB(std::cout, messages->ParseFromString(client_string), false,
+         "protobuf.");
 
   for (int i = 0; i < messages->msg_size(); i++)
   {
@@ -168,7 +170,8 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
                                                                    socket);
       BUGCONT(std::cout,
               this->RemoveSubscriber(message.remove_subscriber().id_message(),
-                                     connector), false);
+                                     connector),
+              false);
     }
   }
 
@@ -219,7 +222,8 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(
 
     T messages;
 
-    BUGCONT(std::cout, PreForward(&messages, &client_message[0], read_size, socket), );
+    BUGCONT(std::cout,
+            PreForward(&messages, &client_message[0], read_size, socket), );
 
     BUGCONT(std::cout, this->Forward(messages), );
   } while (!this->disposing_);

@@ -22,6 +22,7 @@
 #include <cassert>
 #include <cstddef>
 #include <experimental/filesystem>
+#include <iostream>
 #include <memory>
 #include <string>
 

@@ -19,6 +19,7 @@
 #include <2lgc/pattern/command/undo_interface.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
+#include <iostream>
 #include <memory>
 #include <string>
 #include "undo_command1.pb.h"

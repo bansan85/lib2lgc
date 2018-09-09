@@ -22,6 +22,7 @@
 #include <google/protobuf/arena.h>
 #include <google/protobuf/stubs/common.h>
 #include <cassert>
+#include <iostream>
 #include <memory>
 #include <string>
 

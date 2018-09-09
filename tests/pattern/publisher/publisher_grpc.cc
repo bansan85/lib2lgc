@@ -24,9 +24,9 @@
 #include <2lgc/pattern/publisher/subscriber_server_grpc.h>  // IWYU pragma: keep
 #include <google/protobuf/stubs/common.h>
 #include <grpcpp/impl/codegen/status.h>
-#include <cassert>
 #include <chrono>
 #include <cstddef>
+#include <iostream>
 #include <map>
 #include <memory>
 #include <thread>

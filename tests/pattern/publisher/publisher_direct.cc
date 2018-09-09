@@ -21,8 +21,8 @@
 #include <2lgc/pattern/publisher/publisher_direct.h>
 #include <2lgc/pattern/publisher/publisher_interface.h>
 #include <google/protobuf/stubs/common.h>
-#include <cassert>
 #include <cstddef>
+#include <iostream>
 #include <map>
 #include <memory>
 #include "direct.pb.h"

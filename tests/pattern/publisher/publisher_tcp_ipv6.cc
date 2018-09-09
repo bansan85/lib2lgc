@@ -24,8 +24,8 @@
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>  // IWYU pragma: keep
 #include <google/protobuf/stubs/common.h>
-#include <cassert>
 #include <cstddef>
+#include <iostream>
 #include <map>
 #include <memory>
 #include "publisher_all.h"
