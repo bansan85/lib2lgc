@@ -63,6 +63,9 @@ if (GRPC_LIBRARY)
     ${PUBLISHER_RPC_PROTO_SRC} ${PUBLISHER_RPC_GRPC_SRC})
 endif()
 
+add_executable(strategy1 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/strategy/strategy1.cc)
+
 add_executable(poco_number EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/poco/poco_number.cc)
 add_executable(gdb_backtrace_factory EXCLUDE_FROM_ALL
@@ -110,6 +113,8 @@ if (GRPC_LIBRARY)
   target_link_libraries(publisher_grpc ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} ${GRPC_GRPC++_LIBRARY} 2lgc)
 endif()
 
+target_link_libraries(strategy1 ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
+
 target_link_libraries(poco_number ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb_backtrace_factory ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
 target_link_libraries(gdb_set_stack_add ${Protobuf_LIBRARIES} ${OPENSSL_CRYPTO_LIBRARY} 2lgc)
@@ -132,6 +137,7 @@ add_test(publisher_tcp_ipv6 publisher_tcp_ipv6)
 if (GRPC_LIBRARY)
   add_test(publisher_grpc publisher_grpc)
 endif()
+add_test(strategy1 strategy1)
 add_test(poco_number poco_number)
 add_test(gdb_backtrace_factory gdb_backtrace_factory)
 add_test(gdb_set_stack_add gdb_set_stack_add "${CMAKE_CURRENT_SOURCE_DIR}/software/gdb")
@@ -146,10 +152,24 @@ add_test(undomanager_undo_interface_undo_do_redo undomanager_undo_interface_undo
 add_test(undomanager_undomanager_undo_do_redo undomanager_undomanager_undo_do_redo)
 
 if (IWYU)
-  set_target_properties(files1 compare_decimal1 hash1 visitor1 abstract_factory1
-    publisher_direct publisher_tcp_ipv4 publisher_tcp_ipv6 poco_number
-    gdb_backtrace_factory gdb_set_stack_add gdb_set_stack_add_multiple
-    deadbeef gdb_run_gdb tree1 undomanager_undo_interface_undo_do_redo
+  set_target_properties(
+    files1
+    compare_decimal1
+    hash1
+    visitor1
+    abstract_factory1
+    publisher_direct
+    publisher_tcp_ipv4
+    publisher_tcp_ipv6
+    strategy1
+    poco_number
+    gdb_backtrace_factory
+    gdb_set_stack_add
+    gdb_set_stack_add_multiple
+    deadbeef
+    gdb_run_gdb
+    tree1
+    undomanager_undo_interface_undo_do_redo
     undomanager_undomanager_undo_do_redo
     PROPERTIES CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${iwyu_path})
   if (GRPC_LIBRARY)
@@ -169,6 +189,7 @@ add_dependencies(check_all_tests
   publisher_tcp_ipv4
   publisher_tcp_ipv6
   poco_number
+  strategy1
   gdb_backtrace_factory
   gdb_set_stack_add
   gdb_set_stack_add_multiple

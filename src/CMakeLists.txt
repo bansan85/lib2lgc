@@ -35,6 +35,7 @@ set(2LGC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_grpc.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_tcp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/singleton.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/strategy.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/visitor/visitable.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/visitor/visitor.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number.h
@@ -91,6 +92,7 @@ set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_grpc.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_tcp.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/singleton.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/strategy.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/utils/tree.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/utils/undomanager/undomanager.cc
   )
