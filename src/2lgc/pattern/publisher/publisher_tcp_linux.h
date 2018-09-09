@@ -48,6 +48,7 @@ class PublisherTcpLinux : public PublisherTcp<T>
  private:
   void AddSubscriberLocal(int socket, const typename T::Msg &message) override;
 
+  bool PreForward(T * messages, const char * raw_message, ssize_t length, int socket) CHK;
   void WaitThread(int socket);
 };
 

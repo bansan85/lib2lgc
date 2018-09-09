@@ -131,6 +131,50 @@ llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
       this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
 
+/** @brief Add / remove subscriber in server before sending message to
+ *         subscriber.
+ * @param[out] messages List of messages to forward to subscriber.
+ * @param[in] raw_message Messages received.
+ * @param[in] length Length of the message.
+ * @param[in] socket Socket to communicate with the subscriber.
+ * @return true if no problem.
+ */
+template <typename T>
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(T *messages, const char *raw_message, ssize_t length, int socket)
+{
+  std::string client_string(raw_message, static_cast<size_t>(length));
+  BUGLIB(std::cout, messages->ParseFromString(client_string), false, "protobuf.");
+
+  for (int i = 0; i < messages->msg_size(); i++)
+  {
+    const typename T::Msg &message = messages->msg(i);
+
+    typename T::Msg::DataCase enumeration = message.data_case();
+
+    if (enumeration == T::Msg::kAddSubscriber)
+    {
+      AddSubscriberLocal(socket, message);
+    }
+    else if (enumeration == T::Msg::kRemoveSubscriber)
+    {
+      // We need to create a temporary connector with the socket
+      // because the Remover only works with connector.
+      std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>>
+          subscriber = std::make_shared<
+              llgc::pattern::publisher::SubscriberServerTcp<T>>(socket);
+      std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
+          connector = std::make_shared<
+              llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(subscriber,
+                                                                   socket);
+      BUGCONT(std::cout,
+              this->RemoveSubscriber(message.remove_subscriber().id_message(),
+                                     connector), false);
+    }
+  }
+
+  return true;
+}
+
 /** \brief Function that will be executed by the thread that wait instruction
  *         from a client.
  * \param[in] socket The socket to the client.
@@ -175,35 +219,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(
 
     T messages;
 
-    std::string client_string(client_message, static_cast<size_t>(read_size));
-    BUGLIB(std::cout, messages.ParseFromString(client_string), , "protobuf.");
-
-    for (int i = 0; i < messages.msg_size(); i++)
-    {
-      auto &message = messages.msg(i);
-
-      auto enumeration = message.data_case();
-
-      if (enumeration == T::Msg::kAddSubscriber)
-      {
-        AddSubscriberLocal(socket, message);
-      }
-      else if (enumeration == T::Msg::kRemoveSubscriber)
-      {
-        // We need to create a temporary connector with the socket
-        // because the Remover only works with connector.
-        std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>>
-            subscriber = std::make_shared<
-                llgc::pattern::publisher::SubscriberServerTcp<T>>(socket);
-        std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
-            connector = std::make_shared<
-                llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(subscriber,
-                                                                     socket);
-        BUGCONT(std::cout,
-                this->RemoveSubscriber(message.remove_subscriber().id_message(),
-                                       connector), );
-      }
-    }
+    BUGCONT(std::cout, PreForward(&messages, &client_message[0], read_size, socket), );
 
     BUGCONT(std::cout, this->Forward(messages), );
   } while (!this->disposing_);
