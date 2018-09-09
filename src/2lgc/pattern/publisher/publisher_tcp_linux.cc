@@ -184,13 +184,11 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(
 
       auto enumeration = message.data_case();
 
-      if (enumeration ==
-          std::remove_reference<decltype(message)>::type::kAddSubscriber)
+      if (enumeration == T::Msg::kAddSubscriber)
       {
         AddSubscriberLocal(socket, message);
       }
-      else if (enumeration == std::remove_reference<decltype(
-                                  message)>::type::kRemoveSubscriber)
+      else if (enumeration == T::Msg::kRemoveSubscriber)
       {
         // We need to create a temporary connector with the socket
         // because the Remover only works with connector.

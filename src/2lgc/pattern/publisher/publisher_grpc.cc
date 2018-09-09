@@ -83,8 +83,7 @@ llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
 
       auto enumeration = message.data_case();
 
-      if (enumeration ==
-          std::remove_reference<decltype(message)>::type::kAddSubscriber)
+      if (enumeration == T::Msg::kAddSubscriber)
       {
         std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>>
             subscriber = std::make_shared<
@@ -101,8 +100,7 @@ llgc::pattern::publisher::PublisherGrpc<T, S>::Talk(
           // Empty body
         }
       }
-      else if (enumeration == std::remove_reference<decltype(
-                                  message)>::type::kRemoveSubscriber)
+      else if (enumeration == T::Msg::kRemoveSubscriber)
       {
         std::shared_ptr<llgc::pattern::publisher::SubscriberServerGrpc<T>>
             subscriber = std::make_shared<

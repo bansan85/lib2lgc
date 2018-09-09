@@ -93,7 +93,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::Stop()
  * \brief Store thread based on the socket file descriptor.
  *
  *
- * \fn void llgc::pattern::publisher::PublisherTcp::AddSubscriberLocal(int socket, decltype(std::declval<T>().msg(0)) message)
+ * \fn void llgc::pattern::publisher::PublisherTcp::AddSubscriberLocal(int socket, T::Msg message)
  * \brief Internal function to subscribe a socket to an event.
  * \param[in] socket The socket.
  * \param[in] message The message.
