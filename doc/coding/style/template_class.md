@@ -1,6 +1,6 @@
 # Rules to write template class
 
-#Rules
+# Rules
 
 The goal is to define rules to move source outside of header for template classes.
 

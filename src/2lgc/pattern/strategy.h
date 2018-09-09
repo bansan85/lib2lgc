@@ -29,6 +29,7 @@ class Strategy
  public:
   Strategy();
   explicit Strategy(T *instance);
+  virtual ~Strategy() = default;
   virtual bool Do() CHK = 0;
 
  protected:

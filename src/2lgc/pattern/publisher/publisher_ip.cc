@@ -78,7 +78,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherIp<T>::JoinWait()
   }
 }
 
-/** \fn uint16_t llgc::pattern::publisher::PublisherIp::GetPort()
+/** \fn uint16_t llgc::pattern::publisher::PublisherIp::GetPort() const
  * \brief Return the port.
  * \return The port.
  *

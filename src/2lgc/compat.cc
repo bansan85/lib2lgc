@@ -16,19 +16,23 @@
 
 /**
  * \file compat.h
- * Various define for compatibility between Visual Studio and GCC.
+ * \brief Various define for compatibility between Visual Studio and GCC.
  *
  *
  * \def CHK
- * Compatible `__attribute__((__warn_unused_result__))` for VS and GCC.
+ * \brief Compatible `__attribute__((__warn_unused_result__))` for VS and GCC.
  *
  *
  * \def SSCANF
- * Compatible `sscanf` for VS and GCC.
+ * \brief Compatible `sscanf` for VS and GCC.
  *
  *
  * \def DllExport
- * Compatible `dllexport` for VS and GCC.
+ * \brief Compatible `dllexport` for VS and GCC.
+ *
+ *
+ * \def INLINE_TEMPLATE
+ * \brief inline template functions if `template class` is not enabled.
  */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

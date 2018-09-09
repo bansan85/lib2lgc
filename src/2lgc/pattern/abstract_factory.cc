@@ -91,3 +91,5 @@ INLINE_TEMPLATE std::unique_ptr<U> llgc::pattern::AbstractFactory<T, U>::Create(
  */
 
 #endif  // PATTERN_ABSTRACT_FACTORY_CC_
+
+/* vim:set shiftwidth=2 softtabstop=2 expandtab: */

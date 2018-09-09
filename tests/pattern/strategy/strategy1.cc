@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+#include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/pattern/strategy.h>
 #include <google/protobuf/stubs/common.h>
+#include <cassert>
+#include <iostream>
 
 /**
  * @brief Interface of a command.
@@ -25,6 +28,7 @@ class StrategyAddOne : public llgc::pattern::Strategy<int>
 {
  public:
   explicit StrategyAddOne(int *number) : llgc::pattern::Strategy<int>(number) {}
+  ~StrategyAddOne() override = default;
 
   bool Do() override CHK
   {
@@ -40,6 +44,7 @@ class StrategyAddNumber : public llgc::pattern::Strategy<int>
       : llgc::pattern::Strategy<int>(number), add_(add)
   {
   }
+  ~StrategyAddNumber() override = default;
 
   bool Do() override CHK
   {

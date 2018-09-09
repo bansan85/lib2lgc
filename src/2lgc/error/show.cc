@@ -87,6 +87,12 @@
  * \param[out] OUT Output stream.
  * \param[in] X Condition to check.
  * \param[in] Y Return value if condition is false.
+ *
+ * \def EXECUTE_AND_ABORT(OUT, CONDITION)
+ * \brief Macro that abort program if condition fails. It like an assert but
+ *        execute the function even if NDEBUG is defined.
+ * \param[out] OUT Output stream.
+ * \param[in] CONDITION Condition to check. Can be a non-const function.
  */
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

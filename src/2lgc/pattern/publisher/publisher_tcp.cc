@@ -63,6 +63,15 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::Stop()
   disposing_ = true;
 }
 
+/** \brief Tell if instance is stopped.
+ * \return true if publisher is disposing.
+ */
+template <typename T>
+INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcp<T>::GetDisposing()
+{
+  return disposing_;
+}
+
 /** \fn llgc::pattern::publisher::PublisherTcp::PublisherTcp(PublisherTcp&& other)
  * \brief Delete move constructor.
  * \param[in] other Don't care.
@@ -93,7 +102,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::Stop()
  * \brief Store thread based on the socket file descriptor.
  *
  *
- * \fn void llgc::pattern::publisher::PublisherTcp::AddSubscriberLocal(int socket, T::Msg message)
+ * \fn void llgc::pattern::publisher::PublisherTcp::AddSubscriberLocal(int socket, const typename T::Msg &message)
  * \brief Internal function to subscribe a socket to an event.
  * \param[in] socket The socket.
  * \param[in] message The message.

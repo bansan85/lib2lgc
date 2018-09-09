@@ -42,16 +42,14 @@ class PublisherTcpLinux : public PublisherTcp<T>
   explicit PublisherTcpLinux(uint16_t port);
 
   bool Wait() override CHK;
+  bool PreForward(T *messages, const char *raw_message, ssize_t length,
+                  int socket) CHK;
 
  protected:
   int sockfd_;
 
  private:
   void AddSubscriberLocal(int socket, const typename T::Msg &message) override;
-
-  bool PreForward(T *messages, const char *raw_message, ssize_t length,
-                  int socket) CHK;
-  void WaitThread(int socket);
 };
 
 }  // namespace llgc::pattern::publisher

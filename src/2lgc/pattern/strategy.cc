@@ -40,8 +40,9 @@ INLINE_TEMPLATE llgc::pattern::Strategy<T>::Strategy(T *instance)
 {
 }
 
-/** \fn llgc::pattern::Strategy::bool Do()
+/** \fn bool llgc::pattern::Strategy::Do()
  * \brief Execute the command. No argument possible. If argument needs, pass it to the children's constructor.
+ * \return true if function success.
  *
  *
  * \var llgc::pattern::Strategy::instance_

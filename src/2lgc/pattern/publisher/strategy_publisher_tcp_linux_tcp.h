@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_PUBLISHER_TCP_H_
-#define PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#ifndef PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
+#define PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
 
 // TEMPLATE_CLASS needs it.
+#include <2lgc/compat.h>
 #include <2lgc/config.h>  // IWYU pragma: keep
-#include <2lgc/pattern/publisher/publisher_ip.h>
-#include <atomic>
-#include <cstdint>
-#include <map>
-#include <thread>
+#include <2lgc/pattern/strategy.h>
 #include <type_traits>
 
 namespace google::protobuf
@@ -34,41 +31,38 @@ class Message;
 namespace llgc::pattern::publisher
 {
 template <typename T>
-class PublisherTcp : public PublisherIp<T>
+class PublisherTcpLinux;
+
+template <typename T>
+class StrategyPublisherTcpLinuxTcp
+    : public llgc::pattern::Strategy<
+          llgc::pattern::publisher::PublisherTcpLinux<T>>
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  explicit PublisherTcp(uint16_t port);
-#ifndef SWIG
-  PublisherTcp(PublisherTcp &&other) = delete;
-  PublisherTcp(PublisherTcp const &other) = delete;
-  PublisherTcp &operator=(PublisherTcp &&other) = delete;
-  PublisherTcp &operator=(PublisherTcp const &other) = delete;
-#endif  // !SWIG
-  ~PublisherTcp() override;
+  explicit StrategyPublisherTcpLinuxTcp(
+      llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock)
+      : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
+            server),
+        client_sock_(client_sock)
+  {
+  }
+  virtual ~StrategyPublisherTcpLinuxTcp() = default;
 
-  void JoinWait() override;
-  void Stop() override;
-
-  bool GetDisposing();
-
- protected:
-  std::atomic<bool> disposing_;
-  std::map<int, std::thread> thread_sockets_;
+  bool Do() override CHK;
 
  private:
-  virtual void AddSubscriberLocal(int socket,
-                                  const typename T::Msg &message) = 0;
+  int &client_sock_;
 };
 
 }  // namespace llgc::pattern::publisher
 
 #ifndef TEMPLATE_CLASS
-#include <2lgc/pattern/publisher/publisher_tcp.cc>
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.cc>
 #endif
 
-#endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_H_
+#endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

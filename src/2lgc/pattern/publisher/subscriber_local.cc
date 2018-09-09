@@ -146,7 +146,11 @@ llgc::pattern::publisher::SubscriberLocal<T>::RemoveSubscriber(
 }
 
 /** \var llgc::pattern::publisher::SubscriberLocal::id_
- * \brief The id of the connector.
+ * \brief The id of the subscriber
+ *
+ *
+ * \var llgc::pattern::publisher::SubscriberLocal::connector_.
+ * \brief The connector to communicate with the server.
  */
 
 #endif  // PATTERN_PUBLISHER_SUBSCRIBER_LOCAL_CC_

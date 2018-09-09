@@ -22,11 +22,10 @@
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
-#include <poll.h>
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
-#include <unistd.h>
 #include <cerrno>
 #include <cstddef>
 #include <iostream>
@@ -43,7 +42,16 @@ class ConnectorSubscriberTcp;
 
 template <typename T>
 class SubscriberServerTcp;
+
+template <typename T>
+class StrategyPublisherTcpLinuxTcp;
 }  // namespace llgc::pattern::publisher
+
+namespace llgc::pattern
+{
+template <class T>
+class Strategy;
+}  // namespace llgc::pattern
 
 /** \class llgc::pattern::publisher::PublisherTcpLinux
  * \brief Interface to create a TCP server.
@@ -70,6 +78,7 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
   std::thread t([this]() {
     int iResult;
     int client_sock = 0;
+    std::unique_ptr<llgc::pattern::Strategy<PublisherTcpLinux<T>>> receiver_;
     fd_set rfds;
 
     do
@@ -90,8 +99,9 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
             [=] { return accept4(sockfd_, nullptr, nullptr, SOCK_CLOEXEC); });
         if (client_sock > 0)
         {
-          std::thread t2(
-              [this, client_sock] { return WaitThread(client_sock); });
+          receiver_ = std::make_unique<StrategyPublisherTcpLinuxTcp<T>>(
+              this, client_sock);
+          std::thread t2([&receiver_] { return receiver_->Do(); });
           this->thread_sockets_.insert(
               std::pair<int, std::thread>(client_sock, std::move(t2)));
         }
@@ -106,29 +116,6 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
   this->thread_wait_ = std::move(t);
 
   return true;
-}
-
-/** \var llgc::pattern::publisher::PublisherTcpLinux::sockfd_
- * \brief Socket file descriptor.
- */
-
-template <typename T>
-INLINE_TEMPLATE void
-llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
-    int socket, const typename T::Msg &message)
-{
-  BUGCRIT(std::cout, message.has_add_subscriber(), ,
-          "Failed to add a subscriber.");
-  std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
-      std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
-          socket);
-  std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
-      connector =
-          std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
-              subscriber, socket);
-  BUGCONT(
-      std::cout,
-      this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
 
 /** @brief Add / remove subscriber in server before sending message to
@@ -178,55 +165,27 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
   return true;
 }
 
-/** \brief Function that will be executed by the thread that wait instruction
- *         from a client.
- * \param[in] socket The socket to the client.
+/** \var llgc::pattern::publisher::PublisherTcpLinux::sockfd_
+ * \brief Socket file descriptor.
  */
+
 template <typename T>
-INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcpLinux<T>::WaitThread(
-    int socket)
+INLINE_TEMPLATE void
+llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
+    int socket, const typename T::Msg &message)
 {
-  llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket);
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct pollfd fd;  // NOLINT(hicpp-member-init)
-  fd.fd = socket;
-  fd.events = POLLIN;
-
-  do
-  {
-    int retval = poll(&fd, 1, 50);
-
-    BUGCRIT(std::cout, retval != -1, ,
-            "Server client " + std::to_string(socket) +
-                " poll failed. Close connection. Errno " +
-                std::to_string(errno) + ".\n");
-
-    if (retval == 0)
-    {
-      continue;
-    }
-
-    char client_message[1500];
-
-    ssize_t read_size = recv(socket, client_message, sizeof(client_message), 0);
-
-    BUGCRIT(std::cout, read_size != -1, ,
-            "Server client " + std::to_string(socket) +
-                " recv failed. Close connection. Errno " +
-                std::to_string(errno) + ".\n");
-    // Empty message.
-    if (read_size == 0)
-    {
-      continue;
-    }
-
-    T messages;
-
-    BUGCONT(std::cout,
-            PreForward(&messages, &client_message[0], read_size, socket), );
-
-    BUGCONT(std::cout, this->Forward(messages), );
-  } while (!this->disposing_);
+  BUGCRIT(std::cout, message.has_add_subscriber(), ,
+          "Failed to add a subscriber.");
+  std::shared_ptr<llgc::pattern::publisher::SubscriberServerTcp<T>> subscriber =
+      std::make_shared<llgc::pattern::publisher::SubscriberServerTcp<T>>(
+          socket);
+  std::shared_ptr<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>
+      connector =
+          std::make_shared<llgc::pattern::publisher::ConnectorSubscriberTcp<T>>(
+              subscriber, socket);
+  BUGCONT(
+      std::cout,
+      this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_
