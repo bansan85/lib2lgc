@@ -18,10 +18,12 @@
 #define PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_
 
 #include <2lgc/compat.h>
+#include <2lgc/config.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h>
 #include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
 #include <sys/select.h>
 #include <sys/socket.h>
@@ -34,6 +36,10 @@
 #include <thread>
 #include <type_traits>
 #include <utility>
+
+#ifdef OPENSSL_FOUND
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h>
+#endif
 
 namespace llgc::pattern::publisher
 {
@@ -55,6 +61,10 @@ class Strategy;
 
 /** \class llgc::pattern::publisher::PublisherTcpLinux
  * \brief Interface to create a TCP server.
+ *
+ *
+ * \class llgc::pattern::publisher::Presentation
+ * \brief List of encryption method supported.
  */
 
 /** \brief Constructor with port for the TCP server.
@@ -63,7 +73,7 @@ class Strategy;
 template <typename T>
 INLINE_TEMPLATE
 llgc::pattern::publisher::PublisherTcpLinux<T>::PublisherTcpLinux(uint16_t port)
-    : PublisherTcp<T>(port), sockfd_(-1)
+    : PublisherTcp<T>(port)
 {
 }
 
@@ -99,8 +109,18 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
             [=] { return accept4(sockfd_, nullptr, nullptr, SOCK_CLOEXEC); });
         if (client_sock > 0)
         {
-          receiver_ = std::make_unique<StrategyPublisherTcpLinuxTcp<T>>(
-              this, client_sock);
+#ifdef OPENSSL_FOUND
+          if (presentation_ != Presentation::NONE)
+          {
+            receiver_ = std::make_unique<StrategyPublisherTcpLinuxOpenSsl<T>>(
+                this, client_sock, presentation_, cert_, key_);
+          }
+          else
+#endif  // OPENSSL_FOUND
+          {
+            receiver_ = std::make_unique<StrategyPublisherTcpLinuxTcp<T>>(
+                this, client_sock);
+          }
           std::thread t2([&receiver_] { return receiver_->Do(); });
           this->thread_sockets_.insert(
               std::pair<int, std::thread>(client_sock, std::move(t2)));
@@ -165,6 +185,23 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
   return true;
 }
 
+#ifdef OPENSSL_FOUND
+/** \brief Set parameter for OpenSSL server.
+ * \param[in] presentation Choose the encryption method.
+ * \param[in] cert Set the certificate file.
+ * \param[in] key Set the key file.
+ */
+template <typename T>
+INLINE_TEMPLATE void
+llgc::pattern::publisher::PublisherTcpLinux<T>::SetEncryption(
+    Presentation presentation, const std::string &cert, const std::string &key)
+{
+  presentation_ = presentation;
+  cert_ = cert;
+  key_ = key;
+}
+#endif
+
 /** \var llgc::pattern::publisher::PublisherTcpLinux::sockfd_
  * \brief Socket file descriptor.
  */
@@ -187,6 +224,18 @@ llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
       std::cout,
       this->AddSubscriber(message.add_subscriber().id_message(), connector), );
 }
+
+/** \var llgc::pattern::publisher::PublisherTcpLinux::presentation_
+ * \brief Tell if encryption is used.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherTcpLinux::cert_
+ * \brief The certification file for encryption.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherTcpLinux::key_
+ * \brief The key file for encryption.
+ */
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_
 

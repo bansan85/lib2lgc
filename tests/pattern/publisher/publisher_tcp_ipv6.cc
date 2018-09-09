@@ -39,6 +39,7 @@
 #include <2lgc/pattern/publisher/publisher_ip.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h>
 #include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
 #include <2lgc/pattern/publisher/subscriber_local.h>
 
@@ -52,6 +53,7 @@
 #include <2lgc/pattern/publisher/publisher_tcp.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.cc>
 #include <2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc>
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.cc>
 #include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.cc>
 #include <2lgc/pattern/publisher/subscriber_local.cc>
 #include <2lgc/pattern/publisher/subscriber_server_tcp.cc>
@@ -75,6 +77,8 @@ template class llgc::pattern::publisher::PublisherInterface<
         llgc::protobuf::test::Tcp>>>;
 template class llgc::pattern::publisher::PublisherIp<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcp<
+    llgc::protobuf::test::Tcp>;
+template class llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
     llgc::protobuf::test::Tcp>;

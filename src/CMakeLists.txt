@@ -30,6 +30,7 @@ set(2LGC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_interface.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_local.h
@@ -89,6 +90,7 @@ set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_local.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_grpc.cc

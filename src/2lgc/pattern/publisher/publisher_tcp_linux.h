@@ -32,6 +32,14 @@ class Message;
 
 namespace llgc::pattern::publisher
 {
+#ifdef OPENSSL_FOUND
+enum class Presentation
+{
+  NONE,
+  TSL1_2
+};
+#endif
+
 template <typename T>
 class PublisherTcpLinux : public PublisherTcp<T>
 {
@@ -45,11 +53,22 @@ class PublisherTcpLinux : public PublisherTcp<T>
   bool PreForward(T *messages, const char *raw_message, ssize_t length,
                   int socket) CHK;
 
+#ifdef OPENSSL_FOUND
+  void SetEncryption(Presentation presentation, const std::string &cert,
+                     const std::string &key);
+#endif
+
  protected:
-  int sockfd_;
+  int sockfd_ = -1;
 
  private:
   void AddSubscriberLocal(int socket, const typename T::Msg &message) override;
+
+#ifdef OPENSSL_FOUND
+  Presentation presentation_ = Presentation::NONE;
+  std::string cert_;
+  std::string key_;
+#endif
 };
 
 }  // namespace llgc::pattern::publisher

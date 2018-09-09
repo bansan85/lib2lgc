@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
-#define PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
+#ifndef PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_H_
+#define PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_H_
 
 // TEMPLATE_CLASS needs it.
 #include <2lgc/compat.h>
@@ -34,7 +34,7 @@ template <typename T>
 class PublisherTcpLinux;
 
 template <typename T>
-class StrategyPublisherTcpLinuxTcp
+class StrategyPublisherTcpLinuxOpenSsl
     : public llgc::pattern::Strategy<
           llgc::pattern::publisher::PublisherTcpLinux<T>>
 {
@@ -42,22 +42,27 @@ class StrategyPublisherTcpLinuxTcp
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  explicit StrategyPublisherTcpLinuxTcp(
-      llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock);
-  virtual ~StrategyPublisherTcpLinuxTcp() = default;
+  explicit StrategyPublisherTcpLinuxOpenSsl(
+      llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock,
+      llgc::pattern::publisher::Presentation presentation,
+      const std::string &cert, const std::string &key);
+  virtual ~StrategyPublisherTcpLinuxOpenSsl() = default;
 
   bool Do() override CHK;
 
  private:
   int &client_sock_;
+  llgc::pattern::publisher::Presentation presentation_;
+  const std::string cert_;
+  const std::string key_;
 };
 
 }  // namespace llgc::pattern::publisher
 
 #ifndef TEMPLATE_CLASS
-#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.cc>
+#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.cc>
 #endif
 
-#endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
+#endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */
