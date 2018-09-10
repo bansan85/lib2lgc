@@ -140,23 +140,17 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 
 /** @brief Add / remove subscriber in server before sending message to
  *         subscriber.
- * @param[out] messages List of messages to forward to subscriber.
- * @param[in] raw_message Messages received.
- * @param[in] length Length of the message.
+ * @param[in] messages List of messages to forward to subscriber.
  * @param[in] socket Socket to communicate with the subscriber.
  * @return true if no problem.
  */
 template <typename T>
 INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
-    T *messages, const char *raw_message, ssize_t length, int socket)
+    const T &messages, int socket)
 {
-  std::string client_string(raw_message, static_cast<size_t>(length));
-  BUGLIB(std::cout, messages->ParseFromString(client_string), false,
-         "protobuf.");
-
-  for (int i = 0; i < messages->msg_size(); i++)
+  for (int i = 0; i < messages.msg_size(); i++)
   {
-    const typename T::Msg &message = messages->msg(i);
+    const typename T::Msg &message = messages.msg(i);
 
     typename T::Msg::DataCase enumeration = message.data_case();
 
@@ -181,6 +175,8 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
               false);
     }
   }
+
+  BUGCONT(std::cout, this->Forward(messages), false);
 
   return true;
 }

@@ -50,8 +50,7 @@ class PublisherTcpLinux : public PublisherTcp<T>
   explicit PublisherTcpLinux(uint16_t port);
 
   bool Wait() override CHK;
-  bool PreForward(T *messages, const char *raw_message, ssize_t length,
-                  int socket) CHK;
+  bool PreForward(const T &messages, int socket) CHK;
 
 #ifdef OPENSSL_FOUND
   void SetEncryption(Presentation presentation, const std::string &cert,

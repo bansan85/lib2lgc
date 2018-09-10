@@ -47,6 +47,12 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
  public:
   ConnectorPublisherTcp(std::shared_ptr<SubscriberInterface<T>> subscriber,
                         std::string ip, uint16_t port);
+#ifndef SWIG
+  ConnectorPublisherTcp(ConnectorPublisherTcp &&other) = delete;
+  ConnectorPublisherTcp(ConnectorPublisherTcp const &other) = delete;
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp &&other) = delete;
+  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) = delete;
+#endif  // !SWIG
   ~ConnectorPublisherTcp() override;
 
   bool Send(const T &message) override CHK;
@@ -54,13 +60,6 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
   bool RemoveSubscriber(uint32_t id_message) override CHK;
 
   void Receiver();
-
-#ifndef SWIG
-  ConnectorPublisherTcp(ConnectorPublisherTcp &&other) = delete;
-  ConnectorPublisherTcp(ConnectorPublisherTcp const &other) = delete;
-  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp &&other) = delete;
-  ConnectorPublisherTcp &operator=(ConnectorPublisherTcp const &other) = delete;
-#endif  // !SWIG
 
  protected:
   std::thread receiver_;

@@ -98,13 +98,12 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T>::Do()
     }
 
     T messages;
+    std::string client_string(client_message, static_cast<size_t>(read_size));
+    BUGLIB(std::cout, messages.ParseFromString(client_string), false,
+           "protobuf");
 
-    BUGCONT(std::cout,
-            this->instance_->PreForward(&messages, &client_message[0],
-                                        read_size, client_sock_),
+    BUGCONT(std::cout, this->instance_->PreForward(messages, client_sock_),
             false);
-
-    BUGCONT(std::cout, this->instance_->Forward(messages), false);
   } while (!this->instance_->GetDisposing());
   return true;
 }
