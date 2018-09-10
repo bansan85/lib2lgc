@@ -87,31 +87,34 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::Do()
     }
   }
 
-  SSL_CTX *ctx = SSL_CTX_new(method);
+  std::unique_ptr<SSL_CTX, std::function<void(SSL_CTX *)>> ctx(
+      SSL_CTX_new(method), [](SSL_CTX *ptr) { SSL_CTX_free(ptr); });
+
   BUGLIB(std::cout, ctx != nullptr, false, "OpenSSL");
 
-  BUGLIB(
-      std::cout,
-      SSL_CTX_use_certificate_file(ctx, cert_.c_str(), SSL_FILETYPE_PEM) == 1,
-      false, "OpenSSL");
   BUGLIB(std::cout,
-         SSL_CTX_use_PrivateKey_file(ctx, key_.c_str(), SSL_FILETYPE_PEM) == 1,
+         SSL_CTX_use_certificate_file(ctx.get(), cert_.c_str(),
+                                      SSL_FILETYPE_PEM) == 1,
          false, "OpenSSL");
-  BUGUSER(std::cout, SSL_CTX_check_private_key(ctx), false,
+  BUGLIB(std::cout,
+         SSL_CTX_use_PrivateKey_file(ctx.get(), key_.c_str(),
+                                     SSL_FILETYPE_PEM) == 1,
+         false, "OpenSSL");
+  BUGUSER(std::cout, SSL_CTX_check_private_key(ctx.get()), false,
           "Private key does not match the public certificate\n");
 
-  SSL *ssl = SSL_new(ctx);
-  llgc::net::OpenSsl::AutoClose secure_ssl(ssl);
+  std::unique_ptr<SSL, std::function<void(SSL *)>> ssl(
+      SSL_new(ctx.get()), [](SSL *ptr) { SSL_free(ptr); });
 
-  SSL_set_fd(ssl, client_sock_);
-  BUGCRIT(std::cout, SSL_accept(ssl) != 1, false,
+  SSL_set_fd(ssl.get(), client_sock_);
+  BUGCRIT(std::cout, SSL_accept(ssl.get()) != 1, false,
           "Failed to initialize handshake.\n");
 
   do
   {
     char client_message[1500];
 
-    int read_size = SSL_read(ssl, client_message, sizeof(client_message));
+    int read_size = SSL_read(ssl.get(), client_message, sizeof(client_message));
 
     // Empty message.
     if (read_size == 0)

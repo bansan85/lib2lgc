@@ -28,15 +28,6 @@ namespace llgc::net
 class OpenSsl
 {
  public:
-  class AutoClose
-  {
-   public:
-    AutoClose(SSL *ssl) : ssl_(ssl) {}
-    ~AutoClose() { SSL_free(ssl_); }
-
-   private:
-    SSL *ssl_;
-  };
   static bool Init() CHK;
 
  private:

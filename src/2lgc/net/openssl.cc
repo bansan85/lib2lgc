@@ -23,23 +23,6 @@
 
 /** \class llgc::net::OpenSsl
  * \brief Class to manipulate OpenSSL functions. All functions are thread-safe.
- *
- *
- * \class llgc::net::OpenSsl::AutoClose
- * \brief Autoclose a SSL_new.
- *
- *
- * \fn llgc::net::OpenSsl::AutoClose::AutoClose(SSL *ssl)
- * \brief Constructor.
- * \param[in] ssl ssl must already the return of `SSL_new`.
- *
- *
- * \fn llgc::net::OpenSsl::AutoClose::~AutoClose()
- * \brief Destructor. Auto call `SSL_free` on `ssl` variable.
- *
- *
- * \var llgc::net::OpenSsl::AutoClose::ssl_
- * \brief On destruction of this object, SSL_free(ssl_) will be call.
  */
 
 /** \brief Run init global function.
