@@ -20,6 +20,7 @@
 #include <2lgc/compat.h>
 // TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
+#include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <atomic>
 #include <cstdint>
@@ -58,15 +59,23 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
   bool Send(const T &message) override CHK;
   bool AddSubscriber(uint32_t id_message) override CHK;
   bool RemoveSubscriber(uint32_t id_message) override CHK;
-
-  void Receiver();
+  bool GetDisposing() const;
 
  protected:
   std::thread receiver_;
   int socket_;
+  llgc::net::OpenSsl::Presentation presentation_ =
+      llgc::net::OpenSsl::Presentation::NONE;
+  std::string cert_;
+  std::string key_;
+
   virtual bool Connect() CHK = 0;
   const std::string &GetIp() const { return ip_; }
   uint16_t GetPort() const { return port_; }
+#ifdef OPENSSL_FOUND
+  void SetEncryption(llgc::net::OpenSsl::Presentation presentation,
+                     const std::string &cert, const std::string &key);
+#endif
 
  private:
   const std::string ip_;

@@ -25,6 +25,7 @@
   { include: [ "<bits/shared_ptr.h>", private, "<memory>", public ] },
   { symbol: [ "std::ifstream", private, "<fstream>", public ] },
   { symbol: [ "std::stringstream", private, "<sstream>", public ] },
+  { symbol: [ "SSL_library_init", private, "<openssl/ssl.h>", public ] },
   { include: [ "<bits/stdint-intn.h>", private, "<cstdint>", public ] },
   { include: [ "<bits/stdint-uintn.h>", private, "<cstdint>", public ] },
   { include: [ "<experimental/bits/fs_ops.h>", private, "<experimental/filesystem>", public ] },

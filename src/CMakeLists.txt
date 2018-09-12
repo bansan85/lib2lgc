@@ -10,6 +10,7 @@ set(2LGC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/compare_decimal.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/hash.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/linux.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/openssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/abstract_factory.h
   # ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/command/undo_interface.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/iterator.h
@@ -60,6 +61,7 @@ set(2LGC_SOURCES
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/compare_decimal.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/hash.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/linux.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/openssl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_impl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/poco/number_visitor_unit.cc

@@ -24,11 +24,13 @@
 #include <2lgc/net/linux.h>
 #include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h>
-#include <errno.h>
-#include <poll.h>
-#include <sys/socket.h>
-#include <sys/types.h>
+#include <2lgc/pattern/strategy.h>
+#include <openssl/ossl_typ.h>
+#include <openssl/ssl.h>
+#include <stddef.h>
+#include <functional>
 #include <iostream>
+#include <memory>
 #include <string>
 
 /** \class llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl
@@ -48,7 +50,7 @@ template <typename T>
 INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::
     StrategyPublisherTcpLinuxOpenSsl(
         llgc::pattern::publisher::PublisherTcpLinux<T> *server,
-        int &client_sock, llgc::pattern::publisher::Presentation presentation,
+        int &client_sock, llgc::net::OpenSsl::Presentation presentation,
         const std::string &cert, const std::string &key)
     : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
           server),
@@ -76,11 +78,12 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::Do()
   const SSL_METHOD *method;
   switch (presentation_)
   {
-    case llgc::pattern::publisher::Presentation::TSL1_2:
+    case llgc::net::OpenSsl::Presentation::TSL1_2:
     {
       method = TLSv1_2_server_method();
       break;
     }
+    case llgc::net::OpenSsl::Presentation::NONE:
     default:
     {
       return false;
@@ -137,20 +140,20 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::Do()
   return true;
 }
 
-/** \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::client_sock_
- * \brief Value of the socket. Turn back to -1 when Do finish.
+/** \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::client_sock_
+ * \brief Value of the socket. Turn back to -1 when Do() finishes.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::presentation_
- * \brief 
+ * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::presentation_
+ * \brief Type of encryption.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::cert_
- * \brief 
+ * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::cert_
+ * \brief Certification file if OpenSSL is used.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::key_
- * \brief 
+ * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::key_
+ * \brief Key file if OpenSSL is used.
  */
 
 #endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_CC_

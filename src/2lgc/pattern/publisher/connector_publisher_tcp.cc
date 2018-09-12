@@ -20,14 +20,10 @@
 #include <2lgc/compat.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
+#include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
 #include <2lgc/poco/pattern_publisher.pb.h>
-#include <poll.h>
-#include <sys/socket.h>
-#include <unistd.h>
-#include <cerrno>
-#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -145,51 +141,14 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::RemoveSubscriber(
   return true;
 }
 
-/** \brief The function used by the thread that receive message from server.
- * Need to be public so thread can use it. Protected is not possible.
+/** \brief Tell if instance is stopped.
+ * \return true if publisher is disposing.
  */
 template <typename T>
-INLINE_TEMPLATE void
-llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
+INLINE_TEMPLATE bool
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::GetDisposing() const
 {
-  llgc::net::Linux::AutoCloseSocket auto_close_socket(&socket_);
-  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-  struct pollfd fd;  // NOLINT(hicpp-member-init)
-  fd.fd = socket_;
-  fd.events = POLLIN;
-
-  do
-  {
-    int retval = poll(&fd, 1, 50);
-
-    // Problem: stop the thread.
-    BUGCRIT(std::cout, retval != -1, ,
-            "Client " + std::to_string(socket_) + ", poll failed. Errno " +
-                std::to_string(errno) + ".\n");
-    if (retval != 0)
-    {
-      char client_message[1500];
-
-      ssize_t read_size =
-          recv(socket_, client_message, sizeof(client_message), 0);
-
-      BUGCRIT(std::cout, read_size != -1, ,
-              "Client " + std::to_string(socket_) +
-                  " recv failed. Close connection. Errno " +
-                  std::to_string(errno) + ".\n");
-
-      if (read_size == 0)
-      {
-        continue;
-      }
-
-      T message;
-      std::string client_string(client_message, static_cast<size_t>(read_size));
-      BUGLIB(std::cout, message.ParseFromString(client_string), , "protobuf");
-
-      BUGCONT(std::cout, this->subscriber_->Listen(message), );
-    }
-  } while (!disposing_);
+  return disposing_;
 }
 
 /** \var llgc::pattern::publisher::ConnectorPublisherTcp::receiver_
@@ -198,6 +157,18 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
  *
  * \var llgc::pattern::publisher::ConnectorPublisherTcp::socket_
  * \brief Socket to the server.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::presentation_
+ * \brief Type of encryption.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::cert_
+ * \brief Certification file if OpenSSL is used.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::key_
+ * \brief Key file if OpenSSL is used.
  *
  *
  * \fn bool llgc::pattern::publisher::ConnectorPublisherTcp::Connect()
@@ -213,8 +184,27 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::Receiver()
  * \fn uint16_t llgc::pattern::publisher::ConnectorPublisherTcp::GetPort() const
  * \brief Get the port of the connector.
  * \return The return value.
- *
- *
+ */
+
+#ifdef OPENSSL_FOUND
+/** \brief Set parameter for OpenSSL server.
+ * \param[in] presentation Choose the encryption method.
+ * \param[in] cert Set the certificate file.
+ * \param[in] key Set the key file.
+ */
+template <typename T>
+INLINE_TEMPLATE void
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::SetEncryption(
+    llgc::net::OpenSsl::Presentation presentation, const std::string &cert,
+    const std::string &key)
+{
+  presentation_ = presentation;
+  cert_ = cert;
+  key_ = key;
+}
+#endif
+
+/**
  * \var llgc::pattern::publisher::ConnectorPublisherTcp::ip_
  * \brief The IP of the server.
  *

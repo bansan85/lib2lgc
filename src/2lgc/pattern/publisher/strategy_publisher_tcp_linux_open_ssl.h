@@ -20,7 +20,9 @@
 // TEMPLATE_CLASS needs it.
 #include <2lgc/compat.h>
 #include <2lgc/config.h>  // IWYU pragma: keep
+#include <2lgc/net/openssl.h>
 #include <2lgc/pattern/strategy.h>
+#include <string>
 #include <type_traits>
 
 namespace google::protobuf
@@ -44,15 +46,15 @@ class StrategyPublisherTcpLinuxOpenSsl
  public:
   explicit StrategyPublisherTcpLinuxOpenSsl(
       llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock,
-      llgc::pattern::publisher::Presentation presentation,
-      const std::string &cert, const std::string &key);
-  virtual ~StrategyPublisherTcpLinuxOpenSsl() = default;
+      llgc::net::OpenSsl::Presentation presentation, const std::string &cert,
+      const std::string &key);
+  ~StrategyPublisherTcpLinuxOpenSsl() override = default;
 
   bool Do() override CHK;
 
  private:
   int &client_sock_;
-  llgc::pattern::publisher::Presentation presentation_;
+  llgc::net::OpenSsl::Presentation presentation_;
   const std::string cert_;
   const std::string key_;
 };

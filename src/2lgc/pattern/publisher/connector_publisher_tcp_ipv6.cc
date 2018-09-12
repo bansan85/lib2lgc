@@ -34,7 +34,10 @@ namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
-}
+
+template <typename T, typename U>
+class StrategyPublisherTcpLinuxTcp;
+}  // namespace llgc::pattern::publisher
 
 /** \class llgc::pattern::publisher::ConnectorPublisherTcpIpv6
  * @brief IPV6 of ConnectorPublisherTcp.
@@ -79,6 +82,10 @@ INLINE_TEMPLATE llgc::pattern::publisher::ConnectorPublisherTcpIpv6<
  * \brief Delete the copy operator.
  * \param[in] other The original.
  * \return Delete function.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcpIpv6::strategy_
+ * \brief Function to execute. Different if no encryption or use OpenSSL.
  */
 
 template <typename T>
@@ -116,7 +123,25 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
 
   auto_close_socket.DontDeleteSocket();
 
-  std::thread t(&ConnectorPublisherTcp<T>::Receiver, this);
+#ifdef OPENSSL_FOUND
+/*
+  if (this->presentation_ != Presentation::NONE)
+  {
+    this->strategy_ = std::make_unique<StrategyPublisherTcpLinuxOpenSsl<T>>(this, this->socket_, this->presentation_, this->cert_, this->key_);
+  }
+  else
+  */
+#endif  // OPENSSL_FOUND
+  {
+    this->strategy_ =
+        std::make_unique<llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
+            T, llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>>>(
+            this, this->socket_, [this](const T &messages) -> bool {
+              return this->subscriber_->Listen(messages);
+            });
+  }
+
+  std::thread t([this] { return this->strategy_->Do(); });
   this->receiver_ = std::move(t);
 
   return true;

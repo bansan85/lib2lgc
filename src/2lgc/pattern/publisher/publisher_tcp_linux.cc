@@ -21,15 +21,14 @@
 #include <2lgc/config.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
+#include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
-#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h>
 #include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <cerrno>
-#include <cstddef>
 #include <iostream>
 #include <memory>
 #include <string>
@@ -48,9 +47,6 @@ class ConnectorSubscriberTcp;
 
 template <typename T>
 class SubscriberServerTcp;
-
-template <typename T>
-class StrategyPublisherTcpLinuxTcp;
 }  // namespace llgc::pattern::publisher
 
 namespace llgc::pattern
@@ -59,11 +55,15 @@ template <class T>
 class Strategy;
 }  // namespace llgc::pattern
 
-/** \class llgc::pattern::publisher::PublisherTcpLinux
+/** \enum llgc::net::OpenSsl::Presentation
+ * \brief Type of encryption. NONE do not use OpenSSL.
+ *
+ *
+ * \class llgc::pattern::publisher::PublisherTcpLinux
  * \brief Interface to create a TCP server.
  *
  *
- * \class llgc::pattern::publisher::Presentation
+ * \class llgc::net::OpenSsl::Presentation
  * \brief List of encryption method supported.
  */
 
@@ -110,7 +110,7 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
         if (client_sock > 0)
         {
 #ifdef OPENSSL_FOUND
-          if (presentation_ != Presentation::NONE)
+          if (presentation_ != llgc::net::OpenSsl::Presentation::NONE)
           {
             receiver_ = std::make_unique<StrategyPublisherTcpLinuxOpenSsl<T>>(
                 this, client_sock, presentation_, cert_, key_);
@@ -118,8 +118,12 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
           else
 #endif  // OPENSSL_FOUND
           {
-            receiver_ = std::make_unique<StrategyPublisherTcpLinuxTcp<T>>(
-                this, client_sock);
+            receiver_ = std::make_unique<StrategyPublisherTcpLinuxTcp<
+                T, llgc::pattern::publisher::PublisherTcpLinux<T>>>(
+                this, client_sock,
+                [this, client_sock](const T &messages) -> bool {
+                  return this->PreForward(messages, client_sock);
+                });
           }
           std::thread t2([&receiver_] { return receiver_->Do(); });
           this->thread_sockets_.insert(
@@ -190,7 +194,8 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::PreForward(
 template <typename T>
 INLINE_TEMPLATE void
 llgc::pattern::publisher::PublisherTcpLinux<T>::SetEncryption(
-    Presentation presentation, const std::string &cert, const std::string &key)
+    llgc::net::OpenSsl::Presentation presentation, const std::string &cert,
+    const std::string &key)
 {
   presentation_ = presentation;
   cert_ = cert;

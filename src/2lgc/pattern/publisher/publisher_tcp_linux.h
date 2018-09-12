@@ -20,9 +20,10 @@
 #include <2lgc/compat.h>
 // TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
+#include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
-#include <sys/types.h>
 #include <cstdint>
+#include <string>
 #include <type_traits>
 
 namespace google::protobuf
@@ -32,14 +33,6 @@ class Message;
 
 namespace llgc::pattern::publisher
 {
-#ifdef OPENSSL_FOUND
-enum class Presentation
-{
-  NONE,
-  TSL1_2
-};
-#endif
-
 template <typename T>
 class PublisherTcpLinux : public PublisherTcp<T>
 {
@@ -53,8 +46,8 @@ class PublisherTcpLinux : public PublisherTcp<T>
   bool PreForward(const T &messages, int socket) CHK;
 
 #ifdef OPENSSL_FOUND
-  void SetEncryption(Presentation presentation, const std::string &cert,
-                     const std::string &key);
+  void SetEncryption(llgc::net::OpenSsl::Presentation presentation,
+                     const std::string &cert, const std::string &key);
 #endif
 
  protected:
@@ -64,7 +57,8 @@ class PublisherTcpLinux : public PublisherTcp<T>
   void AddSubscriberLocal(int socket, const typename T::Msg &message) override;
 
 #ifdef OPENSSL_FOUND
-  Presentation presentation_ = Presentation::NONE;
+  llgc::net::OpenSsl::Presentation presentation_ =
+      llgc::net::OpenSsl::Presentation::NONE;
   std::string cert_;
   std::string key_;
 #endif

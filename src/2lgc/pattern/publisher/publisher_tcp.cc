@@ -68,6 +68,7 @@ INLINE_TEMPLATE void llgc::pattern::publisher::PublisherTcp<T>::Stop()
  */
 template <typename T>
 INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcp<T>::GetDisposing()
+    const
 {
   return disposing_;
 }

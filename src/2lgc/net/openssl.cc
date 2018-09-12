@@ -19,6 +19,7 @@
 #ifdef OPENSSL_FOUND
 
 #include <2lgc/net/openssl.h>
+#include <openssl/ssl.h>
 #include <mutex>
 
 /** \class llgc::net::OpenSsl

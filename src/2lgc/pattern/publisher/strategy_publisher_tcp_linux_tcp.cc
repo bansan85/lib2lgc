@@ -23,30 +23,33 @@
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
+#include <2lgc/pattern/strategy.h>
 #include <errno.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <cstddef>
 #include <iostream>
 #include <string>
 
 /** \class llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp
  * \brief Strategy for server to receive data from TCP.
  * \tparam T Message from protobuf.
+ * \tparam U Type of the instance.
  */
 
 /** \brief Constructor for Strategy server TCP.
  * \param[in] server The TCP server.
  * \param[in] client_sock Socket client to communicate by TCP.
+ * \param[in] function Function to execute after receiving a message.
  */
-template <typename T>
-INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T>::
-    StrategyPublisherTcpLinuxTcp(
-        llgc::pattern::publisher::PublisherTcpLinux<T> *server,
-        int &client_sock)
-    : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
-          server),
-      client_sock_(client_sock)
+template <typename T, typename U>
+INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
+    T, U>::StrategyPublisherTcpLinuxTcp(U *server, int &client_sock,
+                                        std::function<bool(const T &)> function)
+    : llgc::pattern::Strategy<U>(server),
+      client_sock_(client_sock),
+      function_(function)
 {
 }
 
@@ -58,9 +61,9 @@ INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T>::
  *         from a client.
  * \return true if no problem.
  */
-template <typename T>
+template <typename T, typename U>
 INLINE_TEMPLATE bool
-llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T>::Do()
+llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T, U>::Do()
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&client_sock_);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
@@ -101,15 +104,17 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T>::Do()
     std::string client_string(client_message, static_cast<size_t>(read_size));
     BUGLIB(std::cout, messages.ParseFromString(client_string), false,
            "protobuf");
-
-    BUGCONT(std::cout, this->instance_->PreForward(messages, client_sock_),
-            false);
+    BUGCONT(std::cout, function_(messages), false);
   } while (!this->instance_->GetDisposing());
   return true;
 }
 
 /** \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::client_sock_
  * \brief Value of the socket. Turn back to -1 when Do finish.
+ *
+ *
+ * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::function_
+ * \brief Function to execute after receiving a message.
  */
 
 #endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_CC_

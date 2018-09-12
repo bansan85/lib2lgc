@@ -52,7 +52,7 @@ class PublisherTcp : public PublisherIp<T>
   void JoinWait() override;
   void Stop() override;
 
-  bool GetDisposing();
+  bool GetDisposing() const;
 
  protected:
   std::atomic<bool> disposing_;

@@ -17,17 +17,23 @@
 #ifndef NET_OPENSSL_H_
 #define NET_OPENSSL_H_
 
+#include <2lgc/compat.h>
 #include <2lgc/config.h>
 
 #ifdef OPENSSL_FOUND
 
-#include <openssl/ssl.h>
+#include <mutex>
 
 namespace llgc::net
 {
 class OpenSsl
 {
  public:
+  enum class Presentation
+  {
+    NONE,
+    TSL1_2
+  };
   static bool Init() CHK;
 
  private:

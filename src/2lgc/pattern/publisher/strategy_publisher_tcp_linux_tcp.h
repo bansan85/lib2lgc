@@ -21,6 +21,7 @@
 #include <2lgc/compat.h>
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/strategy.h>
+#include <functional>
 #include <type_traits>
 
 namespace google::protobuf
@@ -30,26 +31,23 @@ class Message;
 
 namespace llgc::pattern::publisher
 {
-template <typename T>
-class PublisherTcpLinux;
-
-template <typename T>
-class StrategyPublisherTcpLinuxTcp
-    : public llgc::pattern::Strategy<
-          llgc::pattern::publisher::PublisherTcpLinux<T>>
+// U : llgc::pattern::publisher::PublisherTcpLinux<T>
+template <typename T, typename U>
+class StrategyPublisherTcpLinuxTcp : public llgc::pattern::Strategy<U>
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
   explicit StrategyPublisherTcpLinuxTcp(
-      llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock);
-  virtual ~StrategyPublisherTcpLinuxTcp() = default;
+      U *server, int &client_sock, std::function<bool(const T &)> function);
+  ~StrategyPublisherTcpLinuxTcp() override = default;
 
   bool Do() override CHK;
 
  private:
   int &client_sock_;
+  std::function<bool(const T &)> function_;
 };
 
 }  // namespace llgc::pattern::publisher
