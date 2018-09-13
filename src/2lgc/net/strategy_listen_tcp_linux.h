@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
-#define PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
+#ifndef NET_STRATEGY_LISTEN_TCP_LINUX_H_
+#define NET_STRATEGY_LISTEN_TCP_LINUX_H_
 
-// TEMPLATE_CLASS needs it.
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/strategy.h>
 #include <functional>
@@ -29,19 +29,17 @@ namespace google::protobuf
 class Message;
 }
 
-namespace llgc::pattern::publisher
+namespace llgc::net
 {
-// U : llgc::pattern::publisher::PublisherTcpLinux<T>
 template <typename T, typename U>
-class StrategyPublisherTcpLinuxTcp : public llgc::pattern::Strategy<U>
+class StrategyListenTcpLinux : public llgc::pattern::Strategy<U>
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  explicit StrategyPublisherTcpLinuxTcp(
-      U *server, int &client_sock, std::function<bool(const T &)> function);
-  ~StrategyPublisherTcpLinuxTcp() override = default;
+  StrategyListenTcpLinux(U *server, int &client_sock, std::function<bool(const T &)> function);
+  ~StrategyListenTcpLinux() override = default;
 
   bool Do() override CHK;
 
@@ -53,9 +51,9 @@ class StrategyPublisherTcpLinuxTcp : public llgc::pattern::Strategy<U>
 }  // namespace llgc::pattern::publisher
 
 #ifndef TEMPLATE_CLASS
-#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.cc>
+#include <2lgc/net/strategy_listen_tcp_linux.cc>
 #endif
 
-#endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_H_
+#endif  // NET_STRATEGY_LISTEN_TCP_LINUX_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

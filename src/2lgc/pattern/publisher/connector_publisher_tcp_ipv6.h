@@ -31,13 +31,16 @@ namespace google::protobuf
 class Message;
 }
 
+namespace llgc::net
+{
+template <typename T, typename U>
+class StrategyListenTcpLinux;
+}
+
 namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
-
-template <typename T, typename U>
-class StrategyPublisherTcpLinuxTcp;
 
 template <typename T>
 class ConnectorPublisherTcpIpv6 : public ConnectorPublisherTcp<T>
@@ -60,9 +63,7 @@ class ConnectorPublisherTcpIpv6 : public ConnectorPublisherTcp<T>
 #endif  // !SWIG
 
  private:
-  std::unique_ptr<llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
-      T, llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>>>
-      strategy_;
+  std::unique_ptr<llgc::net::StrategyListenTcpLinux< T, llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>>> strategy_;
   bool Connect() override CHK;
 };
 

@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_CC_
-#define PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_CC_
+#ifndef NET_STRATEGY_LISTEN_TCP_LINUX_CC_
+#define NET_STRATEGY_LISTEN_TCP_LINUX_CC_
 
 #include <2lgc/compat.h>
 // TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
-#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
+#include <2lgc/net/strategy_listen_tcp_linux.h>
 #include <2lgc/pattern/strategy.h>
 #include <errno.h>
 #include <poll.h>
@@ -32,7 +32,7 @@
 #include <iostream>
 #include <string>
 
-/** \class llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp
+/** \class llgc::net::StrategyListenTcpLinux
  * \brief Strategy for server to receive data from TCP.
  * \tparam T Message from protobuf.
  * \tparam U Type of the instance.
@@ -44,16 +44,11 @@
  * \param[in] function Function to execute after receiving a message.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
-    T, U>::StrategyPublisherTcpLinuxTcp(U *server, int &client_sock,
-                                        std::function<bool(const T &)> function)
-    : llgc::pattern::Strategy<U>(server),
-      client_sock_(client_sock),
-      function_(function)
+INLINE_TEMPLATE llgc::net::StrategyListenTcpLinux<T, U>::StrategyListenTcpLinux(U *server, int &client_sock, std::function<bool(const T &)> function) : llgc::pattern::Strategy<U>(server), client_sock_(client_sock), function_(function)
 {
 }
 
-/** \fn llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::~StrategyPublisherTcpLinuxTcp()
+/** \fn llgc::net::StrategyListenTcpLinux::~StrategyListenTcpLinux()
  * \brief Default destructor.
  */
 
@@ -61,9 +56,7 @@ INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
  *         from a client.
  * \return true if no problem.
  */
-template <typename T, typename U>
-INLINE_TEMPLATE bool
-llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T, U>::Do()
+template <typename T, typename U> INLINE_TEMPLATE bool llgc::net::StrategyListenTcpLinux<T, U>::Do()
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&client_sock_);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
@@ -109,14 +102,14 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<T, U>::Do()
   return true;
 }
 
-/** \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::client_sock_
+/** \var llgc::net::StrategyListenTcpLinux::client_sock_
  * \brief Value of the socket. Turn back to -1 when Do finish.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp::function_
+ * \var llgc::net::StrategyListenTcpLinux::function_
  * \brief Function to execute after receiving a message.
  */
 
-#endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_TCP_CC_
+#endif  // NET_STRATEGY_LISTEN_TCP_LINUX_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

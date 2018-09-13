@@ -131,12 +131,7 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>::Connect()
 */
 #endif  // OPENSSL_FOUND
   {
-    this->strategy_ =
-        std::make_unique<llgc::pattern::publisher::StrategyPublisherTcpLinuxTcp<
-            T, llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>>>(
-            this, this->socket_, [this](const T &messages) -> bool {
-              return this->subscriber_->Listen(messages);
-            });
+    this->strategy_ = std::make_unique<llgc::net::StrategyListenTcpLinux< T, llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>>>( this, this->socket_, [this](const T &messages) -> bool { return this->subscriber_->Listen(messages); });
   }
 
   std::thread t([this] { return this->strategy_->Do(); });

@@ -24,7 +24,7 @@
 #include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
-#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_tcp.h>
+#include <2lgc/net/strategy_listen_tcp_linux.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -118,7 +118,7 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
           else
 #endif  // OPENSSL_FOUND
           {
-            receiver_ = std::make_unique<StrategyPublisherTcpLinuxTcp<
+            receiver_ = std::make_unique<llgc::net::StrategyListenTcpLinux<
                 T, llgc::pattern::publisher::PublisherTcpLinux<T>>>(
                 this, client_sock,
                 [this, client_sock](const T &messages) -> bool {
