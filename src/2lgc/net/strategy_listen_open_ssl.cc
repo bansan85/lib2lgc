@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_CC_
-#define PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_CC_
+#ifndef NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_
+#define NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_
 
 #include <2lgc/compat.h>
 // TEMPLATE_CLASS needs it.
@@ -23,7 +23,7 @@
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/net/openssl.h>
-#include <2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h>
+#include <2lgc/net/strategy_listen_open_ssl.h>
 #include <2lgc/pattern/strategy.h>
 #include <openssl/ossl_typ.h>
 #include <openssl/ssl.h>
@@ -33,7 +33,7 @@
 #include <memory>
 #include <string>
 
-/** \class llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl
+/** \class llgc::net::StrategyListenOpenSsl
  * \brief Strategy for server to receive data from TCP with OpenSSL encryption.
  * \tparam T Message from protobuf.
  */
@@ -46,22 +46,9 @@
  * \param[in] cert The certificate file.
  * \param[in] key The key file.
  */
-template <typename T>
-INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::
-    StrategyPublisherTcpLinuxOpenSsl(
-        llgc::pattern::publisher::PublisherTcpLinux<T> *server,
-        int &client_sock, llgc::net::OpenSsl::Presentation presentation,
-        const std::string &cert, const std::string &key)
-    : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
-          server),
-      client_sock_(client_sock),
-      presentation_(presentation),
-      cert_(cert),
-      key_(key)
-{
-}
+template <typename T> INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl( llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock, llgc::net::OpenSsl::Presentation presentation, const std::string &cert, const std::string &key) : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>( server), client_sock_(client_sock), presentation_(presentation), cert_(cert), key_(key) { }
 
-/** \fn llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::~StrategyPublisherTcpLinuxOpenSsl()
+/** \fn llgc::net::StrategyListenOpenSsl::~StrategyListenOpenSsl()
  * \brief Default destructor.
  */
 
@@ -69,9 +56,7 @@ INLINE_TEMPLATE llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::
  *         from a client.
  * \return true if no problem.
  */
-template <typename T>
-INLINE_TEMPLATE bool
-llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::Do()
+template <typename T> INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
 {
   llgc::net::Linux::AutoCloseSocket auto_close_socket(&client_sock_);
 
@@ -140,22 +125,22 @@ llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl<T>::Do()
   return true;
 }
 
-/** \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::client_sock_
+/** \var llgc::net::StrategyListenOpenSsl::client_sock_
  * \brief Value of the socket. Turn back to -1 when Do() finishes.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::presentation_
+ * \var llgc::net::StrategyListenOpenSsl::presentation_
  * \brief Type of encryption.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::cert_
+ * \var llgc::net::StrategyListenOpenSsl::cert_
  * \brief Certification file if OpenSSL is used.
  *
  *
- * \var llgc::pattern::publisher::StrategyPublisherTcpLinuxOpenSsl::key_
+ * \var llgc::net::StrategyListenOpenSsl::key_
  * \brief Key file if OpenSSL is used.
  */
 
-#endif  // PATTERN_PUBLISHER_STRATEGY_PUBLISHER_TCP_LINUX_OPEN_SSL_CC_
+#endif  // NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

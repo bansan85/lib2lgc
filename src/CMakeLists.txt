@@ -12,6 +12,7 @@ set(2LGC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/linux.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/openssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_tcp_linux.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_open_ssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/abstract_factory.h
   # ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/command/undo_interface.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/iterator.h
@@ -32,7 +33,6 @@ set(2LGC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv4.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv6.h
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_interface.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_local.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_grpc.h
@@ -77,6 +77,7 @@ set(2LGC_SOURCES
 set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/abstract_factory.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_tcp_linux.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_open_ssl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/connector_direct.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/connector_interface.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/connector_publisher_grpc.cc
@@ -93,7 +94,6 @@ set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv4.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/publisher_tcp_linux_ipv6.cc
-  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/strategy_publisher_tcp_linux_open_ssl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_local.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_grpc.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/subscriber_server_tcp.cc
