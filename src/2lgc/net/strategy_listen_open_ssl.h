@@ -48,21 +48,27 @@ class StrategyListenOpenSsl
 
  public:
   explicit StrategyListenOpenSsl(
-      llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock,
-      llgc::net::OpenSsl::Presentation presentation, const std::string &cert,
-      const std::string &key);
+      llgc::pattern::publisher::PublisherTcpLinux<T> *server, int *client_sock,
+      llgc::net::OpenSsl::Presentation presentation, std::string cert,
+      std::string key);
+#ifndef SWIG
+  StrategyListenOpenSsl(StrategyListenOpenSsl &&other) = delete;
+  StrategyListenOpenSsl(StrategyListenOpenSsl const &other) = delete;
+  StrategyListenOpenSsl &operator=(StrategyListenOpenSsl &&other) = delete;
+  StrategyListenOpenSsl &operator=(StrategyListenOpenSsl const &other) = delete;
+#endif  // !SWIG
   ~StrategyListenOpenSsl() override = default;
 
   bool Do() override CHK;
 
  private:
-  int &client_sock_;
+  int *client_sock_;
   llgc::net::OpenSsl::Presentation presentation_;
   const std::string cert_;
   const std::string key_;
 };
 
-}  // namespace llgc::pattern::publisher
+}  // namespace llgc::net
 
 #ifndef TEMPLATE_CLASS
 #include <2lgc/net/strategy_listen_open_ssl.cc>

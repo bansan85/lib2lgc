@@ -46,6 +46,12 @@ class Stack
     {
     }
     ~Iter() override = default;
+#ifndef SWIG
+    Iter(Iter &&other) = delete;
+    Iter(Iter const &other) = delete;
+    Iter &operator=(Iter &&other) = delete;
+    Iter &operator=(Iter const &other) = delete;
+#endif  // !SWIG
 
     const Stack &operator*() const override;
   };

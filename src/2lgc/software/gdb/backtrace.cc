@@ -38,6 +38,28 @@
  *
  * \fn llgc::software::gdb::Backtrace::Iter::~Iter()
  * \brief Virtual destructor because operator*() is virtual.
+ *
+ *
+ * \fn llgc::software::gdb::Backtrace::Iter::Iter(Iter&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::software::gdb::Backtrace::Iter::Iter(Iter const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn Iter& llgc::software::gdb::Backtrace::Iter::operator=(Iter&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn Iter& llgc::software::gdb::Backtrace::Iter::operator=(Iter const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
  */
 
 /** \brief Dereference an iterator return the current backtrace.

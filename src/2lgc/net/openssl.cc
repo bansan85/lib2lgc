@@ -33,7 +33,7 @@ bool llgc::net::OpenSsl::Init()
 {
   bool retval = true;
   mutex_.lock();
-  retval = retval && SSL_library_init();
+  retval = retval && (SSL_library_init() == 1);
   OpenSSL_add_all_algorithms();
   init_done = true;
   mutex_.unlock();

@@ -28,6 +28,12 @@ class StrategyAddOne : public llgc::pattern::Strategy<int>
 {
  public:
   explicit StrategyAddOne(int *number) : llgc::pattern::Strategy<int>(number) {}
+#ifndef SWIG
+  StrategyAddOne(StrategyAddOne &&other) = delete;
+  StrategyAddOne(StrategyAddOne const &other) = delete;
+  StrategyAddOne &operator=(StrategyAddOne &&other) = delete;
+  StrategyAddOne &operator=(StrategyAddOne const &other) = delete;
+#endif  // !SWIG
   ~StrategyAddOne() override = default;
 
   bool Do() override CHK
@@ -44,6 +50,12 @@ class StrategyAddNumber : public llgc::pattern::Strategy<int>
       : llgc::pattern::Strategy<int>(number), add_(add)
   {
   }
+#ifndef SWIG
+  StrategyAddNumber(StrategyAddNumber &&other) = delete;
+  StrategyAddNumber(StrategyAddNumber const &other) = delete;
+  StrategyAddNumber &operator=(StrategyAddNumber &&other) = delete;
+  StrategyAddNumber &operator=(StrategyAddNumber const &other) = delete;
+#endif  // !SWIG
   ~StrategyAddNumber() override = default;
 
   bool Do() override CHK

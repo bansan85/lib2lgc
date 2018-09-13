@@ -22,10 +22,10 @@
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/net/openssl.h>
+#include <2lgc/net/strategy_listen_open_ssl.h>
+#include <2lgc/net/strategy_listen_tcp_linux.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
 #include <2lgc/pattern/publisher/publisher_tcp_linux.h>
-#include <2lgc/net/strategy_listen_tcp_linux.h>
-#include <2lgc/net/strategy_listen_open_ssl.h>
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
@@ -114,14 +114,15 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
 #ifdef OPENSSL_FOUND
           if (presentation_ != llgc::net::OpenSsl::Presentation::NONE)
           {
-            receiver_ = std::make_unique<llgc::net::StrategyListenOpenSsl<T>>( this, client_sock, presentation_, cert_, key_);
+            receiver_ = std::make_unique<llgc::net::StrategyListenOpenSsl<T>>(
+                this, &client_sock, presentation_, cert_, key_);
           }
           else
 #endif  // OPENSSL_FOUND
           {
             receiver_ = std::make_unique<llgc::net::StrategyListenTcpLinux<
                 T, llgc::pattern::publisher::PublisherTcpLinux<T>>>(
-                this, client_sock,
+                this, &client_sock,
                 [this, client_sock](const T &messages) -> bool {
                   return this->PreForward(messages, client_sock);
                 });

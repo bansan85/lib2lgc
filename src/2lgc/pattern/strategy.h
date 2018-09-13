@@ -29,6 +29,12 @@ class Strategy
  public:
   Strategy();
   explicit Strategy(T *instance);
+#ifndef SWIG
+  Strategy(Strategy &&other) = delete;
+  Strategy(Strategy const &other) = delete;
+  Strategy &operator=(Strategy &&other) = delete;
+  Strategy &operator=(Strategy const &other) = delete;
+#endif  // !SWIG
   virtual ~Strategy() = default;
   virtual bool Do() CHK = 0;
 

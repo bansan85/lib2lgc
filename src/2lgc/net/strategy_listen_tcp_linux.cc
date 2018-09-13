@@ -24,10 +24,10 @@
 #include <2lgc/net/linux.h>
 #include <2lgc/net/strategy_listen_tcp_linux.h>
 #include <2lgc/pattern/strategy.h>
-#include <errno.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <cerrno>
 #include <cstddef>
 #include <iostream>
 #include <string>
@@ -44,11 +44,37 @@
  * \param[in] function Function to execute after receiving a message.
  */
 template <typename T, typename U>
-INLINE_TEMPLATE llgc::net::StrategyListenTcpLinux<T, U>::StrategyListenTcpLinux(U *server, int &client_sock, std::function<bool(const T &)> function) : llgc::pattern::Strategy<U>(server), client_sock_(client_sock), function_(function)
+INLINE_TEMPLATE llgc::net::StrategyListenTcpLinux<T, U>::StrategyListenTcpLinux(
+    U *server, int *client_sock, std::function<bool(const T &)> function)
+    : llgc::pattern::Strategy<U>(server),
+      client_sock_(client_sock),
+      function_(std::move(function))
 {
 }
 
-/** \fn llgc::net::StrategyListenTcpLinux::~StrategyListenTcpLinux()
+/** \fn llgc::net::StrategyListenTcpLinux::StrategyListenTcpLinux(StrategyListenTcpLinux&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::net::StrategyListenTcpLinux::StrategyListenTcpLinux(StrategyListenTcpLinux const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn StrategyListenTcpLinux& llgc::net::StrategyListenTcpLinux::operator=(StrategyListenTcpLinux&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn StrategyListenTcpLinux& llgc::net::StrategyListenTcpLinux::operator=(StrategyListenTcpLinux const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn llgc::net::StrategyListenTcpLinux::~StrategyListenTcpLinux()
  * \brief Default destructor.
  */
 
@@ -56,12 +82,13 @@ INLINE_TEMPLATE llgc::net::StrategyListenTcpLinux<T, U>::StrategyListenTcpLinux(
  *         from a client.
  * \return true if no problem.
  */
-template <typename T, typename U> INLINE_TEMPLATE bool llgc::net::StrategyListenTcpLinux<T, U>::Do()
+template <typename T, typename U>
+INLINE_TEMPLATE bool llgc::net::StrategyListenTcpLinux<T, U>::Do()
 {
-  llgc::net::Linux::AutoCloseSocket auto_close_socket(&client_sock_);
+  llgc::net::Linux::AutoCloseSocket auto_close_socket(client_sock_);
   // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
   struct pollfd fd;  // NOLINT(hicpp-member-init)
-  fd.fd = client_sock_;
+  fd.fd = *client_sock_;
   fd.events = POLLIN;
 
   do
@@ -69,7 +96,7 @@ template <typename T, typename U> INLINE_TEMPLATE bool llgc::net::StrategyListen
     int retval = poll(&fd, 1, 50);
 
     BUGCRIT(std::cout, retval != -1, false,
-            "Server client " + std::to_string(client_sock_) +
+            "Server client " + std::to_string(*client_sock_) +
                 " poll failed. Close connection. Errno " +
                 std::to_string(errno) + ".\n");
 
@@ -81,10 +108,10 @@ template <typename T, typename U> INLINE_TEMPLATE bool llgc::net::StrategyListen
     char client_message[1500];
 
     ssize_t read_size =
-        recv(client_sock_, client_message, sizeof(client_message), 0);
+        recv(*client_sock_, client_message, sizeof(client_message), 0);
 
     BUGCRIT(std::cout, read_size != -1, false,
-            "Server client " + std::to_string(client_sock_) +
+            "Server client " + std::to_string(*client_sock_) +
                 " recv failed. Close connection. Errno " +
                 std::to_string(errno) + ".\n");
     // Empty message.

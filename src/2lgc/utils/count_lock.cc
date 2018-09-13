@@ -23,7 +23,7 @@
  *        destrctor.
  *
  *
- * \fn llgc::utils::thread::CountLock::CountLock(M* const ref, std::recursive_mutex* mutex_forward, std::function<void()> function_zero)
+ * \fn llgc::utils::thread::CountLock::CountLock(M *ref, std::recursive_mutex* mutex_forward, std::function<void()> function_zero)
  * \brief Default constructor.
  * \param[in] ref Pointer to the ref variable that will be increment on
  *            constructor and decrement on destructor.

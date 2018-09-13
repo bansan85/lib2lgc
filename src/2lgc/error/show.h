@@ -47,15 +47,15 @@
 
 #define BUGCONT(OUT, X, Y) BUG(OUT, X, Y, "Throw error.\n", "")
 
-#define EXECUTE_AND_ABORT(OUT, CONDITION)                                     \
-  do                                                                          \
-  {                                                                           \
-    if (!(CONDITION))                                                         \
-    {                                                                         \
-      OUT << __FILE__ << ":" << __LINE__ << ": " << #CONDITION << " failure." \
-          << std::endl;                                                       \
-      abort();                                                                \
-    }                                                                         \
+#define EXECUTE_AND_ABORT(OUT, CONDITION)                        \
+  do                                                             \
+  {                                                              \
+    if (!(CONDITION))                                            \
+    {                                                            \
+      (OUT) << __FILE__ << ":" << __LINE__ << ": " << #CONDITION \
+            << " failure." << std::endl;                         \
+      abort();                                                   \
+    }                                                            \
   } while (0)
 
 #endif  // ERROR_SHOW_H_

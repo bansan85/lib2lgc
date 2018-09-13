@@ -38,17 +38,25 @@ class StrategyListenTcpLinux : public llgc::pattern::Strategy<U>
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  StrategyListenTcpLinux(U *server, int &client_sock, std::function<bool(const T &)> function);
+  StrategyListenTcpLinux(U *server, int *client_sock,
+                         std::function<bool(const T &)> function);
+#ifndef SWIG
+  StrategyListenTcpLinux(StrategyListenTcpLinux &&other) = delete;
+  StrategyListenTcpLinux(StrategyListenTcpLinux const &other) = delete;
+  StrategyListenTcpLinux &operator=(StrategyListenTcpLinux &&other) = delete;
+  StrategyListenTcpLinux &operator=(StrategyListenTcpLinux const &other) =
+      delete;
+#endif  // !SWIG
   ~StrategyListenTcpLinux() override = default;
 
   bool Do() override CHK;
 
  private:
-  int &client_sock_;
+  int *client_sock_;
   std::function<bool(const T &)> function_;
 };
 
-}  // namespace llgc::pattern::publisher
+}  // namespace llgc::net
 
 #ifndef TEMPLATE_CLASS
 #include <2lgc/net/strategy_listen_tcp_linux.cc>

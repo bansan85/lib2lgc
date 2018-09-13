@@ -27,7 +27,7 @@
 #include <2lgc/pattern/strategy.h>
 #include <openssl/ossl_typ.h>
 #include <openssl/ssl.h>
-#include <stddef.h>
+#include <cstddef>
 #include <functional>
 #include <iostream>
 #include <memory>
@@ -46,9 +46,43 @@
  * \param[in] cert The certificate file.
  * \param[in] key The key file.
  */
-template <typename T> INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl( llgc::pattern::publisher::PublisherTcpLinux<T> *server, int &client_sock, llgc::net::OpenSsl::Presentation presentation, const std::string &cert, const std::string &key) : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>( server), client_sock_(client_sock), presentation_(presentation), cert_(cert), key_(key) { }
+template <typename T>
+INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl(
+    llgc::pattern::publisher::PublisherTcpLinux<T> *server, int *client_sock,
+    llgc::net::OpenSsl::Presentation presentation, std::string cert,
+    std::string key)
+    : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
+          server),
+      client_sock_(client_sock),
+      presentation_(presentation),
+      cert_(std::move(cert)),
+      key_(std::move(key))
+{
+}
 
-/** \fn llgc::net::StrategyListenOpenSsl::~StrategyListenOpenSsl()
+/** \fn llgc::net::StrategyListenOpenSsl::StrategyListenOpenSsl(StrategyListenOpenSsl&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::net::StrategyListenOpenSsl::StrategyListenOpenSsl(StrategyListenOpenSsl const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn StrategyListenOpenSsl& llgc::net::StrategyListenOpenSsl::operator=(StrategyListenOpenSsl&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn StrategyListenOpenSsl& llgc::net::StrategyListenOpenSsl::operator=(StrategyListenOpenSsl const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn llgc::net::StrategyListenOpenSsl::~StrategyListenOpenSsl()
  * \brief Default destructor.
  */
 
@@ -56,9 +90,10 @@ template <typename T> INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::Strat
  *         from a client.
  * \return true if no problem.
  */
-template <typename T> INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
+template <typename T>
+INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
 {
-  llgc::net::Linux::AutoCloseSocket auto_close_socket(&client_sock_);
+  llgc::net::Linux::AutoCloseSocket auto_close_socket(client_sock_);
 
   const SSL_METHOD *method;
   switch (presentation_)
@@ -94,7 +129,7 @@ template <typename T> INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::
   std::unique_ptr<SSL, std::function<void(SSL *)>> ssl(
       SSL_new(ctx.get()), [](SSL *ptr) { SSL_free(ptr); });
 
-  SSL_set_fd(ssl.get(), client_sock_);
+  SSL_set_fd(ssl.get(), *client_sock_);
   BUGCRIT(std::cout, SSL_accept(ssl.get()) != 1, false,
           "Failed to initialize handshake.\n");
 
@@ -111,7 +146,7 @@ template <typename T> INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::
     }
 
     BUGCRIT(std::cout, read_size > 0, false,
-            "Server OpenSSL client " + std::to_string(client_sock_) +
+            "Server OpenSSL client " + std::to_string(*client_sock_) +
                 " recv failed\n.");
 
     T messages;
@@ -119,7 +154,7 @@ template <typename T> INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::
     BUGLIB(std::cout, messages.ParseFromString(client_string), false,
            "protobuf");
 
-    BUGCONT(std::cout, this->instance_->PreForward(messages, client_sock_),
+    BUGCONT(std::cout, this->instance_->PreForward(messages, *client_sock_),
             false);
   } while (!this->instance_->GetDisposing());
   return true;

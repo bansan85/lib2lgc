@@ -45,6 +45,6 @@ class OpenSsl
 
 #endif  // OPENSSL_FOUND
 
-#endif  // NET_LINUX_H_
+#endif  // NET_OPENSSL_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

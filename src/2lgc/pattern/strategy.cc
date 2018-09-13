@@ -40,6 +40,32 @@ INLINE_TEMPLATE llgc::pattern::Strategy<T>::Strategy(T *instance)
 {
 }
 
+/** \fn llgc::pattern::Strategy::~Strategy()
+ * \brief Virtual destructor because operator*() is virtual.
+ *
+ *
+ * \fn llgc::pattern::Strategy::Strategy(Strategy&& other)
+ * \brief Delete move constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn llgc::pattern::Strategy::Strategy(Strategy const& other)
+ * \brief Delete copy constructor.
+ * \param[in] other Don't care.
+ *
+ *
+ * \fn Strategy& llgc::pattern::Strategy::operator=(Strategy&& other)
+ * \brief Delete move operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ *
+ *
+ * \fn Strategy& llgc::pattern::Strategy::operator=(Strategy const& other)
+ * \brief Delete copy operator.
+ * \param[in] other Don't care.
+ * \return Nothing.
+ */
+
 /** \fn bool llgc::pattern::Strategy::Do()
  * \brief Execute the command. No argument possible. If argument needs, pass it to the children's constructor.
  * \return true if function success.
