@@ -1,0 +1,81 @@
+#!/bin/sh
+#
+#    Copyright 2018 LE GARREC Vincent
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+# To use this pre-commit, run 'git config core.hooksPath util/git/hooks/'
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+ against=HEAD
+else
+ # Initial commit: diff against an empty tree object
+ against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+changed_files_cc=$(git diff-index --cached $against | \
+ grep -E '[MA](\s)+.*\.cc$' | cut -f 2)
+
+changed_files_h=$(git diff-index --cached $against | \
+ grep -E '[MA](\s)+.*\.h$' | cut -f 2)
+
+echo $changed_files_cc
+
+if [ -n "$changed_files_cc" ]; then
+# clang-format
+ for file_cc in $changed_files_cc
+ do
+  md5orig=$(md5sum $file_cc | cut -f 1 -d " ")
+  md5format=$(clang-format $file_cc | md5sum | cut -f 1 -d " ")
+  if [ "$md5orig" != "$md5format" ]; then
+   echo clang-format failed: $file_cc
+   exit 1
+  fi
+ done
+
+# cpplint
+ cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_cc
+ if [ $? -eq 1 ]; then
+  echo cppcheck failed: $changed_files_cc
+  exit 1
+ fi
+
+# cppcheck. From https://github.com/danmar/cppcheck/blob/master/tools/git-pre-commit-cppcheck
+ cppcheck --error-exitcode=1 -I ./src --enable=all --inconclusive --std=c++14 --quiet $changed_files_cc
+ if [ $? -eq 1 ]; then
+  echo cppcheck failed: $changed_files_cc
+  exit 1
+ fi
+
+# IWYU: need files generated with cmake and make
+# include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -I./src -Xiwyu --verbose=3 $changed_files_cc
+# if [ $? -eq 1 ]; then
+#  echo "include-what-you-use failed"
+#  exit 1
+# fi
+
+# clang-tidy: need files generated with cmake and make
+fi
+
+if [ -n "$changed_files_h" ]; then
+# cpplint
+ cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_h
+ if [ $? -eq 1 ]; then
+  echo cpplint.py failed: $changed_files_h
+  exit 1
+ fi
+fi
+
+exit 0
