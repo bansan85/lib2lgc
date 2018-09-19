@@ -27,55 +27,83 @@ fi
 
 changed_files_cc=$(git diff-index --cached $against | \
  grep -E '[MA](\s)+.*\.cc$' | cut -f 2)
-
 changed_files_h=$(git diff-index --cached $against | \
  grep -E '[MA](\s)+.*\.h$' | cut -f 2)
+
+tmp_dir=$(mktemp -d -t llgc.XXXXXXXXXX)
+
+cmake -B$tmp_dir -H.
+make -C $tmp_dir git_pre_commit
 
 echo $changed_files_cc
 
 if [ -n "$changed_files_cc" ]; then
 # clang-format
+ echo -n clang-format check...
  for file_cc in $changed_files_cc
  do
   md5orig=$(md5sum $file_cc | cut -f 1 -d " ")
-  md5format=$(clang-format $file_cc | md5sum | cut -f 1 -d " ")
+  md5format=$(clang-format -style='{BasedOnStyle: google, BreakBeforeBraces: Custom, BraceWrapping: { AfterClass: true, AfterControlStatement: true, AfterEnum : true, AfterFunction : true, AfterNamespace : true, AfterObjCDeclaration: true, AfterStruct : true, AfterUnion : true, BeforeCatch : true, BeforeElse : true, IndentBraces : false }, ReflowComments: false, DerivePointerAlignment: false, PointerAlignment: Right }' $file_cc | md5sum | cut -f 1 -d " ")
   if [ "$md5orig" != "$md5format" ]; then
-   echo clang-format failed: $file_cc
+   echo " failed": $file_cc : $md5orig $md5format
    exit 1
   fi
  done
+ echo " done"
 
 # cpplint
+ echo -n cpplint.py *.cc check...
  cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_cc
  if [ $? -eq 1 ]; then
-  echo cppcheck failed: $changed_files_cc
+  echo " failed": $changed_files_cc
   exit 1
  fi
+ echo " done"
 
 # cppcheck. From https://github.com/danmar/cppcheck/blob/master/tools/git-pre-commit-cppcheck
- cppcheck --error-exitcode=1 -I ./src --enable=all --inconclusive --std=c++14 --quiet $changed_files_cc
+ # -I ./src for library source.
+ # -I $tmp_dir/tests for tests.
+ echo -n cppcheck check...
+ cppcheck --error-exitcode=1 -I ./src -I $tmp_dir/src -I $tmp_dir/tests --enable=warning,style,performance,portability,information --inconclusive --std=c++14 --quiet $changed_files_cc
  if [ $? -eq 1 ]; then
-  echo cppcheck failed: $changed_files_cc
+  echo " failed": $changed_files_cc
   exit 1
  fi
+ echo " done"
 
 # IWYU: need files generated with cmake and make
-# include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -I./src -Xiwyu --verbose=3 $changed_files_cc
-# if [ $? -eq 1 ]; then
-#  echo "include-what-you-use failed"
-#  exit 1
-# fi
+ echo -n include-what-you-use check...
+ result=$(include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -I ./src -I $tmp_dir/src -I $tmp_dir/tests $changed_files_cc -std=gnu++17 2>&1)
+ if [[ $result = *"should remove these lines"* ]]; then
+  echo " failed": $changed_files_cc
+  echo "$result"
+  exit 1
+ fi
+ echo " done"
 
 # clang-tidy: need files generated with cmake and make
 fi
 
 if [ -n "$changed_files_h" ]; then
 # cpplint
+ echo -n cpplint.py *.h check...
  cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_h
  if [ $? -eq 1 ]; then
-  echo cpplint.py failed: $changed_files_h
+  echo " failed": $changed_files_h
   exit 1
  fi
+ echo " done"
 fi
+
+#if [ -n "$changed_files_h" ] || [ -n "$changed_files_cc" ]; then
+# echo -n run-clang-tidy.py check...
+# result=$(echo $changed_files_cc | parallel clang-tidy -header-filter='^'$tmp_dir'/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance' -p=$tmp_dir {} 2>&1)
+# echo III $result
+# if [ $? -eq 1 ]; then
+#  echo " failed": $changed_files_h $changed_files_cc
+#  exit 1
+# fi
+# echo " done"
+#fi
 
 exit 0
