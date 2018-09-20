@@ -32,7 +32,7 @@ changed_files_h=$(git diff-index --cached $against | \
 
 tmp_dir=$(mktemp -d -t llgc.XXXXXXXXXX)
 
-cmake -B$tmp_dir -H.
+cmake -B$tmp_dir -H. -DIWYU=1 -DWALL=1
 make -C $tmp_dir git_pre_commit
 
 echo $changed_files_cc
@@ -82,6 +82,14 @@ if [ -n "$changed_files_cc" ]; then
  echo " done"
 
 # clang-tidy: need files generated with cmake and make
+ echo -n clang-tidy check...
+ result=$(echo $changed_files_cc | parallel clang-tidy -header-filter='^'`pwd`'/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance' -p=$tmp_dir `pwd`/{} 2>&1)
+ if [[ $result = *": warning: "* ]]; then
+  echo " failed": $changed_files_cc
+  echo "$result"
+  exit 1
+ fi
+ echo " done"
 fi
 
 if [ -n "$changed_files_h" ]; then
@@ -94,16 +102,5 @@ if [ -n "$changed_files_h" ]; then
  fi
  echo " done"
 fi
-
-#if [ -n "$changed_files_h" ] || [ -n "$changed_files_cc" ]; then
-# echo -n run-clang-tidy.py check...
-# result=$(echo $changed_files_cc | parallel clang-tidy -header-filter='^'$tmp_dir'/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance' -p=$tmp_dir {} 2>&1)
-# echo III $result
-# if [ $? -eq 1 ]; then
-#  echo " failed": $changed_files_h $changed_files_cc
-#  exit 1
-# fi
-# echo " done"
-#fi
 
 exit 0
