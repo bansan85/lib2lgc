@@ -11,6 +11,7 @@ set(2LGC_HEADERS
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/math/hash.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/linux.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/openssl.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_connect_open_ssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_tcp_linux.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_open_ssl.h
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/abstract_factory.h
@@ -76,6 +77,7 @@ set(2LGC_SOURCES
 
 set(2LGC_TEMPLATE_SOURCE
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/abstract_factory.cc
+  ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_connect_open_ssl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_tcp_linux.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/net/strategy_listen_open_ssl.cc
   ${CMAKE_CURRENT_SOURCE_DIR}/2lgc/pattern/publisher/connector_direct.cc

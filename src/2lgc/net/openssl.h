@@ -22,6 +22,9 @@
 
 #ifdef OPENSSL_FOUND
 
+#include <openssl/ssl.h>
+#include <functional>
+#include <memory>
 #include <mutex>
 
 namespace llgc::net
@@ -34,11 +37,22 @@ class OpenSsl
     NONE,
     TSL1_2
   };
-  static bool Init() CHK;
+  static void Init();
+  static void InitErr();
+  static bool InitCtxSslClient(Presentation presentation,
+                               std::shared_ptr<SSL_CTX> *ctx,
+                               std::shared_ptr<SSL> *ssl) CHK;
+  static bool InitCtxSslServer(Presentation presentation,
+                               std::shared_ptr<SSL_CTX> *ctx,
+                               std::shared_ptr<SSL> *ssl) CHK;
 
  private:
+  static bool InitCtxSsl(bool client, Presentation presentation,
+                         std::shared_ptr<SSL_CTX> *ctx,
+                         std::shared_ptr<SSL> *ssl) CHK;
   static std::mutex mutex_;
   static bool init_done;
+  static bool init_err_done;
 };
 
 }  // namespace llgc::net

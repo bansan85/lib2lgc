@@ -63,9 +63,6 @@ class ConnectorPublisherTcpIpv4 : public ConnectorPublisherTcp<T>
 #endif  // !SWIG
 
  private:
-  std::unique_ptr<llgc::net::StrategyListenTcpLinux<
-      T, llgc::pattern::publisher::ConnectorPublisherTcpIpv4<T>>>
-      strategy_;
   bool Connect() override CHK;
 };
 

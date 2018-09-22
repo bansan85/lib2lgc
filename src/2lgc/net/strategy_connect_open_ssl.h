@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef NET_STRATEGY_LISTEN_OPEN_SSL_H_
-#define NET_STRATEGY_LISTEN_OPEN_SSL_H_
+#ifndef NET_STRATEGY_CONNECT_OPEN_SSL_H_
+#define NET_STRATEGY_CONNECT_OPEN_SSL_H_
 
 // TEMPLATE_CLASS needs it.
 #include <2lgc/compat.h>
@@ -40,34 +40,32 @@ class PublisherTcpLinux;
 namespace llgc::net
 {
 template <typename T>
-class StrategyListenOpenSsl
+class StrategyConnectOpenSsl
     : public llgc::pattern::Strategy<
-          llgc::pattern::publisher::PublisherTcpLinux<T>>
+          llgc::pattern::publisher::ConnectorPublisherTcp<T>>
 {
   static_assert(std::is_base_of<::google::protobuf::Message, T>::value,
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  StrategyListenOpenSsl(llgc::pattern::publisher::PublisherTcpLinux<T> *server,
-                        int *client_sock,
-                        llgc::net::OpenSsl::Presentation presentation,
-                        std::string cert, std::string key,
-                        std::weak_ptr<SSL_CTX> ctx, std::weak_ptr<SSL> ssl);
+  StrategyConnectOpenSsl(
+      llgc::pattern::publisher::ConnectorPublisherTcp<T> *server,
+      int *client_sock, llgc::net::OpenSsl::Presentation presentation,
+      std::weak_ptr<SSL_CTX> ctx, std::weak_ptr<SSL> ssl);
 #ifndef SWIG
-  StrategyListenOpenSsl(StrategyListenOpenSsl &&other) = delete;
-  StrategyListenOpenSsl(StrategyListenOpenSsl const &other) = delete;
-  StrategyListenOpenSsl &operator=(StrategyListenOpenSsl &&other) = delete;
-  StrategyListenOpenSsl &operator=(StrategyListenOpenSsl const &other) = delete;
+  StrategyConnectOpenSsl(StrategyConnectOpenSsl &&other) = delete;
+  StrategyConnectOpenSsl(StrategyConnectOpenSsl const &other) = delete;
+  StrategyConnectOpenSsl &operator=(StrategyConnectOpenSsl &&other) = delete;
+  StrategyConnectOpenSsl &operator=(StrategyConnectOpenSsl const &other) =
+      delete;
 #endif  // !SWIG
-  ~StrategyListenOpenSsl() override = default;
+  ~StrategyConnectOpenSsl() override = default;
 
   bool Do() override CHK;
 
  private:
   int *client_sock_;
   llgc::net::OpenSsl::Presentation presentation_;
-  const std::string cert_;
-  const std::string key_;
   std::weak_ptr<SSL_CTX> ctx_;
   std::weak_ptr<SSL> ssl_;
 };
@@ -75,9 +73,9 @@ class StrategyListenOpenSsl
 }  // namespace llgc::net
 
 #ifndef TEMPLATE_CLASS
-#include <2lgc/net/strategy_listen_open_ssl.cc>
+#include <2lgc/net/strategy_connect_open_ssl.cc>
 #endif
 
-#endif  // NET_STRATEGY_LISTEN_OPEN_SSL_H_
+#endif  // NET_STRATEGY_CONNECT_OPEN_SSL_H_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

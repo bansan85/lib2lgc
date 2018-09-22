@@ -60,22 +60,26 @@ class ConnectorPublisherTcp : public ConnectorInterface<T>
   bool AddSubscriber(uint32_t id_message) override CHK;
   bool RemoveSubscriber(uint32_t id_message) override CHK;
   bool GetDisposing() const;
-
- protected:
-  std::thread receiver_;
-  int socket_;
-  llgc::net::OpenSsl::Presentation presentation_ =
-      llgc::net::OpenSsl::Presentation::NONE;
-  std::string cert_;
-  std::string key_;
-
-  virtual bool Connect() CHK = 0;
-  const std::string &GetIp() const { return ip_; }
-  uint16_t GetPort() const { return port_; }
 #ifdef OPENSSL_FOUND
   void SetEncryption(llgc::net::OpenSsl::Presentation presentation,
                      const std::string &cert, const std::string &key);
 #endif
+
+ protected:
+  std::thread receiver_;
+  int socket_;
+#ifdef OPENSSL_FOUND
+  llgc::net::OpenSsl::Presentation presentation_ =
+      llgc::net::OpenSsl::Presentation::NONE;
+  std::string cert_;
+  std::string key_;
+  std::shared_ptr<SSL_CTX> ctx_;
+  std::shared_ptr<SSL> ssl_;
+#endif
+
+  virtual bool Connect() CHK = 0;
+  const std::string &GetIp() const { return ip_; }
+  uint16_t GetPort() const { return port_; }
 
  private:
   const std::string ip_;

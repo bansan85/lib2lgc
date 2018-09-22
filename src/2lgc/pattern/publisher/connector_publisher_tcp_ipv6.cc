@@ -18,15 +18,25 @@
 #define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_IPV6_CC_
 
 #include <2lgc/compat.h>
+#include <2lgc/config.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
+#include <2lgc/net/openssl.h>
+// std::make_unique needs it.
+#include <2lgc/net/strategy_connect_open_ssl.h>  // IWYU pragma: keep
+// std::make_unique needs it.
+#include <2lgc/net/strategy_listen_tcp_linux.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/connector_publisher_tcp.h>
-#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.h>
+// IWYU wants to remove it. But without you can't define method.
+#include <2lgc/pattern/publisher/connector_publisher_tcp_ipv6.h>  // IWYU pragma: keep
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <cerrno>
+#include <cstdint>
 #include <iostream>
+#include <memory>
+#include <string>
 #include <thread>
 #include <utility>
 
@@ -34,9 +44,6 @@ namespace llgc::pattern::publisher
 {
 template <typename T>
 class SubscriberInterface;
-
-template <typename T, typename U>
-class StrategyPublisherTcpLinuxTcp;
 }  // namespace llgc::pattern::publisher
 
 /** \class llgc::pattern::publisher::ConnectorPublisherTcpIpv6
@@ -124,24 +131,32 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
   auto_close_socket.DontDeleteSocket();
 
 #ifdef OPENSSL_FOUND
-/*
-  if (this->presentation_ != Presentation::NONE)
+  if (this->presentation_ != llgc::net::OpenSsl::Presentation::NONE)
   {
-    this->strategy_ = std::make_unique<StrategyPublisherTcpLinuxOpenSsl<T>>(this, this->socket_, this->presentation_, this->cert_, this->key_);
+    BUGCONT(std::cout,
+            llgc::net::OpenSsl::InitCtxSslClient(this->presentation_,
+                                                 &this->ctx_, &this->ssl_),
+            false);
+    std::thread t([this] {
+      auto strategy = std::make_unique<llgc::net::StrategyConnectOpenSsl<T>>(
+          this, &this->socket_, this->presentation_, this->ctx_, this->ssl_);
+      return strategy->Do();
+    });
+    this->receiver_ = std::move(t);
   }
   else
-  */
 #endif  // OPENSSL_FOUND
   {
-    this->strategy_ = std::make_unique<llgc::net::StrategyListenTcpLinux<
-        T, llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>>>(
-        this, &this->socket_, [this](const T &messages) -> bool {
-          return this->subscriber_->Listen(messages);
-        });
+    std::thread t([this] {
+      auto strategy = std::make_unique<llgc::net::StrategyListenTcpLinux<
+          T, llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>>>(
+          this, &this->socket_, [this](const T &messages) -> bool {
+            return this->subscriber_->Listen(messages);
+          });
+      return strategy->Do();
+    });
+    this->receiver_ = std::move(t);
   }
-
-  std::thread t([this] { return this->strategy_->Do(); });
-  this->receiver_ = std::move(t);
 
   return true;
 }

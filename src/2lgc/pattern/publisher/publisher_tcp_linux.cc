@@ -22,25 +22,24 @@
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/net/openssl.h>
-#include <2lgc/net/strategy_listen_open_ssl.h>
-#include <2lgc/net/strategy_listen_tcp_linux.h>
+// std::make_unique needs it.
+#include <2lgc/net/strategy_listen_open_ssl.h>  // IWYU pragma: keep
+// std::make_unique needs it.
+#include <2lgc/net/strategy_listen_tcp_linux.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_tcp.h>
-#include <2lgc/pattern/publisher/publisher_tcp_linux.h>
+// IWYU wants to remove it. But without you can't define method.
+#include <2lgc/pattern/publisher/publisher_tcp_linux.h>  // IWYU pragma: keep
 #include <sys/select.h>
 #include <sys/socket.h>
 #include <sys/time.h>
 #include <cerrno>
+#include <cstdint>
 #include <iostream>
 #include <memory>
 #include <string>
 #include <thread>
 #include <type_traits>
 #include <utility>
-
-#ifdef OPENSSL_FOUND
-#include <2lgc/net/strategy_listen_open_ssl.h>
-#include <2lgc/net/strategy_listen_tcp_linux.h>
-#endif
 
 namespace llgc::pattern::publisher
 {
@@ -96,9 +95,10 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
     do
     {
       FD_ZERO(&rfds);  // NOLINT(hicpp-no-assembler)
+      // NOLINTNEXTLINE(hicpp-signed-bitwise, cppcoreguidelines-pro-bounds-constant-array-index, cppcoreguidelines-pro-type-member-init)
       FD_SET(sockfd_, &rfds);
-      // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
-      struct timeval tv;  // NOLINT(hicpp-member-init)
+      // NOLINTNEXTLINE(hicpp-member-init, cppcoreguidelines-pro-type-member-init)
+      struct timeval tv;
       tv.tv_sec = 0L;
       tv.tv_usec = 50000L;
 
@@ -107,15 +107,20 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       });
       if (iResult > 0)
       {
+        std::cout << "Avant accept4" << std::endl;
         client_sock = llgc::net::Linux::RepeteOnEintr(
             [=] { return accept4(sockfd_, nullptr, nullptr, SOCK_CLOEXEC); });
+        std::cout << "Après accept4" << std::endl;
         if (client_sock > 0)
         {
 #ifdef OPENSSL_FOUND
           if (presentation_ != llgc::net::OpenSsl::Presentation::NONE)
           {
+            BUGCONT(std::cout,
+                    llgc::net::OpenSsl::InitCtxSslServer(presentation_, &ctx_,
+                                                         &ssl_), );
             receiver_ = std::make_unique<llgc::net::StrategyListenOpenSsl<T>>(
-                this, &client_sock, presentation_, cert_, key_);
+                this, &client_sock, presentation_, cert_, key_, ctx_, ssl_);
           }
           else
 #endif  // OPENSSL_FOUND

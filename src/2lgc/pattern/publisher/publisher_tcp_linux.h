@@ -61,6 +61,8 @@ class PublisherTcpLinux : public PublisherTcp<T>
       llgc::net::OpenSsl::Presentation::NONE;
   std::string cert_;
   std::string key_;
+  std::shared_ptr<SSL_CTX> ctx_;
+  std::shared_ptr<SSL> ssl_;
 #endif
 };
 

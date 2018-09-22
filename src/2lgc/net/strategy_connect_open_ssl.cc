@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_
-#define NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_
+#ifndef NET_STRATEGY_CONNECT_OPEN_SSL_CC_
+#define NET_STRATEGY_CONNECT_OPEN_SSL_CC_
 
 #include <2lgc/compat.h>
 // TEMPLATE_CLASS needs it.
@@ -24,7 +24,7 @@
 #include <2lgc/net/linux.h>
 #include <2lgc/net/openssl.h>
 // IWYU wants to remove it. But without you can't define method.
-#include <2lgc/net/strategy_listen_open_ssl.h>  // IWYU pragma: keep
+#include <2lgc/net/strategy_connect_open_ssl.h>  // IWYU pragma: keep
 #include <2lgc/pattern/strategy.h>
 #include <openssl/err.h>
 #include <openssl/ossl_typ.h>
@@ -38,10 +38,10 @@
 namespace llgc::pattern::publisher
 {
 template <typename T>
-class PublisherTcpLinux;
+class ConnectorPublisherTcp;
 }
 
-/** \class llgc::net::StrategyListenOpenSsl
+/** \class llgc::net::StrategyConnectOpenSsl
  * \brief Strategy for server to receive data from TCP with OpenSSL encryption.
  * \tparam T Message from protobuf.
  */
@@ -51,48 +51,44 @@ class PublisherTcpLinux;
  * \param[in] client_sock Socket client to communicate by TCP with OpenSSL
  *            encryption.
  * \param[in] presentation The encryption method.
- * \param[in] cert The certificate file.
- * \param[in] key The key file.
  */
 template <typename T>
-INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl(
-    llgc::pattern::publisher::PublisherTcpLinux<T> *server, int *client_sock,
-    llgc::net::OpenSsl::Presentation presentation, std::string cert,
-    std::string key, std::weak_ptr<SSL_CTX> ctx, std::weak_ptr<SSL> ssl)
-    : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
-          server),
+INLINE_TEMPLATE llgc::net::StrategyConnectOpenSsl<T>::StrategyConnectOpenSsl(
+    llgc::pattern::publisher::ConnectorPublisherTcp<T> *server,
+    int *client_sock, llgc::net::OpenSsl::Presentation presentation,
+    std::weak_ptr<SSL_CTX> ctx, std::weak_ptr<SSL> ssl)
+    : llgc::pattern::Strategy<
+          llgc::pattern::publisher::ConnectorPublisherTcp<T>>(server),
       client_sock_(client_sock),
       presentation_(presentation),
-      cert_(std::move(cert)),
-      key_(std::move(key)),
       ctx_(std::move(ctx)),
       ssl_(std::move(ssl))
 {
 }
 
-/** \fn llgc::net::StrategyListenOpenSsl::StrategyListenOpenSsl(StrategyListenOpenSsl&& other)
+/** \fn llgc::net::StrategyConnectOpenSsl::StrategyConnectOpenSsl(StrategyConnectOpenSsl&& other)
  * \brief Delete move constructor.
  * \param[in] other Don't care.
  *
  *
- * \fn llgc::net::StrategyListenOpenSsl::StrategyListenOpenSsl(StrategyListenOpenSsl const& other)
+ * \fn llgc::net::StrategyConnectOpenSsl::StrategyConnectOpenSsl(StrategyConnectOpenSsl const& other)
  * \brief Delete copy constructor.
  * \param[in] other Don't care.
  *
  *
- * \fn StrategyListenOpenSsl& llgc::net::StrategyListenOpenSsl::operator=(StrategyListenOpenSsl&& other)
+ * \fn StrategyConnectOpenSsl& llgc::net::StrategyConnectOpenSsl::operator=(StrategyConnectOpenSsl&& other)
  * \brief Delete move operator.
  * \param[in] other Don't care.
  * \return Nothing.
  *
  *
- * \fn StrategyListenOpenSsl& llgc::net::StrategyListenOpenSsl::operator=(StrategyListenOpenSsl const& other)
+ * \fn StrategyConnectOpenSsl& llgc::net::StrategyConnectOpenSsl::operator=(StrategyConnectOpenSsl const& other)
  * \brief Delete copy operator.
  * \param[in] other Don't care.
  * \return Nothing.
  *
  *
- * \fn llgc::net::StrategyListenOpenSsl::~StrategyListenOpenSsl()
+ * \fn llgc::net::StrategyConnectOpenSsl::~StrategyConnectOpenSsl()
  * \brief Default destructor.
  */
 
@@ -101,47 +97,26 @@ INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl(
  * \return true if no problem.
  */
 template <typename T>
-INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
+INLINE_TEMPLATE bool llgc::net::StrategyConnectOpenSsl<T>::Do()
 {
   llgc::net::OpenSsl::Init();
 
   llgc::net::Linux::AutoCloseSocket auto_close_socket(client_sock_);
-
-  if (auto ctx = ctx_.lock())
-  {
-    BUGLIB(std::cout,
-           SSL_CTX_use_certificate_file(ctx.get(), cert_.c_str(),
-                                        SSL_FILETYPE_PEM) == 1,
-           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-           "OpenSSL");
-    BUGLIB(std::cout,
-           SSL_CTX_use_PrivateKey_file(ctx.get(), key_.c_str(),
-                                       SSL_FILETYPE_PEM) == 1,
-           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-           "OpenSSL");
-    BUGUSER(std::cout, SSL_CTX_check_private_key(ctx.get()) == 1,
-            (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-            "Private key does not match the public certificate.\n");
-  }
-  else
-  {
-    BUGCRIT(std::cout, false, false, "Failed to lock ctx.");
-  }
 
   if (auto ssl = ssl_.lock())
   {
     BUGLIB(std::cout, SSL_set_fd(ssl.get(), *client_sock_) == 1,
            (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
            "OpenSSL");
-    BUGCRIT(std::cout, SSL_accept(ssl.get()) == 1,
+    BUGCRIT(std::cout, SSL_connect(ssl.get()) == 1,
             (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-            "Failed to initialize handshake.\n");
+            "Failed to initialize connection.\n");
 
     do
     {
       char client_message[1500];
 
-      std::cout << "Server wait." << std::endl;
+      std::cout << "Client wait." << std::endl;
 
       int read_size =
           SSL_read(ssl.get(), client_message, sizeof(client_message));
@@ -152,7 +127,7 @@ INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
         continue;
       }
 
-      std::cout << "Server received." << std::endl;
+      std::cout << "Client received." << std::endl;
 
       BUGLIB(
           std::cout, read_size > 0,
@@ -164,7 +139,7 @@ INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
       BUGLIB(std::cout, messages.ParseFromString(client_string), false,
              "protobuf");
 
-      BUGCONT(std::cout, this->instance_->PreForward(messages, *client_sock_),
+      BUGCONT(std::cout, this->instance_->GetSubscriber()->Listen(messages),
               false);
     } while (!this->instance_->GetDisposing());
   }
@@ -175,22 +150,14 @@ INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
   return true;
 }
 
-/** \var llgc::net::StrategyListenOpenSsl::client_sock_
+/** \var llgc::net::StrategyConnectOpenSsl::client_sock_
  * \brief Value of the socket. Turn back to -1 when Do() finishes.
  *
  *
- * \var llgc::net::StrategyListenOpenSsl::presentation_
+ * \var llgc::net::StrategyConnectOpenSsl::presentation_
  * \brief Type of encryption.
- *
- *
- * \var llgc::net::StrategyListenOpenSsl::cert_
- * \brief Certification file if OpenSSL is used.
- *
- *
- * \var llgc::net::StrategyListenOpenSsl::key_
- * \brief Key file if OpenSSL is used.
  */
 
-#endif  // NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_
+#endif  // NET_STRATEGY_CONNECT_OPEN_SSL_CC_
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

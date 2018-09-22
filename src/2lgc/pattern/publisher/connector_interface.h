@@ -68,6 +68,7 @@ class ConnectorInterface
   {
     return subscriber_.get();
   }
+  SubscriberInterface<T> *GetSubscriber() { return subscriber_.get(); }
 
  protected:
   std::shared_ptr<SubscriberInterface<T>> subscriber_;

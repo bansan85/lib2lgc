@@ -3,6 +3,14 @@ enable_testing()
 # for net.proto
 set(Protobuf_IMPORT_DIRS ${Protobuf_IMPORT_DIRS} ${PROJECT_SOURCE_DIR}/src/2lgc/poco)
 
+add_custom_target(git_pre_commit_tests_proto
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE} --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory -I ${PROJECT_SOURCE_DIR}/src/2lgc/poco ${CMAKE_CURRENT_SOURCE_DIR}/pattern/abstract_factory/abstract_factory.proto
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE} --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher -I ${PROJECT_SOURCE_DIR}/src/2lgc/poco ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/direct.proto
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE} --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher -I ${PROJECT_SOURCE_DIR}/src/2lgc/poco ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/tcp.proto
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE} --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher -I ${PROJECT_SOURCE_DIR}/src/2lgc/poco ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/rpc.proto
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE} --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}/utils/undomanager -I ${PROJECT_SOURCE_DIR}/src/2lgc/poco ${CMAKE_CURRENT_SOURCE_DIR}/utils/undomanager/undo_command1.proto
+  DEPENDS git_pre_commit_lib_proto)
+
 # add_custom_command need a local TARGET
 add_custom_target(check_all_tests)
 
@@ -47,12 +55,12 @@ set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC}
 add_executable(publisher_tcp_ipv6 EXCLUDE_FROM_ALL
   ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_ipv6.cc
   ${PUBLISHER_TCP_PROTO_SRC})
-#set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC}
-#  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_openssl_ipv4.cc
-#  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
-#add_executable(publisher_tcp_openssl_ipv4 EXCLUDE_FROM_ALL
-#  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_openssl_ipv4.cc
-#  ${PUBLISHER_TCP_PROTO_SRC})
+set_source_files_properties(${PUBLISHER_TCP_PROTO_SRC}
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_openssl_ipv4.cc
+  PROPERTIES COMPILE_FLAGS "${PROTOBUF_CXX_FLAGS}")
+add_executable(publisher_tcp_openssl_ipv4 EXCLUDE_FROM_ALL
+  ${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/publisher_tcp_openssl_ipv4.cc
+  ${PUBLISHER_TCP_PROTO_SRC})
 
 if (GRPC_LIBRARY)
   protobuf_generate_cpp(PUBLISHER_RPC_PROTO_SRC PUBLISHER_RPC_PROTO_HEADERS
@@ -113,8 +121,8 @@ target_include_directories(publisher_direct PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(publisher_direct ${ALL_LIBS})
 target_include_directories(publisher_tcp_ipv4 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
 target_link_libraries(publisher_tcp_ipv4 ${ALL_LIBS})
-#target_include_directories(publisher_tcp_openssl_ipv4 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
-#target_link_libraries(publisher_tcp_openssl_ipv4 ${ALL_LIBS})
+target_include_directories(publisher_tcp_openssl_ipv4 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
+target_link_libraries(publisher_tcp_openssl_ipv4 ${ALL_LIBS})
 target_include_directories(publisher_tcp_ipv6 PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_BINARY_DIR}/../src/2lgc/poco)
 target_link_libraries(publisher_tcp_ipv6 ${ALL_LIBS})
 
@@ -143,7 +151,7 @@ add_test(visitor1 visitor1)
 add_test(abstract_factory1 abstract_factory1)
 add_test(publisher_direct publisher_direct)
 add_test(publisher_tcp_ipv4 publisher_tcp_ipv4)
-#add_test(publisher_tcp_openssl_ipv4 publisher_tcp_openssl_ipv4 "${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/cert.pem" "${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/key.pem")
+add_test(publisher_tcp_openssl_ipv4 publisher_tcp_openssl_ipv4 "${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/cert.pem" "${CMAKE_CURRENT_SOURCE_DIR}/pattern/publisher/key.pem")
 add_test(publisher_tcp_ipv6 publisher_tcp_ipv6)
 if (GRPC_LIBRARY)
   add_test(publisher_grpc publisher_grpc)
@@ -171,7 +179,7 @@ if (IWYU)
     abstract_factory1
     publisher_direct
     publisher_tcp_ipv4
-    #    publisher_tcp_openssl_ipv4
+    publisher_tcp_openssl_ipv4
     publisher_tcp_ipv6
     strategy1
     poco_number
@@ -199,7 +207,7 @@ add_dependencies(check_all_tests
   abstract_factory1
   publisher_direct
   publisher_tcp_ipv4
-  #  publisher_tcp_openssl_ipv4
+  publisher_tcp_openssl_ipv4
   publisher_tcp_ipv6
   poco_number
   strategy1

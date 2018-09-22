@@ -35,9 +35,21 @@ tmp_dir=$(mktemp -d -t llgc.XXXXXXXXXX)
 cmake -B$tmp_dir -H. -DIWYU=1 -DWALL=1
 make -C $tmp_dir git_pre_commit
 
-echo $changed_files_cc
+if [ -n "$changed_files_h" ]
+then
+# cpplint
+ echo -n cpplint.py *.h check...
+ cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_h
+ if [ $? -eq 1 ]
+ then
+  echo " failed": $changed_files_h
+  exit 1
+ fi
+ echo " done"
+fi
 
-if [ -n "$changed_files_cc" ]; then
+if [ -n "$changed_files_cc" ]
+then
 # clang-format
  echo -n clang-format check...
  for file_cc in $changed_files_cc
@@ -54,7 +66,8 @@ if [ -n "$changed_files_cc" ]; then
 # cpplint
  echo -n cpplint.py *.cc check...
  cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_cc
- if [ $? -eq 1 ]; then
+ if [ $? -eq 1 ]
+ then
   echo " failed": $changed_files_cc
   exit 1
  fi
@@ -64,8 +77,9 @@ if [ -n "$changed_files_cc" ]; then
  # -I ./src for library source.
  # -I $tmp_dir/tests for tests.
  echo -n cppcheck check...
- cppcheck --error-exitcode=1 -I ./src -I $tmp_dir/src -I $tmp_dir/tests --enable=warning,style,performance,portability,information --inconclusive --std=c++14 --quiet $changed_files_cc
- if [ $? -eq 1 ]; then
+ cppcheck -v --error-exitcode=1 -I ./src -I $tmp_dir/src -I $tmp_dir/tests --enable=warning,style,portability,information,performance --inconclusive --std=c++14 --quiet -DGOOGLE_PROTOBUF_VERSION=9999999 --suppress=passedByValue $changed_files_cc
+ if [ $? -eq 1 ]
+ then
   echo " failed": $changed_files_cc
   exit 1
  fi
@@ -73,31 +87,36 @@ if [ -n "$changed_files_cc" ]; then
 
 # IWYU: need files generated with cmake and make
  echo -n include-what-you-use check...
- result=$(include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -I ./src -I $tmp_dir/src -I $tmp_dir/tests $changed_files_cc -std=gnu++17 2>&1)
- if [[ $result = *"should remove these lines"* ]]; then
+ echo parallel include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -I ./src -I $tmp_dir/src -I $tmp_dir/tests `pwd`/{} -std=gnu++17
+ result=$(echo "$changed_files_cc" | parallel include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -isystem ./src -isystem $tmp_dir/src -isystem $tmp_dir/src/2lgc/poco -isystem $tmp_dir/tests `pwd`/{} -std=gnu++17 2>&1)
+ if [[ $result = *"should remove these lines"* ]]
+ then
   echo " failed": $changed_files_cc
   echo "$result"
   exit 1
  fi
  echo " done"
+ echo "LOG : $result"
+
+ echo -n include-what-you-use -DTEMPLATE_CLASS=1 check...
+ echo parallel include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -I ./src -I $tmp_dir/src -I $tmp_dir/tests `pwd`/{} -std=gnu++17
+ result=$(echo "$changed_files_cc" | parallel include-what-you-use -Xiwyu --mapping_file=./util/iwyu/mapping.imp -isystem ./src -isystem $tmp_dir/src -isystem $tmp_dir/src/2lgc/poco -isystem $tmp_dir/tests -DTEMPLATE_CLASS=1 `pwd`/{} -std=gnu++17 2>&1)
+ if [[ $result = *"should remove these lines"* ]]
+ then
+  echo " failed": $changed_files_cc
+  echo "$result"
+  exit 1
+ fi
+ echo " done"
+ echo "LOG : $result"
 
 # clang-tidy: need files generated with cmake and make
  echo -n clang-tidy check...
- result=$(echo $changed_files_cc | parallel clang-tidy -header-filter='^'`pwd`'/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance' -p=$tmp_dir `pwd`/{} 2>&1)
- if [[ $result = *": warning: "* ]]; then
+ result=$(echo "$changed_files_cc" | parallel clang-tidy -header-filter='^'`pwd`'/.*' -checks='*,-llvm-include-order,-llvm-header-guard,-fuchsia-default-arguments,-clang-diagnostic-covered-switch-default,-cppcoreguidelines-pro-bounds-array-to-pointer-decay,-hicpp-no-array-decay,-clang-diagnostic-c++98-c++11-c++14-compat,-fuchsia-overloaded-operator,-google-readability-namespace-comments,-llvm-namespace-comment,-cppcoreguidelines-pro-bounds-pointer-arithmetic,-fuchsia-virtual-inheritance' -p=$tmp_dir `pwd`/{} 2>&1)
+ if [[ $result = *": warning: "* ]]
+ then
   echo " failed": $changed_files_cc
   echo "$result"
-  exit 1
- fi
- echo " done"
-fi
-
-if [ -n "$changed_files_h" ]; then
-# cpplint
- echo -n cpplint.py *.h check...
- cpplint.py --root=src/2lgc --filter=-runtime/printf,-readability/braces,-whitespace/braces,-build/include_what_you_use,-whitespace/newline,-build/c++11,-build/include_order,-readability/nolint,-whitespace/line_length,-build/include,-build/include,-whitespace/parens,-runtime/casting $changed_files_h
- if [ $? -eq 1 ]; then
-  echo " failed": $changed_files_h
   exit 1
  fi
  echo " done"

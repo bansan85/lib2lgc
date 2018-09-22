@@ -32,7 +32,7 @@
 #include "tcp.pb.h"
 
 #ifdef TEMPLATE_CLASS
-#include <2lgc/config.h>
+#include <2lgc/net/strategy_connect_open_ssl.h>
 #include <2lgc/net/strategy_listen_open_ssl.h>
 #include <2lgc/net/strategy_listen_tcp_linux.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
@@ -45,6 +45,7 @@
 #include <2lgc/pattern/publisher/subscriber_server_tcp.h>
 #include <2lgc/pattern/strategy.h>
 
+#include <2lgc/net/strategy_connect_open_ssl.cc>
 #include <2lgc/net/strategy_listen_open_ssl.cc>
 #include <2lgc/net/strategy_listen_tcp_linux.cc>
 #include <2lgc/pattern/publisher/connector_interface.cc>
@@ -85,7 +86,22 @@ template class llgc::pattern::publisher::PublisherTcpLinux<
     llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::PublisherTcpLinuxIpv4<
     llgc::protobuf::test::Tcp>;
-
+template class llgc::pattern::Strategy<
+    llgc::pattern::publisher::ConnectorPublisherTcp<llgc::protobuf::test::Tcp>>;
+template class llgc::pattern::Strategy<
+    llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
+        llgc::protobuf::test::Tcp>>;
+template class llgc::pattern::Strategy<
+    llgc::pattern::publisher::PublisherTcpLinux<llgc::protobuf::test::Tcp>>;
+template class llgc::net::StrategyConnectOpenSsl<llgc::protobuf::test::Tcp>;
+template class llgc::net::StrategyListenTcpLinux<
+    llgc::protobuf::test::Tcp,
+    llgc::pattern::publisher::PublisherTcpLinux<llgc::protobuf::test::Tcp>>;
+template class llgc::net::StrategyListenTcpLinux<
+    llgc::protobuf::test::Tcp,
+    llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
+        llgc::protobuf::test::Tcp>>;
+template class llgc::net::StrategyListenOpenSsl<llgc::protobuf::test::Tcp>;
 template class llgc::pattern::publisher::SubscriberLocal<
     llgc::protobuf::test::Tcp>;
 #endif

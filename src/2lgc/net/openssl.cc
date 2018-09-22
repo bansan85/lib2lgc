@@ -18,8 +18,15 @@
 
 #ifdef OPENSSL_FOUND
 
+#include <2lgc/error/show.h>
 #include <2lgc/net/openssl.h>
+#include <openssl/err.h>
+#include <openssl/evp.h>
+#include <openssl/ossl_typ.h>
 #include <openssl/ssl.h>
+#include <cstdio>
+#include <iostream>
+#include <memory>
 #include <mutex>
 
 /** \class llgc::net::OpenSsl
@@ -29,15 +36,89 @@
 /** \brief Run init global function.
  * \return `false` if something wrong.
  */
-bool llgc::net::OpenSsl::Init()
+void llgc::net::OpenSsl::Init()
 {
-  bool retval = true;
   mutex_.lock();
-  retval = retval && (SSL_library_init() == 1);
-  OpenSSL_add_all_algorithms();
-  init_done = true;
+  if (!init_done)
+  {
+    SSL_library_init();
+    OpenSSL_add_all_algorithms();
+    init_done = true;
+  }
   mutex_.unlock();
-  return retval;
+}
+
+void llgc::net::OpenSsl::InitErr()
+{
+  mutex_.lock();
+  if (!init_err_done)
+  {
+    SSL_load_error_strings();
+    init_err_done = true;
+  }
+  mutex_.unlock();
+}
+bool llgc::net::OpenSsl::InitCtxSslClient(Presentation presentation,
+                                          std::shared_ptr<SSL_CTX> *ctx,
+                                          std::shared_ptr<SSL> *ssl)
+{
+  BUGCONT(std::cout, InitCtxSsl(true, presentation, ctx, ssl), false);
+
+  return true;
+}
+
+bool llgc::net::OpenSsl::InitCtxSslServer(Presentation presentation,
+                                          std::shared_ptr<SSL_CTX> *ctx,
+                                          std::shared_ptr<SSL> *ssl)
+{
+  BUGCONT(std::cout, InitCtxSsl(false, presentation, ctx, ssl), false);
+
+  return true;
+}
+
+bool llgc::net::OpenSsl::InitCtxSsl(bool client, Presentation presentation,
+                                    std::shared_ptr<SSL_CTX> *ctx,
+                                    std::shared_ptr<SSL> *ssl)
+{
+  Init();
+
+  const SSL_METHOD *method;
+  switch (presentation)
+  {
+    case llgc::net::OpenSsl::Presentation::TSL1_2:
+    {
+      if (client)
+      {
+        method = TLSv1_2_client_method();
+      }
+      else
+      {
+        method = TLSv1_2_server_method();
+      }
+      break;
+    }
+    case llgc::net::OpenSsl::Presentation::NONE:
+    default:
+    {
+      BUGPROG(std::cout, false, false, "Invalid value in switch.");
+    }
+  }
+
+  *ctx = std::shared_ptr<SSL_CTX>(SSL_CTX_new(method),
+                                  [](SSL_CTX *ptr) { SSL_CTX_free(ptr); });
+
+  BUGLIB(std::cout, *ctx != nullptr,
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  *ssl = std::shared_ptr<SSL>(SSL_new(ctx->get()),
+                              [](SSL *ptr) { SSL_free(ptr); });
+
+  BUGLIB(std::cout, *ssl != nullptr,
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  return true;
 }
 
 /// \brief Every function is thread-safe so we need a lock.
@@ -46,6 +127,7 @@ std::mutex llgc::net::OpenSsl::mutex_;
 /// \brief true if ssl library is init.
 bool llgc::net::OpenSsl::init_done = false;
 
+bool llgc::net::OpenSsl::init_err_done = false;
 #endif  // OPENSSL_FOUND
 
 /* vim:set shiftwidth=2 softtabstop=2 expandtab: */

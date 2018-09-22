@@ -3,7 +3,9 @@ file(GLOB PROTO_FILES ${CMAKE_CURRENT_SOURCE_DIR}/*.proto)
 
 protobuf_generate_cpp(PROTO_SRC PROTO_HEADERS ${PROTO_FILES})
 add_custom_target(git_pre_commit_lib_proto
-  COMMAND ${Protobuf_PROTOC_EXECUTABLE} --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR} ${PROTO_FILES})
+  COMMAND ${Protobuf_PROTOC_EXECUTABLE}
+  --cpp_out=${CMAKE_CURRENT_BINARY_DIR} -I ${CMAKE_CURRENT_SOURCE_DIR}
+  ${PROTO_FILES})
 
 set_source_files_properties(${PROTO_SRC} PROPERTIES COMPILE_FLAGS
   "${PROTOBUF_CXX_FLAGS}")

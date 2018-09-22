@@ -27,6 +27,7 @@ template <typename M>
 class CountLock
 {
  public:
+  // NOLINTNEXTLINE(readability-non-const-parameter)
   CountLock(M *ref, std::recursive_mutex *mutex_forward,
             std::function<void()> function_zero)
       : ref_(*ref),

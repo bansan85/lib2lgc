@@ -18,15 +18,29 @@
 #define PATTERN_PUBLISHER_CONNECTOR_PUBLISHER_TCP_CC_
 
 #include <2lgc/compat.h>
+#include <2lgc/config.h>
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
 #include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/connector_interface.h>
-#include <2lgc/pattern/publisher/connector_publisher_tcp.h>
+// IWYU wants to remove it. But without you can't define method.
+#include <2lgc/pattern/publisher/connector_publisher_tcp.h>  // IWYU pragma: keep
 #include <2lgc/poco/pattern_publisher.pb.h>
+#include <openssl/err.h>
+#include <openssl/ssl.h>
+#include <cstdint>
+#include <cstdio>
 #include <iostream>
 #include <memory>
+#include <string>
+#include <thread>
 #include <utility>
+
+namespace llgc::pattern::publisher
+{
+template <typename T>
+class SubscriberInterface;
+}
 
 /** \class llgc::pattern::publisher::ConnectorPublisherTcp
  * \brief Interface that define functions that allow subscriber to communicate
@@ -101,7 +115,21 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::ConnectorPublisherTcp<T>::Send(
   std::string message_in_string;
   BUGLIB(std::cout, message.SerializeToString(&message_in_string), false,
          "protobuf");
-  BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string), false);
+#ifdef OPENSSL_FOUND
+  if (presentation_ != llgc::net::OpenSsl::Presentation::NONE)
+  {
+    BUGLIB(std::cout,
+           SSL_write(ssl_.get(), message_in_string.c_str(),
+                     static_cast<int>(message_in_string.length())) > 0,
+           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+           "OpenSSL");
+  }
+  else
+#endif
+  {
+    BUGCONT(std::cout, llgc::net::Linux::Send(socket_, message_in_string),
+            false);
+  }
   return true;
 }
 
@@ -151,6 +179,24 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::GetDisposing() const
   return disposing_;
 }
 
+#ifdef OPENSSL_FOUND
+/** \brief Set parameter for OpenSSL server.
+ * \param[in] presentation Choose the encryption method.
+ * \param[in] cert Set the certificate file.
+ * \param[in] key Set the key file.
+ */
+template <typename T>
+INLINE_TEMPLATE void
+llgc::pattern::publisher::ConnectorPublisherTcp<T>::SetEncryption(
+    llgc::net::OpenSsl::Presentation presentation, const std::string &cert,
+    const std::string &key)
+{
+  presentation_ = presentation;
+  cert_ = cert;
+  key_ = key;
+}
+#endif
+
 /** \var llgc::pattern::publisher::ConnectorPublisherTcp::receiver_
  * \brief Thread that listen the server.
  *
@@ -184,27 +230,8 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::GetDisposing() const
  * \fn uint16_t llgc::pattern::publisher::ConnectorPublisherTcp::GetPort() const
  * \brief Get the port of the connector.
  * \return The return value.
- */
-
-#ifdef OPENSSL_FOUND
-/** \brief Set parameter for OpenSSL server.
- * \param[in] presentation Choose the encryption method.
- * \param[in] cert Set the certificate file.
- * \param[in] key Set the key file.
- */
-template <typename T>
-INLINE_TEMPLATE void
-llgc::pattern::publisher::ConnectorPublisherTcp<T>::SetEncryption(
-    llgc::net::OpenSsl::Presentation presentation, const std::string &cert,
-    const std::string &key)
-{
-  presentation_ = presentation;
-  cert_ = cert;
-  key_ = key;
-}
-#endif
-
-/**
+ *
+ *
  * \var llgc::pattern::publisher::ConnectorPublisherTcp::ip_
  * \brief The IP of the server.
  *
