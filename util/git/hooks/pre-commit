@@ -122,4 +122,7 @@ then
  echo " done"
 fi
 
+exec < /dev/tty
+read -p "Press any key to write commit message..."
+
 exit 0

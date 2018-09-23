@@ -22,8 +22,7 @@
 
 #ifdef OPENSSL_FOUND
 
-#include <openssl/ssl.h>
-#include <functional>
+#include <openssl/ossl_typ.h>
 #include <memory>
 #include <mutex>
 

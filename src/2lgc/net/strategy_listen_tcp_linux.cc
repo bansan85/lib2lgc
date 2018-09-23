@@ -22,13 +22,15 @@
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/error/show.h>
 #include <2lgc/net/linux.h>
-#include <2lgc/net/strategy_listen_tcp_linux.h>
+// IWYU wants to remove it. But without you can't define method.
+#include <2lgc/net/strategy_listen_tcp_linux.h>  // IWYU pragma: keep
 #include <2lgc/pattern/strategy.h>
 #include <poll.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <cerrno>
 #include <cstddef>
+#include <functional>
 #include <iostream>
 #include <string>
 
@@ -93,7 +95,8 @@ INLINE_TEMPLATE bool llgc::net::StrategyListenTcpLinux<T, U>::Do()
 
   do
   {
-    int retval = poll(&fd, 1, 50);
+    int retval =
+        llgc::net::Linux::RepeteOnEintr([&fd] { return poll(&fd, 1, 50); });
 
     BUGCRIT(std::cout, retval != -1, false,
             "Server client " + std::to_string(*client_sock_) +

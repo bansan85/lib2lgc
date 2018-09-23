@@ -22,7 +22,9 @@
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/net/openssl.h>
 #include <2lgc/pattern/publisher/publisher_tcp.h>
+#include <openssl/ossl_typ.h>
 #include <cstdint>
+#include <memory>
 #include <string>
 #include <type_traits>
 

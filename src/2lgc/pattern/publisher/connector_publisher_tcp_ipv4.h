@@ -31,12 +31,6 @@ namespace google::protobuf
 class Message;
 }
 
-namespace llgc::net
-{
-template <typename T, typename U>
-class StrategyListenTcpLinux;
-}
-
 namespace llgc::pattern::publisher
 {
 template <typename T>

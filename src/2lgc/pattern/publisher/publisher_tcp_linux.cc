@@ -107,10 +107,8 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       });
       if (iResult > 0)
       {
-        std::cout << "Avant accept4" << std::endl;
         client_sock = llgc::net::Linux::RepeteOnEintr(
             [=] { return accept4(sockfd_, nullptr, nullptr, SOCK_CLOEXEC); });
-        std::cout << "Après accept4" << std::endl;
         if (client_sock > 0)
         {
 #ifdef OPENSSL_FOUND
@@ -139,8 +137,6 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       }
     } while (iResult >= 0 && client_sock >= 0 && !this->disposing_);
     BUGCRIT(std::cout, iResult != -1, ,
-            "Errno " + std::to_string(errno) + "\n");
-    BUGCRIT(std::cout, client_sock != -1, ,
             "Errno " + std::to_string(errno) + "\n");
   });
 
