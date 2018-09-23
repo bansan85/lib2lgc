@@ -51,6 +51,8 @@ class ConnectorPublisherTcp;
  * \param[in] client_sock Socket client to communicate by TCP with OpenSSL
  *            encryption.
  * \param[in] presentation The encryption method.
+ * \param[in] ctx The context of SSL.
+ * \param[in] ssl The SSL connexion state.
  */
 template <typename T>
 INLINE_TEMPLATE llgc::net::StrategyConnectOpenSsl<T>::StrategyConnectOpenSsl(
@@ -156,6 +158,14 @@ INLINE_TEMPLATE bool llgc::net::StrategyConnectOpenSsl<T>::Do()
  *
  * \var llgc::net::StrategyConnectOpenSsl::presentation_
  * \brief Type of encryption.
+ *
+ *
+ * \var llgc::net::StrategyConnectOpenSsl::ctx_
+ * \brief The context for SSL.
+ *
+ *
+ * \var llgc::net::StrategyConnectOpenSsl::ssl_
+ * \brief SSL connection state.
  */
 
 #endif  // NET_STRATEGY_CONNECT_OPEN_SSL_CC_

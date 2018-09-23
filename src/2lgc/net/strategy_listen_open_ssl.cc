@@ -53,6 +53,8 @@ class PublisherTcpLinux;
  * \param[in] presentation The encryption method.
  * \param[in] cert The certificate file.
  * \param[in] key The key file.
+ * \param[in] ctx The context of SSL.
+ * \param[in] ssl The SSL connexion state.
  */
 template <typename T>
 INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl(
@@ -189,6 +191,14 @@ INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
  *
  * \var llgc::net::StrategyListenOpenSsl::key_
  * \brief Key file if OpenSSL is used.
+ *
+ *
+ * \var llgc::net::StrategyListenOpenSsl::ctx_
+ * \brief The context for SSL.
+ *
+ *
+ * \var llgc::net::StrategyListenOpenSsl::ssl_
+ * \brief SSL connection state.
  */
 
 #endif  // NET_STRATEGY_LISTEN_TCP_OPENSSL_CC_

@@ -19,10 +19,12 @@
 
 #include <2lgc/compat.h>
 #include <2lgc/error/show.h>
-#include <2lgc/pattern/publisher/connector_interface.h>
+// IWYU wants to remove it. But without you can't define method.
+#include <2lgc/pattern/publisher/connector_interface.h>  // IWYU pragma: keep
 // IWYU wants to remove it but subscriber_->Equals will fails.
 #include <2lgc/pattern/publisher/subscriber_interface.h>  // IWYU pragma: keep
 #include <iostream>
+#include <memory>
 #include <typeinfo>
 
 /** \class llgc::pattern::publisher::ConnectorInterface
@@ -122,6 +124,11 @@ llgc::pattern::publisher::ConnectorInterface<T>::ListenPending()
  *
  *
  * \fn const SubscriberInterface<T>* llgc::pattern::publisher::ConnectorInterface::GetSubscriber() const
+ * \brief Get the subscriber that manager this interface.
+ * \return Return the subscriber.
+ *
+ *
+ * \fn SubscriberInterface<T>* llgc::pattern::publisher::ConnectorInterface::GetSubscriber()
  * \brief Get the subscriber that manager this interface.
  * \return Return the subscriber.
  *

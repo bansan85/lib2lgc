@@ -35,6 +35,17 @@ tmp_dir=$(mktemp -d -t llgc.XXXXXXXXXX)
 cmake -B$tmp_dir -H. -DIWYU=1 -DWALL=1
 make -C $tmp_dir git_pre_commit
 
+# Always make doc
+result=$(make -C $tmp_dir doc 2>&1 > /dev/null)
+while read -r doci
+do
+ if [[ $doci = *": warning: "* ]] && [[ $doci != *"__attribute__"* ]]
+ then
+  echo " failed": "$result"
+  exit 1
+ fi
+done <<< "$result"
+
 if [ -n "$changed_files_h" ]
 then
 # cpplint

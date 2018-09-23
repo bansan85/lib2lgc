@@ -92,10 +92,6 @@ INLINE_TEMPLATE llgc::pattern::publisher::ConnectorPublisherTcpIpv4<
  * \brief Delete the copy operator.
  * \param[in] other The original.
  * \return Delete function.
- *
- *
- * \var llgc::pattern::publisher::ConnectorPublisherTcpIpv4::strategy_
- * \brief Function to execute. Different if no encryption or use OpenSSL.
  */
 
 template <typename T>

@@ -217,6 +217,14 @@ llgc::pattern::publisher::ConnectorPublisherTcp<T>::SetEncryption(
  * \brief Key file if OpenSSL is used.
  *
  *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::ctx_
+ * \brief The context for SSL.
+ *
+ *
+ * \var llgc::pattern::publisher::ConnectorPublisherTcp::ssl_
+ * \brief SSL connection state.
+ *
+ *
  * \fn bool llgc::pattern::publisher::ConnectorPublisherTcp::Connect()
  * \brief Start connection with server.
  * \return true if no problem.

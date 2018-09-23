@@ -239,6 +239,14 @@ llgc::pattern::publisher::PublisherTcpLinux<T>::AddSubscriberLocal(
  *
  * \var llgc::pattern::publisher::PublisherTcpLinux::key_
  * \brief The key file for encryption.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherTcpLinux::ctx_
+ * \brief The context for SSL.
+ *
+ *
+ * \var llgc::pattern::publisher::PublisherTcpLinux::ssl_
+ * \brief SSL connection state.
  */
 
 #endif  // PATTERN_PUBLISHER_PUBLISHER_TCP_LINUX_CC_

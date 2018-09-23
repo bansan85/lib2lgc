@@ -33,9 +33,7 @@
  * \brief Class to manipulate OpenSSL functions. All functions are thread-safe.
  */
 
-/** \brief Run init global function.
- * \return `false` if something wrong.
- */
+/// \brief Run init global function.
 void llgc::net::OpenSsl::Init()
 {
   mutex_.lock();
@@ -48,6 +46,7 @@ void llgc::net::OpenSsl::Init()
   mutex_.unlock();
 }
 
+/// \brief Run initial load of error strings for OpenSSL.
 void llgc::net::OpenSsl::InitErr()
 {
   mutex_.lock();
@@ -58,6 +57,14 @@ void llgc::net::OpenSsl::InitErr()
   }
   mutex_.unlock();
 }
+
+/** @brief Create a context and a SSL connexion state for client based on
+ *         presentation.
+ * @param[out] presentation The encryption wanted.
+ * @param[in] ctx The new context.
+ * @param[in] ssl The SSL connexion state.
+ * @return true if no problem.
+ */
 bool llgc::net::OpenSsl::InitCtxSslClient(Presentation presentation,
                                           std::shared_ptr<SSL_CTX> *ctx,
                                           std::shared_ptr<SSL> *ssl)
@@ -67,6 +74,13 @@ bool llgc::net::OpenSsl::InitCtxSslClient(Presentation presentation,
   return true;
 }
 
+/** @brief Create a context and a SSL connexion state for server based on
+ *         presentation.
+ * @param[in] presentation The encryption wanted.
+ * @param[out] ctx The new context.
+ * @param[out] ssl The SSL connexion state.
+ * @return true if no problem.
+ */
 bool llgc::net::OpenSsl::InitCtxSslServer(Presentation presentation,
                                           std::shared_ptr<SSL_CTX> *ctx,
                                           std::shared_ptr<SSL> *ssl)
@@ -76,6 +90,13 @@ bool llgc::net::OpenSsl::InitCtxSslServer(Presentation presentation,
   return true;
 }
 
+/** @brief Create a context and a SSL connexion state based on presentation.
+ * @param[in] client true if client is asked, false if server.
+ * @param[in] presentation The encryption wanted.
+ * @param[out] ctx The new context.
+ * @param[out] ssl The SSL connexion state.
+ * @return true if no problem.
+ */
 bool llgc::net::OpenSsl::InitCtxSsl(bool client, Presentation presentation,
                                     std::shared_ptr<SSL_CTX> *ctx,
                                     std::shared_ptr<SSL> *ssl)
@@ -127,6 +148,7 @@ std::mutex llgc::net::OpenSsl::mutex_;
 /// \brief true if ssl library is init.
 bool llgc::net::OpenSsl::init_done = false;
 
+/// \brief true if ssl strings are loaded.
 bool llgc::net::OpenSsl::init_err_done = false;
 #endif  // OPENSSL_FOUND
 

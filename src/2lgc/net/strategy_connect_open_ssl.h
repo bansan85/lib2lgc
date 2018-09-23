@@ -17,8 +17,8 @@
 #ifndef NET_STRATEGY_CONNECT_OPEN_SSL_H_
 #define NET_STRATEGY_CONNECT_OPEN_SSL_H_
 
-// TEMPLATE_CLASS needs it.
 #include <2lgc/compat.h>
+// TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/net/openssl.h>
 #include <2lgc/pattern/strategy.h>
