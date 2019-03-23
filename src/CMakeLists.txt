@@ -117,6 +117,7 @@ add_library(2lgc SHARED ${2LGC_SOURCES})
 target_link_libraries(2lgc
   -Wl,--whole-archive 2lgcpoco -Wl,--no-whole-archive
   stdc++fs
+  ${OPENSSL_SSL_LIBRARY}
   )
 
 set_target_properties(2lgc
