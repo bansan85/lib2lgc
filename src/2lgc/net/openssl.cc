@@ -110,11 +110,11 @@ bool llgc::net::OpenSsl::InitCtxSsl(bool client, Presentation presentation,
     {
       if (client)
       {
-        method = TLSv1_2_client_method();
+        method = SSLv23_client_method();
       }
       else
       {
-        method = TLSv1_2_server_method();
+        method = SSLv23_server_method();
       }
       break;
     }
