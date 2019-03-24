@@ -132,7 +132,8 @@ bool llgc::software::gdb::SetStack::Add(const std::string &filename)
 
   while (getline(file, line))
   {
-    if (!Function::IsValidVariableLine(line) && stack_gdb->InterpretLine(line))
+    if (!Function::IsValidVariableLine(line) && !allow_wrong_line &&
+      stack_gdb->InterpretLine(line))
     {
       if (stack_gdb->GetBacktraceFromBottom(0).GetIndex() + 1 !=
           stack_gdb->NumberOfBacktraces())

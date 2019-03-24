@@ -98,7 +98,9 @@ bool llgc::software::gdb::Function::IsValidVariableLine(
   // LANG="" must set.
   return (variable == "No locals.") ||
          (variable == "No symbol table info available.") ||
-         (variable == "No stack.") || (IsStartVariable(variable));
+         (variable == "No stack.") ||
+         (variable.compare(0, 8, "warning:") == 0) ||
+         (IsStartVariable(variable));
 }
 
 /** \brief Check if a variable line is wrappable.
@@ -115,7 +117,8 @@ bool llgc::software::gdb::Function::IsVariableLineWrappable(
   }
   // Wrappable possible if exception in Gdb.
   return (variable.find(" Cannot find type ") != std::string::npos) ||
-         (variable.find(" Python Exception ") != std::string::npos);
+         (variable.find(" Python Exception ") != std::string::npos) ||
+         (variable.compare(0, 8, "warning:") == 0);
 }
 
 /** \var llgc::software::gdb::Function::name_
