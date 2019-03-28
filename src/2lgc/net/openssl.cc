@@ -36,26 +36,24 @@
 /// \brief Run init global function.
 void llgc::net::OpenSsl::Init()
 {
-  mutex_.lock();
+  std::lock_guard guardian(mutex_);
   if (!init_done)
   {
     SSL_library_init();
     OpenSSL_add_all_algorithms();
     init_done = true;
   }
-  mutex_.unlock();
 }
 
 /// \brief Run initial load of error strings for OpenSSL.
 void llgc::net::OpenSsl::InitErr()
 {
-  mutex_.lock();
+  std::lock_guard guardian(mutex_);
   if (!init_err_done)
   {
     SSL_load_error_strings();
     init_err_done = true;
   }
-  mutex_.unlock();
 }
 
 /** @brief Create a context and a SSL connexion state for client based on
