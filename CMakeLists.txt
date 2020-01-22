@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.8.0)
 
 set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/util/cmake;${CMAKE_MODULE_PATH}")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include(2lgc)
 include(GNUInstallDirs)

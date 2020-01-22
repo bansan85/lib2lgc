@@ -27,12 +27,6 @@ namespace google::protobuf
 class Message;
 }
 
-namespace grpc
-{
-template <class W, class R>
-class ServerReaderWriter;
-}
-
 namespace llgc::pattern::publisher
 {
 template <typename T>
@@ -42,7 +36,7 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
                 "T must be a descendant of ::google::protobuf::Message.");
 
  public:
-  explicit SubscriberServerGrpc(grpc::ServerReaderWriter<T, T> *stream)
+  explicit SubscriberServerGrpc(grpc_impl::ServerReaderWriter<T, T> *stream)
       : stream_(stream)
   {
   }
@@ -58,7 +52,7 @@ class SubscriberServerGrpc : public SubscriberInterface<T>
   bool Equals(const SubscriberInterface<T> &connector) const override;
 
  private:
-  grpc::ServerReaderWriter<T, T> *stream_;
+  grpc_impl::ServerReaderWriter<T, T> *stream_;
 };
 
 }  // namespace llgc::pattern::publisher

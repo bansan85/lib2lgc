@@ -23,12 +23,6 @@
 #include <2lgc/pattern/publisher/connector_subscriber_grpc.h>
 #include <iostream>
 
-namespace grpc
-{
-template <class W, class R>
-class ServerReaderWriter;
-}
-
 /** \class llgc::pattern::publisher::ConnectorSubscriberGrpc
  * \brief Interface that define functions that allow subscriber to communicate
  *        to server and server to subscriber.
@@ -43,7 +37,7 @@ template <typename T>
 INLINE_TEMPLATE
 llgc::pattern::publisher::ConnectorSubscriberGrpc<T>::ConnectorSubscriberGrpc(
     std::shared_ptr<SubscriberInterface<T>> subscriber,
-    grpc::ServerReaderWriter<T, T> *stream)
+    grpc_impl::ServerReaderWriter<T, T> *stream)
     : ConnectorSubscriber<T>(subscriber), stream_(stream)
 {
 }

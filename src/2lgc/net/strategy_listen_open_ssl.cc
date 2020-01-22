@@ -51,22 +51,18 @@ class PublisherTcpLinux;
  * \param[in] client_sock Socket client to communicate by TCP with OpenSSL
  *            encryption.
  * \param[in] presentation The encryption method.
- * \param[in] cert The certificate file.
- * \param[in] key The key file.
  * \param[in] ctx The context of SSL.
  * \param[in] ssl The SSL connexion state.
  */
 template <typename T>
 INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl(
     llgc::pattern::publisher::PublisherTcpLinux<T> *server, int *client_sock,
-    llgc::net::OpenSsl::Presentation presentation, std::string cert,
-    std::string key, std::weak_ptr<SSL_CTX> ctx, std::weak_ptr<SSL> ssl)
+    llgc::net::OpenSsl::Presentation presentation, std::weak_ptr<SSL_CTX> ctx,
+    std::weak_ptr<SSL> ssl)
     : llgc::pattern::Strategy<llgc::pattern::publisher::PublisherTcpLinux<T>>(
           server),
       client_sock_(client_sock),
       presentation_(presentation),
-      cert_(std::move(cert)),
-      key_(std::move(key)),
       ctx_(std::move(ctx)),
       ssl_(std::move(ssl))
 {
@@ -105,40 +101,10 @@ INLINE_TEMPLATE llgc::net::StrategyListenOpenSsl<T>::StrategyListenOpenSsl(
 template <typename T>
 INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
 {
-  llgc::net::OpenSsl::Init();
-
   llgc::net::Linux::AutoCloseSocket auto_close_socket(client_sock_);
-
-  if (auto ctx = ctx_.lock())
-  {
-    BUGLIB(std::cout,
-           SSL_CTX_use_certificate_file(ctx.get(), cert_.c_str(),
-                                        SSL_FILETYPE_PEM) == 1,
-           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-           "OpenSSL");
-    BUGLIB(std::cout,
-           SSL_CTX_use_PrivateKey_file(ctx.get(), key_.c_str(),
-                                       SSL_FILETYPE_PEM) == 1,
-           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-           "OpenSSL");
-    BUGUSER(std::cout, SSL_CTX_check_private_key(ctx.get()) == 1,
-            (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-            "Private key does not match the public certificate.\n");
-  }
-  else
-  {
-    BUGCRIT(std::cout, false, false, "Failed to lock ctx.");
-  }
 
   if (auto ssl = ssl_.lock())
   {
-    BUGLIB(std::cout, SSL_set_fd(ssl.get(), *client_sock_) == 1,
-           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-           "OpenSSL");
-    BUGCRIT(std::cout, SSL_accept(ssl.get()) == 1,
-            (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-            "Failed to initialize handshake.\n");
-
     do
     {
       char client_message[1500];
@@ -183,14 +149,6 @@ INLINE_TEMPLATE bool llgc::net::StrategyListenOpenSsl<T>::Do()
  *
  * \var llgc::net::StrategyListenOpenSsl::presentation_
  * \brief Type of encryption.
- *
- *
- * \var llgc::net::StrategyListenOpenSsl::cert_
- * \brief Certification file if OpenSSL is used.
- *
- *
- * \var llgc::net::StrategyListenOpenSsl::key_
- * \brief Key file if OpenSSL is used.
  *
  *
  * \var llgc::net::StrategyListenOpenSsl::ctx_

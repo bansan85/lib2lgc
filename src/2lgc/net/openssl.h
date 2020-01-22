@@ -38,17 +38,25 @@ class OpenSsl
   };
   static void Init();
   static void InitErr();
-  static bool InitCtxSslClient(Presentation presentation,
-                               std::shared_ptr<SSL_CTX> *ctx,
-                               std::shared_ptr<SSL> *ssl) CHK;
+  static bool InitCtxClient(Presentation presentation,
+                            std::shared_ptr<SSL_CTX> *ctx,
+                            std::shared_ptr<SSL> *ssl,
+                            int client_sock) CHK;
+  static bool InitSslClient(Presentation presentation,
+                            std::shared_ptr<SSL_CTX> *ctx,
+                            std::shared_ptr<SSL> *ssl,
+                            int client_sock) CHK;
   static bool InitCtxSslServer(Presentation presentation,
                                std::shared_ptr<SSL_CTX> *ctx,
-                               std::shared_ptr<SSL> *ssl) CHK;
+                               std::shared_ptr<SSL> *ssl,
+                               const std::string& cert,
+                               const std::string& key,
+                               int client_sock) CHK;
 
  private:
-  static bool InitCtxSsl(bool client, Presentation presentation,
-                         std::shared_ptr<SSL_CTX> *ctx,
-                         std::shared_ptr<SSL> *ssl) CHK;
+  static std::shared_ptr<SSL_CTX> InitCtx(bool client,
+                                          Presentation presentation) CHK;
+  static std::shared_ptr<SSL> InitSsl(std::shared_ptr<SSL_CTX> ctx) CHK;
   static std::mutex mutex_;
   static bool init_done;
   static bool init_err_done;

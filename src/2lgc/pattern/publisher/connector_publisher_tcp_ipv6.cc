@@ -100,6 +100,15 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
     return true;
   }
 
+
+#ifdef OPENSSL_FOUND
+  if (this->presentation_ != llgc::net::OpenSsl::Presentation::NONE)
+  {
+    BUGCONT(std::cout,
+            llgc::net::OpenSsl::InitCtxClient(this->presentation_,
+                                              &this->ctx_, &this->ssl_,
+                                              this->socket_),
+            false);
   this->socket_ = socket(AF_INET6, SOCK_STREAM, 0);
   BUGCRIT(std::cout, this->socket_ != -1, false,
           "Failed to run server. Errno " + std::to_string(errno) + ".\n");
@@ -125,13 +134,10 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
           "Failed to start listening. Errno " + std::to_string(errno) + ".\n");
 
   auto_close_socket.DontDeleteSocket();
-
-#ifdef OPENSSL_FOUND
-  if (this->presentation_ != llgc::net::OpenSsl::Presentation::NONE)
-  {
     BUGCONT(std::cout,
-            llgc::net::OpenSsl::InitCtxSslClient(this->presentation_,
-                                                 &this->ctx_, &this->ssl_),
+            llgc::net::OpenSsl::InitSslClient(this->presentation_,
+                                              &this->ctx_, &this->ssl_,
+                                              this->socket_),
             false);
     std::thread t([this] {
       auto strategy = std::make_unique<llgc::net::StrategyConnectOpenSsl<T>>(
@@ -143,6 +149,31 @@ llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>::Connect()
   else
 #endif  // OPENSSL_FOUND
   {
+  this->socket_ = socket(AF_INET6, SOCK_STREAM, 0);
+  BUGCRIT(std::cout, this->socket_ != -1, false,
+          "Failed to run server. Errno " + std::to_string(errno) + ".\n");
+
+  llgc::net::Linux::AutoCloseSocket auto_close_socket(&this->socket_);
+
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-member-init)
+  struct sockaddr_in6 server;  // NOLINT(hicpp-member-init)
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+  BUGUSER(std::cout,
+          inet_pton(AF_INET6, this->GetIp().c_str(),
+                    reinterpret_cast<struct sockaddr_in6 *>(
+                        static_cast<void *>(&server.sin6_addr))) == 1,
+          false, "Failed to get IP for name " + this->GetIp() + ".\n");
+  server.sin6_family = AF_INET6;
+  server.sin6_port = htons(this->GetPort());
+
+  // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
+  BUGCRIT(std::cout,
+          connect(this->socket_, reinterpret_cast<struct sockaddr *>(&server),
+                  sizeof(server)) == 0,
+          false,
+          "Failed to start listening. Errno " + std::to_string(errno) + ".\n");
+
+  auto_close_socket.DontDeleteSocket();
     std::thread t([this] {
       auto strategy = std::make_unique<llgc::net::StrategyListenTcpLinux<
           T, llgc::pattern::publisher::ConnectorPublisherTcpIpv6<T>>>(

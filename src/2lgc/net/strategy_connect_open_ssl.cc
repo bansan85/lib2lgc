@@ -101,23 +101,15 @@ INLINE_TEMPLATE llgc::net::StrategyConnectOpenSsl<T>::StrategyConnectOpenSsl(
 template <typename T>
 INLINE_TEMPLATE bool llgc::net::StrategyConnectOpenSsl<T>::Do()
 {
-  llgc::net::OpenSsl::Init();
-
   llgc::net::Linux::AutoCloseSocket auto_close_socket(client_sock_);
 
   if (auto ssl = ssl_.lock())
   {
-    BUGLIB(std::cout, SSL_set_fd(ssl.get(), *client_sock_) == 1,
-           (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-           "OpenSSL");
-    BUGCRIT(std::cout, SSL_connect(ssl.get()) == 1,
-            (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-            "Failed to initialize connection.\n");
-
     do
     {
       char client_message[1500];
 
+      std::cout << "Connected with " << SSL_get_cipher(ssl.get()) << " encryption" << std::endl;
       std::cout << "Client wait." << std::endl;
 
       int read_size =
@@ -126,6 +118,7 @@ INLINE_TEMPLATE bool llgc::net::StrategyConnectOpenSsl<T>::Do()
       // Empty message.
       if (read_size == 0)
       {
+        std::cout << "Client empty." << std::endl;
         continue;
       }
 

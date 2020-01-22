@@ -19,21 +19,15 @@
 
 #include <2lgc/compat.h>
 // TEMPLATE_CLASS needs it.
-#include <2lgc/config.h>  // IWYU pragma: keep
+#include <2lgc/config.h> // IWYU pragma: keep
 #include <2lgc/pattern/publisher/publisher_ip.h>
-#include <grpcpp/impl/codegen/status.h>
 #include <cstdint>
+#include <grpcpp/impl/codegen/server_context_impl.h>
+#include <grpcpp/impl/codegen/status.h>
+#include <grpcpp/impl/codegen/sync_stream_impl.h>
 #include <memory>
+#include <regex>
 #include <type_traits>
-
-namespace grpc
-{
-class Server;
-class ServerContext;
-
-template <class W, class R>
-class ServerReaderWriter;
-}  // namespace grpc
 
 namespace google::protobuf
 {
@@ -58,14 +52,14 @@ class PublisherGrpc : public PublisherIp<T>, public S
 #endif  // !SWIG
   ~PublisherGrpc() override;
 
-  grpc::Status Talk(grpc::ServerContext *context,
-                    grpc::ServerReaderWriter<T, T> *stream) override CHK;
+  grpc::Status Talk(grpc_impl::ServerContext *context,
+                    grpc_impl::ServerReaderWriter<T, T> *stream) override CHK;
   bool Listen() override CHK;
   bool Wait() override CHK;
   void Stop() override;
 
  private:
-  std::unique_ptr<grpc::Server> server_;
+  std::unique_ptr<grpc_impl::Server> server_;
 };
 
 }  // namespace llgc::pattern::publisher

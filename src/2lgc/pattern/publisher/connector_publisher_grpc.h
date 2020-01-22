@@ -33,14 +33,6 @@ namespace google::protobuf
 class Message;
 }
 
-namespace grpc
-{
-class Channel;
-
-template <class W, class R>
-class ClientReaderWriter;
-}  // namespace grpc
-
 namespace llgc::pattern::publisher
 {
 template <typename T>
@@ -71,8 +63,8 @@ class ConnectorPublisherGrpc : public ConnectorInterface<T>
  private:
   const std::string ip_;
   uint16_t port_;
-  std::shared_ptr<grpc::ClientReaderWriter<T, T>> stream_;
-  std::shared_ptr<grpc::Channel> channel_;
+  std::shared_ptr<grpc_impl::ClientReaderWriter<T, T>> stream_;
+  std::shared_ptr<grpc_impl::Channel> channel_;
   grpc::ClientContext context_;
   std::unique_ptr<typename S::Stub> stub_;
   std::thread receiver_;

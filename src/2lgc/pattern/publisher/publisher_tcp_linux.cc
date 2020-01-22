@@ -107,18 +107,22 @@ INLINE_TEMPLATE bool llgc::pattern::publisher::PublisherTcpLinux<T>::Wait()
       });
       if (iResult > 0)
       {
+        struct sockaddr_in addr;
+        struct sockaddr *addr_p = reinterpret_cast<sockaddr*>(&addr);
+        socklen_t len = sizeof(addr);
         client_sock = llgc::net::Linux::RepeteOnEintr(
-            [=] { return accept4(sockfd_, nullptr, nullptr, SOCK_CLOEXEC); });
+            [=] { return accept4(sockfd_, addr_p, const_cast<socklen_t*>(&len), SOCK_CLOEXEC); });
         if (client_sock > 0)
         {
+          std::cout << "Nouvelle connexion au serveur, port " << ntohs(addr.sin_port) << "." << std::endl;
 #ifdef OPENSSL_FOUND
           if (presentation_ != llgc::net::OpenSsl::Presentation::NONE)
           {
             BUGCONT(std::cout,
                     llgc::net::OpenSsl::InitCtxSslServer(presentation_, &ctx_,
-                                                         &ssl_), );
+                                                         &ssl_, cert_, key_, client_sock), );
             receiver_ = std::make_unique<llgc::net::StrategyListenOpenSsl<T>>(
-                this, &client_sock, presentation_, cert_, key_, ctx_, ssl_);
+                this, &client_sock, presentation_, ctx_, ssl_);
           }
           else
 #endif  // OPENSSL_FOUND

@@ -56,24 +56,55 @@ void llgc::net::OpenSsl::InitErr()
   }
 }
 
-/** @brief Create a context and a SSL connexion state for client based on
- *         presentation.
+/** @brief Create a context for client based on presentation.
  * @param[out] presentation The encryption wanted.
  * @param[in] ctx The new context.
  * @param[in] ssl The SSL connexion state.
  * @return true if no problem.
  */
-bool llgc::net::OpenSsl::InitCtxSslClient(Presentation presentation,
-                                          std::shared_ptr<SSL_CTX> *ctx,
-                                          std::shared_ptr<SSL> *ssl)
+bool llgc::net::OpenSsl::InitCtxClient(Presentation presentation,
+                                       std::shared_ptr<SSL_CTX> *ctx,
+                                       std::shared_ptr<SSL> *ssl,
+                                       int client_sock)
 {
-  BUGCONT(std::cout, InitCtxSsl(true, presentation, ctx, ssl), false);
+  BUGLIB(std::cout,
+         *ctx = InitCtx(true, presentation),
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  return true;
+}
+
+/** @brief Create a SSL connexion state for client based on presentation.
+ * @param[out] presentation The encryption wanted.
+ * @param[in] ctx The new context.
+ * @param[in] ssl The SSL connexion state.
+ * @return true if no problem.
+ */
+bool llgc::net::OpenSsl::InitSslClient(Presentation presentation,
+                                       std::shared_ptr<SSL_CTX> *ctx,
+                                       std::shared_ptr<SSL> *ssl,
+                                       int client_sock)
+{
+  BUGLIB(std::cout,
+         *ssl = InitSsl(*ctx),
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  BUGLIB(std::cout, SSL_set_fd(ssl->get(), client_sock) == 1,
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  BUGCRIT(std::cout, SSL_connect(ssl->get()) == 1,
+          (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+          "Failed to initialize connection.\n");
 
   return true;
 }
 
 /** @brief Create a context and a SSL connexion state for server based on
  *         presentation.
+ *         Must be call after accept4 function.
  * @param[in] presentation The encryption wanted.
  * @param[out] ctx The new context.
  * @param[out] ssl The SSL connexion state.
@@ -81,23 +112,53 @@ bool llgc::net::OpenSsl::InitCtxSslClient(Presentation presentation,
  */
 bool llgc::net::OpenSsl::InitCtxSslServer(Presentation presentation,
                                           std::shared_ptr<SSL_CTX> *ctx,
-                                          std::shared_ptr<SSL> *ssl)
+                                          std::shared_ptr<SSL> *ssl,
+                                          const std::string& cert,
+                                          const std::string& key,
+                                          int client_sock)
 {
-  BUGCONT(std::cout, InitCtxSsl(false, presentation, ctx, ssl), false);
+  BUGLIB(std::cout,
+         *ctx = InitCtx(false, presentation),
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  // Certificate and key must be load before calling SSL_new.
+  BUGLIB(std::cout,
+         SSL_CTX_use_certificate_file(ctx->get(), cert.c_str(),
+                                      SSL_FILETYPE_PEM) == 1,
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+  BUGLIB(std::cout,
+         SSL_CTX_use_PrivateKey_file(ctx->get(), key.c_str(),
+                                     SSL_FILETYPE_PEM) == 1,
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+  BUGUSER(std::cout, SSL_CTX_check_private_key(ctx->get()) == 1,
+          (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+          "Private key does not match the public certificate.\n");
+
+  BUGLIB(std::cout,
+         *ssl = InitSsl(*ctx),
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+
+  BUGLIB(std::cout, SSL_set_fd(ssl->get(), client_sock) == 1,
+         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+         "OpenSSL");
+  BUGCRIT(std::cout, SSL_accept(ssl->get()) == 1,
+          (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
+          "Failed to initialize handshake.\n");
 
   return true;
 }
 
-/** @brief Create a context and a SSL connexion state based on presentation.
+/** @brief Create a context based on presentation.
  * @param[in] client true if client is asked, false if server.
  * @param[in] presentation The encryption wanted.
- * @param[out] ctx The new context.
- * @param[out] ssl The SSL connexion state.
- * @return true if no problem.
+ * @return The new context if no problem.
  */
-bool llgc::net::OpenSsl::InitCtxSsl(bool client, Presentation presentation,
-                                    std::shared_ptr<SSL_CTX> *ctx,
-                                    std::shared_ptr<SSL> *ssl)
+std::shared_ptr<SSL_CTX> llgc::net::OpenSsl::InitCtx(bool client,
+                                                     Presentation presentation)
 {
   Init();
 
@@ -119,25 +180,26 @@ bool llgc::net::OpenSsl::InitCtxSsl(bool client, Presentation presentation,
     case llgc::net::OpenSsl::Presentation::NONE:
     default:
     {
-      BUGPROG(std::cout, false, false, "Invalid value in switch.");
+      BUGPROG(std::cout, false, nullptr, "Invalid value in switch.");
     }
   }
 
-  *ctx = std::shared_ptr<SSL_CTX>(SSL_CTX_new(method),
+  // Only one context for all connections
+  return std::shared_ptr<SSL_CTX>(SSL_CTX_new(method),
                                   [](SSL_CTX *ptr) { SSL_CTX_free(ptr); });
+}
 
-  BUGLIB(std::cout, *ctx != nullptr,
-         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-         "OpenSSL");
-
-  *ssl = std::shared_ptr<SSL>(SSL_new(ctx->get()),
+/** @brief Create a SSL connexion state based on presentation.
+ * @param[in] client true if client is asked, false if server.
+ * @param[in] presentation The encryption wanted.
+ * @param[out] ctx The new context.
+ * @param[out] ssl The SSL connexion state.
+ * @return true if no problem.
+ */
+std::shared_ptr<SSL> llgc::net::OpenSsl::InitSsl(std::shared_ptr<SSL_CTX> ctx)
+{
+  return std::shared_ptr<SSL>(SSL_new(ctx.get()),
                               [](SSL *ptr) { SSL_free(ptr); });
-
-  BUGLIB(std::cout, *ssl != nullptr,
-         (llgc::net::OpenSsl::InitErr(), ERR_print_errors_fp(stdout), false),
-         "OpenSSL");
-
-  return true;
 }
 
 /// \brief Every function is thread-safe so we need a lock.

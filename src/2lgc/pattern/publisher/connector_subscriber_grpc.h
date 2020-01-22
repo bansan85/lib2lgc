@@ -21,18 +21,13 @@
 // TEMPLATE_CLASS needs it.
 #include <2lgc/config.h>  // IWYU pragma: keep
 #include <2lgc/pattern/publisher/connector_subscriber.h>
+#include <grpcpp/support/sync_stream_impl.h>
 #include <memory>
 #include <type_traits>
 
 namespace google::protobuf
 {
 class Message;
-}
-
-namespace grpc
-{
-template <class W, class R>
-class ServerReaderWriter;
 }
 
 namespace llgc::pattern::publisher
@@ -48,7 +43,7 @@ class ConnectorSubscriberGrpc : public ConnectorSubscriber<T>
 
  public:
   ConnectorSubscriberGrpc(std::shared_ptr<SubscriberInterface<T>> subscriber,
-                          grpc::ServerReaderWriter<T, T> *stream);
+                          grpc_impl::ServerReaderWriter<T, T> *stream);
 #ifndef SWIG
   ConnectorSubscriberGrpc(ConnectorSubscriberGrpc &&other) = delete;
   ConnectorSubscriberGrpc(ConnectorSubscriberGrpc const &other) = delete;
@@ -61,7 +56,7 @@ class ConnectorSubscriberGrpc : public ConnectorSubscriber<T>
   bool Send(const T &message) override CHK;
 
  private:
-  grpc::ServerReaderWriter<T, T> *stream_;
+  grpc_impl::ServerReaderWriter<T, T> *stream_;
 };
 
 }  // namespace llgc::pattern::publisher

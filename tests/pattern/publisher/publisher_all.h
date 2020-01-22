@@ -76,7 +76,7 @@ class Subscriber final : public llgc::pattern::publisher::SubscriberLocal<T>
   /**
    * @brief value for test.
    */
-  size_t value;
+  std::atomic<size_t> value;
 
   /**
    * @brief Function to execute.

@@ -52,7 +52,6 @@ class StrategyListenOpenSsl
   StrategyListenOpenSsl(llgc::pattern::publisher::PublisherTcpLinux<T> *server,
                         int *client_sock,
                         llgc::net::OpenSsl::Presentation presentation,
-                        std::string cert, std::string key,
                         std::weak_ptr<SSL_CTX> ctx, std::weak_ptr<SSL> ssl);
 #ifndef SWIG
   StrategyListenOpenSsl(StrategyListenOpenSsl &&other) = delete;
@@ -67,8 +66,6 @@ class StrategyListenOpenSsl
  private:
   int *client_sock_;
   llgc::net::OpenSsl::Presentation presentation_;
-  const std::string cert_;
-  const std::string key_;
   std::weak_ptr<SSL_CTX> ctx_;
   std::weak_ptr<SSL> ssl_;
 };
